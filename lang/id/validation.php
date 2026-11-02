@@ -199,6 +199,12 @@ return [
 
     'attributes' => [
         'class_name' => 'nama kelas',
+        'nip' => 'NIP',
+        'name' => 'nama',
+        'email' => 'email',
+        'phone' => 'no. telepon',
+        'gender' => 'jenis kelamin',
+        'address' => 'alamat',
     ],
 
 ];

@@ -54,7 +54,7 @@
             </div>
             <div class="card-body">
               <div class="form-group mb-0">
-                <label for="class_name">{{ __('Class Name') }}</label>
+                <label for="class_name">{{ __('Class Name') }} <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   id="class_name"
