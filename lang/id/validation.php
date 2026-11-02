@@ -198,12 +198,15 @@ return [
     */
 
     'attributes' => [
+        'class_id' => 'kelas',
         'class_name' => 'nama kelas',
         'nip' => 'NIP',
+        'nis' => 'NIS',
         'name' => 'nama',
         'email' => 'email',
         'phone' => 'no. telepon',
         'gender' => 'jenis kelamin',
+        'birth_date' => 'tanggal lahir',
         'address' => 'alamat',
     ],
 

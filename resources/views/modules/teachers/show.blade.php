@@ -74,8 +74,8 @@
             </div>
           </div>
           <div class="card-footer text-right">
-            <a href="{{ route('teachers.index') }}" class="btn btn-secondary btn-sm mr-1">{{ __('Back') }}</a>
-            <a href="{{ route('teachers.edit', $teacher) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+            <a href="{{ route('teachers.index') }}" class="btn btn-secondary btn-sm btn-icon mr-1" data-toggle="tooltip" title="{{ __('Back') }}"><i class="fas fa-arrow-left"></i></a>
+            <a href="{{ route('teachers.edit', $teacher) }}" class="btn btn-primary btn-sm btn-icon" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
           </div>
         </div>
       </div>
