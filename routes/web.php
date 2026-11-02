@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StudentController;
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/auth/login', [LoginController::class, 'login'])->name('login.attempt');
+});
+
+Route::post('/auth/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::resource('classes', SchoolClassController::class)->parameters([
     'classes' => 'schoolClass',

@@ -213,6 +213,7 @@ return [
         'nip' => 'NIP',
         'nis' => 'NIS',
         'notes' => 'catatan',
+        'password' => 'kata sandi',
         'payment_date' => 'tanggal bayar',
         'payment_method' => 'metode pembayaran',
         'phone' => 'no. telepon',

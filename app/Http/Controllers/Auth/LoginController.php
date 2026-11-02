@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class LoginController extends Controller
+{
+    /**
+     * Show the application's login form.
+     */
+    public function showLoginForm(): View
+    {
+        return view('auth.login');
+    }
+
+    /**
+     * Handle an authentication attempt.
+     */
+    public function login(LoginRequest $request): RedirectResponse
+    {
+        $credentials = $request->safe()->only(['email', 'password']);
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            return redirect()
+                ->intended(route('classes.index'))
+                ->with('success', __('Login successful.'));
+        }
+
+        return back()
+            ->withErrors([
+                'email' => __('auth.failed'),
+            ])
+            ->onlyInput('email');
+    }
+
+    /**
+     * Log the user out of the application.
+     */
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
+    }
+}

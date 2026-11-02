@@ -7,4 +7,3 @@ return [
     'token' => 'Token reset kata sandi ini tidak sah.',
     'user' => 'Kami tidak dapat menemukan pengguna dengan alamat surel tersebut.',
 ];
-
