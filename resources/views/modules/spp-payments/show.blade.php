@@ -9,7 +9,7 @@
     </div>
     <h1>{{ __('SPP Payment Detail') }}</h1>
     <div class="section-header-breadcrumb">
-      <div class="breadcrumb-item active"><a href="{{ route('index.html') }}">{{ __('Dashboard') }}</a></div>
+      <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></div>
       <div class="breadcrumb-item"><a href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></div>
       <div class="breadcrumb-item">{{ __('Detail') }}</div>
     </div>

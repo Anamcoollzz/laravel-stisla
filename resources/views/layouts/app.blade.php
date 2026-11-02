@@ -249,19 +249,15 @@
         @else
           <aside id="sidebar-wrapper">
             <div class="sidebar-brand">
-              <a href="{{ route('index.html') }}">Stisla</a>
+              <a href="{{ route('dashboard') }}">Stisla</a>
             </div>
             <div class="sidebar-brand sidebar-brand-sm">
-              <a href="{{ route('index.html') }}">St</a>
+              <a href="{{ route('dashboard') }}">St</a>
             </div>
             <ul class="sidebar-menu">
               <li class="menu-header">{{ __('Dashboard') }}</li>
-              <li @class(['nav-item dropdown', 'active' => request()->routeIs('index-0.html', 'index.html')])>
-                <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>{{ __('Dashboard') }}</span></a>
-                <ul class="dropdown-menu">
-                  <li @class(['active' => request()->routeIs('index-0.html')])><a class="nav-link" href="{{ route('index-0.html') }}">General Dashboard</a></li>
-                  <li @class(['active' => request()->routeIs('index.html')])><a class="nav-link" href="{{ route('index.html') }}">Ecommerce Dashboard</a></li>
-                </ul>
+              <li @class(['active' => request()->routeIs('dashboard')])>
+                <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
               </li>
               <li class="menu-header">{{ __('Modules') }}</li>
               <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*')])>

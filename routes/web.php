@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StudentController;
@@ -18,6 +19,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/auth/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::resource('classes', SchoolClassController::class)->parameters([
     'classes' => 'schoolClass',

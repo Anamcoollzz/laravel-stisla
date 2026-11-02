@@ -54,7 +54,7 @@
   <div class="section-header">
     <h1>{{ __('Subjects') }}</h1>
     <div class="section-header-breadcrumb">
-      <div class="breadcrumb-item active"><a href="{{ route('index.html') }}">{{ __('Dashboard') }}</a></div>
+      <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></div>
       <div class="breadcrumb-item"><a href="{{ route('subjects.index') }}">{{ __('Modules') }}</a></div>
       <div class="breadcrumb-item">{{ __('Subjects') }}</div>
     </div>

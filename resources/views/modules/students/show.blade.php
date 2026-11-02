@@ -9,7 +9,7 @@
     </div>
     <h1>{{ __('Student Detail') }}</h1>
     <div class="section-header-breadcrumb">
-      <div class="breadcrumb-item active"><a href="{{ route('index.html') }}">{{ __('Dashboard') }}</a></div>
+      <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></div>
       <div class="breadcrumb-item"><a href="{{ route('students.index') }}">{{ __('Students') }}</a></div>
       <div class="breadcrumb-item">{{ __('Detail') }}</div>
     </div>

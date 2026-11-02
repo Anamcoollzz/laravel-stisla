@@ -30,7 +30,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             return redirect()
-                ->intended(route('classes.index'))
+                ->intended(route('dashboard'))
                 ->with('success', __('Login successful.'));
         }
 

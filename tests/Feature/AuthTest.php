@@ -33,7 +33,7 @@ test('admin user can log in with valid credentials', function () {
         'email' => 'admin@example.com',
         'password' => 'password',
     ])
-        ->assertRedirect(route('classes.index'))
+        ->assertRedirect(route('dashboard'))
         ->assertSessionHas('success', 'Berhasil masuk.');
 
     $this->assertAuthenticated();
