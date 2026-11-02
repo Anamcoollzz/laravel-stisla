@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SchoolClassController;
+use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
@@ -16,6 +17,7 @@ Route::resource('classes', SchoolClassController::class)->parameters([
 Route::resource('teachers', TeacherController::class);
 Route::resource('students', StudentController::class);
 Route::resource('subjects', SubjectController::class);
+Route::resource('spp-payments', SppPaymentController::class);
 
 Route::view('/pages/index.html', 'pages.index')->name('index.html');
 Route::view('/pages/index-0.html', 'pages.index-0')->name('index-0.html');

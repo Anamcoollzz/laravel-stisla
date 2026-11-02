@@ -198,18 +198,27 @@ return [
     */
 
     'attributes' => [
+        'address' => 'alamat',
+        'amount' => 'nominal',
+        'birth_date' => 'tanggal lahir',
         'class_id' => 'kelas',
         'class_name' => 'nama kelas',
         'code' => 'kode',
         'description' => 'deskripsi',
+        'email' => 'email',
+        'gender' => 'jenis kelamin',
+        'invoice_number' => 'no. tagihan',
+        'month' => 'bulan',
+        'name' => 'nama',
         'nip' => 'NIP',
         'nis' => 'NIS',
-        'name' => 'nama',
-        'email' => 'email',
+        'notes' => 'catatan',
+        'payment_date' => 'tanggal bayar',
+        'payment_method' => 'metode pembayaran',
         'phone' => 'no. telepon',
-        'gender' => 'jenis kelamin',
-        'birth_date' => 'tanggal lahir',
-        'address' => 'alamat',
+        'status' => 'status',
+        'student_id' => 'siswa',
+        'year' => 'tahun',
     ],
 
 ];
