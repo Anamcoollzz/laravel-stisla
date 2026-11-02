@@ -141,14 +141,13 @@
 
               <div class="form-row">
                 <div class="form-group col-md-4">
-                  <label for="email">{{ __('Email') }} <span class="text-danger">*</span></label>
+                  <label for="email">{{ __('Email') }}</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     class="form-control @error('email') is-invalid @enderror"
                     value="{{ old('email') }}"
-                    required=""
                   >
                   <div class="invalid-feedback">
                     @error('email')

@@ -37,7 +37,7 @@ class UpdateStudentRequest extends FormRequest
             ],
             'name' => ['required', 'string', 'max:255'],
             'email' => [
-                'required',
+                'nullable',
                 'email',
                 'max:255',
                 Rule::unique('students', 'email')->ignore($student),

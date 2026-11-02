@@ -61,7 +61,7 @@
             <div class="row">
               <div class="form-group col-md-6">
                 <label class="d-block">{{ __('Email') }}</label>
-                <div>{{ $student->email }}</div>
+                <div>{{ $student->email ?? '-' }}</div>
               </div>
               <div class="form-group col-md-6">
                 <label class="d-block">{{ __('Phone') }}</label>

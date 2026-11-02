@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('class_id')->constrained('classes')->cascadeOnDelete();
             $table->string('nis', 30)->unique();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->string('phone', 30)->nullable();
             $table->string('gender', 1);
             $table->date('birth_date')->nullable();

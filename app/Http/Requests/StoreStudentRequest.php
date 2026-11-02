@@ -27,7 +27,7 @@ class StoreStudentRequest extends FormRequest
             'class_id' => ['required', 'integer', Rule::exists('classes', 'id')],
             'nis' => ['required', 'string', 'max:30', Rule::unique('students', 'nis')],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('students', 'email')],
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('students', 'email')],
             'phone' => ['nullable', 'string', 'max:30'],
             'gender' => ['required', 'string', Rule::in(['L', 'P'])],
             'birth_date' => ['nullable', 'date'],

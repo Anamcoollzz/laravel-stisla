@@ -86,6 +86,21 @@ test('can store a new student belonging to a class and flash swal success messag
     $this->get(route('students.index'))
         ->assertOk()
         ->assertSee('swal("Berhasil", "Siswa berhasil ditambahkan.", \'success\');', false);
+
+    $this->post(route('students.store'), [
+        'class_id' => $schoolClass->id,
+        'nis' => '2026000100',
+        'name' => 'Siswa Tanpa Email',
+        'email' => '',
+        'gender' => 'L',
+    ])
+        ->assertRedirect(route('students.index'))
+        ->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('students', [
+        'nis' => '2026000100',
+        'email' => null,
+    ]);
 });
 
 test('storing a student validates required fields, class relationship, and unique constraints with swal error', function (array $overrides, string $errorField, string $expectedMessage) {

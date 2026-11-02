@@ -99,7 +99,7 @@
                       <td>{{ $student->nis }}</td>
                       <td>{{ $student->name }}</td>
                       <td>{{ $student->schoolClass?->class_name ?? '-' }}</td>
-                      <td>{{ $student->email }}</td>
+                      <td>{{ $student->email ?? '-' }}</td>
                       <td>{{ $student->phone ?? '-' }}</td>
                       <td>
                         @if ($student->gender === 'L')
