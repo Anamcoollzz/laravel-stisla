@@ -39,9 +39,22 @@ test('every local asset referenced by stisla pages exists in public', function (
     }
 });
 
-test('the sidebar marks the current page as active', function () {
+test('the sidebar marks the current page as active when stisla demo is enabled', function () {
+    config()->set('app.is_stisla_demo', true);
+
     $this->get(route('bootstrap-alert.html'))
         ->assertOk()
         ->assertSee('<li class="active"><a class="nav-link" href="'.route('bootstrap-alert.html').'">Alert</a></li>', false)
         ->assertSee('<li class="nav-item dropdown active">', false);
+});
+
+test('the sidebar only shows crud menu when stisla demo is disabled', function () {
+    config()->set('app.is_stisla_demo', false);
+
+    $this->get(route('index.html'))
+        ->assertOk()
+        ->assertSee(route('classes.index'))
+        ->assertSee(route('teachers.index'))
+        ->assertSee(route('students.index'))
+        ->assertDontSee(route('bootstrap-alert.html'));
 });
