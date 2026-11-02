@@ -1,58 +1,135 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Stisla
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Template admin dashboard [Stisla](https://getstisla.com) (v2.3.0) yang sudah dikonversi ke Blade untuk Laravel 13. Seluruh 82 halaman demo Stisla tersedia sebagai view Blade lengkap dengan layout, route, dan asetnya.
 
-## About Laravel
+## Teknologi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.4 & Laravel 13
+- Stisla 2.3.0 (Bootstrap 4, jQuery)
+- Pest 5 untuk testing
+- Laravel Pint untuk code style
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalasi
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repo-url> laravel-stisla
+cd laravel-stisla
+composer run setup
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Perintah `setup` akan menjalankan `composer install`, membuat `.env`, generate app key, migrate database, serta install & build aset frontend.
 
-## Contributing
+Jalankan server development:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer run dev
+```
 
-## Code of Conduct
+Lalu buka `/pages/index.html` untuk melihat Ecommerce Dashboard.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Struktur Project
 
-## Security Vulnerabilities
+```
+resources/views/
+├── layouts/
+│   ├── app.blade.php       # Layout dengan navbar + sidebar
+│   └── auth.blade.php      # Layout polos (auth, error, utilities)
+└── pages/                  # 82 halaman Stisla dalam bentuk Blade
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+public/
+├── assets/                 # CSS, JS, font, dan gambar template Stisla
+└── node_modules/           # Library pihak ketiga yang dipakai halaman
 
-## License
+stisla/                     # Source asli Stisla (HTML statis) sebagai referensi
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Layout
+
+| Layout | Dipakai oleh |
+|---|---|
+| `layouts.app` | Dashboard, Bootstrap, Components, Forms, Google Maps, Modules, Features, Credits, dll |
+| `layouts.auth` | `auth-*`, `errors-*`, `utilities-contact`, `utilities-subscribe` |
+| _(standalone)_ | `layout-transparent`, `layout-top-navigation` (memiliki navbar/body class sendiri) |
+
+Menu sidebar pada `layouts.app` otomatis memberi class `active` sesuai route yang sedang dibuka menggunakan `request()->routeIs()`.
+
+## Membuat Halaman Baru
+
+1. Buat view di `resources/views/pages/nama-halaman.blade.php`:
+
+```blade
+@extends('layouts.app')
+
+@section('title', 'Judul Halaman')
+
+@push('css')
+  <link rel="stylesheet" href="{{ asset('node_modules/library/dist/library.min.css') }}">
+@endpush
+
+@push('js')
+  <script src="{{ asset('node_modules/library/dist/library.min.js') }}"></script>
+@endpush
+
+@push('page-js')
+  <script src="{{ asset('assets/js/page/nama-halaman.js') }}"></script>
+@endpush
+
+@section('content')
+  <div class="section-header">
+    <h1>Judul Halaman</h1>
+  </div>
+
+  <div class="section-body">
+    {{-- konten --}}
+  </div>
+@endsection
+```
+
+2. Daftarkan route di `routes/web.php`:
+
+```php
+Route::view('/pages/nama-halaman.html', 'pages.nama-halaman')->name('nama-halaman.html');
+```
+
+3. Tambahkan menu di sidebar `resources/views/layouts/app.blade.php`:
+
+```blade
+<li @class(['active' => request()->routeIs('nama-halaman.html')])>
+  <a class="nav-link" href="{{ route('nama-halaman.html') }}"><i class="far fa-square"></i> <span>Nama Halaman</span></a>
+</li>
+```
+
+### Stack yang tersedia
+
+| Stack | Fungsi |
+|---|---|
+| `css` | CSS library tambahan (dimuat sebelum CSS template) |
+| `js` | JS library tambahan (dimuat sebelum `scripts.js`) |
+| `page-js` | JS khusus halaman (dimuat paling akhir) |
+
+### Menambah library
+
+Library dari `stisla/node_modules` cukup disalin ke `public/node_modules` dengan struktur path yang sama, lalu dipanggil memakai `asset('node_modules/...')`.
+
+## Testing
+
+```bash
+php artisan test --compact
+```
+
+`tests/Feature/StislaPagesTest.php` memastikan:
+
+- Semua route halaman Stisla me-render dengan status 200.
+- Semua aset lokal (`assets/` & `node_modules/`) yang direferensikan halaman benar-benar ada di `public/`.
+- Sidebar menandai halaman aktif dengan benar.
+
+Format kode PHP sebelum commit:
+
+```bash
+vendor/bin/pint --dirty
+```
+
+## Kredit
+
+- [Stisla](https://github.com/stisla/stisla) oleh Muhamad Nauval Azhar — MIT License
+- [Laravel](https://laravel.com) — MIT License
