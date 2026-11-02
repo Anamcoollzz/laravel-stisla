@@ -9,9 +9,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/pages/index.html');
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/login', [LoginController::class, 'showLoginForm'])->name('login');
