@@ -17,6 +17,10 @@
   <script src="{{ asset('node_modules/chocolat/dist/js/jquery.chocolat.min.js') }}"></script>
 @endpush
 
+@push('page-js')
+  <script src="{{ asset('assets/js/page/index.js') }}"></script>
+@endpush
+
 @section('content')
   <div class="row">
     <div class="col-lg-4 col-md-4 col-sm-12">
@@ -504,7 +508,7 @@
                 <div>6 hours ago</div>
               </div>
             </a>
-            <a href="features-tickets.html" class="ticket-item ticket-more">
+            <a href="{{ route('features-tickets.html') }}" class="ticket-item ticket-more">
               View All <i class="fas fa-chevron-right"></i>
             </a>
           </div>
