@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,7 @@ Route::resource('classes', SchoolClassController::class)->parameters([
 ]);
 Route::resource('teachers', TeacherController::class);
 Route::resource('students', StudentController::class);
+Route::resource('subjects', SubjectController::class);
 
 Route::view('/pages/index.html', 'pages.index')->name('index.html');
 Route::view('/pages/index-0.html', 'pages.index-0')->name('index-0.html');

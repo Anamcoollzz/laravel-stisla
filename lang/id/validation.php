@@ -200,6 +200,8 @@ return [
     'attributes' => [
         'class_id' => 'kelas',
         'class_name' => 'nama kelas',
+        'code' => 'kode',
+        'description' => 'deskripsi',
         'nip' => 'NIP',
         'nis' => 'NIS',
         'name' => 'nama',
