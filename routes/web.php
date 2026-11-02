@@ -1,10 +1,15 @@
 <?php
 
+use App\Http\Controllers\SchoolClassController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('classes', SchoolClassController::class)->parameters([
+    'classes' => 'schoolClass',
+]);
 
 Route::view('/pages/index.html', 'pages.index')->name('index.html');
 Route::view('/pages/index-0.html', 'pages.index-0')->name('index-0.html');

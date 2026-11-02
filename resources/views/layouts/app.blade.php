@@ -332,9 +332,10 @@
                 <li @class(['active' => request()->routeIs('gmaps-simple.html')])><a href="{{ route('gmaps-simple.html') }}">Simple</a></li>
               </ul>
             </li>
-            <li @class(['nav-item dropdown', 'active' => request()->routeIs('modules-calendar.html', 'modules-chartjs.html', 'modules-datatables.html', 'modules-flag.html', 'modules-font-awesome.html', 'modules-ion-icons.html', 'modules-owl-carousel.html', 'modules-sparkline.html', 'modules-sweet-alert.html', 'modules-toastr.html', 'modules-vector-map.html', 'modules-weather-icon.html')])>
+            <li @class(['nav-item dropdown', 'active' => request()->routeIs('modules-calendar.html', 'modules-chartjs.html', 'modules-datatables.html', 'modules-flag.html', 'modules-font-awesome.html', 'modules-ion-icons.html', 'modules-owl-carousel.html', 'modules-sparkline.html', 'modules-sweet-alert.html', 'modules-toastr.html', 'modules-vector-map.html', 'modules-weather-icon.html', 'classes.*')])>
               <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>Modules</span></a>
               <ul class="dropdown-menu">
+                <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
                 <li @class(['active' => request()->routeIs('modules-calendar.html')])><a class="nav-link" href="{{ route('modules-calendar.html') }}">Calendar</a></li>
                 <li @class(['active' => request()->routeIs('modules-chartjs.html')])><a class="nav-link" href="{{ route('modules-chartjs.html') }}">ChartJS</a></li>
                 <li @class(['active' => request()->routeIs('modules-datatables.html')])><a class="nav-link" href="{{ route('modules-datatables.html') }}">DataTables</a></li>
