@@ -3,6 +3,7 @@
 use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 uses(RefreshDatabase::class);
@@ -37,6 +38,21 @@ test('admin user can log in with valid credentials', function () {
         ->assertSessionHas('success', 'Berhasil masuk.');
 
     $this->assertAuthenticated();
+});
+
+test('login updates last_logged_in timestamp', function () {
+    $this->seed(UserSeeder::class);
+    $admin = User::query()->where('email', 'admin@example.com')->first();
+    expect($admin->last_logged_in)->toBeNull();
+
+    $this->post('/auth/login', [
+        'email' => 'admin@example.com',
+        'password' => 'password',
+    ])->assertRedirect(route('dashboard'));
+
+    $admin->refresh();
+    expect($admin->last_logged_in)->not->toBeNull()
+        ->and($admin->last_logged_in)->toBeInstanceOf(Carbon::class);
 });
 
 test('login fails with invalid credentials and displays error message', function () {

@@ -219,13 +219,19 @@
             </div>
           </li>
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-              <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle mr-1">
-              <div class="d-sm-none d-lg-inline-block">Hi, {{ auth()->user()?->name ?? 'Ujang Maman' }}</div>
+              <img alt="image" src="{{ auth()->user()?->avatar_url ?? asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle mr-1" style="width: 30px; height: 30px; object-fit: cover;">
+              <div class="d-sm-none d-lg-inline-block">Hi, {{ auth()->user()?->name ?? 'User' }}</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-title">Logged in 5 min ago</div>
-              <a href="{{ route('features-profile.html') }}" class="dropdown-item has-icon">
-                <i class="far fa-user"></i> Profile
+              <div class="dropdown-title">
+                @if (auth()->user()?->last_logged_in)
+                  {{ __('Logged in :time', ['time' => auth()->user()->last_logged_in->diffForHumans()]) }}
+                @else
+                  {{ __('Logged in just now') }}
+                @endif
+              </div>
+              <a href="{{ route('profile.edit') }}" class="dropdown-item has-icon">
+                <i class="far fa-user"></i> {{ __('Profile') }}
               </a>
               <a href="{{ route('features-activities.html') }}" class="dropdown-item has-icon">
                 <i class="fas fa-bolt"></i> Activities

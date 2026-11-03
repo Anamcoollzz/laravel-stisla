@@ -84,4 +84,3 @@ Route::view('/pages/utilities-contact.html', 'pages.utilities-contact')->name('u
 Route::view('/pages/utilities-invoice.html', 'pages.utilities-invoice')->name('utilities-invoice.html');
 Route::view('/pages/utilities-subscribe.html', 'pages.utilities-subscribe')->name('utilities-subscribe.html');
 Route::view('/pages/credits.html', 'pages.credits')->name('credits.html');
-

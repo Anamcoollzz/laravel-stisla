@@ -54,6 +54,10 @@
               <label class="d-block">{{ __('Created At') }}</label>
               <div>{{ $user->created_at?->format('Y-m-d H:i:s') }}</div>
             </div>
+            <div class="form-group">
+              <label class="d-block">{{ __('Last Logged In') }}</label>
+              <div>{{ $user->last_logged_in ? $user->last_logged_in->format('Y-m-d H:i:s') . ' (' . $user->last_logged_in->diffForHumans() . ')' : __('Never') }}</div>
+            </div>
             <div class="form-group mb-0">
               <label class="d-block">{{ __('Updated At') }}</label>
               <div>{{ $user->updated_at?->format('Y-m-d H:i:s') }}</div>

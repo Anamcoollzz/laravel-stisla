@@ -17,7 +17,9 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION') === 'oracle' && ! extension_loaded('oci8')
+        ? 'sqlite'
+        : env('DB_CONNECTION', 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
