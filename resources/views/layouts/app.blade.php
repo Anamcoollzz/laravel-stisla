@@ -218,6 +218,27 @@
               </div>
             </div>
           </li>
+          <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user" title="{{ __('Switch Language') }}">
+              <i class="fas fa-globe mr-1"></i>
+              <div class="d-none d-md-inline-block font-weight-bold text-uppercase">{{ app()->getLocale() }}</div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-title">{{ __('Select Language') }}</div>
+              <a href="{{ route('lang.switch', 'id') }}" class="dropdown-item has-icon d-flex align-items-center justify-content-between {{ app()->getLocale() === 'id' ? 'active font-weight-bold' : '' }}">
+                <span><span class="mr-2">🇮🇩</span> Bahasa Indonesia</span>
+                @if (app()->getLocale() === 'id')
+                  <i class="fas fa-check text-primary"></i>
+                @endif
+              </a>
+              <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item has-icon d-flex align-items-center justify-content-between {{ app()->getLocale() === 'en' ? 'active font-weight-bold' : '' }}">
+                <span><span class="mr-2">🇬🇧</span> English</span>
+                @if (app()->getLocale() === 'en')
+                  <i class="fas fa-check text-primary"></i>
+                @endif
+              </a>
+            </div>
+          </li>
           <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
               <img alt="image" src="{{ auth()->user()?->avatar_url ?? asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle mr-1" style="width: 30px; height: 30px; object-fit: cover;">
               <div class="d-sm-none d-lg-inline-block">Hi, {{ auth()->user()?->name ?? 'User' }}</div>

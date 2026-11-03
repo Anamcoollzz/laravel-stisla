@@ -315,5 +315,8 @@
     "Copied!": "Copied!",
     "Password copied to clipboard!": "Password copied to clipboard!",
     "Please enter or generate a password first.": "Please enter or generate a password first.",
-    "Notice": "Notice"
+    "Notice": "Notice",
+    "Language": "Language",
+    "Select Language": "Select Language",
+    "Switch Language": "Switch Language"
 }
