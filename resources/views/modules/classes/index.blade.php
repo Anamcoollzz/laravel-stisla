@@ -132,8 +132,10 @@
       </div>
     </div>
   </div>
+@endsection
 
-  @can('classes.create')
+@can('classes.create')
+  @push('modals')
     <div class="modal fade" tabindex="-1" role="dialog" id="modal-import-classes">
       <div class="modal-dialog" role="document">
         <form action="{{ route('classes.import') }}" method="POST" enctype="multipart/form-data">
@@ -175,5 +177,5 @@
         </form>
       </div>
     </div>
-  @endcan
-@endsection
+  @endpush
+@endcan

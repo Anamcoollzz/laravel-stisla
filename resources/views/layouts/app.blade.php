@@ -16,6 +16,7 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 </head>
 
 <body>
@@ -317,6 +318,8 @@
       </footer>
     </div>
   </div>
+
+  @stack('modals')
 
   <!-- General JS Scripts -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>

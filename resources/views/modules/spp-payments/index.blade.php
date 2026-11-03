@@ -150,8 +150,10 @@
       </div>
     </div>
   </div>
+@endsection
 
-  @can('spp-payments.create')
+@can('spp-payments.create')
+  @push('modals')
     <div class="modal fade" tabindex="-1" role="dialog" id="modal-import-spp-payments">
       <div class="modal-dialog" role="document">
         <form action="{{ route('spp-payments.import') }}" method="POST" enctype="multipart/form-data">
@@ -193,6 +195,6 @@
         </form>
       </div>
     </div>
-  @endcan
-@endsection
+  @endpush
+@endcan
 
