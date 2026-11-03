@@ -8,6 +8,7 @@ use App\Models\SchoolClass;
 use App\Models\Student;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class StudentController extends Controller
 {
@@ -16,6 +17,8 @@ class StudentController extends Controller
      */
     public function index(): View
     {
+        Gate::authorize('students.view');
+
         $students = Student::query()
             ->with('schoolClass')
             ->latest()
@@ -31,6 +34,8 @@ class StudentController extends Controller
      */
     public function create(): View
     {
+        Gate::authorize('students.create');
+
         $classes = SchoolClass::query()->orderBy('class_name')->get();
 
         return view('modules.students.create', [
@@ -43,6 +48,8 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request): RedirectResponse
     {
+        Gate::authorize('students.create');
+
         Student::query()->create(
             $request->safe()->only(['class_id', 'nis', 'name', 'email', 'phone', 'gender', 'birth_date', 'address'])
         );
@@ -57,6 +64,8 @@ class StudentController extends Controller
      */
     public function show(Student $student): View
     {
+        Gate::authorize('students.view');
+
         $student->load('schoolClass');
 
         return view('modules.students.show', [
@@ -69,6 +78,8 @@ class StudentController extends Controller
      */
     public function edit(Student $student): View
     {
+        Gate::authorize('students.edit');
+
         $classes = SchoolClass::query()->orderBy('class_name')->get();
 
         return view('modules.students.edit', [
@@ -82,6 +93,8 @@ class StudentController extends Controller
      */
     public function update(UpdateStudentRequest $request, Student $student): RedirectResponse
     {
+        Gate::authorize('students.edit');
+
         $student->update(
             $request->safe()->only(['class_id', 'nis', 'name', 'email', 'phone', 'gender', 'birth_date', 'address'])
         );
@@ -96,6 +109,8 @@ class StudentController extends Controller
      */
     public function destroy(Student $student): RedirectResponse
     {
+        Gate::authorize('students.delete');
+
         $student->delete();
 
         return redirect()

@@ -5,6 +5,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(fn () => $this->actingAsAdmin());
+
 test('classes index page displays classes in datatable with indonesian translations and marks sidebar active', function () {
     $schoolClass = SchoolClass::factory()->create([
         'class_name' => 'Kelas 10-A',

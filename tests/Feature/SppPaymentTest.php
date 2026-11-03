@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(fn () => $this->actingAsAdmin());
+
 test('spp payments index page displays payments with student and class in datatable and marks sidebar active', function () {
     $schoolClass = SchoolClass::factory()->create([
         'class_name' => 'Kelas 10-IPA-1',

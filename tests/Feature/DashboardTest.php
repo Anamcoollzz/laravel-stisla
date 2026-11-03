@@ -16,6 +16,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(fn () => $this->actingAsAdmin());
+
 test('dashboard page renders successfully at /dashboard', function () {
     $this->get('/dashboard')
         ->assertOk()
@@ -64,4 +66,3 @@ test('dashboard handles empty data state gracefully', function () {
         ->assertSee('Belum ada riwayat pembayaran.')
         ->assertSee('Belum ada data siswa.');
 });
-

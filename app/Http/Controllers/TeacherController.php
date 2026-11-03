@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateTeacherRequest;
 use App\Models\Teacher;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class TeacherController extends Controller
 {
@@ -15,6 +16,8 @@ class TeacherController extends Controller
      */
     public function index(): View
     {
+        Gate::authorize('teachers.view');
+
         $teachers = Teacher::query()->latest()->get();
 
         return view('modules.teachers.index', [
@@ -27,6 +30,8 @@ class TeacherController extends Controller
      */
     public function create(): View
     {
+        Gate::authorize('teachers.create');
+
         return view('modules.teachers.create');
     }
 
@@ -35,6 +40,8 @@ class TeacherController extends Controller
      */
     public function store(StoreTeacherRequest $request): RedirectResponse
     {
+        Gate::authorize('teachers.create');
+
         Teacher::query()->create(
             $request->safe()->only(['nip', 'name', 'email', 'phone', 'gender', 'address'])
         );
@@ -49,6 +56,8 @@ class TeacherController extends Controller
      */
     public function show(Teacher $teacher): View
     {
+        Gate::authorize('teachers.view');
+
         return view('modules.teachers.show', [
             'teacher' => $teacher,
         ]);
@@ -59,6 +68,8 @@ class TeacherController extends Controller
      */
     public function edit(Teacher $teacher): View
     {
+        Gate::authorize('teachers.edit');
+
         return view('modules.teachers.edit', [
             'teacher' => $teacher,
         ]);
@@ -69,6 +80,8 @@ class TeacherController extends Controller
      */
     public function update(UpdateTeacherRequest $request, Teacher $teacher): RedirectResponse
     {
+        Gate::authorize('teachers.edit');
+
         $teacher->update(
             $request->safe()->only(['nip', 'name', 'email', 'phone', 'gender', 'address'])
         );
@@ -83,6 +96,8 @@ class TeacherController extends Controller
      */
     public function destroy(Teacher $teacher): RedirectResponse
     {
+        Gate::authorize('teachers.delete');
+
         $teacher->delete();
 
         return redirect()

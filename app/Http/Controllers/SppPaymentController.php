@@ -8,6 +8,7 @@ use App\Models\SppPayment;
 use App\Models\Student;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class SppPaymentController extends Controller
 {
@@ -16,6 +17,8 @@ class SppPaymentController extends Controller
      */
     public function index(): View
     {
+        Gate::authorize('spp-payments.view');
+
         $sppPayments = SppPayment::query()
             ->with('student.schoolClass')
             ->latest()
@@ -31,6 +34,8 @@ class SppPaymentController extends Controller
      */
     public function create(): View
     {
+        Gate::authorize('spp-payments.create');
+
         $students = Student::query()
             ->with('schoolClass')
             ->orderBy('name')
@@ -47,6 +52,8 @@ class SppPaymentController extends Controller
      */
     public function store(StoreSppPaymentRequest $request): RedirectResponse
     {
+        Gate::authorize('spp-payments.create');
+
         SppPayment::query()->create(
             $request->safe()->only([
                 'student_id',
@@ -71,6 +78,8 @@ class SppPaymentController extends Controller
      */
     public function show(SppPayment $sppPayment): View
     {
+        Gate::authorize('spp-payments.view');
+
         $sppPayment->load('student.schoolClass');
 
         return view('modules.spp-payments.show', [
@@ -83,6 +92,8 @@ class SppPaymentController extends Controller
      */
     public function edit(SppPayment $sppPayment): View
     {
+        Gate::authorize('spp-payments.edit');
+
         $students = Student::query()
             ->with('schoolClass')
             ->orderBy('name')
@@ -100,6 +111,8 @@ class SppPaymentController extends Controller
      */
     public function update(UpdateSppPaymentRequest $request, SppPayment $sppPayment): RedirectResponse
     {
+        Gate::authorize('spp-payments.edit');
+
         $sppPayment->update(
             $request->safe()->only([
                 'student_id',
@@ -124,6 +137,8 @@ class SppPaymentController extends Controller
      */
     public function destroy(SppPayment $sppPayment): RedirectResponse
     {
+        Gate::authorize('spp-payments.delete');
+
         $sppPayment->delete();
 
         return redirect()

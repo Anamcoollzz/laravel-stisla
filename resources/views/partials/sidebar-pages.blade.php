@@ -92,11 +92,21 @@
     <li @class(['nav-item dropdown', 'active' => request()->routeIs('modules-calendar.html', 'modules-chartjs.html', 'modules-datatables.html', 'modules-flag.html', 'modules-font-awesome.html', 'modules-ion-icons.html', 'modules-owl-carousel.html', 'modules-sparkline.html', 'modules-sweet-alert.html', 'modules-toastr.html', 'modules-vector-map.html', 'modules-weather-icon.html', 'classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*')])>
       <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>Modules</span></a>
       <ul class="dropdown-menu">
-        <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
-        <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
-        <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
-        <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
-        <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
+        @can('classes.view')
+          <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
+        @endcan
+        @can('teachers.view')
+          <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
+        @endcan
+        @can('students.view')
+          <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
+        @endcan
+        @can('subjects.view')
+          <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
+        @endcan
+        @can('spp-payments.view')
+          <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
+        @endcan
         <li @class(['active' => request()->routeIs('modules-calendar.html')])><a class="nav-link" href="{{ route('modules-calendar.html') }}">Calendar</a></li>
         <li @class(['active' => request()->routeIs('modules-chartjs.html')])><a class="nav-link" href="{{ route('modules-chartjs.html') }}">ChartJS</a></li>
         <li @class(['active' => request()->routeIs('modules-datatables.html')])><a class="nav-link" href="{{ route('modules-datatables.html') }}">DataTables</a></li>
@@ -111,6 +121,20 @@
         <li @class(['active' => request()->routeIs('modules-weather-icon.html')])><a class="nav-link" href="{{ route('modules-weather-icon.html') }}">Weather Icon</a></li>
       </ul>
     </li>
+    @canany(['users.view', 'roles.view'])
+      <li class="menu-header">{{ __('User Management') }}</li>
+      <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*')])>
+        <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
+        <ul class="dropdown-menu">
+          @can('users.view')
+            <li @class(['active' => request()->routeIs('users.*')])><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
+          @endcan
+          @can('roles.view')
+            <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
+          @endcan
+        </ul>
+      </li>
+    @endcanany
     <li class="menu-header">Pages</li>
     <li @class(['nav-item dropdown', 'active' => request()->routeIs('auth-forgot-password.html', 'auth-login.html', 'auth-login-2.html', 'auth-register.html', 'auth-reset-password.html')])>
       <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Auth</span></a>

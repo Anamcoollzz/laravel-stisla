@@ -72,9 +72,11 @@
           <div class="card-header">
             <h4>{{ __('SPP Payment List') }}</h4>
             <div class="card-header-action">
-              <a href="{{ route('spp-payments.create') }}" class="btn btn-primary">
-                {{ __('Add New') }}
-              </a>
+              @can('spp-payments.create')
+                <a href="{{ route('spp-payments.create') }}" class="btn btn-primary">
+                  {{ __('Add New') }}
+                </a>
+              @endcan
             </div>
           </div>
           <div class="card-body">
@@ -116,13 +118,19 @@
                         @endif
                       </td>
                       <td>
-                        <a href="{{ route('spp-payments.show', $sppPayment) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('spp-payments.edit', $sppPayment) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
-                        <form action="{{ route('spp-payments.destroy', $sppPayment) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
-                        </form>
+                        @can('spp-payments.view')
+                          <a href="{{ route('spp-payments.show', $sppPayment) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
+                        @endcan
+                        @can('spp-payments.edit')
+                          <a href="{{ route('spp-payments.edit', $sppPayment) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+                        @endcan
+                        @can('spp-payments.delete')
+                          <form action="{{ route('spp-payments.destroy', $sppPayment) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
+                          </form>
+                        @endcan
                       </td>
                     </tr>
                   @endforeach

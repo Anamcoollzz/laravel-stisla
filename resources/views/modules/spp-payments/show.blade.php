@@ -95,7 +95,9 @@
           </div>
           <div class="card-footer text-right">
             <a href="{{ route('spp-payments.index') }}" class="btn btn-secondary btn-sm btn-icon mr-1" data-toggle="tooltip" title="{{ __('Back') }}"><i class="fas fa-arrow-left"></i></a>
-            <a href="{{ route('spp-payments.edit', $sppPayment) }}" class="btn btn-primary btn-sm btn-icon" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+            @can('spp-payments.edit')
+              <a href="{{ route('spp-payments.edit', $sppPayment) }}" class="btn btn-primary btn-sm btn-icon" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+            @endcan
           </div>
         </div>
       </div>

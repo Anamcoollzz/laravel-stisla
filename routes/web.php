@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/pages/index.html');
@@ -18,15 +20,19 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/auth/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::resource('classes', SchoolClassController::class)->parameters([
-    'classes' => 'schoolClass',
-]);
-Route::resource('teachers', TeacherController::class);
-Route::resource('students', StudentController::class);
-Route::resource('subjects', SubjectController::class);
-Route::resource('spp-payments', SppPaymentController::class);
+    Route::resource('classes', SchoolClassController::class)->parameters([
+        'classes' => 'schoolClass',
+    ]);
+    Route::resource('teachers', TeacherController::class);
+    Route::resource('students', StudentController::class);
+    Route::resource('subjects', SubjectController::class);
+    Route::resource('spp-payments', SppPaymentController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('roles', RoleController::class);
+});
 
 Route::view('/pages/index.html', 'pages.index')->name('index.html');
 Route::view('/pages/index-0.html', 'pages.index-0')->name('index-0.html');

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateSchoolClassRequest;
 use App\Models\SchoolClass;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class SchoolClassController extends Controller
 {
@@ -15,6 +16,8 @@ class SchoolClassController extends Controller
      */
     public function index(): View
     {
+        Gate::authorize('classes.view');
+
         $classes = SchoolClass::query()->latest()->get();
 
         return view('modules.classes.index', [
@@ -27,6 +30,8 @@ class SchoolClassController extends Controller
      */
     public function create(): View
     {
+        Gate::authorize('classes.create');
+
         return view('modules.classes.create');
     }
 
@@ -35,6 +40,8 @@ class SchoolClassController extends Controller
      */
     public function store(StoreSchoolClassRequest $request): RedirectResponse
     {
+        Gate::authorize('classes.create');
+
         SchoolClass::query()->create($request->safe()->only(['class_name']));
 
         return redirect()
@@ -47,6 +54,8 @@ class SchoolClassController extends Controller
      */
     public function show(SchoolClass $schoolClass): View
     {
+        Gate::authorize('classes.view');
+
         return view('modules.classes.show', [
             'schoolClass' => $schoolClass,
         ]);
@@ -57,6 +66,8 @@ class SchoolClassController extends Controller
      */
     public function edit(SchoolClass $schoolClass): View
     {
+        Gate::authorize('classes.edit');
+
         return view('modules.classes.edit', [
             'schoolClass' => $schoolClass,
         ]);
@@ -67,6 +78,8 @@ class SchoolClassController extends Controller
      */
     public function update(UpdateSchoolClassRequest $request, SchoolClass $schoolClass): RedirectResponse
     {
+        Gate::authorize('classes.edit');
+
         $schoolClass->update($request->safe()->only(['class_name']));
 
         return redirect()
@@ -79,6 +92,8 @@ class SchoolClassController extends Controller
      */
     public function destroy(SchoolClass $schoolClass): RedirectResponse
     {
+        Gate::authorize('classes.delete');
+
         $schoolClass->delete();
 
         return redirect()

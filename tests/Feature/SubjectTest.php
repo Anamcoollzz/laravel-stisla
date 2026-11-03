@@ -5,6 +5,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(fn () => $this->actingAsAdmin());
+
 test('subjects index page displays subjects in datatable with indonesian translations and marks sidebar active', function () {
     $subject = Subject::factory()->create([
         'code' => 'MP-001',

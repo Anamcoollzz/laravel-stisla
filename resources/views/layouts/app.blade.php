@@ -259,17 +259,43 @@
               <li @class(['active' => request()->routeIs('dashboard')])>
                 <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
               </li>
-              <li class="menu-header">{{ __('Modules') }}</li>
-              <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*')])>
-                <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
-                <ul class="dropdown-menu">
-                  <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
-                  <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
-                  <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
-                  <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
-                  <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
-                </ul>
-              </li>
+              @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'spp-payments.view'])
+                <li class="menu-header">{{ __('Modules') }}</li>
+                <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*')])>
+                  <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
+                  <ul class="dropdown-menu">
+                    @can('classes.view')
+                      <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
+                    @endcan
+                    @can('teachers.view')
+                      <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
+                    @endcan
+                    @can('students.view')
+                      <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
+                    @endcan
+                    @can('subjects.view')
+                      <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
+                    @endcan
+                    @can('spp-payments.view')
+                      <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
+                    @endcan
+                  </ul>
+                </li>
+              @endcanany
+              @canany(['users.view', 'roles.view'])
+                <li class="menu-header">{{ __('User Management') }}</li>
+                <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*')])>
+                  <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
+                  <ul class="dropdown-menu">
+                    @can('users.view')
+                      <li @class(['active' => request()->routeIs('users.*')])><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
+                    @endcan
+                    @can('roles.view')
+                      <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
+                    @endcan
+                  </ul>
+                </li>
+              @endcanany
             </ul>
           </aside>
         @endif

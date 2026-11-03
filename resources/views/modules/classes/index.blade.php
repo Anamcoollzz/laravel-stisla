@@ -73,9 +73,11 @@
           <div class="card-header">
             <h4>{{ __('Class List') }}</h4>
             <div class="card-header-action">
-              <a href="{{ route('classes.create') }}" class="btn btn-primary">
-                {{ __('Add New') }}
-              </a>
+              @can('classes.create')
+                <a href="{{ route('classes.create') }}" class="btn btn-primary">
+                  {{ __('Add New') }}
+                </a>
+              @endcan
             </div>
           </div>
           <div class="card-body">
@@ -98,13 +100,19 @@
                       <td>{{ $schoolClass->created_at?->format('Y-m-d H:i:s') }}</td>
                       <td>{{ $schoolClass->updated_at?->format('Y-m-d H:i:s') }}</td>
                       <td>
-                        <a href="{{ route('classes.show', $schoolClass) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('classes.edit', $schoolClass) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
-                        <form action="{{ route('classes.destroy', $schoolClass) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
-                        </form>
+                        @can('classes.view')
+                          <a href="{{ route('classes.show', $schoolClass) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
+                        @endcan
+                        @can('classes.edit')
+                          <a href="{{ route('classes.edit', $schoolClass) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+                        @endcan
+                        @can('classes.delete')
+                          <form action="{{ route('classes.destroy', $schoolClass) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
+                          </form>
+                        @endcan
                       </td>
                     </tr>
                   @endforeach

@@ -72,9 +72,11 @@
           <div class="card-header">
             <h4>{{ __('Subject List') }}</h4>
             <div class="card-header-action">
-              <a href="{{ route('subjects.create') }}" class="btn btn-primary">
-                {{ __('Add New') }}
-              </a>
+              @can('subjects.create')
+                <a href="{{ route('subjects.create') }}" class="btn btn-primary">
+                  {{ __('Add New') }}
+                </a>
+              @endcan
             </div>
           </div>
           <div class="card-body">
@@ -99,13 +101,19 @@
                       <td>{{ $subject->description ?? '-' }}</td>
                       <td>{{ $subject->created_at?->format('Y-m-d H:i:s') }}</td>
                       <td>
-                        <a href="{{ route('subjects.show', $subject) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('subjects.edit', $subject) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
-                        <form action="{{ route('subjects.destroy', $subject) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
-                        </form>
+                        @can('subjects.view')
+                          <a href="{{ route('subjects.show', $subject) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
+                        @endcan
+                        @can('subjects.edit')
+                          <a href="{{ route('subjects.edit', $subject) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+                        @endcan
+                        @can('subjects.delete')
+                          <form action="{{ route('subjects.destroy', $subject) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
+                          </form>
+                        @endcan
                       </td>
                     </tr>
                   @endforeach

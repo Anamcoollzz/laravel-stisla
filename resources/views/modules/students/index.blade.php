@@ -72,9 +72,11 @@
           <div class="card-header">
             <h4>{{ __('Student List') }}</h4>
             <div class="card-header-action">
-              <a href="{{ route('students.create') }}" class="btn btn-primary">
-                {{ __('Add New') }}
-              </a>
+              @can('students.create')
+                <a href="{{ route('students.create') }}" class="btn btn-primary">
+                  {{ __('Add New') }}
+                </a>
+              @endcan
             </div>
           </div>
           <div class="card-body">
@@ -109,13 +111,19 @@
                         @endif
                       </td>
                       <td>
-                        <a href="{{ route('students.show', $student) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('students.edit', $student) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
-                        <form action="{{ route('students.destroy', $student) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
-                        </form>
+                        @can('students.view')
+                          <a href="{{ route('students.show', $student) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
+                        @endcan
+                        @can('students.edit')
+                          <a href="{{ route('students.edit', $student) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+                        @endcan
+                        @can('students.delete')
+                          <form action="{{ route('students.destroy', $student) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
+                          </form>
+                        @endcan
                       </td>
                     </tr>
                   @endforeach
