@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SchoolClassesExport;
+use App\Exports\SchoolClassesTemplateExport;
 use App\Http\Requests\StoreSchoolClassRequest;
 use App\Http\Requests\UpdateSchoolClassRequest;
+use App\Imports\SchoolClassesImport;
 use App\Models\SchoolClass;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class SchoolClassController extends Controller
 {
@@ -99,5 +105,49 @@ class SchoolClassController extends Controller
         return redirect()
             ->route('classes.index')
             ->with('success', __('Class deleted successfully.'));
+    }
+
+    /**
+     * Export classes to Excel.
+     */
+    public function export(): BinaryFileResponse
+    {
+        Gate::authorize('classes.view');
+
+        return Excel::download(new SchoolClassesExport, 'classes_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Download class import template.
+     */
+    public function template(): BinaryFileResponse
+    {
+        Gate::authorize('classes.create');
+
+        return Excel::download(new SchoolClassesTemplateExport, 'classes_import_example.xlsx');
+    }
+
+    /**
+     * Import classes from Excel.
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        Gate::authorize('classes.create');
+
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:10240'],
+        ]);
+
+        try {
+            Excel::import(new SchoolClassesImport, $request->file('file'));
+
+            return redirect()
+                ->route('classes.index')
+                ->with('success', __('Data imported successfully.'));
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('classes.index')
+                ->with('error', __('Import failed: ').$e->getMessage());
+        }
     }
 }

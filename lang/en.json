@@ -263,5 +263,22 @@
     "View All": "View All",
     "Welcome to Stisla School System": "Welcome to Stisla Academic & SPP System",
     "Year": "Year",
-    "You cannot delete your own account.": "You cannot delete your own account."
+    "You cannot delete your own account.": "You cannot delete your own account.",
+    "Export Excel": "Export Excel",
+    "Import Excel": "Import Excel",
+    "Import Classes from Excel": "Import Classes from Excel",
+    "Import Teachers from Excel": "Import Teachers from Excel",
+    "Import Students from Excel": "Import Students from Excel",
+    "Import Subjects from Excel": "Import Subjects from Excel",
+    "Import SPP Payments from Excel": "Import SPP Payments from Excel",
+    "Import Users from Excel": "Import Users from Excel",
+    "Format Template": "Format Template",
+    "Please download the sample template to ensure your Excel headers and data format match.": "Please download the sample template to ensure your Excel headers and data format match.",
+    "Download Example Template (.xlsx)": "Download Example Template (.xlsx)",
+    "Direct File": "Direct File",
+    "Excel File (.xlsx, .xls, .csv)": "Excel File (.xlsx, .xls, .csv)",
+    "Max size: 10MB.": "Max size: 10MB.",
+    "Upload & Import": "Upload & Import",
+    "Data imported successfully.": "Data imported successfully.",
+    "Import failed: ": "Import failed: "
 }

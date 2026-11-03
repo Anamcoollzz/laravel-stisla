@@ -22,4 +22,19 @@ abstract class TestCase extends BaseTestCase
 
         return $admin;
     }
+
+    public function actingAsUser(?User $user = null): User
+    {
+        $this->seed(RolePermissionSeeder::class);
+
+        $user ??= User::factory()->create(['role' => 'user']);
+
+        if (! $user->hasRole('user')) {
+            $user->assignRole('user');
+        }
+
+        $this->actingAs($user);
+
+        return $user;
+    }
 }

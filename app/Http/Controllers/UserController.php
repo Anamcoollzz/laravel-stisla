@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
+use App\Exports\UsersTemplateExport;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Imports\UsersImport;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserController extends Controller
 {
@@ -138,5 +144,49 @@ class UserController extends Controller
         return redirect()
             ->route('users.index')
             ->with('success', __('User deleted successfully.'));
+    }
+
+    /**
+     * Export users to Excel.
+     */
+    public function export(): BinaryFileResponse
+    {
+        Gate::authorize('users.view');
+
+        return Excel::download(new UsersExport, 'users_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Download user import template.
+     */
+    public function template(): BinaryFileResponse
+    {
+        Gate::authorize('users.create');
+
+        return Excel::download(new UsersTemplateExport, 'users_import_example.xlsx');
+    }
+
+    /**
+     * Import users from Excel.
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        Gate::authorize('users.create');
+
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:10240'],
+        ]);
+
+        try {
+            Excel::import(new UsersImport, $request->file('file'));
+
+            return redirect()
+                ->route('users.index')
+                ->with('success', __('Data imported successfully.'));
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', __('Import failed: ').$e->getMessage());
+        }
     }
 }

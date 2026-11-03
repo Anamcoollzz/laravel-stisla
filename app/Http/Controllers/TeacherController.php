@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TeachersExport;
+use App\Exports\TeachersTemplateExport;
 use App\Http\Requests\StoreTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
+use App\Imports\TeachersImport;
 use App\Models\Teacher;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TeacherController extends Controller
 {
@@ -103,5 +109,49 @@ class TeacherController extends Controller
         return redirect()
             ->route('teachers.index')
             ->with('success', __('Teacher deleted successfully.'));
+    }
+
+    /**
+     * Export teachers to Excel.
+     */
+    public function export(): BinaryFileResponse
+    {
+        Gate::authorize('teachers.view');
+
+        return Excel::download(new TeachersExport, 'teachers_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Download teacher import template.
+     */
+    public function template(): BinaryFileResponse
+    {
+        Gate::authorize('teachers.create');
+
+        return Excel::download(new TeachersTemplateExport, 'teachers_import_example.xlsx');
+    }
+
+    /**
+     * Import teachers from Excel.
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        Gate::authorize('teachers.create');
+
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:10240'],
+        ]);
+
+        try {
+            Excel::import(new TeachersImport, $request->file('file'));
+
+            return redirect()
+                ->route('teachers.index')
+                ->with('success', __('Data imported successfully.'));
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('teachers.index')
+                ->with('error', __('Import failed: ').$e->getMessage());
+        }
     }
 }
