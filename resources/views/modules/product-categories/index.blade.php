@@ -32,7 +32,7 @@
     $("#table-categories").dataTable({
       "pageLength": 25,
       "columnDefs": [
-        { "sortable": false, "targets": [2, 9] }
+        { "sortable": false, "targets": [2, 8] }
       ],
       "ordering": false // Keep hierarchical pre-sorted order
     });
