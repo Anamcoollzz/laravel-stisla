@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -15,9 +16,18 @@ class LoginController extends Controller
     /**
      * Show the application's login form.
      */
-    public function showLoginForm(): View
+    public function showLoginForm(Request $request): View
     {
-        return view('auth.login');
+        $requested = $request->query('layout');
+        if (in_array($requested, ['default', 'login-2'], true)) {
+            $layout = $requested;
+        } else {
+            $layout = Setting::getValue('login_layout', 'default');
+        }
+
+        $view = $layout === 'login-2' ? 'auth.login-2' : 'auth.login';
+
+        return view($view);
     }
 
     /**

@@ -15,6 +15,17 @@ return [
                 'site_description' => ['label' => 'Site Description', 'type' => 'textarea', 'rules' => ['string', 'max:1000']],
                 'site_logo' => ['label' => 'Site Logo', 'type' => 'image', 'help' => 'The image must have a maximum size of 1MB'],
                 'site_favicon' => ['label' => 'Favicon', 'type' => 'image', 'help' => 'The image must have a maximum size of 1MB'],
+                'login_layout' => [
+                    'label' => 'Login Layout',
+                    'type' => 'select',
+                    'options' => [
+                        'default' => 'Default (auth-login.html)',
+                        'login-2' => 'Side Cover Split (auth-login-2.html)',
+                    ],
+                    'default' => 'default',
+                    'help' => 'Choose between the default centered card layout or the side cover split layout for the login page.',
+                    'rules' => ['in:default,login-2'],
+                ],
                 'google_analytics_code' => ['label' => 'Google Analytics Code', 'type' => 'code', 'rules' => ['string', 'max:5000']],
             ],
         ],
