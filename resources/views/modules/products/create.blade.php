@@ -120,6 +120,29 @@
       }
     });
 
+    // Multiple Gallery Images Preview
+    $('#product_images').on('change', function(e) {
+      var container = $('#gallery-preview-container');
+      container.empty();
+      var files = e.target.files;
+      if (files && files.length > 0) {
+        $(this).next('.custom-file-label').text(files.length + ' {{ __("files selected") }}');
+        Array.from(files).forEach(function(file, index) {
+          var reader = new FileReader();
+          reader.onload = function(evt) {
+            var item = $('<div class="position-relative border rounded p-1 bg-light" style="width: 75px; height: 75px;">' +
+              '<img src="' + evt.target.result + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">' +
+              '<span class="badge badge-dark position-absolute" style="top: 2px; right: 2px; font-size: 10px;">#' + (index + 1) + '</span>' +
+              '</div>');
+            container.append(item);
+          };
+          reader.readAsDataURL(file);
+        });
+      } else {
+        $(this).next('.custom-file-label').text('{{ __("Choose multiple files") }}');
+      }
+    });
+
     // Specifications Repeater
     $('#btn-add-spec').on('click', function() {
       var row = `
@@ -590,6 +613,36 @@
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
+            </div>
+          </div>
+
+          <!-- Multiple Gallery Images -->
+          <div class="card">
+            <div class="card-header">
+              <h4>{{ __('Product Gallery Images') }}</h4>
+            </div>
+            <div class="card-body">
+              <div class="form-group mb-2">
+                <label for="product_images">{{ __('Upload Additional Images') }}</label>
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input @error('product_images.*') is-invalid @enderror"
+                    id="product_images"
+                    name="product_images[]"
+                    accept="image/*"
+                    multiple
+                  >
+                  <label class="custom-file-label" for="product_images">{{ __('Choose multiple files') }}</label>
+                  @error('product_images.*')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+                <small class="form-text text-muted">{{ __('Select one or multiple images for the product gallery slider.') }}</small>
+              </div>
+
+              <!-- Live Preview of Selected Gallery Images -->
+              <div id="gallery-preview-container" class="d-flex flex-wrap mt-3" style="gap: 10px;"></div>
             </div>
             <div class="card-footer bg-whitesmoke text-right">
               <a href="{{ route('products.index') }}" class="btn btn-secondary mr-2">{{ __('Cancel') }}</a>

@@ -130,7 +130,23 @@ class ProductController extends Controller
         // Specifications parsing
         $data['spesifications'] = $this->parseSpecifications($request);
 
-        Product::query()->create($data);
+        unset($data['product_images']);
+
+        $product = Product::query()->create($data);
+
+        // Handle multiple product gallery images
+        if ($request->hasFile('product_images')) {
+            foreach ($request->file('product_images') as $index => $imageFile) {
+                if ($imageFile->isValid()) {
+                    $path = $imageFile->store('products/gallery', 'public');
+                    $product->images()->create([
+                        'image' => $path,
+                        'order' => $index,
+                        'is_primary' => false,
+                    ]);
+                }
+            }
+        }
 
         return redirect()
             ->route('products.index')
@@ -144,7 +160,7 @@ class ProductController extends Controller
     {
         Gate::authorize('products.view');
 
-        $product->load(['category.parent.parent', 'brand', 'vendor', 'size', 'color']);
+        $product->load(['category.parent.parent', 'brand', 'vendor', 'size', 'color', 'images']);
 
         return view('modules.products.show', [
             'product' => $product,
@@ -157,6 +173,8 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         Gate::authorize('products.edit');
+
+        $product->load('images');
 
         return view('modules.products.edit', array_merge($this->getFormData(), [
             'product' => $product,
@@ -202,7 +220,36 @@ class ProductController extends Controller
         // Specifications parsing
         $data['spesifications'] = $this->parseSpecifications($request);
 
+        unset($data['product_images'], $data['delete_image_ids']);
+
         $product->update($data);
+
+        // Handle deletion of existing gallery images
+        if ($request->filled('delete_image_ids')) {
+            $deleteIds = (array) $request->input('delete_image_ids', []);
+            $imagesToDelete = $product->images()->whereIn('id', $deleteIds)->get();
+            foreach ($imagesToDelete as $img) {
+                if ($img->image && ! str_starts_with($img->image, 'http') && ! str_starts_with($img->image, 'mantu/')) {
+                    Storage::disk('public')->delete($img->image);
+                }
+                $img->delete();
+            }
+        }
+
+        // Handle upload of new gallery images
+        if ($request->hasFile('product_images')) {
+            $currentMaxOrder = $product->images()->max('order') ?? -1;
+            foreach ($request->file('product_images') as $index => $imageFile) {
+                if ($imageFile->isValid()) {
+                    $path = $imageFile->store('products/gallery', 'public');
+                    $product->images()->create([
+                        'image' => $path,
+                        'order' => $currentMaxOrder + 1 + $index,
+                        'is_primary' => false,
+                    ]);
+                }
+            }
+        }
 
         return redirect()
             ->route('products.index')
@@ -220,7 +267,7 @@ class ProductController extends Controller
         $copySlug = Product::generateUniqueSlug($copyTitle);
         $copySku = Product::generateUniqueSku();
 
-        Product::query()->create([
+        $newProduct = Product::query()->create([
             'category_id' => $product->category_id,
             'brand_id' => $product->brand_id,
             'vendor_id' => $product->vendor_id,
@@ -243,6 +290,14 @@ class ProductController extends Controller
             'is_sale' => $product->is_sale,
         ]);
 
+        foreach ($product->images as $img) {
+            $newProduct->images()->create([
+                'image' => $img->image,
+                'order' => $img->order,
+                'is_primary' => $img->is_primary,
+            ]);
+        }
+
         return redirect()
             ->route('products.index')
             ->with('success', __('Product duplicated successfully.'));
@@ -257,6 +312,12 @@ class ProductController extends Controller
 
         if ($product->thumbnail && ! str_starts_with($product->thumbnail, 'http') && ! str_starts_with($product->thumbnail, 'mantu/')) {
             Storage::disk('public')->delete($product->thumbnail);
+        }
+
+        foreach ($product->images as $img) {
+            if ($img->image && ! str_starts_with($img->image, 'http') && ! str_starts_with($img->image, 'mantu/')) {
+                Storage::disk('public')->delete($img->image);
+            }
         }
 
         $product->delete();

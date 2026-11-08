@@ -19,7 +19,7 @@ class ProductController extends Controller
     {
         $product = Product::query()
             ->where('slug', $slug)
-            ->with(['category', 'brand', 'vendor', 'size', 'color'])
+            ->with(['category', 'brand', 'vendor', 'size', 'color', 'images'])
             ->firstOrFail();
 
         $relatedProducts = Product::query()
@@ -81,4 +81,3 @@ class ProductController extends Controller
         return $this->show($slug);
     }
 }
-

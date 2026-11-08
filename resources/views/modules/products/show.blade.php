@@ -47,7 +47,7 @@
       <div class="col-12 col-md-5">
         <div class="card card-primary">
           <div class="card-body">
-            <div class="text-center mb-4">
+            <div class="text-center mb-3">
               <img
                 src="{{ $product->thumbnail_url }}"
                 alt="{{ $product->title }}"
@@ -56,6 +56,19 @@
                 onerror="this.onerror=null; this.src='{{ asset('assets/img/products/product-1.jpg') }}';"
               >
             </div>
+
+            @if ($product->images->isNotEmpty())
+              <div class="mb-4">
+                <label class="small text-muted font-weight-bold mb-2 d-block">{{ __('Gallery Images') }} ({{ $product->images->count() }})</label>
+                <div class="d-flex flex-wrap" style="gap: 8px;">
+                  @foreach ($product->images as $img)
+                    <a href="{{ $img->image_url }}" target="_blank" class="border rounded p-1 bg-light d-inline-block" style="width: 60px; height: 60px;">
+                      <img src="{{ $img->image_url }}" alt="Gallery image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 3px;">
+                    </a>
+                  @endforeach
+                </div>
+              </div>
+            @endif
 
             <h4>{{ $product->title }}</h4>
             <div class="mb-3">

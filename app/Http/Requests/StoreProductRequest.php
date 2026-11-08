@@ -40,6 +40,8 @@ class StoreProductRequest extends FormRequest
             'tags' => ['nullable'],
             'thumbnail' => ['nullable', 'string', 'max:255'],
             'thumbnail_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
+            'product_images' => ['nullable', 'array'],
+            'product_images.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
             'is_active' => ['nullable', 'boolean'],
             'is_trending' => ['nullable', 'boolean'],
             'is_new' => ['nullable', 'boolean'],

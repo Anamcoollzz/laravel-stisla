@@ -100,6 +100,39 @@
       }
     });
 
+    // Multiple Gallery Images Preview
+    $('#product_images').on('change', function(e) {
+      var container = $('#gallery-preview-container');
+      container.empty();
+      var files = e.target.files;
+      if (files && files.length > 0) {
+        $(this).next('.custom-file-label').text(files.length + ' {{ __("files selected") }}');
+        Array.from(files).forEach(function(file, index) {
+          var reader = new FileReader();
+          reader.onload = function(evt) {
+            var item = $('<div class="position-relative border rounded p-1 bg-light" style="width: 75px; height: 75px;">' +
+              '<img src="' + evt.target.result + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">' +
+              '<span class="badge badge-success position-absolute" style="top: 2px; right: 2px; font-size: 10px;">+new</span>' +
+              '</div>');
+            container.append(item);
+          };
+          reader.readAsDataURL(file);
+        });
+      } else {
+        $(this).next('.custom-file-label').text('{{ __("Choose multiple files") }}');
+      }
+    });
+
+    // Toggle delete state on existing gallery image click
+    $(document).on('change', '.delete-image-checkbox', function() {
+      var wrapper = $(this).closest('.existing-image-item');
+      if ($(this).is(':checked')) {
+        wrapper.addClass('border-danger bg-light-danger').css('opacity', '0.5');
+      } else {
+        wrapper.removeClass('border-danger bg-light-danger').css('opacity', '1');
+      }
+    });
+
     // Specifications Repeater
     $('#btn-add-spec').on('click', function() {
       var row = `
@@ -590,6 +623,64 @@
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
+            </div>
+          </div>
+
+          <!-- Multiple Gallery Images -->
+          <div class="card">
+            <div class="card-header">
+              <h4>{{ __('Product Gallery Images') }}</h4>
+            </div>
+            <div class="card-body">
+              @if ($product->images->isNotEmpty())
+                <label class="d-block font-weight-bold mb-2">{{ __('Existing Gallery Images') }} ({{ $product->images->count() }})</label>
+                <small class="text-muted d-block mb-3">{{ __('Check the box to delete an image when saving.') }}</small>
+                <div class="d-flex flex-wrap mb-4" style="gap: 12px;">
+                  @foreach ($product->images as $img)
+                    <div class="existing-image-item border rounded p-1 position-relative bg-light text-center" style="width: 100px; transition: all 0.2s;">
+                      <img
+                        src="{{ $img->image_url }}"
+                        alt="Gallery Image"
+                        style="width: 100%; height: 85px; object-fit: cover; border-radius: 4px;"
+                      >
+                      <div class="custom-control custom-checkbox mt-1">
+                        <input
+                          type="checkbox"
+                          class="custom-control-input delete-image-checkbox"
+                          id="del_img_{{ $img->id }}"
+                          name="delete_image_ids[]"
+                          value="{{ $img->id }}"
+                        >
+                        <label class="custom-control-label text-danger small font-weight-bold" for="del_img_{{ $img->id }}">
+                          {{ __('Delete') }}
+                        </label>
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+              @endif
+
+              <div class="form-group mb-2">
+                <label for="product_images">{{ __('Upload Additional Images') }}</label>
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input @error('product_images.*') is-invalid @enderror"
+                    id="product_images"
+                    name="product_images[]"
+                    accept="image/*"
+                    multiple
+                  >
+                  <label class="custom-file-label" for="product_images">{{ __('Choose multiple files') }}</label>
+                  @error('product_images.*')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+                <small class="form-text text-muted">{{ __('Select one or multiple images to add to the gallery.') }}</small>
+              </div>
+
+              <!-- Live Preview of Newly Selected Gallery Images -->
+              <div id="gallery-preview-container" class="d-flex flex-wrap mt-3" style="gap: 10px;"></div>
             </div>
             <div class="card-footer bg-whitesmoke text-right">
               <a href="{{ route('products.index') }}" class="btn btn-secondary mr-2">{{ __('Cancel') }}</a>

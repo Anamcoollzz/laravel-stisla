@@ -63,6 +63,12 @@ class ProductSeeder extends Seeder
                 ],
                 'tags' => ['t-shirt', 'casual', 'cotton', 'summer', 'basics'],
                 'thumbnail' => 'mantu/assets/img/product/5.jpg',
+                'gallery_images' => [
+                    'mantu/assets/img/product/5.jpg',
+                    'mantu/assets/img/product/6.jpg',
+                    'mantu/assets/img/product/7.jpg',
+                    'mantu/assets/img/product/8.jpg',
+                ],
                 'is_active' => true,
                 'is_trending' => true,
                 'is_new' => true,
@@ -89,6 +95,11 @@ class ProductSeeder extends Seeder
                 ],
                 'tags' => ['nike', 'shoes', 'running', 'sport', 'zoom-air'],
                 'thumbnail' => 'mantu/assets/img/product/9.jpg',
+                'gallery_images' => [
+                    'mantu/assets/img/product/9.jpg',
+                    'mantu/assets/img/product/10.jpg',
+                    'mantu/assets/img/product/11.jpg',
+                ],
                 'is_active' => true,
                 'is_trending' => false,
                 'is_new' => true,
@@ -115,6 +126,11 @@ class ProductSeeder extends Seeder
                 ],
                 'tags' => ['bag', 'slingbag', 'leather', 'accessories', 'urban'],
                 'thumbnail' => 'mantu/assets/img/product/15.jpg',
+                'gallery_images' => [
+                    'mantu/assets/img/product/15.jpg',
+                    'mantu/assets/img/product/16.jpg',
+                    'mantu/assets/img/product/17.jpg',
+                ],
                 'is_active' => true,
                 'is_trending' => false,
                 'is_new' => true,
@@ -216,6 +232,11 @@ class ProductSeeder extends Seeder
                 ],
                 'tags' => ['cake', 'bakery', 'red-velvet', 'dessert', 'birthday'],
                 'thumbnail' => 'mantu/assets/img/product/4.jpg',
+                'gallery_images' => [
+                    'mantu/assets/img/product/4.jpg',
+                    'mantu/assets/img/product/2.jpg',
+                    'mantu/assets/img/product/3.jpg',
+                ],
                 'is_active' => true,
                 'is_trending' => true,
                 'is_new' => true,
@@ -223,8 +244,22 @@ class ProductSeeder extends Seeder
             ],
         ];
 
-        foreach ($products as $product) {
-            Product::updateOrCreate(['sku' => $product['sku']], $product);
+        foreach ($products as $productData) {
+            $gallery = $productData['gallery_images'] ?? [];
+            unset($productData['gallery_images']);
+
+            $product = Product::updateOrCreate(['sku' => $productData['sku']], $productData);
+
+            if (! empty($gallery)) {
+                $product->images()->delete();
+                foreach ($gallery as $idx => $img) {
+                    $product->images()->create([
+                        'image' => $img,
+                        'order' => $idx,
+                        'is_primary' => $idx === 0,
+                    ]);
+                }
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 @php
-  $product = $product ?? \App\Models\Product::with(['category', 'brand', 'vendor', 'size', 'color'])->first();
+  $product = $product ?? \App\Models\Product::with(['category', 'brand', 'vendor', 'size', 'color', 'images'])->first();
   $relatedProducts = $relatedProducts ?? ($product ? \App\Models\Product::query()->active()->where('id', '!=', $product->id)->with(['category', 'brand', 'size', 'color'])->take(8)->get() : collect());
   $sidebarCategories = $sidebarCategories ?? \App\Models\ProductCategory::query()->whereNull('parent_id')->where('is_active', true)->withCount('products')->get();
   $sidebarBrands = $sidebarBrands ?? \App\Models\ProductBrand::query()->orderBy('name')->get();
@@ -74,54 +74,52 @@
                       <div class="row">
                         <div class="single-pro-img">
                           <div class="single-product-scroll">
+                            @php
+                              $detailImages = collect();
+                              if (! empty($product?->thumbnail_url)) {
+                                  $detailImages->push($product->thumbnail_url);
+                              }
+                              if ($product && $product->images->isNotEmpty()) {
+                                  foreach ($product->images as $img) {
+                                      $detailImages->push($img->image_url);
+                                  }
+                              }
+                              $detailImages = $detailImages->unique();
+                              if ($detailImages->isEmpty()) {
+                                  $detailImages = collect([
+                                      asset('mantu/assets/img/product/27.jpg'),
+                                      asset('mantu/assets/img/product/28.jpg'),
+                                      asset('mantu/assets/img/product/29.jpg'),
+                                  ]);
+                              } elseif ($detailImages->count() < 3) {
+                                  $fallbackSeed = $detailImages->first();
+                                  while ($detailImages->count() < 3) {
+                                      $detailImages->push($fallbackSeed);
+                                  }
+                              }
+                            @endphp
+
                             <div class="single-product-cover">
-                              @php
-                                $thumbUrl = $product?->thumbnail_url ?? asset('mantu/assets/img/product/27.jpg');
-                              @endphp
-                              <div class="single-slide zoom-image-hover">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ $thumbUrl }}"
-                                  alt="{{ $product?->title ?? 'Product' }}"
-                                />
-                              </div>
-                              <div class="single-slide zoom-image-hover">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ $thumbUrl }}"
-                                  alt="{{ $product?->title ?? 'Product' }}"
-                                />
-                              </div>
-                              <div class="single-slide zoom-image-hover">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ $thumbUrl }}"
-                                  alt="{{ $product?->title ?? 'Product' }}"
-                                />
-                              </div>
+                              @foreach ($detailImages as $imgUrl)
+                                <div class="single-slide zoom-image-hover">
+                                  <img
+                                    class="img-responsive"
+                                    src="{{ $imgUrl }}"
+                                    alt="{{ $product?->title ?? 'Product' }}"
+                                  />
+                                </div>
+                              @endforeach
                             </div>
                             <div class="single-nav-thumb">
-                              <div class="single-slide">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ $thumbUrl }}"
-                                  alt="{{ $product?->title ?? 'Product' }}"
-                                />
-                              </div>
-                              <div class="single-slide">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ $thumbUrl }}"
-                                  alt="{{ $product?->title ?? 'Product' }}"
-                                />
-                              </div>
-                              <div class="single-slide">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ $thumbUrl }}"
-                                  alt="{{ $product?->title ?? 'Product' }}"
-                                />
-                              </div>
+                              @foreach ($detailImages as $imgUrl)
+                                <div class="single-slide">
+                                  <img
+                                    class="img-responsive"
+                                    src="{{ $imgUrl }}"
+                                    alt="{{ $product?->title ?? 'Product' }}"
+                                  />
+                                </div>
+                              @endforeach
                             </div>
                           </div>
                         </div>
