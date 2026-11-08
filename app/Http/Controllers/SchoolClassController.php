@@ -8,9 +8,11 @@ use App\Http\Requests\StoreSchoolClassRequest;
 use App\Http\Requests\UpdateSchoolClassRequest;
 use App\Imports\SchoolClassesImport;
 use App\Models\SchoolClass;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -139,6 +141,20 @@ class SchoolClassController extends Controller
         Gate::authorize('classes.view');
 
         return Excel::download(new SchoolClassesExport, 'classes_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Export classes to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('classes.view');
+
+        $classes = SchoolClass::query()->latest('id')->get();
+
+        return Pdf::loadView('modules.classes.pdf', [
+            'classes' => $classes,
+        ])->setPaper('a4', 'portrait')->download('classes_'.date('Y-m-d_His').'.pdf');
     }
 
     /**

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Menu;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
@@ -170,5 +172,22 @@ class MenuController extends Controller
         return redirect()
             ->route('menus.index')
             ->with('success', __('Menu deleted successfully.'));
+    }
+
+    /**
+     * Export menus to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('menus.view');
+
+        $menus = Menu::query()
+            ->with(['parent', 'children'])
+            ->orderByRaw('CASE WHEN parent_id IS NULL THEN id ELSE parent_id END, parent_id IS NOT NULL, `order` ASC')
+            ->get();
+
+        return Pdf::loadView('modules.menus.pdf', [
+            'menus' => $menus,
+        ])->setPaper('a4', 'landscape')->download('menus_'.date('Y-m-d_His').'.pdf');
     }
 }

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreFieldRequest;
 use App\Http\Requests\UpdateFieldRequest;
 use App\Models\Field;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class FieldController extends Controller
@@ -129,5 +131,19 @@ class FieldController extends Controller
         return redirect()
             ->route('fields.index')
             ->with('success', __('Field deleted successfully.'));
+    }
+
+    /**
+     * Export fields to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('fields.view');
+
+        $fields = Field::query()->latest('id')->get();
+
+        return Pdf::loadView('modules.fields.pdf', [
+            'fields' => $fields,
+        ])->setPaper('a4', 'portrait')->download('fields_'.date('Y-m-d_His').'.pdf');
     }
 }

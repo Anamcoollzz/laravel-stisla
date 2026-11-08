@@ -6,9 +6,11 @@ use App\Http\Requests\StoreTicketReplyRequest;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class TicketController extends Controller
@@ -162,5 +164,19 @@ class TicketController extends Controller
         return redirect()
             ->route('tickets.index', ['ticket' => $ticket->id])
             ->with('success', __('Reply sent successfully.'));
+    }
+
+    /**
+     * Export tickets to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('tickets.view');
+
+        $tickets = Ticket::query()->with(['user', 'replies.user'])->latest('id')->get();
+
+        return Pdf::loadView('modules.tickets.pdf', [
+            'tickets' => $tickets,
+        ])->setPaper('a4', 'landscape')->download('tickets_'.date('Y-m-d_His').'.pdf');
     }
 }

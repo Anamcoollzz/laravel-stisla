@@ -9,9 +9,11 @@ use App\Http\Requests\UpdateStudentRequest;
 use App\Imports\StudentsImport;
 use App\Models\SchoolClass;
 use App\Models\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -170,6 +172,20 @@ class StudentController extends Controller
         Gate::authorize('students.view');
 
         return Excel::download(new StudentsExport, 'students_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Export students to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('students.view');
+
+        $students = Student::query()->with('schoolClass')->latest('id')->get();
+
+        return Pdf::loadView('modules.students.pdf', [
+            'students' => $students,
+        ])->setPaper('a4', 'landscape')->download('students_'.date('Y-m-d_His').'.pdf');
     }
 
     /**

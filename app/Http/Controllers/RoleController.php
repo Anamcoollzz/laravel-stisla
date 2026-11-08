@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
@@ -159,6 +161,20 @@ class RoleController extends Controller
         return redirect()
             ->route('roles.index')
             ->with('success', __('Role deleted successfully.'));
+    }
+
+    /**
+     * Export roles to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('roles.view');
+
+        $roles = Role::query()->withCount(['permissions', 'users'])->orderBy('name')->get();
+
+        return Pdf::loadView('modules.roles.pdf', [
+            'roles' => $roles,
+        ])->setPaper('a4', 'portrait')->download('roles_'.date('Y-m-d_His').'.pdf');
     }
 
     /**

@@ -64,13 +64,18 @@
         <div class="card">
           <div class="card-header">
             <h4>{{ __('Tickets') }}</h4>
-            @can('tickets.create')
-              <div class="card-header-action">
+            <div class="card-header-action">
+              @can('tickets.view')
+                <a href="{{ route('tickets.exportPdf') }}" class="btn btn-outline-danger btn-sm mr-1">
+                  <i class="fas fa-file-pdf mr-1"></i> {{ __('Export PDF') }}
+                </a>
+              @endcan
+              @can('tickets.create')
                 <a href="{{ route('tickets.create') }}" class="btn btn-primary btn-sm">
                   <i class="fas fa-plus mr-1"></i> {{ __('Create Ticket') }}
                 </a>
-              </div>
-            @endcan
+              @endcan
+            </div>
           </div>
           <div class="card-body">
             <a href="#" class="btn btn-primary btn-icon icon-left btn-lg btn-block mb-4 d-md-none" data-toggle-slide="#ticket-items">

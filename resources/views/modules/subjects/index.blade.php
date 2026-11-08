@@ -76,6 +76,9 @@
                 <a href="{{ route('subjects.export') }}" class="btn btn-outline-success mr-1">
                   <i class="fas fa-file-excel mr-1"></i> {{ __('Export Excel') }}
                 </a>
+                <a href="{{ route('subjects.exportPdf') }}" class="btn btn-outline-danger mr-1">
+                  <i class="fas fa-file-pdf mr-1"></i> {{ __('Export PDF') }}
+                </a>
               @endcan
               @can('subjects.create')
                 <button type="button" class="btn btn-outline-info mr-1" data-toggle="modal" data-target="#modal-import-subjects">

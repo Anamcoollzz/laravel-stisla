@@ -72,13 +72,18 @@
         <div class="card">
           <div class="card-header">
             <h4>{{ __('Menu List') }}</h4>
-            @can('menus.create')
-              <div class="card-header-action">
+            <div class="card-header-action">
+              @can('menus.view')
+                <a href="{{ route('menus.exportPdf') }}" class="btn btn-outline-danger btn-sm mr-1">
+                  <i class="fas fa-file-pdf mr-1"></i> {{ __('Export PDF') }}
+                </a>
+              @endcan
+              @can('menus.create')
                 <a href="{{ route('menus.create') }}" class="btn btn-primary btn-sm">
                   <i class="fas fa-plus mr-1"></i> {{ __('Add New') }}
                 </a>
-              </div>
-            @endcan
+              @endcan
+            </div>
           </div>
           <div class="card-body">
             <div class="table-responsive">

@@ -8,9 +8,11 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Imports\UsersImport;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -184,6 +186,20 @@ class UserController extends Controller
         Gate::authorize('users.view');
 
         return Excel::download(new UsersExport, 'users_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Export users to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('users.view');
+
+        $users = User::query()->with('roles')->latest('id')->get();
+
+        return Pdf::loadView('modules.users.pdf', [
+            'users' => $users,
+        ])->setPaper('a4', 'portrait')->download('users_'.date('Y-m-d_His').'.pdf');
     }
 
     /**

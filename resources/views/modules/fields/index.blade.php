@@ -72,6 +72,11 @@
           <div class="card-header">
             <h4>{{ __('Field List') }}</h4>
             <div class="card-header-action">
+              @can('fields.view')
+                <a href="{{ route('fields.exportPdf') }}" class="btn btn-outline-danger mr-1">
+                  <i class="fas fa-file-pdf mr-1"></i> {{ __('Export PDF') }}
+                </a>
+              @endcan
               @can('fields.create')
                 <a href="{{ route('fields.create') }}" class="btn btn-primary">
                   <i class="fas fa-plus mr-1"></i> {{ __('Add New') }}

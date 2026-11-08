@@ -8,9 +8,11 @@ use App\Http\Requests\StoreSubjectRequest;
 use App\Http\Requests\UpdateSubjectRequest;
 use App\Imports\SubjectsImport;
 use App\Models\Subject;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -145,6 +147,20 @@ class SubjectController extends Controller
         Gate::authorize('subjects.view');
 
         return Excel::download(new SubjectsExport, 'subjects_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Export subjects to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('subjects.view');
+
+        $subjects = Subject::query()->latest('id')->get();
+
+        return Pdf::loadView('modules.subjects.pdf', [
+            'subjects' => $subjects,
+        ])->setPaper('a4', 'portrait')->download('subjects_'.date('Y-m-d_His').'.pdf');
     }
 
     /**

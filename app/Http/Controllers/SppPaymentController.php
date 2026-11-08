@@ -9,9 +9,11 @@ use App\Http\Requests\UpdateSppPaymentRequest;
 use App\Imports\SppPaymentsImport;
 use App\Models\SppPayment;
 use App\Models\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -190,6 +192,20 @@ class SppPaymentController extends Controller
         Gate::authorize('spp-payments.view');
 
         return Excel::download(new SppPaymentsExport, 'spp_payments_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Export SPP payments to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('spp-payments.view');
+
+        $sppPayments = SppPayment::query()->with('student.schoolClass')->latest('id')->get();
+
+        return Pdf::loadView('modules.spp-payments.pdf', [
+            'sppPayments' => $sppPayments,
+        ])->setPaper('a4', 'landscape')->download('spp_payments_'.date('Y-m-d_His').'.pdf');
     }
 
     /**

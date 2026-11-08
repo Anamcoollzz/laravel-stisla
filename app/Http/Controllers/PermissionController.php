@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
@@ -126,5 +128,19 @@ class PermissionController extends Controller
         return redirect()
             ->route('permissions.index')
             ->with('success', __('Permission deleted successfully.'));
+    }
+
+    /**
+     * Export permissions to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('permissions.view');
+
+        $permissions = Permission::query()->withCount('roles')->orderBy('name')->get();
+
+        return Pdf::loadView('modules.permissions.pdf', [
+            'permissions' => $permissions,
+        ])->setPaper('a4', 'portrait')->download('permissions_'.date('Y-m-d_His').'.pdf');
     }
 }

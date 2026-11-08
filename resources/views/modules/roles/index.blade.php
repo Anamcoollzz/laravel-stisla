@@ -73,6 +73,11 @@
           <div class="card-header">
             <h4>{{ __('Role List') }}</h4>
             <div class="card-header-action">
+              @can('roles.view')
+                <a href="{{ route('roles.exportPdf') }}" class="btn btn-outline-danger mr-1">
+                  <i class="fas fa-file-pdf mr-1"></i> {{ __('Export PDF') }}
+                </a>
+              @endcan
               @can('roles.create')
                 <a href="{{ route('roles.create') }}" class="btn btn-primary">
                   {{ __('Add New') }}

@@ -8,9 +8,11 @@ use App\Http\Requests\StoreTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
 use App\Imports\TeachersImport;
 use App\Models\Teacher;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -152,6 +154,20 @@ class TeacherController extends Controller
         Gate::authorize('teachers.view');
 
         return Excel::download(new TeachersExport, 'teachers_'.date('Y-m-d_His').'.xlsx');
+    }
+
+    /**
+     * Export teachers to PDF.
+     */
+    public function exportPdf(): Response
+    {
+        Gate::authorize('teachers.view');
+
+        $teachers = Teacher::query()->latest('id')->get();
+
+        return Pdf::loadView('modules.teachers.pdf', [
+            'teachers' => $teachers,
+        ])->setPaper('a4', 'landscape')->download('teachers_'.date('Y-m-d_His').'.pdf');
     }
 
     /**

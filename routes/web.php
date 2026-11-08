@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('classes/{schoolClass}/duplicate', [SchoolClassController::class, 'duplicate'])->name('classes.duplicate');
     Route::get('classes/export', [SchoolClassController::class, 'export'])->name('classes.export');
+    Route::get('classes/export-pdf', [SchoolClassController::class, 'exportPdf'])->name('classes.exportPdf');
     Route::get('classes/template', [SchoolClassController::class, 'template'])->name('classes.template');
     Route::post('classes/import', [SchoolClassController::class, 'import'])->name('classes.import');
     Route::resource('classes', SchoolClassController::class)->parameters([
@@ -52,47 +53,57 @@ Route::middleware('auth')->group(function () {
 
     Route::post('teachers/{teacher}/duplicate', [TeacherController::class, 'duplicate'])->name('teachers.duplicate');
     Route::get('teachers/export', [TeacherController::class, 'export'])->name('teachers.export');
+    Route::get('teachers/export-pdf', [TeacherController::class, 'exportPdf'])->name('teachers.exportPdf');
     Route::get('teachers/template', [TeacherController::class, 'template'])->name('teachers.template');
     Route::post('teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
     Route::resource('teachers', TeacherController::class);
 
     Route::post('students/{student}/duplicate', [StudentController::class, 'duplicate'])->name('students.duplicate');
     Route::get('students/export', [StudentController::class, 'export'])->name('students.export');
+    Route::get('students/export-pdf', [StudentController::class, 'exportPdf'])->name('students.exportPdf');
     Route::get('students/template', [StudentController::class, 'template'])->name('students.template');
     Route::post('students/import', [StudentController::class, 'import'])->name('students.import');
     Route::resource('students', StudentController::class);
 
     Route::post('subjects/{subject}/duplicate', [SubjectController::class, 'duplicate'])->name('subjects.duplicate');
     Route::get('subjects/export', [SubjectController::class, 'export'])->name('subjects.export');
+    Route::get('subjects/export-pdf', [SubjectController::class, 'exportPdf'])->name('subjects.exportPdf');
     Route::get('subjects/template', [SubjectController::class, 'template'])->name('subjects.template');
     Route::post('subjects/import', [SubjectController::class, 'import'])->name('subjects.import');
     Route::resource('subjects', SubjectController::class);
 
     Route::post('spp-payments/{sppPayment}/duplicate', [SppPaymentController::class, 'duplicate'])->name('spp-payments.duplicate');
     Route::get('spp-payments/export', [SppPaymentController::class, 'export'])->name('spp-payments.export');
+    Route::get('spp-payments/export-pdf', [SppPaymentController::class, 'exportPdf'])->name('spp-payments.exportPdf');
     Route::get('spp-payments/template', [SppPaymentController::class, 'template'])->name('spp-payments.template');
     Route::post('spp-payments/import', [SppPaymentController::class, 'import'])->name('spp-payments.import');
     Route::resource('spp-payments', SppPaymentController::class);
 
     Route::post('users/{user}/duplicate', [UserController::class, 'duplicate'])->name('users.duplicate');
     Route::get('users/export', [UserController::class, 'export'])->name('users.export');
+    Route::get('users/export-pdf', [UserController::class, 'exportPdf'])->name('users.exportPdf');
     Route::get('users/template', [UserController::class, 'template'])->name('users.template');
     Route::post('users/import', [UserController::class, 'import'])->name('users.import');
     Route::resource('users', UserController::class);
 
     Route::post('fields/{field}/duplicate', [FieldController::class, 'duplicate'])->name('fields.duplicate');
+    Route::get('fields/export-pdf', [FieldController::class, 'exportPdf'])->name('fields.exportPdf');
     Route::resource('fields', FieldController::class);
 
     Route::post('roles/{role}/duplicate', [RoleController::class, 'duplicate'])->name('roles.duplicate');
+    Route::get('roles/export-pdf', [RoleController::class, 'exportPdf'])->name('roles.exportPdf');
     Route::resource('roles', RoleController::class);
 
     Route::post('permissions/{permission}/duplicate', [PermissionController::class, 'duplicate'])->name('permissions.duplicate');
+    Route::get('permissions/export-pdf', [PermissionController::class, 'exportPdf'])->name('permissions.exportPdf');
     Route::resource('permissions', PermissionController::class)->except('show');
 
     Route::post('menus/{menu}/duplicate', [MenuController::class, 'duplicate'])->name('menus.duplicate');
+    Route::get('menus/export-pdf', [MenuController::class, 'exportPdf'])->name('menus.exportPdf');
     Route::resource('menus', MenuController::class);
 
     Route::post('tickets/{ticket}/duplicate', [TicketController::class, 'duplicate'])->name('tickets.duplicate');
+    Route::get('tickets/export-pdf', [TicketController::class, 'exportPdf'])->name('tickets.exportPdf');
     Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
     Route::resource('tickets', TicketController::class);
 });
