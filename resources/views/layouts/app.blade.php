@@ -283,56 +283,95 @@
               <a href="{{ route('dashboard') }}">St</a>
             </div>
             <ul class="sidebar-menu">
-              <li class="menu-header">{{ __('Dashboard') }}</li>
-              <li @class(['active' => request()->routeIs('dashboard')])>
-                <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
-              </li>
-              @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'fields.view', 'spp-payments.view', 'tickets.view'])
-                <li class="menu-header">{{ __('Modules') }}</li>
-                <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*')])>
-                  <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
-                  <ul class="dropdown-menu">
-                    @can('classes.view')
-                      <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
-                    @endcan
-                    @can('teachers.view')
-                      <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
-                    @endcan
-                    @can('students.view')
-                      <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
-                    @endcan
-                    @can('subjects.view')
-                      <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
-                    @endcan
-                    @can('fields.view')
-                      <li @class(['active' => request()->routeIs('fields.*')])><a class="nav-link" href="{{ route('fields.index') }}">{{ __('Fields') }}</a></li>
-                    @endcan
-                    @can('spp-payments.view')
-                      <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
-                    @endcan
-                    @can('tickets.view')
-                      <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
-                    @endcan
-                  </ul>
+              @if (isset($sidebarMenus) && $sidebarMenus->isNotEmpty())
+                @foreach ($sidebarMenus as $menu)
+                  @if (! $menu->canAccess())
+                    @continue
+                  @endif
+
+                  @if ($menu->type === 'header')
+                    <li class="menu-header">{{ __($menu->name) }}</li>
+                  @elseif ($menu->type === 'dropdown')
+                    <li @class(['nav-item dropdown', 'active' => $menu->isActiveRoute()])>
+                      <a href="#" class="nav-link has-dropdown"><i class="{{ $menu->icon ?: 'fas fa-plug' }}"></i> <span>{{ __($menu->name) }}</span></a>
+                      <ul class="dropdown-menu">
+                        @foreach ($menu->children as $child)
+                          @if ($child->canAccess())
+                            <li @class(['active' => $child->isActiveRoute()])>
+                              <a class="nav-link" href="{{ $child->resolvedUrl() }}">
+                                @if ($child->icon)
+                                  <i class="{{ $child->icon }} mr-1"></i>
+                                @endif
+                                {{ __($child->name) }}
+                              </a>
+                            </li>
+                          @endif
+                        @endforeach
+                      </ul>
+                    </li>
+                  @else
+                    <li @class(['active' => $menu->isActiveRoute()])>
+                      <a class="nav-link" href="{{ $menu->resolvedUrl() }}">
+                        <i class="{{ $menu->icon ?: 'fas fa-circle' }}"></i> <span>{{ __($menu->name) }}</span>
+                      </a>
+                    </li>
+                  @endif
+                @endforeach
+              @else
+                <li class="menu-header">{{ __('Dashboard') }}</li>
+                <li @class(['active' => request()->routeIs('dashboard')])>
+                  <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
                 </li>
-              @endcanany
-              @canany(['users.view', 'roles.view', 'permissions.view'])
-                <li class="menu-header">{{ __('User Management') }}</li>
-                <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*', 'permissions.*')])>
-                  <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
-                  <ul class="dropdown-menu">
-                    @can('users.view')
-                      <li @class(['active' => request()->routeIs('users.*')])><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
-                    @endcan
-                    @can('roles.view')
-                      <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
-                    @endcan
-                    @can('permissions.view')
-                      <li @class(['active' => request()->routeIs('permissions.*')])><a class="nav-link" href="{{ route('permissions.index') }}">{{ __('Permissions') }}</a></li>
-                    @endcan
-                  </ul>
-                </li>
-              @endcanany
+                @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'fields.view', 'spp-payments.view', 'tickets.view'])
+                  <li class="menu-header">{{ __('Modules') }}</li>
+                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*')])>
+                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
+                    <ul class="dropdown-menu">
+                      @can('classes.view')
+                        <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
+                      @endcan
+                      @can('teachers.view')
+                        <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
+                      @endcan
+                      @can('students.view')
+                        <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
+                      @endcan
+                      @can('subjects.view')
+                        <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
+                      @endcan
+                      @can('fields.view')
+                        <li @class(['active' => request()->routeIs('fields.*')])><a class="nav-link" href="{{ route('fields.index') }}">{{ __('Fields') }}</a></li>
+                      @endcan
+                      @can('spp-payments.view')
+                        <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
+                      @endcan
+                      @can('tickets.view')
+                        <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
+                      @endcan
+                    </ul>
+                  </li>
+                @endcanany
+                @canany(['users.view', 'roles.view', 'permissions.view', 'menus.view'])
+                  <li class="menu-header">{{ __('User Management') }}</li>
+                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*', 'permissions.*', 'menus.*')])>
+                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
+                    <ul class="dropdown-menu">
+                      @can('users.view')
+                        <li @class(['active' => request()->routeIs('users.*')])><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
+                      @endcan
+                      @can('roles.view')
+                        <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
+                      @endcan
+                      @can('permissions.view')
+                        <li @class(['active' => request()->routeIs('permissions.*')])><a class="nav-link" href="{{ route('permissions.index') }}">{{ __('Permissions') }}</a></li>
+                      @endcan
+                      @can('menus.view')
+                        <li @class(['active' => request()->routeIs('menus.*')])><a class="nav-link" href="{{ route('menus.index') }}">{{ __('Menu Management') }}</a></li>
+                      @endcan
+                    </ul>
+                  </li>
+                @endcanany
+              @endif
             </ul>
           </aside>
         @endif

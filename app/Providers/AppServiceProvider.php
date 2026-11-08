@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Menu;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +25,19 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::before(function ($user, $ability) {
             return $user->hasRole('admin') ? true : null;
+        });
+
+        View::composer(['layouts.app', 'partials.sidebar-pages'], function ($view) {
+            if (Schema::hasTable('menus')) {
+                $sidebarMenus = Menu::query()
+                    ->with(['children' => fn ($query) => $query->where('is_active', true)->orderBy('order')])
+                    ->whereNull('parent_id')
+                    ->where('is_active', true)
+                    ->orderBy('order')
+                    ->get();
+
+                $view->with('sidebarMenus', $sidebarMenus);
+            }
         });
     }
 }

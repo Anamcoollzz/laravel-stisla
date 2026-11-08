@@ -1,0 +1,103 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Menu;
+use Illuminate\Database\Seeder;
+
+class MenuSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // 1. Dashboard Section
+        Menu::firstOrCreate(
+            ['name' => 'Dashboard', 'type' => 'header'],
+            ['order' => 10, 'is_active' => true]
+        );
+
+        Menu::firstOrCreate(
+            ['name' => 'Dashboard', 'type' => 'item', 'route' => 'dashboard'],
+            [
+                'icon' => 'fas fa-fire',
+                'order' => 20,
+                'is_active' => true,
+            ]
+        );
+
+        // 2. Modules Section
+        Menu::firstOrCreate(
+            ['name' => 'Modules', 'type' => 'header'],
+            ['order' => 30, 'is_active' => true]
+        );
+
+        $modulesDropdown = Menu::firstOrCreate(
+            ['name' => 'Modules', 'type' => 'dropdown'],
+            [
+                'icon' => 'fas fa-plug',
+                'order' => 40,
+                'is_active' => true,
+            ]
+        );
+
+        $moduleChildren = [
+            ['name' => 'Classes', 'route' => 'classes.index', 'permission' => 'classes.view', 'order' => 1],
+            ['name' => 'Teachers', 'route' => 'teachers.index', 'permission' => 'teachers.view', 'order' => 2],
+            ['name' => 'Students', 'route' => 'students.index', 'permission' => 'students.view', 'order' => 3],
+            ['name' => 'Subjects', 'route' => 'subjects.index', 'permission' => 'subjects.view', 'order' => 4],
+            ['name' => 'Fields', 'route' => 'fields.index', 'permission' => 'fields.view', 'order' => 5],
+            ['name' => 'SPP Payments', 'route' => 'spp-payments.index', 'permission' => 'spp-payments.view', 'order' => 6],
+            ['name' => 'Tickets', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 7],
+        ];
+
+        foreach ($moduleChildren as $child) {
+            Menu::firstOrCreate(
+                ['parent_id' => $modulesDropdown->id, 'name' => $child['name']],
+                [
+                    'type' => 'item',
+                    'route' => $child['route'],
+                    'permission' => $child['permission'],
+                    'order' => $child['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // 3. User Management Section
+        Menu::firstOrCreate(
+            ['name' => 'User Management', 'type' => 'header'],
+            ['order' => 50, 'is_active' => true]
+        );
+
+        $accessControlDropdown = Menu::firstOrCreate(
+            ['name' => 'Access Control', 'type' => 'dropdown'],
+            [
+                'icon' => 'fas fa-users-cog',
+                'order' => 60,
+                'is_active' => true,
+            ]
+        );
+
+        $accessChildren = [
+            ['name' => 'Users', 'route' => 'users.index', 'permission' => 'users.view', 'order' => 1],
+            ['name' => 'Roles', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 2],
+            ['name' => 'Permissions', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 3],
+            ['name' => 'Menu Management', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 4],
+        ];
+
+        foreach ($accessChildren as $child) {
+            Menu::firstOrCreate(
+                ['parent_id' => $accessControlDropdown->id, 'name' => $child['name']],
+                [
+                    'type' => 'item',
+                    'route' => $child['route'],
+                    'permission' => $child['permission'],
+                    'order' => $child['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+    }
+}
