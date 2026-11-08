@@ -1,6 +1,14 @@
+@php
+  $product = $product ?? \App\Models\Product::with(['category', 'brand', 'vendor', 'size', 'color'])->first();
+  $relatedProducts = $relatedProducts ?? ($product ? \App\Models\Product::query()->active()->where('id', '!=', $product->id)->with(['category', 'brand', 'size', 'color'])->take(8)->get() : collect());
+  $sidebarCategories = $sidebarCategories ?? \App\Models\ProductCategory::query()->whereNull('parent_id')->where('is_active', true)->withCount('products')->get();
+  $sidebarBrands = $sidebarBrands ?? \App\Models\ProductBrand::query()->orderBy('name')->get();
+  $sidebarSizes = $sidebarSizes ?? \App\Models\ProductSize::query()->orderBy('id')->get();
+  $sidebarColors = $sidebarColors ?? \App\Models\ProductColor::query()->orderBy('name')->get();
+@endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Product Detail - Ecommerce')
+@section('title', ($product?->title ? $product->title . ' - ' : '') . 'Ecommerce')
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,7 +40,7 @@
             <div class="col-12">
               <div class="row gi_breadcrumb_inner">
                 <div class="col-md-6 col-sm-12">
-                  <h2 class="mn-breadcrumb-title">Product Page</h2>
+                  <h2 class="mn-breadcrumb-title">{{ $product?->title ?? 'Product Detail' }}</h2>
                 </div>
                 <div class="col-md-6 col-sm-12">
                   <!-- mn-breadcrumb-list start -->
@@ -40,7 +48,12 @@
                     <li class="mn-breadcrumb-item">
                       <a href="{{ route('ecommerce.index.html') }}">Home</a>
                     </li>
-                    <li class="mn-breadcrumb-item active">Product Page</li>
+                    @if ($product?->category)
+                      <li class="mn-breadcrumb-item">
+                        <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $product->category->name }}</a>
+                      </li>
+                    @endif
+                    <li class="mn-breadcrumb-item active">{{ $product?->title ?? 'Product Detail' }}</li>
                   </ul>
                   <!-- mn-breadcrumb-list end -->
                 </div>
@@ -62,39 +75,28 @@
                         <div class="single-pro-img">
                           <div class="single-product-scroll">
                             <div class="single-product-cover">
+                              @php
+                                $thumbUrl = $product?->thumbnail_url ?? asset('mantu/assets/img/product/27.jpg');
+                              @endphp
                               <div class="single-slide zoom-image-hover">
                                 <img
                                   class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/27.jpg') }}"
-                                  alt=""
+                                  src="{{ $thumbUrl }}"
+                                  alt="{{ $product?->title ?? 'Product' }}"
                                 />
                               </div>
                               <div class="single-slide zoom-image-hover">
                                 <img
                                   class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/28.jpg') }}"
-                                  alt=""
+                                  src="{{ $thumbUrl }}"
+                                  alt="{{ $product?->title ?? 'Product' }}"
                                 />
                               </div>
                               <div class="single-slide zoom-image-hover">
                                 <img
                                   class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/29.jpg') }}"
-                                  alt=""
-                                />
-                              </div>
-                              <div class="single-slide zoom-image-hover">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/30.jpg') }}"
-                                  alt=""
-                                />
-                              </div>
-                              <div class="single-slide zoom-image-hover">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/29.jpg') }}"
-                                  alt=""
+                                  src="{{ $thumbUrl }}"
+                                  alt="{{ $product?->title ?? 'Product' }}"
                                 />
                               </div>
                             </div>
@@ -102,36 +104,22 @@
                               <div class="single-slide">
                                 <img
                                   class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/27.jpg') }}"
-                                  alt=""
+                                  src="{{ $thumbUrl }}"
+                                  alt="{{ $product?->title ?? 'Product' }}"
                                 />
                               </div>
                               <div class="single-slide">
                                 <img
                                   class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/28.jpg') }}"
-                                  alt=""
+                                  src="{{ $thumbUrl }}"
+                                  alt="{{ $product?->title ?? 'Product' }}"
                                 />
                               </div>
                               <div class="single-slide">
                                 <img
                                   class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/29.jpg') }}"
-                                  alt=""
-                                />
-                              </div>
-                              <div class="single-slide">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/30.jpg') }}"
-                                  alt=""
-                                />
-                              </div>
-                              <div class="single-slide">
-                                <img
-                                  class="img-responsive"
-                                  src="{{ asset('mantu/assets/img/product/29.jpg') }}"
-                                  alt=""
+                                  src="{{ $thumbUrl }}"
+                                  alt="{{ $product?->title ?? 'Product' }}"
                                 />
                               </div>
                             </div>
@@ -140,8 +128,7 @@
                         <div class="single-pro-desc m-t-991">
                           <div class="single-pro-content">
                             <h5 class="mn-single-title">
-                              Mantu Women's Solid Slim Fit Classic Round Neck
-                              cotton fabric T-Shirt.
+                              {{ $product?->title ?? 'Product Title' }}
                             </h5>
                             <div class="mn-single-rating-wrap">
                               <div class="mn-single-rating mn-pro-rating">
@@ -153,7 +140,7 @@
                               </div>
                               <span class="mn-read-review">
                                 |&nbsp;&nbsp;<a href="#mn-spt-nav-review"
-                                  >992 Ratings</a
+                                  >4.8 / 5.0 Rating</a
                                 >
                               </span>
                             </div>
@@ -161,21 +148,28 @@
                             <div class="mn-single-price-stoke">
                               <div class="mn-single-price">
                                 <div class="final-price">
-                                  $664.00<span class="price-des">-78%</span>
+                                  Rp {{ number_format($product?->final_price ?? 0, 0, ',', '.') }}
+                                  @if (($product?->discount_percent ?? 0) > 0)
+                                    <span class="price-des">-{{ (int) $product->discount_percent }}%</span>
+                                  @endif
                                 </div>
-                                <div class="mrp">
-                                  M.R.P. : <span>$2,999.00</span>
-                                </div>
+                                @if (($product?->discount_percent ?? 0) > 0)
+                                  <div class="mrp">
+                                    M.R.P. : <span>Rp {{ number_format($product?->price ?? 0, 0, ',', '.') }}</span>
+                                  </div>
+                                @endif
                               </div>
                               <div class="mn-single-stoke">
-                                <span class="mn-single-sku">SKU#: WH12</span>
-                                <span class="mn-single-ps-title">IN STOCK</span>
+                                <span class="mn-single-sku">SKU#: {{ $product?->sku ?? 'N/A' }}</span>
+                                <span class="mn-single-ps-title {{ ($product?->stock ?? 0) > 0 ? '' : 'text-danger' }}">
+                                  {{ ($product?->stock ?? 0) > 0 ? 'IN STOCK (' . $product->stock . ')' : 'OUT OF STOCK' }}
+                                </span>
                               </div>
                             </div>
                             <div class="mn-single-sales">
                               <div class="mn-single-sales-inner">
                                 <div class="mn-single-sales-visitor">
-                                  Real time <span>56</span> visitor right now!
+                                  Real time <span>28</span> visitor right now!
                                 </div>
                                 <div class="mn-single-sales-countdown">
                                   <div class="mn-single-countdown">
@@ -184,76 +178,65 @@
                                       data-date="September 30, 2026 19:15:10 PDT"
                                     ></div>
                                     <div class="mn-single-count-desc">
-                                      Time is Running Out!
+                                      Special Promo Offer!
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div class="mn-single-desc">
-                              Lorem Ipsum is simply dummy text of the printing
-                              and typesetting industry. Lorem Ipsum has been the
-                              industry's standard dummy text ever since the
-                              1990.
+                              {!! $product?->short_description ?? 'No short description available.' !!}
                             </div>
 
                             <div class="mn-single-list">
                               <ul>
-                                <li><strong>Closure :</strong> Hook & Loop</li>
-                                <li>
-                                  <strong>Sole :</strong> Polyvinyl Chloride
-                                </li>
-                                <li><strong>Width :</strong> Medium</li>
-                                <li>
-                                  <strong>Outer Material :</strong> A-Grade
-                                  Standard Quality
-                                </li>
+                                @if ($product?->brand)
+                                  <li><strong>Brand :</strong> {{ $product->brand->name }}</li>
+                                @endif
+                                @if ($product?->category)
+                                  <li><strong>Category :</strong> {{ $product->category->name }}</li>
+                                @endif
+                                @if ($product?->vendor)
+                                  <li><strong>Vendor :</strong> {{ $product->vendor->name }}</li>
+                                @endif
+                                @if ($product?->size)
+                                  <li><strong>Size :</strong> {{ $product->size->name }} ({{ $product->size->code }})</li>
+                                @endif
+                                @if ($product?->color)
+                                  <li><strong>Color :</strong> {{ $product->color->name }}</li>
+                                @endif
                               </ul>
                             </div>
 
                             <div class="mn-pro-variation">
-                              <div
-                                class="mn-pro-variation-inner mn-pro-variation-size m-b-24"
-                              >
-                                <span>Size</span>
-                                <div class="mn-pro-variation-content">
-                                  <ul>
-                                    <li class="active"><span>s</span></li>
-                                    <li><span>m</span></li>
-                                    <li><span>l</span></li>
-                                    <li><span>xl</span></li>
-                                  </ul>
+                              @if ($product?->size)
+                                <div
+                                  class="mn-pro-variation-inner mn-pro-variation-size m-b-24"
+                                >
+                                  <span>Size</span>
+                                  <div class="mn-pro-variation-content">
+                                    <ul>
+                                      <li class="active"><span>{{ $product->size->name }}</span></li>
+                                    </ul>
+                                  </div>
                                 </div>
-                              </div>
-                              <div
-                                class="mn-pro-variation-inner mn-pro-variation-color"
-                              >
-                                <span>Colors</span>
-                                <div class="mn-pro-variation-content">
-                                  <ul>
-                                    <li class="active">
-                                      <span
-                                        style="background-color: #1b4a87"
-                                      ></span>
-                                    </li>
-                                    <li>
-                                      <span
-                                        style="background-color: #5f94d6"
-                                      ></span>
-                                    </li>
-                                    <li>
-                                      <span
-                                        style="background-color: #72aea2"
-                                      ></span>
-                                    </li>
-                                    <li>
-                                      <span
-                                        style="background-color: #c79782"
-                                      ></span>
-                                    </li>
-                                  </ul>
+                              @endif
+                              @if ($product?->color)
+                                <div
+                                  class="mn-pro-variation-inner mn-pro-variation-color"
+                                >
+                                  <span>Colors</span>
+                                  <div class="mn-pro-variation-content">
+                                    <ul>
+                                      <li class="active" title="{{ $product->color->name }}">
+                                        <span
+                                          style="background-color: {{ $product->color->color_code ?: '#000000' }}"
+                                        ></span>
+                                      </li>
+                                    </ul>
+                                  </div>
                                 </div>
-                              </div>
+                              @endif
                             </div>
                             <div class="mn-single-qty">
                               <div class="qty-plus-minus">
@@ -460,122 +443,79 @@
                           class="tab-pane fade show active"
                         >
                           <div class="mn-single-pro-tab-desc">
-                            <p>
-                              Lorem Ipsum is simply dummy text of the printing
-                              and typesetting industry. Lorem Ipsum has been the
-                              industry's standard dummy text ever since the
-                              1500s, when an unknown printer took a galley of
-                              type and scrambled it to make a type specimen
-                              book. It has survived not only five centuries, but
-                              also the leap into electronic typesetting,
-                              remaining essentially unchanged.
-                            </p>
-                            <ul>
-                              <li>
-                                Any Product types that You want - Simple,
-                                Configurable
-                              </li>
-                              <li>
-                                Downloadable/Digital Products, Virtual Products
-                              </li>
-                              <li>
-                                Inventory Management with Backordered items
-                              </li>
-                              <li>Flatlock seams throughout.</li>
-                            </ul>
-                            <p>
-                              Lorem Ipsum is simply dummy text of the printing
-                              and typesetting industry. Lorem Ipsum has been the
-                              industry's standard dummy text ever since the
-                              1500s, when an unknown printer took a galley of
-                              type and scrambled it to make a type specimen
-                              book. It has survived not only five centuries, but
-                              also the leap into electronic typesetting,
-                              remaining essentially unchanged.
-                            </p>
-                            <p>
-                              There are many variations of passages of Lorem
-                              Ipsum available, but the majority have suffered
-                              alteration in some form, by injected humour, or
-                              randomised words which don't look even slightly
-                              believable. If you are going to use a passage of
-                              Lorem Ipsum, you need to be sure there isn't
-                              anything embarrassing hidden in the middle of
-                              text. All the Lorem Ipsum generators on the
-                              Internet tend to repeat predefined chunks as
-                              necessary, making this the first true generator on
-                              the Internet. It uses a dictionary of over 200
-                              Latin words, combined with a handful of model
-                              sentence structures, to generate Lorem Ipsum which
-                              looks reasonable. The generated Lorem Ipsum is
-                              therefore always free from repetition, injected
-                              humour, or non-characteristic words etc.
-                            </p>
+                            {!! $product?->description_detail ?? $product?->short_description ?? '<p>No detail description available.</p>' !!}
                           </div>
                         </div>
                         <div id="mn-spt-nav-info" class="tab-pane fade">
                           <div class="mn-single-pro-tab-moreinfo">
-                            <p>
-                              Lorem Ipsum is simply dummy text of the printing
-                              and typesetting industry. Lorem Ipsum has been the
-                              industry's standard dummy text ever since the
-                              1500s, when an unknown printer took a galley of
-                              type and scrambled it to make a type specimen
-                              book. It has survived not only five centuries.
-                            </p>
                             <ul>
-                              <li><span>Model</span> SKU140</li>
-                              <li><span>Weight</span> 500 g</li>
-                              <li><span>Dimensions</span> 35 × 30 × 7 cm</li>
-                              <li>
-                                <span>Color</span> Black, Pink, Red, White
-                              </li>
-                              <li><span>Size</span> 10 X 20</li>
+                              <li><span>SKU</span> {{ $product?->sku ?? '-' }}</li>
+                              @if ($product?->brand)
+                                <li><span>Brand</span> {{ $product->brand->name }}</li>
+                              @endif
+                              @if ($product?->category)
+                                <li><span>Category</span> {{ $product->category->name }}</li>
+                              @endif
+                              @if ($product?->size)
+                                <li><span>Size</span> {{ $product->size->name }} ({{ $product->size->code }})</li>
+                              @endif
+                              @if ($product?->color)
+                                <li><span>Color</span> {{ $product->color->name }}</li>
+                              @endif
+                              @if (is_array($product?->spesifications))
+                                @foreach ($product->spesifications as $k => $spec)
+                                  @php
+                                    $specKey = is_array($spec) ? ($spec['key'] ?? '') : $k;
+                                    $specVal = is_array($spec) ? ($spec['value'] ?? '') : $spec;
+                                  @endphp
+                                  @if ($specKey)
+                                    <li><span>{{ $specKey }}</span> {{ $specVal }}</li>
+                                  @endif
+                                @endforeach
+                              @endif
                             </ul>
                           </div>
                         </div>
                         <div id="mn-spt-nav-vendor" class="tab-pane fade">
                           <div class="mn-single-pro-tab-moreinfo">
-                            <div class="mn-product-vendor">
-                              <div class="mn-vendor-info">
-                                <span>
-                                  <img
-                                    src="{{ asset('mantu/assets/img/vendor/1.jpg') }}"
-                                    alt="vendor"
-                                  />
-                                </span>
-                                <div>
-                                  <h5>Ocean Crate</h5>
-                                  <p>Products : 358</p>
-                                  <p>Sales : 5587</p>
+                            @if ($product?->vendor)
+                              <div class="mn-product-vendor">
+                                <div class="mn-vendor-info">
+                                  <span>
+                                    <img
+                                      src="{{ asset('mantu/assets/img/vendor/1.jpg') }}"
+                                      alt="{{ $product->vendor->name }}"
+                                    />
+                                  </span>
+                                  <div>
+                                    <h5>{{ $product->vendor->name }}</h5>
+                                    @if ($product->vendor->email)
+                                      <p>{{ $product->vendor->email }}</p>
+                                    @endif
+                                  </div>
+                                </div>
+                                <div class="mn-detail">
+                                  <ul>
+                                    <li>
+                                      <span>Phone No. :</span> {{ $product->vendor->phone ?: '-' }}
+                                    </li>
+                                    <li>
+                                      <span>Email. :</span> {{ $product->vendor->email ?: '-' }}
+                                    </li>
+                                    <li>
+                                      <span>Address. :</span> {{ $product->vendor->address ?: '-' }}
+                                    </li>
+                                  </ul>
+                                  @if ($product->vendor->description)
+                                    <p class="mb-0">
+                                      {{ $product->vendor->description }}
+                                    </p>
+                                  @endif
                                 </div>
                               </div>
-                              <div class="mn-detail">
-                                <ul>
-                                  <li>
-                                    <span>Phone No. :</span> +00 987654321
-                                  </li>
-                                  <li>
-                                    <span>Email. :</span> Example@gmail.com
-                                  </li>
-                                  <li>
-                                    <span>Address. :</span> 2548 Broaddus Maple
-                                    Court, Madisonville KY 4783, USA.
-                                  </li>
-                                </ul>
-                                <p class="mb-0">
-                                  Lorem Ipsum is simply dummy text of the
-                                  printing and typesetting industry. Lorem Ipsum
-                                  has been the industry's standard dummy text
-                                  ever since the 1500s, when an unknown printer
-                                  took a galley of type and scrambled it to make
-                                  a type specimen book. It has survived not only
-                                  five centuries, but also the leap into
-                                  electronic typesetting, remaining essentially
-                                  unchanged.
-                                </p>
-                              </div>
-                            </div>
+                            @else
+                              <p class="text-muted">Vendor information not available.</p>
+                            @endif
                           </div>
                         </div>
                         <div id="mn-spt-nav-review" class="tab-pane fade">
@@ -701,663 +641,109 @@
                       <h2>Related <span>Products</span></h2>
                     </div>
                     <div class="mn-related owl-carousel">
-                      <div class="mn-product-card">
-                        <div class="mn-product-img">
-                          <div class="lbl">
-                            <span class="trending">trending</span>
-                          </div>
-                          <div class="mn-img">
-                            <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                              <img
-                                class="main-img"
-                                src="{{ asset('mantu/assets/img/product/5.jpg') }}"
-                                alt="product"
-                              />
-                              <img
-                                class="hover-img"
-                                src="{{ asset('mantu/assets/img/product/6.jpg') }}"
-                                alt="product"
-                              />
-                            </a>
-                            <div class="mn-pro-loader"></div>
-                            <div class="mn-options">
-                              <ul>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Quick View"
-                                    data-link-action="quickview"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#quickview_modal"
-                                  >
-                                    <i class="ri-eye-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Compare"
-                                    class="mn-compare"
-                                    ><i class="ri-repeat-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Add To Cart"
-                                    class="mn-add-cart"
-                                    ><i class="ri-shopping-cart-line"></i
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mn-product-detail">
-                          <div class="cat">
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
-                            <ul>
-                              <li>s</li>
-                              <li>m</li>
-                              <li>xl</li>
-                            </ul>
-                          </div>
-                          <h5><a href="">Cotton fabric T-shirt</a></h5>
-                          <div class="mn-price">
-                            <div class="mn-price-new">$120</div>
-                            <div class="mn-price-old">$130</div>
-                          </div>
-                          <div class="mn-pro-option">
-                            <div class="mn-pro-color">
-                              <ul class="mn-opt-swatch mn-change-img">
-                                <li class="active">
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img active"
-                                    data-src="{{ asset('mantu/assets/img/product/5.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/5.jpg') }}"
-                                    data-tooltip="Gray"
-                                    ><span
-                                      style="
-                                        background-image: url(&quot;assets/img/product/bg/5.jpg&quot;);
-                                      "
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/6.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/6.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="
-                                        background-image: url(&quot;assets/img/product/bg/6.jpg&quot;);
-                                      "
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/7.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/7.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #e97e70"
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/8.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/8.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #70e98a"
-                                    ></span
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                            <a
-                              href="javascript:void(0);"
-                              class="mn-wishlist"
-                              data-tooltip
-                              title="Wishlist"
-                            >
-                              <i class="ri-heart-line"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mn-product-card">
-                        <div class="mn-product-img">
-                          <div class="mn-img">
-                            <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                              <img
-                                class="main-img"
-                                src="{{ asset('mantu/assets/img/product/9.jpg') }}"
-                                alt="product"
-                              />
-                              <img
-                                class="hover-img"
-                                src="{{ asset('mantu/assets/img/product/10.jpg') }}"
-                                alt="product"
-                              />
-                            </a>
-                            <div class="mn-pro-loader"></div>
-                            <div class="mn-options">
-                              <ul>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Quick View"
-                                    data-link-action="quickview"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#quickview_modal"
+                      @forelse ($relatedProducts as $relProduct)
+                        <div class="mn-product-card">
+                          <div class="mn-product-img">
+                            @if ($relProduct->is_trending)
+                              <div class="lbl">
+                                <span class="trending">trending</span>
+                              </div>
+                            @elseif ($relProduct->is_new)
+                              <div class="lbl">
+                                <span class="new">new</span>
+                              </div>
+                            @elseif ($relProduct->is_sale)
+                              <div class="lbl">
+                                <span class="sale">sale</span>
+                              </div>
+                            @elseif ($relProduct->discount_percent > 0)
+                              <div class="lbl">
+                                <span class="discount">{{ (int) $relProduct->discount_percent }}% off</span>
+                              </div>
+                            @endif
+                            <div class="mn-img">
+                              <a href="{{ route('ecommerce.products.detail', $relProduct->slug) }}" class="image">
+                                <img
+                                  class="main-img"
+                                  src="{{ $relProduct->thumbnail_url }}"
+                                  alt="{{ $relProduct->title }}"
+                                />
+                                <img
+                                  class="hover-img"
+                                  src="{{ $relProduct->thumbnail_url }}"
+                                  alt="{{ $relProduct->title }}"
+                                />
+                              </a>
+                              <div class="mn-pro-loader"></div>
+                              <div class="mn-options">
+                                <ul>
+                                  <li>
+                                    <a
+                                      href="{{ route('ecommerce.products.detail', $relProduct->slug) }}"
+                                      data-tooltip
+                                      title="Quick View"
                                     ><i class="ri-eye-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Compare"
-                                    class="mn-compare"
-                                    ><i class="ri-repeat-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Add To Cart"
-                                    class="mn-add-cart"
+                                    ></a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void(0)"
+                                      data-tooltip
+                                      title="Add To Cart"
+                                      class="mn-add-cart"
                                     ><i class="ri-shopping-cart-line"></i
-                                  ></a>
-                                </li>
-                              </ul>
+                                    ></a>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="mn-product-detail">
-                          <div class="cat">
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shoes</a>
-                            <ul>
-                              <li>7</li>
-                              <li>8</li>
-                              <li>10</li>
-                            </ul>
-                          </div>
-                          <h5><a href="">Special sport shoes</a></h5>
-                          <div class="mn-price">
-                            <div class="mn-price-new">$55</div>
-                          </div>
-                          <div class="mn-pro-option">
-                            <div class="mn-pro-color">
-                              <ul class="mn-opt-swatch mn-change-img">
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/9.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/9.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #0e0e0e"
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/10.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/10.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #c54367"
-                                    ></span
-                                  ></a>
-                                </li>
-                              </ul>
+                          <div class="mn-product-detail">
+                            <div class="cat">
+                              <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $relProduct->category?->name ?? 'Product' }}</a>
+                              @if ($relProduct->size)
+                                <ul>
+                                  <li>{{ strtolower($relProduct->size->code ?: $relProduct->size->name) }}</li>
+                                </ul>
+                              @endif
                             </div>
-                            <a
-                              href="javascript:void(0);"
-                              class="mn-wishlist active"
-                              data-tooltip
-                              title="Wishlist"
-                            >
-                              <i class="ri-heart-line"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mn-product-card">
-                        <div class="mn-product-img">
-                          <div class="lbl">
-                            <span class="new">new</span>
-                          </div>
-                          <div class="mn-img">
-                            <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                              <img
-                                class="main-img"
-                                src="{{ asset('mantu/assets/img/product/1.jpg') }}"
-                                alt="product"
-                              />
-                              <img
-                                class="hover-img"
-                                src="{{ asset('mantu/assets/img/product/3.jpg') }}"
-                                alt="product"
-                              />
-                            </a>
-                            <div class="mn-pro-loader"></div>
-                            <div class="mn-options">
-                              <ul>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Quick View"
-                                    data-link-action="quickview"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#quickview_modal"
-                                    ><i class="ri-eye-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Compare"
-                                    class="mn-compare"
-                                    ><i class="ri-repeat-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Add To Cart"
-                                    class="mn-add-cart"
-                                    ><i class="ri-shopping-cart-line"></i
-                                  ></a>
-                                </li>
-                              </ul>
+                            <h5><a href="{{ route('ecommerce.products.detail', $relProduct->slug) }}">{{ $relProduct->title }}</a></h5>
+                            <div class="mn-price">
+                              <div class="mn-price-new">Rp {{ number_format($relProduct->final_price, 0, ',', '.') }}</div>
+                              @if ($relProduct->discount_percent > 0)
+                                <div class="mn-price-old">Rp {{ number_format($relProduct->price, 0, ',', '.') }}</div>
+                              @endif
                             </div>
+                            @if ($relProduct->color)
+                              <div class="mn-pro-option">
+                                <div class="mn-pro-color">
+                                  <ul class="mn-opt-swatch mn-change-img">
+                                    <li class="active">
+                                      <a
+                                        href="{{ route('ecommerce.products.detail', $relProduct->slug) }}"
+                                        class="mn-opt-clr-img active"
+                                        data-tooltip="{{ $relProduct->color->name }}"
+                                      ><span
+                                        style="background-color: {{ $relProduct->color->color_code ?: '#000000' }}"
+                                      ></span></a>
+                                    </li>
+                                  </ul>
+                                </div>
+                                <a
+                                  href="javascript:void(0);"
+                                  class="mn-wishlist"
+                                  data-tooltip
+                                  title="Wishlist"
+                                >
+                                  <i class="ri-heart-line"></i>
+                                </a>
+                              </div>
+                            @endif
                           </div>
                         </div>
-                        <div class="mn-product-detail">
-                          <div class="cat">
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Top</a>
-                            <ul>
-                              <li>s</li>
-                              <li>m</li>
-                            </ul>
-                          </div>
-                          <h5><a href="">Cotton fabric Top</a></h5>
-                          <div class="mn-price">
-                            <div class="mn-price-new">$120</div>
-                            <div class="mn-price-old">$130</div>
-                          </div>
-                          <div class="mn-pro-option">
-                            <div class="mn-pro-color">
-                              <ul class="mn-opt-swatch mn-change-img">
-                                <li class="active">
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img active"
-                                    data-src="{{ asset('mantu/assets/img/product/1.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/3.jpg') }}"
-                                    data-tooltip="Gray"
-                                    ><span
-                                      style="background-color: #f3f3f3"
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/2.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/4.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #e8c2ff"
-                                    ></span
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                            <a
-                              href="javascript:void(0);"
-                              class="mn-wishlist"
-                              data-tooltip
-                              title="Wishlist"
-                            >
-                              <i class="ri-heart-line"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mn-product-card">
-                        <div class="mn-product-img">
-                          <div class="lbl">
-                            <span class="sale">sale</span>
-                          </div>
-                          <div class="mn-img">
-                            <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                              <img
-                                class="main-img"
-                                src="{{ asset('mantu/assets/img/product/11.jpg') }}"
-                                alt="product"
-                              />
-                              <img
-                                class="hover-img"
-                                src="{{ asset('mantu/assets/img/product/12.jpg') }}"
-                                alt="product"
-                              />
-                            </a>
-                            <div class="mn-pro-loader"></div>
-                            <div class="mn-options">
-                              <ul>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Quick View"
-                                    data-link-action="quickview"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#quickview_modal"
-                                    ><i class="ri-eye-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Compare"
-                                    class="mn-compare"
-                                    ><i class="ri-repeat-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Add To Cart"
-                                    class="mn-add-cart"
-                                    ><i class="ri-shopping-cart-line"></i
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mn-product-detail">
-                          <div class="cat">
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">watches</a>
-                          </div>
-                          <h5><a href="">Mantu smart watch</a></h5>
-                          <div class="mn-price">
-                            <div class="mn-price-new">$955</div>
-                            <div class="mn-price-old">$999</div>
-                          </div>
-                          <div class="mn-pro-option">
-                            <div class="mn-pro-color">
-                              <ul class="mn-opt-swatch mn-change-img">
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/11.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/12.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #f3f3f3"
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/12.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/11.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #242424"
-                                    ></span
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                            <a
-                              href="javascript:void(0);"
-                              class="mn-wishlist"
-                              data-tooltip
-                              title="Wishlist"
-                            >
-                              <i class="ri-heart-line"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mn-product-card">
-                        <div class="mn-product-img">
-                          <div class="lbl">
-                            <span class="discount">20% off</span>
-                          </div>
-                          <div class="mn-img">
-                            <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                              <img
-                                class="main-img"
-                                src="{{ asset('mantu/assets/img/product/13.jpg') }}"
-                                alt="product"
-                              />
-                              <img
-                                class="hover-img"
-                                src="{{ asset('mantu/assets/img/product/14.jpg') }}"
-                                alt="product"
-                              />
-                            </a>
-                            <div class="mn-pro-loader"></div>
-                            <div class="mn-options">
-                              <ul>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Quick View"
-                                    data-link-action="quickview"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#quickview_modal"
-                                    ><i class="ri-eye-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Compare"
-                                    class="mn-compare"
-                                    ><i class="ri-repeat-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Add To Cart"
-                                    class="mn-add-cart"
-                                    ><i class="ri-shopping-cart-line"></i
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mn-product-detail">
-                          <div class="cat">
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">belt</a>
-                          </div>
-                          <h5><a href="">Mantu leather belt</a></h5>
-                          <div class="mn-price">
-                            <div class="mn-price-new">$10</div>
-                            <div class="mn-price-old">$12</div>
-                          </div>
-                          <div class="mn-pro-option">
-                            <div class="mn-pro-color">
-                              <ul class="mn-opt-swatch mn-change-img">
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/13.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/14.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #d48a5b"
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/14.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/13.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #242424"
-                                    ></span
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                            <a
-                              href="javascript:void(0);"
-                              class="mn-wishlist"
-                              data-tooltip
-                              title="Wishlist"
-                            >
-                              <i class="ri-heart-line"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mn-product-card">
-                        <div class="mn-product-img">
-                          <div class="mn-img">
-                            <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                              <img
-                                class="main-img"
-                                src="{{ asset('mantu/assets/img/product/15.jpg') }}"
-                                alt="product"
-                              />
-                              <img
-                                class="hover-img"
-                                src="{{ asset('mantu/assets/img/product/16.jpg') }}"
-                                alt="product"
-                              />
-                            </a>
-                            <div class="mn-pro-loader"></div>
-                            <div class="mn-options">
-                              <ul>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Quick View"
-                                    data-link-action="quickview"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#quickview_modal"
-                                    ><i class="ri-eye-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Compare"
-                                    class="mn-compare"
-                                    ><i class="ri-repeat-line"></i
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="javascript:void(0)"
-                                    data-tooltip
-                                    title="Add To Cart"
-                                    class="mn-add-cart"
-                                    ><i class="ri-shopping-cart-line"></i
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="mn-product-detail">
-                          <div class="cat">
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bag</a>
-                            <ul>
-                              <li>m</li>
-                              <li>l</li>
-                            </ul>
-                          </div>
-                          <h5><a href="">Leather bag</a></h5>
-                          <div class="mn-price">
-                            <div class="mn-price-new">$66</div>
-                          </div>
-                          <div class="mn-pro-option">
-                            <div class="mn-pro-color">
-                              <ul class="mn-opt-swatch mn-change-img">
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/15.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/16.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #b75956"
-                                    ></span
-                                  ></a>
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="mn-opt-clr-img"
-                                    data-src="{{ asset('mantu/assets/img/product/16.jpg') }}"
-                                    data-src-hover="{{ asset('mantu/assets/img/product/15.jpg') }}"
-                                    data-tooltip="Orange"
-                                    ><span
-                                      style="background-color: #0e0e0e"
-                                    ></span
-                                  ></a>
-                                </li>
-                              </ul>
-                            </div>
-                            <a
-                              href="javascript:void(0);"
-                              class="mn-wishlist"
-                              data-tooltip
-                              title="Wishlist"
-                            >
-                              <i class="ri-heart-line"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+                      @empty
+                        <p class="text-muted p-3">No related products found.</p>
+                      @endforelse
                     </div>
                   </section>
                 </div>
@@ -1368,138 +754,18 @@
                       <!-- Sidebar Filters Block -->
                       <div class="mn-sidebar-block drop">
                         <div class="mn-sb-title">
-                          <h3 class="mn-sidebar-title">Filters</h3>
+                          <h3 class="mn-sidebar-title">Categories</h3>
                         </div>
                         <div class="mn-sb-block-content p-t-15">
                           <ul>
-                            <li>
-                              <a
-                                href="javascript:void(0)"
-                                class="mn-sidebar-block-item main drop"
-                                >clothes</a
-                              >
-                              <ul style="display: block">
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="#">Men <span>-25</span></a>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="#">Women <span>-52</span></a>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="#">Boy <span>-40</span></a>
-                                  </div>
-                                </li>
-                              </ul>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="mn-sb-block-content">
-                          <ul>
-                            <li>
-                              <a
-                                href="javascript:void(0)"
-                                class="mn-sidebar-block-item main drop"
-                                >cosmetics</a
-                              >
-                              <ul>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Shampoo <span>-25</span></a
-                                    >
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Body Wash <span>-52</span></a
-                                    >
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Sunscreen <span>-40</span></a
-                                    >
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Makeup <span>-35</span></a
-                                    >
-                                  </div>
-                                </li>
-                              </ul>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="mn-sb-block-content">
-                          <ul>
-                            <li>
-                              <a
-                                href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                class="mn-sidebar-block-item main"
-                                >shoes<span>-15</span></a
-                              >
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="mn-sb-block-content">
-                          <ul>
-                            <li>
-                              <a
-                                href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                class="mn-sidebar-block-item main"
-                                >bag<span>-27</span></a
-                              >
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="mn-sb-block-content">
-                          <ul>
-                            <li>
-                              <a
-                                href="javascript:void(0)"
-                                class="mn-sidebar-block-item main drop"
-                                >electronics</a
-                              >
-                              <ul>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Laptop <span>-25</span></a
-                                    >
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Air Conditioner <span>-52</span></a
-                                    >
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Trimmer <span>-40</span></a
-                                    >
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="mn-sidebar-sub-item">
-                                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                                      >Watches <span>-35</span></a
-                                    >
-                                  </div>
-                                </li>
-                              </ul>
-                            </li>
+                            @foreach ($sidebarCategories as $sbCat)
+                              <li>
+                                <a
+                                  href="{{ route('ecommerce.shop-right-sidebar.html') }}"
+                                  class="mn-sidebar-block-item main"
+                                >{{ $sbCat->name }} <span>-{{ $sbCat->products_count ?? $sbCat->products()->count() }}</span></a>
+                              </li>
+                            @endforeach
                           </ul>
                         </div>
                       </div>
@@ -1510,80 +776,36 @@
                         </div>
                         <div class="mn-sb-block-content">
                           <ul>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" checked />
-                                <a href="javascript:void(0)">
-                                  <span>Zencart Mart</span>
-                                </a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" />
-                                <a href="javascript:void(0)">
-                                  <span>Xeta Store</span>
-                                </a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" />
-                                <a href="javascript:void(0)">
-                                  <span>Pili Market</span>
-                                </a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" />
-                                <a href="javascript:void(0)">
-                                  <span>Indiana Store</span>
-                                </a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
+                            @foreach ($sidebarBrands as $sbBrand)
+                              <li>
+                                <div class="mn-sidebar-block-item">
+                                  <input type="checkbox" {{ ($product?->brand_id == $sbBrand->id) ? 'checked' : '' }} />
+                                  <a href="javascript:void(0)">
+                                    <span>{{ $sbBrand->name }}</span>
+                                  </a>
+                                  <span class="checked"></span>
+                                </div>
+                              </li>
+                            @endforeach
                           </ul>
                         </div>
                       </div>
-                      <!-- Sidebar Weight Block -->
+                      <!-- Sidebar Size Block -->
                       <div class="mn-sidebar-block">
                         <div class="mn-sb-title">
                           <h3 class="mn-sidebar-title">Size</h3>
                         </div>
                         <div class="mn-sb-block-content">
                           <ul>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" checked />
-                                <a href="#">S - Size</a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <a href="#">M - Size</a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <a href="#">L - Size</a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <a href="#">XL - Size</a>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
+                            @foreach ($sidebarSizes as $sbSize)
+                              <li>
+                                <div class="mn-sidebar-block-item">
+                                  <input type="checkbox" value="" {{ ($product?->size_id == $sbSize->id) ? 'checked' : '' }} />
+                                  <a href="#">{{ $sbSize->name }} ({{ $sbSize->code }})</a>
+                                  <span class="checked"></span>
+                                </div>
+                              </li>
+                            @endforeach
                           </ul>
                         </div>
                       </div>
@@ -1596,136 +818,18 @@
                         </div>
                         <div class="mn-sb-block-content">
                           <ul>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #c4d6f9"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #ff748b"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #000000"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li class="active">
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #2bff4a"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #ff7c5e"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #f155ff"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #ffef00"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #c89fff"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #7bfffa"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #56ffc1"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #ffdb9f"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #9f9f9f"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
-                            <li>
-                              <div class="mn-sidebar-block-item">
-                                <input type="checkbox" value="" />
-                                <span
-                                  class="mn-clr-block"
-                                  style="background-color: #6556ff"
-                                ></span>
-                                <span class="checked"></span>
-                              </div>
-                            </li>
+                            @foreach ($sidebarColors as $sbColor)
+                              <li class="{{ ($product?->color_id == $sbColor->id) ? 'active' : '' }}" title="{{ $sbColor->name }}">
+                                <div class="mn-sidebar-block-item">
+                                  <input type="checkbox" value="" {{ ($product?->color_id == $sbColor->id) ? 'checked' : '' }} />
+                                  <span
+                                    class="mn-clr-block"
+                                    style="background-color: {{ $sbColor->color_code ?: '#000000' }}"
+                                  ></span>
+                                  <span class="checked"></span>
+                                </div>
+                              </li>
+                            @endforeach
                           </ul>
                         </div>
                       </div>
@@ -1763,27 +867,15 @@
                           <h3 class="mn-sidebar-title">Tags</h3>
                         </div>
                         <div class="mn-tag-block mn-sb-block-content">
-                          <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                            ><span>Clothes</span></a
-                          >
-                          <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                            ><span>Fruits</span></a
-                          >
-                          <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                            ><span>Snacks</span></a
-                          >
-                          <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                            ><span>Dairy</span></a
-                          >
-                          <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                            ><span>Seafood</span></a
-                          >
-                          <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                            ><span>Fastfood</span></a
-                          >
-                          <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"
-                            ><span>Toys</span></a
-                          >
+                          @if (! empty($product?->tags) && is_array($product->tags))
+                            @foreach ($product->tags as $tag)
+                              <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>{{ $tag }}</span></a>
+                            @endforeach
+                          @else
+                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>Clothes</span></a>
+                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>Shoes</span></a>
+                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>Bags</span></a>
+                          @endif
                         </div>
                       </div>
                     </div>

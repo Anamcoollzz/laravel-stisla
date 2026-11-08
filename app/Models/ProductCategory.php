@@ -77,6 +77,16 @@ class ProductCategory extends Model
     }
 
     /**
+     * Products belonging to this category.
+     *
+     * @return HasMany<Product, $this>
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class, 'category_id');
+    }
+
+    /**
      * Determine category level (1, 2, or 3).
      */
     public function getLevelAttribute(): int

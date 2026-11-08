@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/ecommerce', '/ecommerce-pages/index.html');
 Route::redirect('/ecommerce-pages', '/ecommerce-pages/index.html');
+
+Route::get('/ecommerce/products/{slug}', [EcommerceProductController::class, 'show'])
+    ->name('ecommerce.products.detail');
 
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [

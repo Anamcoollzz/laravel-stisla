@@ -172,14 +172,14 @@
                       </div>
                     @endif
                     <div class="mn-img">
-                      <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
+                      <a href="{{ route('ecommerce.products.detail', $product->slug) }}" class="image">
                         <img class="main-img" src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}">
                         <img class="hover-img" src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}">
                       </a>
                       <div class="mn-pro-loader"></div>
                       <div class="mn-options">
                         <ul>
-                          <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal">
+                          <li><a href="{{ route('ecommerce.products.detail', $product->slug) }}" data-tooltip title="Quick View">
                               <i class="ri-eye-line"></i></a></li>
                           <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
                           <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
@@ -197,7 +197,7 @@
                         </ul>
                       @endif
                     </div>
-                    <h5><a href="{{ route('ecommerce.product-detail.html') }}">{{ $product->title }}</a></h5>
+                    <h5><a href="{{ route('ecommerce.products.detail', $product->slug) }}">{{ $product->title }}</a></h5>
                     <div class="mn-price">
                       <div class="mn-price-new">Rp {{ number_format($product->final_price, 0, ',', '.') }}</div>
                       @if ($product->discount_percent > 0)
