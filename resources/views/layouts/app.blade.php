@@ -93,72 +93,42 @@
           </div>
         </form>
         <ul class="navbar-nav navbar-right">
-          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle beep"><i class="far fa-envelope"></i></a>
-            <div class="dropdown-menu dropdown-list dropdown-menu-right">
-              <div class="dropdown-header">Messages
-                <div class="float-right">
-                  <a href="#">Mark All As Read</a>
+          @can('chat.view')
+            <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" @class(['nav-link nav-link-lg message-toggle', 'beep' => $navUnreadCount > 0])><i class="far fa-envelope"></i></a>
+              <div class="dropdown-menu dropdown-list dropdown-menu-right">
+                <div class="dropdown-header">{{ __('Messages') }}
+                  @if ($navUnreadCount > 0)
+                    <div class="float-right">
+                      <a href="#" onclick="event.preventDefault(); document.getElementById('mark-all-read-form').submit();">{{ __('Mark All As Read') }}</a>
+                    </div>
+                  @endif
+                </div>
+                <div class="dropdown-list-content dropdown-list-message">
+                  @forelse ($navMessages as $navMessage)
+                    <a href="{{ route('chat.index', ['user' => $navMessage->sender_id]) }}" @class(['dropdown-item', 'dropdown-item-unread' => ! $navMessage->is_read])>
+                      <div class="dropdown-item-avatar">
+                        <img alt="image" src="{{ $navMessage->sender?->avatar_url ?? asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle">
+                        @if ($navMessage->sender?->isOnline())
+                          <div class="is-online"></div>
+                        @endif
+                      </div>
+                      <div class="dropdown-item-desc">
+                        <b>{{ $navMessage->sender?->name ?? __('Unknown') }}</b>
+                        <p>{{ \Illuminate\Support\Str::limit($navMessage->message, 60) }}</p>
+                        <div class="time">{{ $navMessage->created_at?->diffForHumans() }}</div>
+                      </div>
+                    </a>
+                  @empty
+                    <div class="dropdown-item text-center text-muted">{{ __('No messages yet') }}</div>
+                  @endforelse
+                </div>
+                <div class="dropdown-footer text-center">
+                  <a href="{{ route('chat.index') }}">{{ __('View All') }} <i class="fas fa-chevron-right"></i></a>
                 </div>
               </div>
-              <div class="dropdown-list-content dropdown-list-message">
-                <a href="#" class="dropdown-item dropdown-item-unread">
-                  <div class="dropdown-item-avatar">
-                    <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle">
-                    <div class="is-online"></div>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>Kusnaedi</b>
-                    <p>Hello, Bro!</p>
-                    <div class="time">10 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item dropdown-item-unread">
-                  <div class="dropdown-item-avatar">
-                    <img alt="image" src="{{ asset('assets/img/avatar/avatar-2.png') }}" class="rounded-circle">
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>Dedik Sugiharto</b>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                    <div class="time">12 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item dropdown-item-unread">
-                  <div class="dropdown-item-avatar">
-                    <img alt="image" src="{{ asset('assets/img/avatar/avatar-3.png') }}" class="rounded-circle">
-                    <div class="is-online"></div>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>Agung Ardiansyah</b>
-                    <p>Sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    <div class="time">12 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-avatar">
-                    <img alt="image" src="{{ asset('assets/img/avatar/avatar-4.png') }}" class="rounded-circle">
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>Ardian Rahardiansyah</b>
-                    <p>Duis aute irure dolor in reprehenderit in voluptate velit ess</p>
-                    <div class="time">16 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-avatar">
-                    <img alt="image" src="{{ asset('assets/img/avatar/avatar-5.png') }}" class="rounded-circle">
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>Alfa Zulkarnain</b>
-                    <p>Exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-                    <div class="time">Yesterday</div>
-                  </div>
-                </a>
-              </div>
-              <div class="dropdown-footer text-center">
-                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-              </div>
-            </div>
-          </li>
+              <form id="mark-all-read-form" action="{{ route('chat.readAll') }}" method="POST" class="d-none">@csrf</form>
+            </li>
+          @endcan
           <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
               <div class="dropdown-header">Notifications
@@ -348,12 +318,15 @@
                       @can('tickets.view')
                         <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
                       @endcan
+                      @can('chat.view')
+                        <li @class(['active' => request()->routeIs('chat.*')])><a class="nav-link" href="{{ route('chat.index') }}">{{ __('Chat Box') }}</a></li>
+                      @endcan
                     </ul>
                   </li>
                 @endcanany
-                @canany(['users.view', 'roles.view', 'permissions.view', 'menus.view'])
+                @canany(['users.view', 'roles.view', 'permissions.view', 'menus.view', 'backup.view'])
                   <li class="menu-header">{{ __('User Management') }}</li>
-                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*', 'permissions.*', 'menus.*')])>
+                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*', 'permissions.*', 'menus.*', 'backups.*')])>
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
                     <ul class="dropdown-menu">
                       @can('users.view')
@@ -368,9 +341,18 @@
                       @can('menus.view')
                         <li @class(['active' => request()->routeIs('menus.*')])><a class="nav-link" href="{{ route('menus.index') }}">{{ __('Menu Management') }}</a></li>
                       @endcan
+                      @can('backup.view')
+                        <li @class(['active' => request()->routeIs('backups.*')])><a class="nav-link" href="{{ route('backups.index') }}">{{ __('Database Backup') }}</a></li>
+                      @endcan
                     </ul>
                   </li>
                 @endcanany
+                @can('settings.view')
+                  <li class="menu-header">{{ __('Settings') }}</li>
+                  <li @class(['active' => request()->routeIs('settings.*')])>
+                    <a class="nav-link" href="{{ route('settings.index') }}"><i class="fas fa-cog"></i> <span>{{ __('Settings') }}</span></a>
+                  </li>
+                @endcan
               @endif
             </ul>
           </aside>

@@ -126,6 +126,9 @@
               </form>
             </div>
           </div>
+          <div class="mt-5 text-muted text-center">
+            {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
+          </div>
           <div class="simple-footer">
             Copyright &copy; Stisla 2018
           </div>

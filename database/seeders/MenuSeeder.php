@@ -50,6 +50,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Fields', 'route' => 'fields.index', 'permission' => 'fields.view', 'order' => 5],
             ['name' => 'SPP Payments', 'route' => 'spp-payments.index', 'permission' => 'spp-payments.view', 'order' => 6],
             ['name' => 'Tickets', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 7],
+            ['name' => 'Chat Box', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 8],
         ];
 
         foreach ($moduleChildren as $child) {
@@ -85,6 +86,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Roles', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 2],
             ['name' => 'Permissions', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 3],
             ['name' => 'Menu Management', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 4],
+            ['name' => 'Database Backup', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 5],
         ];
 
         foreach ($accessChildren as $child) {
@@ -99,5 +101,21 @@ class MenuSeeder extends Seeder
                 ]
             );
         }
+
+        // 4. Settings Section
+        Menu::firstOrCreate(
+            ['name' => 'Settings', 'type' => 'header'],
+            ['order' => 70, 'is_active' => true]
+        );
+
+        Menu::firstOrCreate(
+            ['name' => 'Settings', 'type' => 'item', 'route' => 'settings.index'],
+            [
+                'icon' => 'fas fa-cog',
+                'permission' => 'settings.view',
+                'order' => 80,
+                'is_active' => true,
+            ]
+        );
     }
 }

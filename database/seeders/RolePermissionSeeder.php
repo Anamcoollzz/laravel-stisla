@@ -30,6 +30,9 @@ class RolePermissionSeeder extends Seeder
             'fields' => ['view', 'create', 'edit', 'delete'],
             'tickets' => ['view', 'create', 'edit', 'delete'],
             'menus' => ['view', 'create', 'edit', 'delete'],
+            'chat' => ['view', 'create', 'delete'],
+            'backup' => ['view', 'create', 'download', 'delete'],
+            'settings' => ['view', 'edit'],
         ];
 
         $allPermissions = [];
@@ -71,6 +74,9 @@ class RolePermissionSeeder extends Seeder
             'tickets.view',
             'tickets.create',
             'tickets.edit',
+            'chat.view',
+            'chat.create',
+            'chat.delete',
         ]);
 
         // Create User / Viewer role
@@ -84,6 +90,8 @@ class RolePermissionSeeder extends Seeder
             'spp-payments.view',
             'tickets.view',
             'tickets.create',
+            'chat.view',
+            'chat.create',
         ]);
     }
 }

@@ -110,6 +110,9 @@
         @can('tickets.view')
           <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
         @endcan
+        @can('chat.view')
+          <li @class(['active' => request()->routeIs('chat.*')])><a class="nav-link" href="{{ route('chat.index') }}">{{ __('Chat Box') }}</a></li>
+        @endcan
         <li @class(['active' => request()->routeIs('modules-calendar.html')])><a class="nav-link" href="{{ route('modules-calendar.html') }}">Calendar</a></li>
         <li @class(['active' => request()->routeIs('modules-chartjs.html')])><a class="nav-link" href="{{ route('modules-chartjs.html') }}">ChartJS</a></li>
         <li @class(['active' => request()->routeIs('modules-datatables.html')])><a class="nav-link" href="{{ route('modules-datatables.html') }}">DataTables</a></li>

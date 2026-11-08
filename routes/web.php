@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BackupController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LocaleController;
@@ -11,6 +14,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -27,6 +31,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/auth/login', [LoginController::class, 'login'])->name('login.attempt');
 
+    Route::get('/auth/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/auth/register', [RegisterController::class, 'register'])->name('register.store');
+
     Route::get('/auth/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
     Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
     Route::get('/auth/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
@@ -39,6 +46,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('/settings/{group}', [SettingController::class, 'show'])->name('settings.show');
+    Route::put('/settings/{group}', [SettingController::class, 'update'])->name('settings.update');
+    Route::delete('/settings/{group}', [SettingController::class, 'reset'])->name('settings.reset');
+
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
@@ -106,6 +118,17 @@ Route::middleware('auth')->group(function () {
     Route::get('tickets/export-pdf', [TicketController::class, 'exportPdf'])->name('tickets.exportPdf');
     Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
     Route::resource('tickets', TicketController::class);
+
+    Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');
+    Route::post('chat/{user}', [ChatController::class, 'send'])->name('chat.send');
+    Route::get('chat/{user}/messages', [ChatController::class, 'fetchMessages'])->name('chat.messages');
+    Route::delete('chat/{user}/clear', [ChatController::class, 'clear'])->name('chat.clear');
+
+    Route::get('backups', [BackupController::class, 'index'])->name('backups.index');
+    Route::post('backups', [BackupController::class, 'create'])->name('backups.create');
+    Route::get('backups/{filename}/download', [BackupController::class, 'download'])->name('backups.download');
+    Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
 });
 
 require __DIR__.'/pages-web.php';

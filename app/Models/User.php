@@ -68,4 +68,28 @@ class User extends Authenticatable
     {
         return $this->hasMany(TicketReply::class);
     }
+
+    /**
+     * @return HasMany<ChatMessage, $this>
+     */
+    public function sentMessages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class, 'sender_id');
+    }
+
+    /**
+     * @return HasMany<ChatMessage, $this>
+     */
+    public function receivedMessages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class, 'receiver_id');
+    }
+
+    /**
+     * Check if user was recently active.
+     */
+    public function isOnline(): bool
+    {
+        return $this->last_logged_in !== null && $this->last_logged_in->gt(now()->subHours(2));
+    }
 }
