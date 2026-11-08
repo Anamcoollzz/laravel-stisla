@@ -136,6 +136,9 @@
           </div>
           <div class="simple-footer">
             Copyright &copy; {{ $siteTitle }} {{ \App\Models\Setting::getValue('year', date('Y')) }}
+            <div class="mt-1">
+              <a href="{{ route('privacy-policy') }}">{{ __('Privacy Policy') }}</a>
+            </div>
           </div>
         </div>
       </div>

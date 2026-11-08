@@ -126,7 +126,7 @@
                   <div class="col-sm-6 col-md-9">
                     @switch($field['type'])
                       @case('textarea')
-                        <textarea id="{{ $key }}" name="{{ $key }}" class="form-control @error($key) is-invalid @enderror" style="height: 100px" @disabled(! $canEdit)>{{ $value }}</textarea>
+                        <textarea id="{{ $key }}" name="{{ $key }}" class="form-control @error($key) is-invalid @enderror" style="height: {{ $field['height'] ?? '100px' }}" @disabled(! $canEdit)>{{ $value }}</textarea>
                         @break
 
                       @case('code')

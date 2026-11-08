@@ -142,6 +142,9 @@
 
         <div class="text-center p-4 text-small text-muted">
           Copyright &copy; {{ $siteTitle }} {{ $year }}. {{ __('Made with 💙 by Stisla') }}
+          <div class="mt-2">
+            <a href="{{ route('privacy-policy') }}">{{ __('Privacy Policy') }}</a>
+          </div>
         </div>
       </div>
 

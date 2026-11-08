@@ -18,6 +18,13 @@ return [
                 'country' => ['label' => 'Country', 'type' => 'text', 'default' => 'Indonesia', 'help' => 'Country displayed on login cover and application info', 'rules' => ['nullable', 'string', 'max:255']],
                 'site_logo' => ['label' => 'Site Logo', 'type' => 'image', 'help' => 'The image must have a maximum size of 1MB'],
                 'site_favicon' => ['label' => 'Favicon', 'type' => 'image', 'help' => 'The image must have a maximum size of 1MB'],
+                'privacy_policy' => [
+                    'label' => 'Privacy Policy Content',
+                    'type' => 'textarea',
+                    'height' => '240px',
+                    'help' => 'Content for the privacy policy page. HTML or plain text is allowed. If left empty, default template will be displayed.',
+                    'rules' => ['nullable', 'string', 'max:50000'],
+                ],
                 'login_layout' => [
                     'label' => 'Login Layout',
                     'type' => 'select',

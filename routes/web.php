@@ -11,6 +11,7 @@ use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
@@ -25,9 +26,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/pages/index.html');
 Route::get('/lang/{locale}', [LocaleController::class, 'switch']);
+Route::get('/privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
 
 Route::prefix('app')->group(function () {
     Route::redirect('/', '/app/dashboard');
+    Route::get('/privacy-policy', PrivacyPolicyController::class);
 
     Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('lang.switch');
 
