@@ -13,7 +13,23 @@ class Setting extends Model
      */
     public static function getValue(string $key, ?string $default = null): ?string
     {
-        $value = static::query()->where('key', $key)->value('value');
+        $aliases = [
+            'app_name' => 'site_title',
+            'site_title' => 'app_name',
+            'app_year' => 'year',
+            'year' => 'app_year',
+            'app_city' => 'city',
+            'city' => 'app_city',
+            'app_country' => 'country',
+            'country' => 'app_country',
+        ];
+
+        $keys = [$key];
+        if (isset($aliases[$key])) {
+            $keys[] = $aliases[$key];
+        }
+
+        $value = static::query()->whereIn('key', $keys)->value('value');
 
         return $value ?? $default;
     }

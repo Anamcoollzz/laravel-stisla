@@ -1,9 +1,13 @@
 <aside id="sidebar-wrapper">
+  @php
+    $siteTitle = \App\Models\Setting::getValue('site_title', 'Stisla');
+    $shortTitle = strtoupper(substr($siteTitle, 0, 2));
+  @endphp
   <div class="sidebar-brand">
-    <a href="{{ route('index.html') }}">Stisla</a>
+    <a href="{{ route('index.html') }}">{{ $siteTitle }}</a>
   </div>
   <div class="sidebar-brand sidebar-brand-sm">
-    <a href="{{ route('index.html') }}">St</a>
+    <a href="{{ route('index.html') }}">{{ $shortTitle }}</a>
   </div>
   <ul class="sidebar-menu">
     <li class="menu-header">Dashboard</li>

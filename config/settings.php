@@ -9,10 +9,13 @@ return [
         'general' => [
             'label' => 'General',
             'icon' => 'fas fa-cog',
-            'description' => 'General settings such as, site title, site description, address and so on.',
+            'description' => 'General settings such as site title, description, year, city, country, logo and layout.',
             'fields' => [
-                'site_title' => ['label' => 'Site Title', 'type' => 'text', 'default' => 'Stisla', 'rules' => ['string', 'max:255']],
+                'site_title' => ['label' => 'Application Name', 'type' => 'text', 'default' => 'Stisla', 'rules' => ['string', 'max:255']],
                 'site_description' => ['label' => 'Site Description', 'type' => 'textarea', 'rules' => ['string', 'max:1000']],
+                'year' => ['label' => 'Year', 'type' => 'number', 'default' => '2026', 'help' => 'Year displayed on copyright, footer, and login page', 'rules' => ['nullable', 'integer', 'between:1900,2100']],
+                'city' => ['label' => 'City', 'type' => 'text', 'default' => 'Bali', 'help' => 'City displayed on login cover and application info', 'rules' => ['nullable', 'string', 'max:255']],
+                'country' => ['label' => 'Country', 'type' => 'text', 'default' => 'Indonesia', 'help' => 'Country displayed on login cover and application info', 'rules' => ['nullable', 'string', 'max:255']],
                 'site_logo' => ['label' => 'Site Logo', 'type' => 'image', 'help' => 'The image must have a maximum size of 1MB'],
                 'site_favicon' => ['label' => 'Favicon', 'type' => 'image', 'help' => 'The image must have a maximum size of 1MB'],
                 'login_layout' => [

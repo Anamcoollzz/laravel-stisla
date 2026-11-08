@@ -33,6 +33,9 @@
     $siteTitle = \App\Models\Setting::getValue('site_title', 'Stisla');
     $siteLogo = \App\Models\Setting::getValue('site_logo');
     $logoUrl = $siteLogo ? \Illuminate\Support\Facades\Storage::disk('public')->url($siteLogo) : asset('assets/img/stisla-fill.svg');
+    $year = \App\Models\Setting::getValue('year', date('Y'));
+    $city = \App\Models\Setting::getValue('city', 'Bali');
+    $country = \App\Models\Setting::getValue('country', 'Indonesia');
     $hour = (int) now()->format('H');
     $greeting = match(true) {
         $hour < 12 => __('Good Morning'),
@@ -138,7 +141,7 @@
         </div>
 
         <div class="text-center p-4 text-small text-muted">
-          Copyright &copy; {{ $siteTitle }} {{ date('Y') }}. {{ __('Made with 💙 by Stisla') }}
+          Copyright &copy; {{ $siteTitle }} {{ $year }}. {{ __('Made with 💙 by Stisla') }}
         </div>
       </div>
 
@@ -147,7 +150,7 @@
           <div class="text-light p-5 pb-2">
             <div class="mb-5 pb-3">
               <h1 class="mb-2 display-4 font-weight-bold">{{ $greeting }}</h1>
-              <h5 class="font-weight-normal text-muted-transparent">Bali, Indonesia</h5>
+              <h5 class="font-weight-normal text-muted-transparent">{{ $city }}, {{ $country }}</h5>
             </div>
             Photo by <a class="text-light bb" target="_blank" href="https://unsplash.com/photos/a8lTjWJJgLA">Justin Kauffman</a> on <a class="text-light bb" target="_blank" href="https://unsplash.com">Unsplash</a>
           </div>

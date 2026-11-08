@@ -250,7 +250,7 @@
       </nav>
       <div class="main-sidebar">
         <aside id="sidebar-wrapper">
-          <div class="sidebar-brand sidebar-gone-show"><a href="{{ route('index.html') }}">Stisla</a></div>
+          <div class="sidebar-brand sidebar-gone-show"><a href="{{ route('index.html') }}">{{ \App\Models\Setting::getValue('site_title', 'Stisla') }}</a></div>
           <ul class="sidebar-menu">
               <li class="menu-header">Dashboard</li>
               <li class="nav-item dropdown">

@@ -135,7 +135,7 @@
             {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
           </div>
           <div class="simple-footer">
-            Copyright &copy; Stisla 2018
+            Copyright &copy; {{ $siteTitle }} {{ \App\Models\Setting::getValue('year', date('Y')) }}
           </div>
         </div>
       </div>
