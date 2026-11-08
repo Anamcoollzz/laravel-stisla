@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             StudentSeeder::class,
             SubjectSeeder::class,
             SppPaymentSeeder::class,
+            TicketSeeder::class,
         ]);
     }
 }

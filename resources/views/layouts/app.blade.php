@@ -287,9 +287,9 @@
               <li @class(['active' => request()->routeIs('dashboard')])>
                 <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
               </li>
-              @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'spp-payments.view'])
+              @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'spp-payments.view', 'tickets.view'])
                 <li class="menu-header">{{ __('Modules') }}</li>
-                <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*')])>
+                <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*', 'tickets.*')])>
                   <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
                   <ul class="dropdown-menu">
                     @can('classes.view')
@@ -306,6 +306,9 @@
                     @endcan
                     @can('spp-payments.view')
                       <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
+                    @endcan
+                    @can('tickets.view')
+                      <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
                     @endcan
                   </ul>
                 </li>
