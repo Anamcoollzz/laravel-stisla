@@ -76,9 +76,9 @@
               <h3>Clothes</h3>
               <p>Items (16)</p>
               <ul>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/1.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/2.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/3.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/1.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/2.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/3.jpg') }}" alt="category"></a></li>
               </ul>
             </div>
             <div class="mn-cat-card cat-card-2">
@@ -88,9 +88,9 @@
               <h3>Cosmetics</h3>
               <p>Items (45)</p>
               <ul>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/4.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/5.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/6.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/4.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/5.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/6.jpg') }}" alt="category"></a></li>
               </ul>
             </div>
             <div class="mn-cat-card cat-card-3">
@@ -100,9 +100,9 @@
               <h3>Shoes</h3>
               <p>Items (58)</p>
               <ul>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/7.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/8.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/9.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/7.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/8.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/9.jpg') }}" alt="category"></a></li>
               </ul>
             </div>
             <div class="mn-cat-card cat-card-4">
@@ -112,9 +112,9 @@
               <h3>watches</h3>
               <p>Items (64)</p>
               <ul>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/10.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/11.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/12.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/10.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/11.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/12.jpg') }}" alt="category"></a></li>
               </ul>
             </div>
             <div class="mn-cat-card cat-card-5">
@@ -124,9 +124,9 @@
               <h3>belts</h3>
               <p>Items (75)</p>
               <ul>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/13.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/14.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/15.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/13.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/14.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/15.jpg') }}" alt="category"></a></li>
               </ul>
             </div>
             <div class="mn-cat-card cat-card-6">
@@ -136,9 +136,9 @@
               <h3>Bags</h3>
               <p>Items (15)</p>
               <ul>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/16.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/17.jpg') }}" alt="category"></a></li>
-                <li><a href="shop-right-sidebar.html"><img src="{{ asset('mantu/assets/img/category/18.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/16.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/17.jpg') }}" alt="category"></a></li>
+                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/18.jpg') }}" alt="category"></a></li>
               </ul>
             </div>
           </div>
@@ -156,7 +156,7 @@
                   <span class="trending">trending</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/5.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/6.jpg') }}" alt="product">
                   </a>
@@ -174,7 +174,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">T-shirt</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
                   <ul>
                     <li>s</li>
                     <li>m</li>
@@ -210,7 +210,7 @@
             <div class="mn-product-card">
               <div class="mn-product-img">
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/9.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/10.jpg') }}" alt="product">
                   </a>
@@ -227,7 +227,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">Shoes</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shoes</a>
                   <ul>
                     <li>7</li>
                     <li>8</li>
@@ -259,7 +259,7 @@
                   <span class="new">new</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/1.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/3.jpg') }}" alt="product">
                   </a>
@@ -276,7 +276,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">Top</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Top</a>
                   <ul>
                     <li>s</li>
                     <li>m</li>
@@ -308,7 +308,7 @@
                   <span class="sale">sale</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/11.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/12.jpg') }}" alt="product">
                   </a>
@@ -325,7 +325,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">watches</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">watches</a>
                 </div>
                 <h5><a href="">Mantu smart watch</a></h5>
                 <div class="mn-price">
@@ -353,7 +353,7 @@
                   <span class="discount">20% off</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/13.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/14.jpg') }}" alt="product">
                   </a>
@@ -370,7 +370,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">belt</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">belt</a>
                 </div>
                 <h5><a href="">Mantu leather belt</a></h5>
                 <div class="mn-price">
@@ -395,7 +395,7 @@
             <div class="mn-product-card">
               <div class="mn-product-img">
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/15.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/16.jpg') }}" alt="product">
                   </a>
@@ -412,7 +412,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">Bag</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bag</a>
                   <ul>
                     <li>m</li>
                     <li>l</li>
@@ -555,7 +555,7 @@
                       <p>New Stylish Shirts, Pants & Accessries.</p>
                     </div>
                     <div class="banner-btn">
-                      <a href="room-details.html" class="mn-btn-1"><span>Book
+                      <a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-btn-1"><span>Book
                           Now</span></a>
                     </div>
                   </div>
@@ -572,7 +572,7 @@
                       <p>New Stylish Shirts, Pants & Accessries.</p>
                     </div>
                     <div class="banner-btn">
-                      <a href="room-details.html" class="mn-btn-1"><span>Book
+                      <a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-btn-1"><span>Book
                           Now</span></a>
                     </div>
                   </div>
@@ -598,7 +598,7 @@
                   <span class="new">new</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/17.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/18.jpg') }}" alt="product">
                   </a>
@@ -615,7 +615,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">T-shirt</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
                   <ul>
                     <li>s</li>
                     <li>m</li>
@@ -650,7 +650,7 @@
                   <span class="sale">Sale</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/23.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/24.jpg') }}" alt="product">
                   </a>
@@ -667,7 +667,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">T-shirt</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
                   <ul>
                     <li>s</li>
                     <li>m</li>
@@ -701,7 +701,7 @@
                   <span class="trending">trending</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/5.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/6.jpg') }}" alt="product">
                   </a>
@@ -718,7 +718,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">T-shirt</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
                   <ul>
                     <li>s</li>
                     <li>m</li>
@@ -754,7 +754,7 @@
             <div class="mn-product-card">
               <div class="mn-product-img">
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/9.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/10.jpg') }}" alt="product">
                   </a>
@@ -771,7 +771,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">Shoes</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shoes</a>
                   <ul>
                     <li>7</li>
                     <li>8</li>
@@ -803,7 +803,7 @@
                   <span class="new">new</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/1.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/3.jpg') }}" alt="product">
                   </a>
@@ -820,7 +820,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">Top</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Top</a>
                   <ul>
                     <li>s</li>
                     <li>m</li>
@@ -852,7 +852,7 @@
                   <span class="sale">sale</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/11.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/12.jpg') }}" alt="product">
                   </a>
@@ -869,7 +869,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">watches</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">watches</a>
                 </div>
                 <h5><a href="">Mantu smart watch</a></h5>
                 <div class="mn-price">
@@ -897,7 +897,7 @@
                   <span class="discount">20% off</span>
                 </div>
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/13.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/14.jpg') }}" alt="product">
                   </a>
@@ -914,7 +914,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">belt</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">belt</a>
                 </div>
                 <h5><a href="">Mantu leather belt</a></h5>
                 <div class="mn-price">
@@ -939,7 +939,7 @@
             <div class="mn-product-card">
               <div class="mn-product-img">
                 <div class="mn-img">
-                  <a href="product-detail.html" class="image">
+                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
                     <img class="main-img" src="{{ asset('mantu/assets/img/product/15.jpg') }}" alt="product">
                     <img class="hover-img" src="{{ asset('mantu/assets/img/product/16.jpg') }}" alt="product">
                   </a>
@@ -956,7 +956,7 @@
               </div>
               <div class="mn-product-detail">
                 <div class="cat">
-                  <a href="shop-right-sidebar.html">Bag</a>
+                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bag</a>
                   <ul>
                     <li>m</li>
                     <li>l</li>
@@ -1065,7 +1065,7 @@
                   <label>June 30, 2025 - <a href="#">Fashion</a></label>
                   <h3><a href="#">Marketing Guide: 5 Steps to Success to way.</a></h3>
                   <div class="more-info">
-                    <a href="blog-detail-right-sidebar.html">Read More<i class="ri-arrow-right-double-line"></i></a>
+                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
                   </div>
                 </div>
               </div>
@@ -1079,7 +1079,7 @@
                   <h3><a href="#">Best way to solve business issue in market.</a>
                   </h3>
                   <div class="more-info">
-                    <a href="blog-detail-right-sidebar.html">Read More<i class="ri-arrow-right-double-line"></i></a>
+                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
                   </div>
                 </div>
               </div>
@@ -1092,7 +1092,7 @@
                   <label>Mar 09, 2025 - <a href="#">Grocery</a></label>
                   <h3><a href="#">31 grocery customer service stats know in 2025.</a></h3>
                   <div class="more-info">
-                    <a href="blog-detail-right-sidebar.html">Read More<i class="ri-arrow-right-double-line"></i></a>
+                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
                   </div>
                 </div>
               </div>
@@ -1105,7 +1105,7 @@
                   <label>January 25, 2025 - <a href="#">Bags</a></label>
                   <h3><a href="#">Business ideas to grow your business traffic.</a></h3>
                   <div class="more-info">
-                    <a href="blog-detail-right-sidebar.html">Read More<i class="ri-arrow-right-double-line"></i></a>
+                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
                   </div>
                 </div>
               </div>
@@ -1118,7 +1118,7 @@
                   <label>December 10, 2026 - <a href="#">Cosmetics</a></label>
                   <h3><a href="#">Marketing Guide: 5 Steps way to Success.</a></h3>
                   <div class="more-info">
-                    <a href="blog-detail-right-sidebar.html">Read More<i class="ri-arrow-right-double-line"></i></a>
+                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
                   </div>
                 </div>
               </div>
@@ -1131,7 +1131,7 @@
                   <label>August 08, 2027 - <a href="#">Bags</a></label>
                   <h3><a href="#">15 customer service stats idea know in 2026.</a></h3>
                   <div class="more-info">
-                    <a href="blog-detail-right-sidebar.html">Read More<i class="ri-arrow-right-double-line"></i></a>
+                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
                   </div>
                 </div>
               </div>

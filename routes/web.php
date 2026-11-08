@@ -140,5 +140,4 @@ Route::prefix('app')->group(function () {
 });
 
 require __DIR__.'/pages-web.php';
-
-Route::view('/ecommerce-pages/index.html', 'ecommerce.pages.index');
+require __DIR__.'/ecommerce-pages-web.php';
