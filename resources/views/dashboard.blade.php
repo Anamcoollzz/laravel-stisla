@@ -162,12 +162,16 @@
               </p>
             </div>
             <div class="col-lg-4 col-md-12 text-lg-right mt-3 mt-lg-0">
-              <a href="{{ route('spp-payments.create') }}" class="btn btn-warning btn-icon icon-left shadow-sm mr-2 mb-2 font-weight-600">
-                <i class="fas fa-file-invoice-dollar"></i> {{ __('Record SPP') }}
-              </a>
-              <a href="{{ route('students.create') }}" class="btn btn-outline-white btn-icon icon-left mb-2">
-                <i class="fas fa-user-plus"></i> {{ __('Add Student') }}
-              </a>
+              @can('spp-payments.create')
+                <a href="{{ route('spp-payments.create') }}" class="btn btn-warning btn-icon icon-left shadow-sm mr-2 mb-2 font-weight-600">
+                  <i class="fas fa-file-invoice-dollar"></i> {{ __('Record SPP') }}
+                </a>
+              @endcan
+              @can('students.create')
+                <a href="{{ route('students.create') }}" class="btn btn-outline-white btn-icon icon-left mb-2">
+                  <i class="fas fa-user-plus"></i> {{ __('Add Student') }}
+                </a>
+              @endcan
             </div>
           </div>
         </div>
@@ -359,9 +363,11 @@
             <h4>
               <i class="fas fa-receipt text-primary mr-2"></i> {{ __('Recent SPP Payments') }}
             </h4>
-            <a href="{{ route('spp-payments.index') }}" class="btn btn-sm btn-outline-primary">
-              {{ __('View All') }} <i class="fas fa-arrow-right ml-1"></i>
-            </a>
+            @can('spp-payments.view')
+              <a href="{{ route('spp-payments.index') }}" class="btn btn-sm btn-outline-primary">
+                {{ __('View All') }} <i class="fas fa-arrow-right ml-1"></i>
+              </a>
+            @endcan
           </div>
           <div class="card-body p-0">
             <div class="table-responsive">
@@ -402,9 +408,11 @@
                         @endif
                       </td>
                       <td class="text-center">
-                        <a href="{{ route('spp-payments.show', $payment) }}" class="btn btn-sm btn-icon btn-info" data-toggle="tooltip" title="{{ __('Detail') }}">
-                          <i class="fas fa-eye"></i>
-                        </a>
+                        @can('spp-payments.view')
+                          <a href="{{ route('spp-payments.show', $payment) }}" class="btn btn-sm btn-icon btn-info" data-toggle="tooltip" title="{{ __('Detail') }}">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                        @endcan
                       </td>
                     </tr>
                   @empty
@@ -428,9 +436,11 @@
             <h4>
               <i class="fas fa-users text-primary mr-2"></i> {{ __('Recent Students') }}
             </h4>
-            <a href="{{ route('students.index') }}" class="btn btn-sm btn-outline-primary">
-              {{ __('View All') }} <i class="fas fa-arrow-right ml-1"></i>
-            </a>
+            @can('students.view')
+              <a href="{{ route('students.index') }}" class="btn btn-sm btn-outline-primary">
+                {{ __('View All') }} <i class="fas fa-arrow-right ml-1"></i>
+              </a>
+            @endcan
           </div>
           <div class="card-body p-0">
             <ul class="list-unstyled list-unstyled-border mb-0 px-3 py-2">
@@ -440,11 +450,13 @@
                     <i class="fas {{ $student->gender === 'female' ? 'fa-female text-danger' : 'fa-male text-primary' }}"></i>
                   </div>
                   <div class="media-body">
-                    <div class="float-right">
-                      <a href="{{ route('students.show', $student) }}" class="btn btn-sm btn-icon btn-light" data-toggle="tooltip" title="{{ __('Detail') }}">
-                        <i class="fas fa-eye"></i>
-                      </a>
-                    </div>
+                    @can('students.view')
+                      <div class="float-right">
+                        <a href="{{ route('students.show', $student) }}" class="btn btn-sm btn-icon btn-light" data-toggle="tooltip" title="{{ __('Detail') }}">
+                          <i class="fas fa-eye"></i>
+                        </a>
+                      </div>
+                    @endcan
                     <div class="media-title mb-0 font-weight-600">
                       {{ $student->name }}
                     </div>
@@ -472,31 +484,41 @@
           </div>
           <div class="card-body">
             <div class="row">
-              <div class="col-6 mb-2">
-                <a href="{{ route('spp-payments.create') }}" class="btn btn-outline-primary btn-block text-left text-truncate btn-sm">
-                  <i class="fas fa-plus mr-1"></i> {{ __('Record SPP') }}
-                </a>
-              </div>
-              <div class="col-6 mb-2">
-                <a href="{{ route('students.create') }}" class="btn btn-outline-success btn-block text-left text-truncate btn-sm">
-                  <i class="fas fa-user-plus mr-1"></i> {{ __('Add Student') }}
-                </a>
-              </div>
-              <div class="col-6 mb-2">
-                <a href="{{ route('teachers.create') }}" class="btn btn-outline-info btn-block text-left text-truncate btn-sm">
-                  <i class="fas fa-chalkboard-teacher mr-1"></i> {{ __('Add Teacher') }}
-                </a>
-              </div>
-              <div class="col-6 mb-2">
-                <a href="{{ route('classes.create') }}" class="btn btn-outline-warning btn-block text-left text-truncate btn-sm">
-                  <i class="fas fa-school mr-1"></i> {{ __('Add Class') }}
-                </a>
-              </div>
-              <div class="col-12">
-                <a href="{{ route('subjects.create') }}" class="btn btn-outline-danger btn-block text-left text-truncate btn-sm">
-                  <i class="fas fa-book mr-1"></i> {{ __('Add Subject') }}
-                </a>
-              </div>
+              @can('spp-payments.create')
+                <div class="col-6 mb-2">
+                  <a href="{{ route('spp-payments.create') }}" class="btn btn-outline-primary btn-block text-left text-truncate btn-sm">
+                    <i class="fas fa-plus mr-1"></i> {{ __('Record SPP') }}
+                  </a>
+                </div>
+              @endcan
+              @can('students.create')
+                <div class="col-6 mb-2">
+                  <a href="{{ route('students.create') }}" class="btn btn-outline-success btn-block text-left text-truncate btn-sm">
+                    <i class="fas fa-user-plus mr-1"></i> {{ __('Add Student') }}
+                  </a>
+                </div>
+              @endcan
+              @can('teachers.create')
+                <div class="col-6 mb-2">
+                  <a href="{{ route('teachers.create') }}" class="btn btn-outline-info btn-block text-left text-truncate btn-sm">
+                    <i class="fas fa-chalkboard-teacher mr-1"></i> {{ __('Add Teacher') }}
+                  </a>
+                </div>
+              @endcan
+              @can('classes.create')
+                <div class="col-6 mb-2">
+                  <a href="{{ route('classes.create') }}" class="btn btn-outline-warning btn-block text-left text-truncate btn-sm">
+                    <i class="fas fa-school mr-1"></i> {{ __('Add Class') }}
+                  </a>
+                </div>
+              @endcan
+              @can('subjects.create')
+                <div class="col-12">
+                  <a href="{{ route('subjects.create') }}" class="btn btn-outline-danger btn-block text-left text-truncate btn-sm">
+                    <i class="fas fa-book mr-1"></i> {{ __('Add Subject') }}
+                  </a>
+                </div>
+              @endcan
             </div>
           </div>
         </div>

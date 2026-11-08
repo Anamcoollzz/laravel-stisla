@@ -16,7 +16,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::query()->updateOrCreate(
+        $this->call(RolePermissionSeeder::class);
+
+        $admin = User::query()->updateOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Administrator',
@@ -25,5 +27,9 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
             ]
         );
+
+        if (! $admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
     }
 }

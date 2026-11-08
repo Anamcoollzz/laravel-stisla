@@ -5,6 +5,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(fn () => $this->actingAsAdmin());
+
 test('teachers index page displays teachers in datatable with indonesian translations and marks sidebar active', function () {
     $teacher = Teacher::factory()->create([
         'nip' => '198501012010011001',

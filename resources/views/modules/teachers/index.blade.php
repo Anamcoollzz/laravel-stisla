@@ -72,9 +72,19 @@
           <div class="card-header">
             <h4>{{ __('Teacher List') }}</h4>
             <div class="card-header-action">
-              <a href="{{ route('teachers.create') }}" class="btn btn-primary">
-                {{ __('Add New') }}
-              </a>
+              @can('teachers.view')
+                <a href="{{ route('teachers.export') }}" class="btn btn-outline-success mr-1">
+                  <i class="fas fa-file-excel mr-1"></i> {{ __('Export Excel') }}
+                </a>
+              @endcan
+              @can('teachers.create')
+                <button type="button" class="btn btn-outline-info mr-1" data-toggle="modal" data-target="#modal-import-teachers">
+                  <i class="fas fa-file-import mr-1"></i> {{ __('Import Excel') }}
+                </button>
+                <a href="{{ route('teachers.create') }}" class="btn btn-primary">
+                  <i class="fas fa-plus mr-1"></i> {{ __('Add New') }}
+                </a>
+              @endcan
             </div>
           </div>
           <div class="card-body">
@@ -107,13 +117,19 @@
                         @endif
                       </td>
                       <td>
-                        <a href="{{ route('teachers.show', $teacher) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('teachers.edit', $teacher) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
-                        <form action="{{ route('teachers.destroy', $teacher) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
-                        </form>
+                        @can('teachers.view')
+                          <a href="{{ route('teachers.show', $teacher) }}" class="btn btn-sm btn-icon btn-info mr-1" data-toggle="tooltip" title="{{ __('Detail') }}"><i class="fas fa-eye"></i></a>
+                        @endcan
+                        @can('teachers.edit')
+                          <a href="{{ route('teachers.edit', $teacher) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
+                        @endcan
+                        @can('teachers.delete')
+                          <form action="{{ route('teachers.destroy', $teacher) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-icon btn-danger btn-delete" data-toggle="tooltip" title="{{ __('Delete') }}"><i class="fas fa-trash"></i></button>
+                          </form>
+                        @endcan
                       </td>
                     </tr>
                   @endforeach
@@ -126,4 +142,50 @@
     </div>
   </div>
 @endsection
+
+@can('teachers.create')
+  @push('modals')
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-import-teachers">
+      <div class="modal-dialog" role="document">
+        <form action="{{ route('teachers.import') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ __('Import Teachers from Excel') }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-info alert-has-icon mb-3">
+                <div class="alert-icon"><i class="fas fa-info-circle"></i></div>
+                <div class="alert-body">
+                  <div class="alert-title">{{ __('Format Template') }}</div>
+                  {{ __('Please download the sample template to ensure your Excel headers and data format match.') }}
+                </div>
+              </div>
+              <div class="mb-3">
+                <a href="{{ route('teachers.template') }}" class="btn btn-sm btn-outline-primary">
+                  <i class="fas fa-download mr-1"></i> {{ __('Download Example Template (.xlsx)') }}
+                </a>
+                <a href="{{ asset('templates/teachers_import_example.xlsx') }}" class="btn btn-sm btn-outline-secondary ml-1" download>
+                  <i class="fas fa-file-alt mr-1"></i> {{ __('Direct File') }}
+                </a>
+              </div>
+              <div class="form-group">
+                <label>{{ __('Excel File (.xlsx, .xls, .csv)') }} <span class="text-danger">*</span></label>
+                <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
+                <small class="form-text text-muted">{{ __('Max size: 10MB.') }}</small>
+              </div>
+            </div>
+            <div class="modal-footer bg-whitesmoke br">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cancel') }}</button>
+              <button type="submit" class="btn btn-primary"><i class="fas fa-upload mr-1"></i> {{ __('Upload & Import') }}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  @endpush
+@endcan
 

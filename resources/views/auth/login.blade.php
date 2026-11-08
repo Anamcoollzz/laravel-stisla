@@ -38,7 +38,28 @@
           </div>
 
           <div class="card card-primary">
-            <div class="card-header"><h4>{{ __('Login') }}</h4></div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4>{{ __('Login') }}</h4>
+              <div class="card-header-action dropdown">
+                <a href="#" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown">
+                  <i class="fas fa-globe mr-1"></i> {{ strtoupper(app()->getLocale()) }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item d-flex align-items-center justify-content-between {{ app()->getLocale() === 'id' ? 'active font-weight-bold text-primary' : '' }}" href="{{ route('lang.switch', 'id') }}">
+                    <span><span class="mr-2">🇮🇩</span> Bahasa Indonesia</span>
+                    @if (app()->getLocale() === 'id')
+                      <i class="fas fa-check text-primary"></i>
+                    @endif
+                  </a>
+                  <a class="dropdown-item d-flex align-items-center justify-content-between {{ app()->getLocale() === 'en' ? 'active font-weight-bold text-primary' : '' }}" href="{{ route('lang.switch', 'en') }}">
+                    <span><span class="mr-2">🇬🇧</span> English</span>
+                    @if (app()->getLocale() === 'en')
+                      <i class="fas fa-check text-primary"></i>
+                    @endif
+                  </a>
+                </div>
+              </div>
+            </div>
 
             <div class="card-body">
               <form method="POST" action="{{ route('login.attempt') }}" class="needs-validation" novalidate="">

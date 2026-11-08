@@ -9,6 +9,7 @@ use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Gate;
 
 class DashboardController extends Controller
 {
@@ -17,6 +18,8 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
+        Gate::authorize('dashboard.view');
+
         $currentYear = (int) now()->format('Y');
         $currentMonth = (int) now()->format('n');
 
@@ -86,4 +89,3 @@ class DashboardController extends Controller
         ]);
     }
 }
-

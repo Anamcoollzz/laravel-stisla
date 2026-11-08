@@ -6,3 +6,10 @@
  */
 
 "use strict";
+
+// Ensure Bootstrap modals are attached directly to <body> so they are not trapped inside stacking contexts
+$(document).on('show.bs.modal', '.modal', function () {
+  if (!$(this).parent().is('body')) {
+    $(this).appendTo('body');
+  }
+});

@@ -16,6 +16,7 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 </head>
 
 <body>
@@ -217,14 +218,41 @@
               </div>
             </div>
           </li>
-          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-              <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle mr-1">
-              <div class="d-sm-none d-lg-inline-block">Hi, {{ auth()->user()?->name ?? 'Ujang Maman' }}</div>
+          <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user" title="{{ __('Switch Language') }}">
+              <i class="fas fa-globe mr-1"></i>
+              <div class="d-none d-md-inline-block font-weight-bold text-uppercase">{{ app()->getLocale() }}</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-title">Logged in 5 min ago</div>
-              <a href="{{ route('features-profile.html') }}" class="dropdown-item has-icon">
-                <i class="far fa-user"></i> Profile
+              <div class="dropdown-title">{{ __('Select Language') }}</div>
+              <a href="{{ route('lang.switch', 'id') }}" class="dropdown-item has-icon d-flex align-items-center justify-content-between {{ app()->getLocale() === 'id' ? 'active font-weight-bold' : '' }}">
+                <span><span class="mr-2">🇮🇩</span> Bahasa Indonesia</span>
+                @if (app()->getLocale() === 'id')
+                  <i class="fas fa-check text-primary"></i>
+                @endif
+              </a>
+              <a href="{{ route('lang.switch', 'en') }}" class="dropdown-item has-icon d-flex align-items-center justify-content-between {{ app()->getLocale() === 'en' ? 'active font-weight-bold' : '' }}">
+                <span><span class="mr-2">🇬🇧</span> English</span>
+                @if (app()->getLocale() === 'en')
+                  <i class="fas fa-check text-primary"></i>
+                @endif
+              </a>
+            </div>
+          </li>
+          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+              <img alt="image" src="{{ auth()->user()?->avatar_url ?? asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle mr-1" style="width: 30px; height: 30px; object-fit: cover;">
+              <div class="d-sm-none d-lg-inline-block">Hi, {{ auth()->user()?->name ?? 'User' }}</div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-title">
+                @if (auth()->user()?->last_logged_in)
+                  {{ __('Logged in :time', ['time' => auth()->user()->last_logged_in->diffForHumans()]) }}
+                @else
+                  {{ __('Logged in just now') }}
+                @endif
+              </div>
+              <a href="{{ route('profile.edit') }}" class="dropdown-item has-icon">
+                <i class="far fa-user"></i> {{ __('Profile') }}
               </a>
               <a href="{{ route('features-activities.html') }}" class="dropdown-item has-icon">
                 <i class="fas fa-bolt"></i> Activities
@@ -259,17 +287,43 @@
               <li @class(['active' => request()->routeIs('dashboard')])>
                 <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
               </li>
-              <li class="menu-header">{{ __('Modules') }}</li>
-              <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*')])>
-                <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
-                <ul class="dropdown-menu">
-                  <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
-                  <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
-                  <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
-                  <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
-                  <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
-                </ul>
-              </li>
+              @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'spp-payments.view'])
+                <li class="menu-header">{{ __('Modules') }}</li>
+                <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*')])>
+                  <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
+                  <ul class="dropdown-menu">
+                    @can('classes.view')
+                      <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
+                    @endcan
+                    @can('teachers.view')
+                      <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
+                    @endcan
+                    @can('students.view')
+                      <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
+                    @endcan
+                    @can('subjects.view')
+                      <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
+                    @endcan
+                    @can('spp-payments.view')
+                      <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
+                    @endcan
+                  </ul>
+                </li>
+              @endcanany
+              @canany(['users.view', 'roles.view'])
+                <li class="menu-header">{{ __('User Management') }}</li>
+                <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*')])>
+                  <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
+                  <ul class="dropdown-menu">
+                    @can('users.view')
+                      <li @class(['active' => request()->routeIs('users.*')])><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
+                    @endcan
+                    @can('roles.view')
+                      <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
+                    @endcan
+                  </ul>
+                </li>
+              @endcanany
             </ul>
           </aside>
         @endif
@@ -291,6 +345,8 @@
       </footer>
     </div>
   </div>
+
+  @stack('modals')
 
   <!-- General JS Scripts -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>

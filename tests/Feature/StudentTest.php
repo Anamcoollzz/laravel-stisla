@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(fn () => $this->actingAsAdmin());
+
 test('students index page displays students with their class in datatable and marks sidebar active', function () {
     $schoolClass = SchoolClass::factory()->create([
         'class_name' => 'Kelas 10-IPA-1',

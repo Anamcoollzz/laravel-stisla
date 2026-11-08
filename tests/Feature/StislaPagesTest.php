@@ -1,7 +1,12 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+
+uses(RefreshDatabase::class);
+
+beforeEach(fn () => $this->actingAsAdmin());
 
 /**
  * @return array<int, string>

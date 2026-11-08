@@ -2,14 +2,20 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/pages/index.html');
+
+Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('lang.switch');
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -18,95 +24,46 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/auth/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::resource('classes', SchoolClassController::class)->parameters([
-    'classes' => 'schoolClass',
-]);
-Route::resource('teachers', TeacherController::class);
-Route::resource('students', StudentController::class);
-Route::resource('subjects', SubjectController::class);
-Route::resource('spp-payments', SppPaymentController::class);
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
-Route::view('/pages/index.html', 'pages.index')->name('index.html');
-Route::view('/pages/index-0.html', 'pages.index-0')->name('index-0.html');
-Route::view('/pages/layout-default.html', 'pages.layout-default')->name('layout-default.html');
-Route::view('/pages/layout-transparent.html', 'pages.layout-transparent')->name('layout-transparent.html');
-Route::view('/pages/layout-top-navigation.html', 'pages.layout-top-navigation')->name('layout-top-navigation.html');
-Route::view('/pages/blank.html', 'pages.blank')->name('blank.html');
-Route::view('/pages/bootstrap-alert.html', 'pages.bootstrap-alert')->name('bootstrap-alert.html');
-Route::view('/pages/bootstrap-badge.html', 'pages.bootstrap-badge')->name('bootstrap-badge.html');
-Route::view('/pages/bootstrap-breadcrumb.html', 'pages.bootstrap-breadcrumb')->name('bootstrap-breadcrumb.html');
-Route::view('/pages/bootstrap-buttons.html', 'pages.bootstrap-buttons')->name('bootstrap-buttons.html');
-Route::view('/pages/bootstrap-card.html', 'pages.bootstrap-card')->name('bootstrap-card.html');
-Route::view('/pages/bootstrap-carousel.html', 'pages.bootstrap-carousel')->name('bootstrap-carousel.html');
-Route::view('/pages/bootstrap-collapse.html', 'pages.bootstrap-collapse')->name('bootstrap-collapse.html');
-Route::view('/pages/bootstrap-dropdown.html', 'pages.bootstrap-dropdown')->name('bootstrap-dropdown.html');
-Route::view('/pages/bootstrap-form.html', 'pages.bootstrap-form')->name('bootstrap-form.html');
-Route::view('/pages/bootstrap-list-group.html', 'pages.bootstrap-list-group')->name('bootstrap-list-group.html');
-Route::view('/pages/bootstrap-media-object.html', 'pages.bootstrap-media-object')->name('bootstrap-media-object.html');
-Route::view('/pages/bootstrap-modal.html', 'pages.bootstrap-modal')->name('bootstrap-modal.html');
-Route::view('/pages/bootstrap-nav.html', 'pages.bootstrap-nav')->name('bootstrap-nav.html');
-Route::view('/pages/bootstrap-navbar.html', 'pages.bootstrap-navbar')->name('bootstrap-navbar.html');
-Route::view('/pages/bootstrap-pagination.html', 'pages.bootstrap-pagination')->name('bootstrap-pagination.html');
-Route::view('/pages/bootstrap-popover.html', 'pages.bootstrap-popover')->name('bootstrap-popover.html');
-Route::view('/pages/bootstrap-progress.html', 'pages.bootstrap-progress')->name('bootstrap-progress.html');
-Route::view('/pages/bootstrap-table.html', 'pages.bootstrap-table')->name('bootstrap-table.html');
-Route::view('/pages/bootstrap-tooltip.html', 'pages.bootstrap-tooltip')->name('bootstrap-tooltip.html');
-Route::view('/pages/bootstrap-typography.html', 'pages.bootstrap-typography')->name('bootstrap-typography.html');
-Route::view('/pages/components-article.html', 'pages.components-article')->name('components-article.html');
-Route::view('/pages/components-avatar.html', 'pages.components-avatar')->name('components-avatar.html');
-Route::view('/pages/components-chat-box.html', 'pages.components-chat-box')->name('components-chat-box.html');
-Route::view('/pages/components-empty-state.html', 'pages.components-empty-state')->name('components-empty-state.html');
-Route::view('/pages/components-gallery.html', 'pages.components-gallery')->name('components-gallery.html');
-Route::view('/pages/components-hero.html', 'pages.components-hero')->name('components-hero.html');
-Route::view('/pages/components-multiple-upload.html', 'pages.components-multiple-upload')->name('components-multiple-upload.html');
-Route::view('/pages/components-pricing.html', 'pages.components-pricing')->name('components-pricing.html');
-Route::view('/pages/components-statistic.html', 'pages.components-statistic')->name('components-statistic.html');
-Route::view('/pages/components-tab.html', 'pages.components-tab')->name('components-tab.html');
-Route::view('/pages/components-table.html', 'pages.components-table')->name('components-table.html');
-Route::view('/pages/components-user.html', 'pages.components-user')->name('components-user.html');
-Route::view('/pages/components-wizard.html', 'pages.components-wizard')->name('components-wizard.html');
-Route::view('/pages/forms-advanced-form.html', 'pages.forms-advanced-form')->name('forms-advanced-form.html');
-Route::view('/pages/forms-editor.html', 'pages.forms-editor')->name('forms-editor.html');
-Route::view('/pages/forms-validation.html', 'pages.forms-validation')->name('forms-validation.html');
-Route::view('/pages/gmaps-advanced-route.html', 'pages.gmaps-advanced-route')->name('gmaps-advanced-route.html');
-Route::view('/pages/gmaps-draggable-marker.html', 'pages.gmaps-draggable-marker')->name('gmaps-draggable-marker.html');
-Route::view('/pages/gmaps-geocoding.html', 'pages.gmaps-geocoding')->name('gmaps-geocoding.html');
-Route::view('/pages/gmaps-geolocation.html', 'pages.gmaps-geolocation')->name('gmaps-geolocation.html');
-Route::view('/pages/gmaps-marker.html', 'pages.gmaps-marker')->name('gmaps-marker.html');
-Route::view('/pages/gmaps-multiple-marker.html', 'pages.gmaps-multiple-marker')->name('gmaps-multiple-marker.html');
-Route::view('/pages/gmaps-route.html', 'pages.gmaps-route')->name('gmaps-route.html');
-Route::view('/pages/gmaps-simple.html', 'pages.gmaps-simple')->name('gmaps-simple.html');
-Route::view('/pages/modules-calendar.html', 'pages.modules-calendar')->name('modules-calendar.html');
-Route::view('/pages/modules-chartjs.html', 'pages.modules-chartjs')->name('modules-chartjs.html');
-Route::view('/pages/modules-datatables.html', 'pages.modules-datatables')->name('modules-datatables.html');
-Route::view('/pages/modules-flag.html', 'pages.modules-flag')->name('modules-flag.html');
-Route::view('/pages/modules-font-awesome.html', 'pages.modules-font-awesome')->name('modules-font-awesome.html');
-Route::view('/pages/modules-ion-icons.html', 'pages.modules-ion-icons')->name('modules-ion-icons.html');
-Route::view('/pages/modules-owl-carousel.html', 'pages.modules-owl-carousel')->name('modules-owl-carousel.html');
-Route::view('/pages/modules-sparkline.html', 'pages.modules-sparkline')->name('modules-sparkline.html');
-Route::view('/pages/modules-sweet-alert.html', 'pages.modules-sweet-alert')->name('modules-sweet-alert.html');
-Route::view('/pages/modules-toastr.html', 'pages.modules-toastr')->name('modules-toastr.html');
-Route::view('/pages/modules-vector-map.html', 'pages.modules-vector-map')->name('modules-vector-map.html');
-Route::view('/pages/modules-weather-icon.html', 'pages.modules-weather-icon')->name('modules-weather-icon.html');
-Route::view('/pages/auth-forgot-password.html', 'pages.auth-forgot-password')->name('auth-forgot-password.html');
-Route::view('/pages/auth-login.html', 'pages.auth-login')->name('auth-login.html');
-Route::view('/pages/auth-login-2.html', 'pages.auth-login-2')->name('auth-login-2.html');
-Route::view('/pages/auth-register.html', 'pages.auth-register')->name('auth-register.html');
-Route::view('/pages/auth-reset-password.html', 'pages.auth-reset-password')->name('auth-reset-password.html');
-Route::view('/pages/errors-503.html', 'pages.errors-503')->name('errors-503.html');
-Route::view('/pages/errors-403.html', 'pages.errors-403')->name('errors-403.html');
-Route::view('/pages/errors-404.html', 'pages.errors-404')->name('errors-404.html');
-Route::view('/pages/errors-500.html', 'pages.errors-500')->name('errors-500.html');
-Route::view('/pages/features-activities.html', 'pages.features-activities')->name('features-activities.html');
-Route::view('/pages/features-post-create.html', 'pages.features-post-create')->name('features-post-create.html');
-Route::view('/pages/features-posts.html', 'pages.features-posts')->name('features-posts.html');
-Route::view('/pages/features-profile.html', 'pages.features-profile')->name('features-profile.html');
-Route::view('/pages/features-settings.html', 'pages.features-settings')->name('features-settings.html');
-Route::view('/pages/features-setting-detail.html', 'pages.features-setting-detail')->name('features-setting-detail.html');
-Route::view('/pages/features-tickets.html', 'pages.features-tickets')->name('features-tickets.html');
-Route::view('/pages/utilities-contact.html', 'pages.utilities-contact')->name('utilities-contact.html');
-Route::view('/pages/utilities-invoice.html', 'pages.utilities-invoice')->name('utilities-invoice.html');
-Route::view('/pages/utilities-subscribe.html', 'pages.utilities-subscribe')->name('utilities-subscribe.html');
-Route::view('/pages/credits.html', 'pages.credits')->name('credits.html');
+    Route::get('classes/export', [SchoolClassController::class, 'export'])->name('classes.export');
+    Route::get('classes/template', [SchoolClassController::class, 'template'])->name('classes.template');
+    Route::post('classes/import', [SchoolClassController::class, 'import'])->name('classes.import');
+    Route::resource('classes', SchoolClassController::class)->parameters([
+        'classes' => 'schoolClass',
+    ]);
+
+    Route::get('teachers/export', [TeacherController::class, 'export'])->name('teachers.export');
+    Route::get('teachers/template', [TeacherController::class, 'template'])->name('teachers.template');
+    Route::post('teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
+    Route::resource('teachers', TeacherController::class);
+
+    Route::get('students/export', [StudentController::class, 'export'])->name('students.export');
+    Route::get('students/template', [StudentController::class, 'template'])->name('students.template');
+    Route::post('students/import', [StudentController::class, 'import'])->name('students.import');
+    Route::resource('students', StudentController::class);
+
+    Route::get('subjects/export', [SubjectController::class, 'export'])->name('subjects.export');
+    Route::get('subjects/template', [SubjectController::class, 'template'])->name('subjects.template');
+    Route::post('subjects/import', [SubjectController::class, 'import'])->name('subjects.import');
+    Route::resource('subjects', SubjectController::class);
+
+    Route::get('spp-payments/export', [SppPaymentController::class, 'export'])->name('spp-payments.export');
+    Route::get('spp-payments/template', [SppPaymentController::class, 'template'])->name('spp-payments.template');
+    Route::post('spp-payments/import', [SppPaymentController::class, 'import'])->name('spp-payments.import');
+    Route::resource('spp-payments', SppPaymentController::class);
+
+    Route::get('users/export', [UserController::class, 'export'])->name('users.export');
+    Route::get('users/template', [UserController::class, 'template'])->name('users.template');
+    Route::post('users/import', [UserController::class, 'import'])->name('users.import');
+    Route::resource('users', UserController::class);
+
+    Route::resource('roles', RoleController::class);
+});
+
+require __DIR__.'/pages-web.php';

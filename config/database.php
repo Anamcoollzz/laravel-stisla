@@ -17,7 +17,9 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION') === 'oracle' && ! extension_loaded('oci8')
+        ? 'sqlite'
+        : env('DB_CONNECTION', 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
@@ -112,6 +114,22 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
+        'oracle' => [
+            'driver' => 'oracle',
+            'tns' => env('DB_TNS', ''),
+            'host' => env('DB_ORACLE_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('DB_ORACLE_PORT', env('DB_PORT', '1521')),
+            'database' => env('DB_ORACLE_DATABASE', env('DB_DATABASE', '')),
+            'service_name' => env('DB_ORACLE_SERVICE_NAME', env('DB_SERVICE_NAME', 'FREEPDB1')),
+            'username' => env('DB_ORACLE_USERNAME', env('DB_USERNAME', 'system')),
+            'password' => env('DB_ORACLE_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => env('DB_CHARSET', 'AL32UTF8'),
+            'prefix' => env('DB_PREFIX', ''),
+            'prefix_schema' => env('DB_SCHEMA_PREFIX', ''),
+            'edition' => env('DB_EDITION', 'ora$base'),
+            'server_version' => env('DB_SERVER_VERSION', '23c'),
         ],
 
     ],
