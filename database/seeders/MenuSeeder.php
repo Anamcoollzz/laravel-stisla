@@ -52,6 +52,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Tickets', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 7],
             ['name' => 'Chat Box', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 8],
             ['name' => 'Product Categories', 'route' => 'product-categories.index', 'permission' => 'product-categories.view', 'order' => 9],
+            ['name' => 'Products', 'route' => 'products.index', 'permission' => 'products.view', 'order' => 10],
         ];
 
         foreach ($moduleChildren as $child) {

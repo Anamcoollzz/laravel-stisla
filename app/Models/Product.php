@@ -1,0 +1,177 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
+
+class Product extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'category_id',
+        'brand_id',
+        'vendor_id',
+        'size_id',
+        'color_id',
+        'title',
+        'slug',
+        'sku',
+        'price',
+        'discount_percent',
+        'stock',
+        'short_description',
+        'description_detail',
+        'spesifications',
+        'tags',
+        'thumbnail',
+        'is_active',
+    ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2',
+            'discount_percent' => 'decimal:2',
+            'stock' => 'integer',
+            'spesifications' => 'array',
+            'tags' => 'array',
+            'is_active' => 'boolean',
+        ];
+    }
+
+    /**
+     * Category relation.
+     *
+     * @return BelongsTo<ProductCategory, Product>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    /**
+     * Brand relation.
+     *
+     * @return BelongsTo<ProductBrand, Product>
+     */
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(ProductBrand::class, 'brand_id');
+    }
+
+    /**
+     * Vendor relation.
+     *
+     * @return BelongsTo<ProductVendor, Product>
+     */
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(ProductVendor::class, 'vendor_id');
+    }
+
+    /**
+     * Size relation.
+     *
+     * @return BelongsTo<ProductSize, Product>
+     */
+    public function size(): BelongsTo
+    {
+        return $this->belongsTo(ProductSize::class, 'size_id');
+    }
+
+    /**
+     * Color relation.
+     *
+     * @return BelongsTo<ProductColor, Product>
+     */
+    public function color(): BelongsTo
+    {
+        return $this->belongsTo(ProductColor::class, 'color_id');
+    }
+
+    /**
+     * Get final price after discount.
+     */
+    public function getFinalPriceAttribute(): float
+    {
+        $discount = (float) $this->discount_percent;
+        $price = (float) $this->price;
+
+        if ($discount > 0) {
+            return round($price - ($price * ($discount / 100)), 2);
+        }
+
+        return $price;
+    }
+
+    /**
+     * Thumbnail URL accessor.
+     */
+    protected function thumbnailUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (empty($this->thumbnail)) {
+                    return asset('mantu/assets/img/products/1.jpg');
+                }
+
+                if (str_starts_with($this->thumbnail, 'http://') || str_starts_with($this->thumbnail, 'https://')) {
+                    return $this->thumbnail;
+                }
+
+                if (file_exists(public_path($this->thumbnail))) {
+                    return asset($this->thumbnail);
+                }
+
+                return asset('storage/'.$this->thumbnail);
+            }
+        );
+    }
+
+    /**
+     * Generate unique SKU.
+     */
+    public static function generateUniqueSku(string $prefix = 'PRD'): string
+    {
+        do {
+            $sku = strtoupper($prefix.'-'.date('Y').'-'.Str::random(5));
+        } while (static::query()->where('sku', $sku)->exists());
+
+        return $sku;
+    }
+
+    /**
+     * Generate unique slug.
+     */
+    public static function generateUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($title);
+        if (empty($baseSlug)) {
+            $baseSlug = 'product';
+        }
+
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (
+            static::query()
+                ->where('slug', $slug)
+                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+                ->exists()
+        ) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+}
+

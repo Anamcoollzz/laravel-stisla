@@ -13,6 +13,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
@@ -135,6 +136,13 @@ Route::prefix('app')->group(function () {
         Route::resource('product-categories', ProductCategoryController::class)->parameters([
             'product-categories' => 'productCategory',
         ]);
+
+        Route::post('products/{product}/duplicate', [ProductController::class, 'duplicate'])->name('products.duplicate');
+        Route::get('products/export', [ProductController::class, 'export'])->name('products.export');
+        Route::get('products/export-pdf', [ProductController::class, 'exportPdf'])->name('products.exportPdf');
+        Route::get('products/template', [ProductController::class, 'template'])->name('products.template');
+        Route::post('products/import', [ProductController::class, 'import'])->name('products.import');
+        Route::resource('products', ProductController::class);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');
