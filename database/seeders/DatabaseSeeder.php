@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,
             SppPaymentSeeder::class,
             TicketSeeder::class,
+            ProductCategorySeeder::class,
+            ProductMasterDataSeeder::class,
+            ProductSeeder::class,
             MenuSeeder::class,
         ]);
     }

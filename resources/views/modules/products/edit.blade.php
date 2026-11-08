@@ -503,7 +503,13 @@
             <div class="card-body">
               <div class="text-center mb-3">
                 <div class="p-2 border rounded d-inline-block bg-light" style="width: 140px; height: 140px; line-height: 120px;">
-                  <img id="thumb-preview-img" src="{{ $product->thumbnail_url }}" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">
+                  <img
+                    id="thumb-preview-img"
+                    src="{{ $product->thumbnail_url }}"
+                    alt="Preview"
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;"
+                    onerror="this.onerror=null; this.src='{{ asset('assets/img/products/product-1-50.png') }}';"
+                  >
                   <span id="thumb-preview-placeholder" class="text-muted small" style="display: none;"><i class="fas fa-image fa-2x d-block mb-1"></i> {{ __('No Image') }}</span>
                 </div>
               </div>

@@ -59,7 +59,7 @@ class ProductSeeder extends Seeder
                     ['key' => 'Care', 'value' => 'Machine Wash Cold'],
                 ],
                 'tags' => ['t-shirt', 'casual', 'cotton', 'summer', 'basics'],
-                'thumbnail' => 'mantu/assets/img/products/1.jpg',
+                'thumbnail' => 'mantu/assets/img/product/1.jpg',
                 'is_active' => true,
             ],
             [
@@ -82,7 +82,7 @@ class ProductSeeder extends Seeder
                     ['key' => 'Terrain', 'value' => 'Road / Asphalt'],
                 ],
                 'tags' => ['nike', 'shoes', 'running', 'sport', 'zoom-air'],
-                'thumbnail' => 'mantu/assets/img/products/2.jpg',
+                'thumbnail' => 'mantu/assets/img/product/2.jpg',
                 'is_active' => true,
             ],
             [
@@ -105,7 +105,7 @@ class ProductSeeder extends Seeder
                     ['key' => 'Zipper', 'value' => 'YKK Metal Zipper'],
                 ],
                 'tags' => ['bag', 'slingbag', 'leather', 'accessories', 'urban'],
-                'thumbnail' => 'mantu/assets/img/products/3.jpg',
+                'thumbnail' => 'mantu/assets/img/product/3.jpg',
                 'is_active' => true,
             ],
             [
@@ -128,7 +128,7 @@ class ProductSeeder extends Seeder
                     ['key' => 'Shelf Life', 'value' => '3 Days Refrigerated'],
                 ],
                 'tags' => ['cake', 'bakery', 'red-velvet', 'dessert', 'birthday'],
-                'thumbnail' => 'mantu/assets/img/products/4.jpg',
+                'thumbnail' => 'mantu/assets/img/product/4.jpg',
                 'is_active' => true,
             ],
         ];
@@ -138,4 +138,3 @@ class ProductSeeder extends Seeder
         }
     }
 }
-

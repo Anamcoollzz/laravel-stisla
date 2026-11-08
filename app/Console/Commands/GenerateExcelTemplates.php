@@ -2,8 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Exports\ProductBrandsTemplateExport;
 use App\Exports\ProductCategoriesTemplateExport;
+use App\Exports\ProductColorsTemplateExport;
+use App\Exports\ProductSizesTemplateExport;
 use App\Exports\ProductsTemplateExport;
+use App\Exports\ProductVendorsTemplateExport;
 use App\Exports\SchoolClassesTemplateExport;
 use App\Exports\SppPaymentsTemplateExport;
 use App\Exports\StudentsTemplateExport;
@@ -40,6 +44,10 @@ class GenerateExcelTemplates extends Command
             'users_import_example.xlsx' => new UsersTemplateExport,
             'product_categories_import_example.xlsx' => new ProductCategoriesTemplateExport,
             'products_import_example.xlsx' => new ProductsTemplateExport,
+            'product_brands_import_example.xlsx' => new ProductBrandsTemplateExport,
+            'product_vendors_import_example.xlsx' => new ProductVendorsTemplateExport,
+            'product_sizes_import_example.xlsx' => new ProductSizesTemplateExport,
+            'product_colors_import_example.xlsx' => new ProductColorsTemplateExport,
         ];
 
         foreach ($templates as $filename => $export) {

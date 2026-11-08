@@ -292,9 +292,9 @@
                 <li @class(['active' => request()->routeIs('dashboard')])>
                   <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
                 </li>
-                @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'fields.view', 'spp-payments.view', 'tickets.view', 'chat.view', 'product-categories.view', 'products.view'])
+                @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'fields.view', 'spp-payments.view', 'tickets.view', 'chat.view'])
                   <li class="menu-header">{{ __('Modules') }}</li>
-                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*', 'chat.*', 'product-categories.*', 'products.*')])>
+                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*', 'chat.*')])>
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
                     <ul class="dropdown-menu">
                       @can('classes.view')
@@ -321,11 +321,31 @@
                       @can('chat.view')
                         <li @class(['active' => request()->routeIs('chat.*')])><a class="nav-link" href="{{ route('chat.index') }}">{{ __('Chat Box') }}</a></li>
                       @endcan
-                      @can('product-categories.view')
-                        <li @class(['active' => request()->routeIs('product-categories.*')])><a class="nav-link" href="{{ route('product-categories.index') }}">{{ __('Product Categories') }}</a></li>
-                      @endcan
+                    </ul>
+                  </li>
+                @endcanany
+
+                @canany(['products.view', 'product-categories.view', 'product-brands.view', 'product-vendors.view', 'product-sizes.view', 'product-colors.view'])
+                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('products.*', 'product-categories.*', 'product-brands.*', 'product-vendors.*', 'product-sizes.*', 'product-colors.*')])>
+                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-shopping-bag"></i> <span>{{ __('Shop / Products') }}</span></a>
+                    <ul class="dropdown-menu">
                       @can('products.view')
                         <li @class(['active' => request()->routeIs('products.*')])><a class="nav-link" href="{{ route('products.index') }}">{{ __('Products') }}</a></li>
+                      @endcan
+                      @can('product-categories.view')
+                        <li @class(['active' => request()->routeIs('product-categories.*')])><a class="nav-link" href="{{ route('product-categories.index') }}">{{ __('Categories') }}</a></li>
+                      @endcan
+                      @can('product-brands.view')
+                        <li @class(['active' => request()->routeIs('product-brands.*')])><a class="nav-link" href="{{ route('product-brands.index') }}">{{ __('Brands') }}</a></li>
+                      @endcan
+                      @can('product-vendors.view')
+                        <li @class(['active' => request()->routeIs('product-vendors.*')])><a class="nav-link" href="{{ route('product-vendors.index') }}">{{ __('Vendors') }}</a></li>
+                      @endcan
+                      @can('product-sizes.view')
+                        <li @class(['active' => request()->routeIs('product-sizes.*')])><a class="nav-link" href="{{ route('product-sizes.index') }}">{{ __('Sizes') }}</a></li>
+                      @endcan
+                      @can('product-colors.view')
+                        <li @class(['active' => request()->routeIs('product-colors.*')])><a class="nav-link" href="{{ route('product-colors.index') }}">{{ __('Colors') }}</a></li>
                       @endcan
                     </ul>
                   </li>

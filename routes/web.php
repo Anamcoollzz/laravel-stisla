@@ -12,8 +12,12 @@ use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
+use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductColorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductSizeController;
+use App\Http\Controllers\ProductVendorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
@@ -143,6 +147,42 @@ Route::prefix('app')->group(function () {
         Route::get('products/template', [ProductController::class, 'template'])->name('products.template');
         Route::post('products/import', [ProductController::class, 'import'])->name('products.import');
         Route::resource('products', ProductController::class);
+
+        Route::post('product-brands/{productBrand}/duplicate', [ProductBrandController::class, 'duplicate'])->name('product-brands.duplicate');
+        Route::get('product-brands/export', [ProductBrandController::class, 'export'])->name('product-brands.export');
+        Route::get('product-brands/export-pdf', [ProductBrandController::class, 'exportPdf'])->name('product-brands.exportPdf');
+        Route::get('product-brands/template', [ProductBrandController::class, 'template'])->name('product-brands.template');
+        Route::post('product-brands/import', [ProductBrandController::class, 'import'])->name('product-brands.import');
+        Route::resource('product-brands', ProductBrandController::class)->parameters([
+            'product-brands' => 'productBrand',
+        ]);
+
+        Route::post('product-vendors/{productVendor}/duplicate', [ProductVendorController::class, 'duplicate'])->name('product-vendors.duplicate');
+        Route::get('product-vendors/export', [ProductVendorController::class, 'export'])->name('product-vendors.export');
+        Route::get('product-vendors/export-pdf', [ProductVendorController::class, 'exportPdf'])->name('product-vendors.exportPdf');
+        Route::get('product-vendors/template', [ProductVendorController::class, 'template'])->name('product-vendors.template');
+        Route::post('product-vendors/import', [ProductVendorController::class, 'import'])->name('product-vendors.import');
+        Route::resource('product-vendors', ProductVendorController::class)->parameters([
+            'product-vendors' => 'productVendor',
+        ]);
+
+        Route::post('product-sizes/{productSize}/duplicate', [ProductSizeController::class, 'duplicate'])->name('product-sizes.duplicate');
+        Route::get('product-sizes/export', [ProductSizeController::class, 'export'])->name('product-sizes.export');
+        Route::get('product-sizes/export-pdf', [ProductSizeController::class, 'exportPdf'])->name('product-sizes.exportPdf');
+        Route::get('product-sizes/template', [ProductSizeController::class, 'template'])->name('product-sizes.template');
+        Route::post('product-sizes/import', [ProductSizeController::class, 'import'])->name('product-sizes.import');
+        Route::resource('product-sizes', ProductSizeController::class)->parameters([
+            'product-sizes' => 'productSize',
+        ]);
+
+        Route::post('product-colors/{productColor}/duplicate', [ProductColorController::class, 'duplicate'])->name('product-colors.duplicate');
+        Route::get('product-colors/export', [ProductColorController::class, 'export'])->name('product-colors.export');
+        Route::get('product-colors/export-pdf', [ProductColorController::class, 'exportPdf'])->name('product-colors.exportPdf');
+        Route::get('product-colors/template', [ProductColorController::class, 'template'])->name('product-colors.template');
+        Route::post('product-colors/import', [ProductColorController::class, 'import'])->name('product-colors.import');
+        Route::resource('product-colors', ProductColorController::class)->parameters([
+            'product-colors' => 'productColor',
+        ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');

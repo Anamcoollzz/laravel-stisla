@@ -51,13 +51,48 @@ class MenuSeeder extends Seeder
             ['name' => 'SPP Payments', 'route' => 'spp-payments.index', 'permission' => 'spp-payments.view', 'order' => 6],
             ['name' => 'Tickets', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 7],
             ['name' => 'Chat Box', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 8],
-            ['name' => 'Product Categories', 'route' => 'product-categories.index', 'permission' => 'product-categories.view', 'order' => 9],
-            ['name' => 'Products', 'route' => 'products.index', 'permission' => 'products.view', 'order' => 10],
         ];
+
+        // Clean up previous product items under Modules dropdown if any
+        Menu::where('parent_id', $modulesDropdown->id)
+            ->whereIn('name', ['Product Categories', 'Products'])
+            ->delete();
 
         foreach ($moduleChildren as $child) {
             Menu::firstOrCreate(
                 ['parent_id' => $modulesDropdown->id, 'name' => $child['name']],
+                [
+                    'type' => 'item',
+                    'route' => $child['route'],
+                    'permission' => $child['permission'],
+                    'order' => $child['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // Dedicated Products Dropdown
+        $shopDropdown = Menu::firstOrCreate(
+            ['name' => 'Shop / Products', 'type' => 'dropdown'],
+            [
+                'icon' => 'fas fa-shopping-bag',
+                'order' => 45,
+                'is_active' => true,
+            ]
+        );
+
+        $shopChildren = [
+            ['name' => 'Products', 'route' => 'products.index', 'permission' => 'products.view', 'order' => 1],
+            ['name' => 'Categories', 'route' => 'product-categories.index', 'permission' => 'product-categories.view', 'order' => 2],
+            ['name' => 'Brands', 'route' => 'product-brands.index', 'permission' => 'product-brands.view', 'order' => 3],
+            ['name' => 'Vendors', 'route' => 'product-vendors.index', 'permission' => 'product-vendors.view', 'order' => 4],
+            ['name' => 'Sizes', 'route' => 'product-sizes.index', 'permission' => 'product-sizes.view', 'order' => 5],
+            ['name' => 'Colors', 'route' => 'product-colors.index', 'permission' => 'product-colors.view', 'order' => 6],
+        ];
+
+        foreach ($shopChildren as $child) {
+            Menu::firstOrCreate(
+                ['parent_id' => $shopDropdown->id, 'name' => $child['name']],
                 [
                     'type' => 'item',
                     'route' => $child['route'],

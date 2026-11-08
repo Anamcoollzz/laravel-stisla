@@ -48,7 +48,13 @@
         <div class="card card-primary">
           <div class="card-body">
             <div class="text-center mb-4">
-              <img src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}" class="img-fluid rounded shadow-sm border" style="max-height: 280px; object-fit: contain; width: 100%; background: #fdfdfd;">
+              <img
+                src="{{ $product->thumbnail_url }}"
+                alt="{{ $product->title }}"
+                class="img-fluid rounded shadow-sm border"
+                style="max-height: 280px; object-fit: contain; width: 100%; background: #fdfdfd;"
+                onerror="this.onerror=null; this.src='{{ asset('assets/img/products/product-1.jpg') }}';"
+              >
             </div>
 
             <h4>{{ $product->title }}</h4>

@@ -113,14 +113,19 @@ class Product extends Model
     }
 
     /**
-     * Thumbnail URL accessor.
+     * Thumbnail URL accessor with robust fallback.
      */
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(
             get: function () {
+                $fallback = asset('assets/img/products/product-1-50.png');
+                if (file_exists(public_path('mantu/assets/img/product/1.jpg'))) {
+                    $fallback = asset('mantu/assets/img/product/1.jpg');
+                }
+
                 if (empty($this->thumbnail)) {
-                    return asset('mantu/assets/img/products/1.jpg');
+                    return $fallback;
                 }
 
                 if (str_starts_with($this->thumbnail, 'http://') || str_starts_with($this->thumbnail, 'https://')) {
@@ -131,7 +136,18 @@ class Product extends Model
                     return asset($this->thumbnail);
                 }
 
-                return asset('storage/'.$this->thumbnail);
+                // If relative to storage
+                if (file_exists(storage_path('app/public/'.$this->thumbnail))) {
+                    return asset('storage/'.$this->thumbnail);
+                }
+
+                // Fix plural path mantu/assets/img/products/ -> product/
+                $fixed = str_replace('mantu/assets/img/products/', 'mantu/assets/img/product/', $this->thumbnail);
+                if (file_exists(public_path($fixed))) {
+                    return asset($fixed);
+                }
+
+                return $fallback;
             }
         );
     }
@@ -174,4 +190,3 @@ class Product extends Model
         return $slug;
     }
 }
-

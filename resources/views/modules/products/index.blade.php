@@ -265,7 +265,12 @@
                       <td>{{ $loop->iteration }}</td>
                       <td>
                         <div class="d-flex align-items-center">
-                          <img src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}" class="product-thumb mr-2">
+                          <img
+                            src="{{ $product->thumbnail_url }}"
+                            alt="{{ $product->title }}"
+                            class="product-thumb mr-2"
+                            onerror="this.onerror=null; this.src='{{ asset('assets/img/products/product-1-50.png') }}';"
+                          >
                           <div>
                             <a href="{{ route('products.show', $product) }}" class="font-weight-bold text-dark d-block">
                               {{ $product->title }}
