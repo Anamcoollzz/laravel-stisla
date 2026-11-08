@@ -12,6 +12,7 @@ use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
@@ -125,6 +126,15 @@ Route::prefix('app')->group(function () {
         Route::get('tickets/export-pdf', [TicketController::class, 'exportPdf'])->name('tickets.exportPdf');
         Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
         Route::resource('tickets', TicketController::class);
+
+        Route::post('product-categories/{productCategory}/duplicate', [ProductCategoryController::class, 'duplicate'])->name('product-categories.duplicate');
+        Route::get('product-categories/export', [ProductCategoryController::class, 'export'])->name('product-categories.export');
+        Route::get('product-categories/export-pdf', [ProductCategoryController::class, 'exportPdf'])->name('product-categories.exportPdf');
+        Route::get('product-categories/template', [ProductCategoryController::class, 'template'])->name('product-categories.template');
+        Route::post('product-categories/import', [ProductCategoryController::class, 'import'])->name('product-categories.import');
+        Route::resource('product-categories', ProductCategoryController::class)->parameters([
+            'product-categories' => 'productCategory',
+        ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');

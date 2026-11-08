@@ -51,6 +51,7 @@ class MenuSeeder extends Seeder
             ['name' => 'SPP Payments', 'route' => 'spp-payments.index', 'permission' => 'spp-payments.view', 'order' => 6],
             ['name' => 'Tickets', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 7],
             ['name' => 'Chat Box', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 8],
+            ['name' => 'Product Categories', 'route' => 'product-categories.index', 'permission' => 'product-categories.view', 'order' => 9],
         ];
 
         foreach ($moduleChildren as $child) {

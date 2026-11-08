@@ -30,6 +30,7 @@ class RolePermissionSeeder extends Seeder
             'fields' => ['view', 'create', 'edit', 'delete'],
             'tickets' => ['view', 'create', 'edit', 'delete'],
             'menus' => ['view', 'create', 'edit', 'delete'],
+            'product-categories' => ['view', 'create', 'edit', 'delete'],
             'chat' => ['view', 'create', 'delete'],
             'backup' => ['view', 'create', 'download', 'delete'],
             'settings' => ['view', 'edit'],

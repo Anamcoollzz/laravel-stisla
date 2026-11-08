@@ -292,9 +292,9 @@
                 <li @class(['active' => request()->routeIs('dashboard')])>
                   <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
                 </li>
-                @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'fields.view', 'spp-payments.view', 'tickets.view'])
+                @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'fields.view', 'spp-payments.view', 'tickets.view', 'chat.view', 'product-categories.view'])
                   <li class="menu-header">{{ __('Modules') }}</li>
-                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*')])>
+                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*', 'chat.*', 'product-categories.*')])>
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
                     <ul class="dropdown-menu">
                       @can('classes.view')
@@ -320,6 +320,9 @@
                       @endcan
                       @can('chat.view')
                         <li @class(['active' => request()->routeIs('chat.*')])><a class="nav-link" href="{{ route('chat.index') }}">{{ __('Chat Box') }}</a></li>
+                      @endcan
+                      @can('product-categories.view')
+                        <li @class(['active' => request()->routeIs('product-categories.*')])><a class="nav-link" href="{{ route('product-categories.index') }}">{{ __('Product Categories') }}</a></li>
                       @endcan
                     </ul>
                   </li>

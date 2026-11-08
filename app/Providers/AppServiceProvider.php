@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\ChatMessage;
 use App\Models\Menu;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -63,6 +64,25 @@ class AppServiceProvider extends ServiceProvider
                     ->get();
 
                 $view->with('sidebarMenus', $sidebarMenus);
+            }
+        });
+
+        View::composer('ecommerce.layouts.app-ecommerce', function ($view) {
+            if (Schema::hasTable('product_categories')) {
+                $ecommerceCategories = ProductCategory::query()
+                    ->with([
+                        'children' => fn ($q) => $q->where('is_active', true)->orderBy('order')->with([
+                            'children' => fn ($subQ) => $subQ->where('is_active', true)->orderBy('order'),
+                        ]),
+                    ])
+                    ->whereNull('parent_id')
+                    ->where('is_active', true)
+                    ->orderBy('order')
+                    ->get();
+
+                $view->with('ecommerceCategories', $ecommerceCategories);
+            } else {
+                $view->with('ecommerceCategories', collect());
             }
         });
     }
