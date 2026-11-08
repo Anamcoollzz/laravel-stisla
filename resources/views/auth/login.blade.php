@@ -89,7 +89,7 @@
                   <div class="d-block">
                     <label for="password" class="control-label">{{ __('Password') }} <span class="text-danger">*</span></label>
                     <div class="float-right">
-                      <a href="{{ route('auth-forgot-password.html') }}" class="text-small">
+                      <a href="{{ route('password.request') }}" class="text-small">
                         {{ __('Forgot Password?') }}
                       </a>
                     </div>

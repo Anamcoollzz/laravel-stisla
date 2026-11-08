@@ -287,9 +287,9 @@
               <li @class(['active' => request()->routeIs('dashboard')])>
                 <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-fire"></i> <span>{{ __('Dashboard') }}</span></a>
               </li>
-              @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'spp-payments.view', 'tickets.view'])
+              @canany(['classes.view', 'teachers.view', 'students.view', 'subjects.view', 'fields.view', 'spp-payments.view', 'tickets.view'])
                 <li class="menu-header">{{ __('Modules') }}</li>
-                <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*', 'tickets.*')])>
+                <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*')])>
                   <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
                   <ul class="dropdown-menu">
                     @can('classes.view')
@@ -304,6 +304,9 @@
                     @can('subjects.view')
                       <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
                     @endcan
+                    @can('fields.view')
+                      <li @class(['active' => request()->routeIs('fields.*')])><a class="nav-link" href="{{ route('fields.index') }}">{{ __('Fields') }}</a></li>
+                    @endcan
                     @can('spp-payments.view')
                       <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
                     @endcan
@@ -313,9 +316,9 @@
                   </ul>
                 </li>
               @endcanany
-              @canany(['users.view', 'roles.view'])
+              @canany(['users.view', 'roles.view', 'permissions.view'])
                 <li class="menu-header">{{ __('User Management') }}</li>
-                <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*')])>
+                <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*', 'permissions.*')])>
                   <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
                   <ul class="dropdown-menu">
                     @can('users.view')
@@ -323,6 +326,9 @@
                     @endcan
                     @can('roles.view')
                       <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
+                    @endcan
+                    @can('permissions.view')
+                      <li @class(['active' => request()->routeIs('permissions.*')])><a class="nav-link" href="{{ route('permissions.index') }}">{{ __('Permissions') }}</a></li>
                     @endcan
                   </ul>
                 </li>

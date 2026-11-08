@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
@@ -21,6 +25,11 @@ Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('lang.sw
 Route::middleware('guest')->group(function () {
     Route::get('/auth/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/auth/login', [LoginController::class, 'login'])->name('login.attempt');
+
+    Route::get('/auth/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/auth/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/auth/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
 Route::post('/auth/logout', [LoginController::class, 'logout'])->name('logout');
@@ -64,7 +73,11 @@ Route::middleware('auth')->group(function () {
     Route::post('users/import', [UserController::class, 'import'])->name('users.import');
     Route::resource('users', UserController::class);
 
+    Route::resource('fields', FieldController::class);
+
     Route::resource('roles', RoleController::class);
+
+    Route::resource('permissions', PermissionController::class)->except('show');
 
     Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
     Route::resource('tickets', TicketController::class);

@@ -201,4 +201,3 @@ test('user without delete permission cannot delete ticket', function () {
 
     expect(Ticket::query()->find($ticket->id))->not->toBeNull();
 });
-
