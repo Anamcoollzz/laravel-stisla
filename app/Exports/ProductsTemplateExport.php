@@ -31,6 +31,9 @@ class ProductsTemplateExport implements FromCollection, ShouldAutoSize, WithHead
                 'short_description' => 'Hoodie bahan fleece premium 330gsm, sangat hangat dan modis.',
                 'tags' => 'hoodie, streetwear, winter, cotton',
                 'is_active' => 1,
+                'is_trending' => 1,
+                'is_new' => 1,
+                'is_sale' => 0,
             ],
             [
                 'title' => 'Wireless Bluetooth Noise Cancelling Headphones',
@@ -46,6 +49,9 @@ class ProductsTemplateExport implements FromCollection, ShouldAutoSize, WithHead
                 'short_description' => 'Headphone nirkabel dengan daya tahan baterai hingga 30 jam.',
                 'tags' => 'audio, headphone, wireless, bluetooth',
                 'is_active' => 1,
+                'is_trending' => 0,
+                'is_new' => 1,
+                'is_sale' => 1,
             ],
         ]);
     }
@@ -66,6 +72,9 @@ class ProductsTemplateExport implements FromCollection, ShouldAutoSize, WithHead
             'short_description',
             'tags',
             'is_active',
+            'is_trending',
+            'is_new',
+            'is_sale',
         ];
     }
 
@@ -76,4 +85,3 @@ class ProductsTemplateExport implements FromCollection, ShouldAutoSize, WithHead
         ];
     }
 }
-

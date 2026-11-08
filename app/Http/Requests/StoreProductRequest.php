@@ -41,6 +41,9 @@ class StoreProductRequest extends FormRequest
             'thumbnail' => ['nullable', 'string', 'max:255'],
             'thumbnail_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'is_active' => ['nullable', 'boolean'],
+            'is_trending' => ['nullable', 'boolean'],
+            'is_new' => ['nullable', 'boolean'],
+            'is_sale' => ['nullable', 'boolean'],
         ];
     }
 }

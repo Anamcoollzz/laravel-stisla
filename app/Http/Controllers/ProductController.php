@@ -103,6 +103,9 @@ class ProductController extends Controller
 
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active', true);
+        $data['is_trending'] = $request->boolean('is_trending');
+        $data['is_new'] = $request->boolean('is_new');
+        $data['is_sale'] = $request->boolean('is_sale');
         $data['discount_percent'] = $data['discount_percent'] ?? 0;
 
         // Thumbnail file upload
@@ -169,6 +172,9 @@ class ProductController extends Controller
 
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_trending'] = $request->boolean('is_trending');
+        $data['is_new'] = $request->boolean('is_new');
+        $data['is_sale'] = $request->boolean('is_sale');
         $data['discount_percent'] = $data['discount_percent'] ?? 0;
 
         // Thumbnail file upload
@@ -232,6 +238,9 @@ class ProductController extends Controller
             'tags' => $product->tags,
             'thumbnail' => $product->thumbnail,
             'is_active' => $product->is_active,
+            'is_trending' => $product->is_trending,
+            'is_new' => $product->is_new,
+            'is_sale' => $product->is_sale,
         ]);
 
         return redirect()
@@ -381,4 +390,3 @@ class ProductController extends Controller
         return $specs;
     }
 }
-

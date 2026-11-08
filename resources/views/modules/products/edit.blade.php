@@ -385,7 +385,7 @@
                 <h5 id="final-price-preview" class="text-primary mb-0 font-weight-bold">Rp 0</h5>
               </div>
 
-              <div class="custom-control custom-switch">
+              <div class="custom-control custom-switch mb-3">
                 <input
                   type="checkbox"
                   class="custom-control-input"
@@ -396,6 +396,51 @@
                 >
                 <label class="custom-control-label font-weight-bold" for="is_active">{{ __('Active / Published') }}</label>
                 <small class="form-text text-muted">{{ __('Inactive products will be hidden from the public store.') }}</small>
+              </div>
+
+              <div class="custom-control custom-switch mb-2">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="is_trending"
+                  name="is_trending"
+                  value="1"
+                  @checked(old('is_trending', $product->is_trending))
+                >
+                <label class="custom-control-label" for="is_trending">
+                  <span class="badge badge-warning text-dark font-weight-bold mr-1">{{ __('Trending') }}</span>
+                  {{ __('Mark as Trending') }}
+                </label>
+              </div>
+
+              <div class="custom-control custom-switch mb-2">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="is_new"
+                  name="is_new"
+                  value="1"
+                  @checked(old('is_new', $product->is_new))
+                >
+                <label class="custom-control-label" for="is_new">
+                  <span class="badge badge-info font-weight-bold mr-1">{{ __('New') }}</span>
+                  {{ __('Mark as New Arrival') }}
+                </label>
+              </div>
+
+              <div class="custom-control custom-switch">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="is_sale"
+                  name="is_sale"
+                  value="1"
+                  @checked(old('is_sale', $product->is_sale))
+                >
+                <label class="custom-control-label" for="is_sale">
+                  <span class="badge badge-danger font-weight-bold mr-1">{{ __('Sale') }}</span>
+                  {{ __('Mark as On Sale') }}
+                </label>
               </div>
             </div>
           </div>

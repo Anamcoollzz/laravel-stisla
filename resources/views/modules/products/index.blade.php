@@ -277,7 +277,16 @@
                             </a>
                             <small class="text-muted mr-1">SKU: <code>{{ $product->sku }}</code></small>
                             @if ($product->category)
-                              <span class="badge badge-light border small">{{ $product->category->name }}</span>
+                              <span class="badge badge-light border small mr-1">{{ $product->category->name }}</span>
+                            @endif
+                            @if ($product->is_trending)
+                              <span class="badge badge-warning text-dark font-weight-bold mr-1" style="font-size: 10px;">Trending</span>
+                            @endif
+                            @if ($product->is_new)
+                              <span class="badge badge-info font-weight-bold mr-1" style="font-size: 10px;">New</span>
+                            @endif
+                            @if ($product->is_sale)
+                              <span class="badge badge-danger font-weight-bold mr-1" style="font-size: 10px;">Sale</span>
                             @endif
                           </div>
                         </div>

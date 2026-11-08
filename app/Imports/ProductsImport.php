@@ -100,6 +100,9 @@ class ProductsImport implements SkipsEmptyRows, ToModel, WithHeadingRow, WithVal
         // Active flag
         $activeRaw = $row['is_active'] ?? $row['status'] ?? 1;
         $isActive = in_array(strtolower(trim((string) $activeRaw)), ['1', 'true', 'yes', 'aktif', 'active'], true);
+        $isTrending = in_array(strtolower(trim((string) ($row['is_trending'] ?? $row['trending'] ?? '0'))), ['1', 'true', 'yes', 'aktif', 'active'], true);
+        $isNew = in_array(strtolower(trim((string) ($row['is_new'] ?? $row['new'] ?? '0'))), ['1', 'true', 'yes', 'aktif', 'active'], true);
+        $isSale = in_array(strtolower(trim((string) ($row['is_sale'] ?? $row['sale'] ?? '0'))), ['1', 'true', 'yes', 'aktif', 'active'], true);
 
         // Prices & stock
         $price = isset($row['price']) && is_numeric($row['price']) ? (float) $row['price'] : 0.00;
@@ -125,6 +128,9 @@ class ProductsImport implements SkipsEmptyRows, ToModel, WithHeadingRow, WithVal
                 'description_detail' => $row['description_detail'] ?? null,
                 'tags' => $tags,
                 'is_active' => $isActive,
+                'is_trending' => $isTrending,
+                'is_new' => $isNew,
+                'is_sale' => $isSale,
             ]
         );
     }
@@ -137,4 +143,3 @@ class ProductsImport implements SkipsEmptyRows, ToModel, WithHeadingRow, WithVal
         ];
     }
 }
-

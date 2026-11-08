@@ -12,6 +12,7 @@ use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
+use App\Http\Controllers\ProductBannerController;
 use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductColorController;
@@ -182,6 +183,15 @@ Route::prefix('app')->group(function () {
         Route::post('product-colors/import', [ProductColorController::class, 'import'])->name('product-colors.import');
         Route::resource('product-colors', ProductColorController::class)->parameters([
             'product-colors' => 'productColor',
+        ]);
+
+        Route::post('product-banners/{productBanner}/duplicate', [ProductBannerController::class, 'duplicate'])->name('product-banners.duplicate');
+        Route::get('product-banners/export', [ProductBannerController::class, 'export'])->name('product-banners.export');
+        Route::get('product-banners/export-pdf', [ProductBannerController::class, 'exportPdf'])->name('product-banners.exportPdf');
+        Route::get('product-banners/template', [ProductBannerController::class, 'template'])->name('product-banners.template');
+        Route::post('product-banners/import', [ProductBannerController::class, 'import'])->name('product-banners.import');
+        Route::resource('product-banners', ProductBannerController::class)->parameters([
+            'product-banners' => 'productBanner',
         ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');

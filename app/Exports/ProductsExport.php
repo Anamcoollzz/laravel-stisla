@@ -42,6 +42,9 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithHeadings, Wi
             'Stock',
             'Tags',
             'Status',
+            'Trending',
+            'New',
+            'Sale',
             'Created At',
         ];
     }
@@ -67,6 +70,9 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithHeadings, Wi
             $product->stock,
             is_array($product->tags) ? implode(', ', $product->tags) : ($product->tags ?? ''),
             $product->is_active ? 'Active' : 'Inactive',
+            $product->is_trending ? 'Yes' : 'No',
+            $product->is_new ? 'Yes' : 'No',
+            $product->is_sale ? 'Yes' : 'No',
             $product->created_at?->format('Y-m-d H:i:s'),
         ];
     }
@@ -78,4 +84,3 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithHeadings, Wi
         ];
     }
 }
-

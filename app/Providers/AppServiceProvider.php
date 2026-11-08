@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\ChatMessage;
 use App\Models\Menu;
+use App\Models\Product;
+use App\Models\ProductBanner;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -83,6 +85,34 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('ecommerceCategories', $ecommerceCategories);
             } else {
                 $view->with('ecommerceCategories', collect());
+            }
+        });
+
+        View::composer('ecommerce.pages.index', function ($view) {
+            if (Schema::hasTable('product_banners')) {
+                $heroBanners = ProductBanner::query()
+                    ->active()
+                    ->hero()
+                    ->orderBy('order')
+                    ->latest('id')
+                    ->get();
+
+                $view->with('heroBanners', $heroBanners);
+            } else {
+                $view->with('heroBanners', collect());
+            }
+
+            if (Schema::hasTable('products')) {
+                $newArrivalProducts = Product::query()
+                    ->active()
+                    ->with(['category', 'brand', 'size', 'color'])
+                    ->latest('id')
+                    ->take(12)
+                    ->get();
+
+                $view->with('newArrivalProducts', $newArrivalProducts);
+            } else {
+                $view->with('newArrivalProducts', collect());
             }
         });
     }

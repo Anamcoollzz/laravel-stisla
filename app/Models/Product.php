@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +31,9 @@ class Product extends Model
         'tags',
         'thumbnail',
         'is_active',
+        'is_trending',
+        'is_new',
+        'is_sale',
     ];
 
     /**
@@ -44,6 +48,9 @@ class Product extends Model
             'spesifications' => 'array',
             'tags' => 'array',
             'is_active' => 'boolean',
+            'is_trending' => 'boolean',
+            'is_new' => 'boolean',
+            'is_sale' => 'boolean',
         ];
     }
 
@@ -150,6 +157,50 @@ class Product extends Model
                 return $fallback;
             }
         );
+    }
+
+    /**
+     * Scope active products.
+     *
+     * @param  Builder<Product>  $query
+     * @return Builder<Product>
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope trending products.
+     *
+     * @param  Builder<Product>  $query
+     * @return Builder<Product>
+     */
+    public function scopeTrending(Builder $query): Builder
+    {
+        return $query->where('is_trending', true);
+    }
+
+    /**
+     * Scope new arrivals products.
+     *
+     * @param  Builder<Product>  $query
+     * @return Builder<Product>
+     */
+    public function scopeNew(Builder $query): Builder
+    {
+        return $query->where('is_new', true);
+    }
+
+    /**
+     * Scope on sale products.
+     *
+     * @param  Builder<Product>  $query
+     * @return Builder<Product>
+     */
+    public function scopeSale(Builder $query): Builder
+    {
+        return $query->where('is_sale', true);
     }
 
     /**

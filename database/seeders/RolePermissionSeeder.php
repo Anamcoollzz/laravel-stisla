@@ -36,6 +36,7 @@ class RolePermissionSeeder extends Seeder
             'product-vendors' => ['view', 'create', 'edit', 'delete'],
             'product-sizes' => ['view', 'create', 'edit', 'delete'],
             'product-colors' => ['view', 'create', 'edit', 'delete'],
+            'product-banners' => ['view', 'create', 'edit', 'delete'],
             'chat' => ['view', 'create', 'delete'],
             'backup' => ['view', 'create', 'download', 'delete'],
             'settings' => ['view', 'edit'],
@@ -86,6 +87,7 @@ class RolePermissionSeeder extends Seeder
             'product-vendors.view',
             'product-sizes.view',
             'product-colors.view',
+            'product-banners.view',
             'chat.view',
             'chat.create',
             'chat.delete',
@@ -108,6 +110,7 @@ class RolePermissionSeeder extends Seeder
             'product-vendors.view',
             'product-sizes.view',
             'product-colors.view',
+            'product-banners.view',
             'chat.view',
             'chat.create',
         ]);

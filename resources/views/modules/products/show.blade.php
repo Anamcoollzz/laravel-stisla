@@ -61,9 +61,18 @@
             <div class="mb-3">
               <span class="badge badge-light border mr-1">SKU: <code>{{ $product->sku }}</code></span>
               @if ($product->is_active)
-                <span class="badge badge-success">{{ __('Active') }}</span>
+                <span class="badge badge-success mr-1">{{ __('Active') }}</span>
               @else
-                <span class="badge badge-secondary">{{ __('Inactive') }}</span>
+                <span class="badge badge-secondary mr-1">{{ __('Inactive') }}</span>
+              @endif
+              @if ($product->is_trending)
+                <span class="badge badge-warning text-dark font-weight-bold mr-1">{{ __('Trending') }}</span>
+              @endif
+              @if ($product->is_new)
+                <span class="badge badge-info font-weight-bold mr-1">{{ __('New Arrival') }}</span>
+              @endif
+              @if ($product->is_sale)
+                <span class="badge badge-danger font-weight-bold mr-1">{{ __('On Sale') }}</span>
               @endif
             </div>
 

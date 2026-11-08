@@ -150,7 +150,81 @@
             <h2>New <span>Arrivals</span></h2>
           </div>
           <div class="mn-product owl-carousel">
-            <div class="mn-product-card">
+            @if (isset($newArrivalProducts) && $newArrivalProducts->isNotEmpty())
+              @foreach ($newArrivalProducts as $product)
+                <div class="mn-product-card">
+                  <div class="mn-product-img">
+                    @if ($product->is_trending)
+                      <div class="lbl">
+                        <span class="trending">trending</span>
+                      </div>
+                    @elseif ($product->is_new)
+                      <div class="lbl">
+                        <span class="new">new</span>
+                      </div>
+                    @elseif ($product->is_sale)
+                      <div class="lbl">
+                        <span class="sale">sale</span>
+                      </div>
+                    @elseif ($product->discount_percent > 0)
+                      <div class="lbl">
+                        <span class="discount">{{ (int) $product->discount_percent }}% off</span>
+                      </div>
+                    @endif
+                    <div class="mn-img">
+                      <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
+                        <img class="main-img" src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}">
+                        <img class="hover-img" src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}">
+                      </a>
+                      <div class="mn-pro-loader"></div>
+                      <div class="mn-options">
+                        <ul>
+                          <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal">
+                              <i class="ri-eye-line"></i></a></li>
+                          <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
+                          <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mn-product-detail">
+                    <div class="cat">
+                      <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $product->category?->name ?? 'Product' }}</a>
+                      @if ($product->size)
+                        <ul>
+                          <li>{{ strtolower($product->size->code ?: $product->size->name) }}</li>
+                        </ul>
+                      @endif
+                    </div>
+                    <h5><a href="{{ route('ecommerce.product-detail.html') }}">{{ $product->title }}</a></h5>
+                    <div class="mn-price">
+                      <div class="mn-price-new">Rp {{ number_format($product->final_price, 0, ',', '.') }}</div>
+                      @if ($product->discount_percent > 0)
+                        <div class="mn-price-old">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                      @endif
+                    </div>
+                    <div class="mn-pro-option">
+                      <div class="mn-pro-color">
+                        @if ($product->color)
+                          <ul class="mn-opt-swatch mn-change-img">
+                            <li class="active">
+                              <a href="#" class="mn-opt-clr-img active" data-src="{{ $product->thumbnail_url }}" data-src-hover="{{ $product->thumbnail_url }}" data-tooltip="{{ $product->color->name }}">
+                                <span style="background-color: {{ $product->color->color_code ?: '#000000' }};"></span>
+                              </a>
+                            </li>
+                          </ul>
+                        @endif
+                      </div>
+                      <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
+                        <i class="ri-heart-line"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              @endforeach
+            @else
+              <div class="mn-product-card">
               <div class="mn-product-img">
                 <div class="lbl">
                   <span class="trending">trending</span>
@@ -437,6 +511,7 @@
                 </div>
               </div>
             </div>
+            @endif
           </div>
         </section>
 
