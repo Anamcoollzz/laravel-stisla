@@ -115,6 +115,12 @@
                         @can('roles.edit')
                           <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
                         @endcan
+                        @can('roles.create')
+                          <form action="{{ route('roles.duplicate', $role) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                          </form>
+                        @endcan
                         @can('roles.delete')
                           @if ($role->name !== 'admin')
                             <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline">

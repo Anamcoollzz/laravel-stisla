@@ -107,6 +107,12 @@
                         @can('fields.edit')
                           <a href="{{ route('fields.edit', $field) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
                         @endcan
+                        @can('fields.create')
+                          <form action="{{ route('fields.duplicate', $field) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                          </form>
+                        @endcan
                         @can('fields.delete')
                           <form action="{{ route('fields.destroy', $field) }}" method="POST" class="d-inline">
                             @csrf

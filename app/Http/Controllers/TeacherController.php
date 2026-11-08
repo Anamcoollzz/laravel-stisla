@@ -58,6 +58,39 @@ class TeacherController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(Teacher $teacher): RedirectResponse
+    {
+        Gate::authorize('teachers.create');
+
+        $baseNip = substr($teacher->nip, 0, 20);
+        $newNip = $baseNip.'-'.rand(100, 999);
+        while (Teacher::where('nip', $newNip)->exists()) {
+            $newNip = $baseNip.'-'.rand(1000, 9999);
+        }
+
+        $emailParts = explode('@', $teacher->email);
+        $newEmail = $emailParts[0].'+copy'.rand(100, 999).'@'.($emailParts[1] ?? 'example.com');
+        while (Teacher::where('email', $newEmail)->exists()) {
+            $newEmail = $emailParts[0].'+copy'.rand(1000, 99999).'@'.($emailParts[1] ?? 'example.com');
+        }
+
+        Teacher::create([
+            'nip' => $newNip,
+            'name' => $teacher->name.' (Copy)',
+            'email' => $newEmail,
+            'phone' => $teacher->phone,
+            'gender' => $teacher->gender,
+            'address' => $teacher->address,
+        ]);
+
+        return redirect()
+            ->route('teachers.index')
+            ->with('success', __('Teacher duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Teacher $teacher): View

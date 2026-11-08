@@ -122,6 +122,12 @@
                         @can('users.edit')
                           <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
                         @endcan
+                        @can('users.create')
+                          <form action="{{ route('users.duplicate', $user) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                          </form>
+                        @endcan
                         @can('users.delete')
                           @if (auth()->id() !== $user->id)
                             <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline">

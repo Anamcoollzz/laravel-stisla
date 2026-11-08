@@ -80,6 +80,36 @@ class SppPaymentController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(SppPayment $sppPayment): RedirectResponse
+    {
+        Gate::authorize('spp-payments.create');
+
+        $baseInvoice = substr($sppPayment->invoice_number, 0, 35);
+        $newInvoice = $baseInvoice.'-DUP'.rand(100, 999);
+        while (SppPayment::where('invoice_number', $newInvoice)->exists()) {
+            $newInvoice = $baseInvoice.'-DUP'.rand(1000, 9999);
+        }
+
+        SppPayment::create([
+            'student_id' => $sppPayment->student_id,
+            'invoice_number' => $newInvoice,
+            'month' => $sppPayment->month,
+            'year' => $sppPayment->year,
+            'amount' => $sppPayment->amount,
+            'payment_date' => $sppPayment->payment_date ?? now(),
+            'payment_method' => $sppPayment->payment_method,
+            'status' => $sppPayment->status,
+            'notes' => $sppPayment->notes,
+        ]);
+
+        return redirect()
+            ->route('spp-payments.index')
+            ->with('success', __('SPP payment duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(SppPayment $sppPayment): View

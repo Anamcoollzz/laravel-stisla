@@ -152,6 +152,12 @@
                         @can('menus.edit')
                           <a href="{{ route('menus.edit', $menu) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
                         @endcan
+                        @can('menus.create')
+                          <form action="{{ route('menus.duplicate', $menu) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                          </form>
+                        @endcan
                         @can('menus.delete')
                           <form action="{{ route('menus.destroy', $menu) }}" method="POST" class="d-inline form-delete">
                             @csrf

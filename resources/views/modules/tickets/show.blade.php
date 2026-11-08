@@ -72,6 +72,12 @@
               @can('tickets.edit')
                 <a href="{{ route('tickets.edit', $ticket) }}" class="btn btn-primary btn-sm btn-icon mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
               @endcan
+              @can('tickets.create')
+                <form action="{{ route('tickets.duplicate', $ticket) }}" method="POST" class="d-inline">
+                  @csrf
+                  <button type="submit" class="btn btn-warning btn-sm btn-icon mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                </form>
+              @endcan
               @can('tickets.delete')
                 <form action="{{ route('tickets.destroy', $ticket) }}" method="POST" class="d-inline form-delete">
                   @csrf

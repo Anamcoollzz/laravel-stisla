@@ -56,6 +56,30 @@ class SchoolClassController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(SchoolClass $schoolClass): RedirectResponse
+    {
+        Gate::authorize('classes.create');
+
+        $baseName = $schoolClass->class_name;
+        $newName = $baseName.' (Copy)';
+        $counter = 1;
+        while (SchoolClass::where('class_name', $newName)->exists()) {
+            $counter++;
+            $newName = $baseName.' (Copy '.$counter.')';
+        }
+
+        SchoolClass::create([
+            'class_name' => $newName,
+        ]);
+
+        return redirect()
+            ->route('classes.index')
+            ->with('success', __('Class duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(SchoolClass $schoolClass): View

@@ -123,6 +123,12 @@
                         @can('teachers.edit')
                           <a href="{{ route('teachers.edit', $teacher) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
                         @endcan
+                        @can('teachers.create')
+                          <form action="{{ route('teachers.duplicate', $teacher) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                          </form>
+                        @endcan
                         @can('teachers.delete')
                           <form action="{{ route('teachers.destroy', $teacher) }}" method="POST" class="d-inline">
                             @csrf

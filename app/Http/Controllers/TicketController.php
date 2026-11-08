@@ -65,6 +65,26 @@ class TicketController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(Request $request, Ticket $ticket): RedirectResponse
+    {
+        Gate::authorize('tickets.create');
+
+        $newTicket = Ticket::query()->create([
+            'user_id' => $request->user()->id,
+            'title' => $ticket->title.' (Copy)',
+            'description' => $ticket->description,
+            'priority' => $ticket->priority,
+            'status' => 'open',
+        ]);
+
+        return redirect()
+            ->route('tickets.index', ['ticket' => $newTicket->id])
+            ->with('success', __('Ticket duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Ticket $ticket): View

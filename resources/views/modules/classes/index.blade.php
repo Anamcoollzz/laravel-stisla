@@ -114,6 +114,12 @@
                         @can('classes.edit')
                           <a href="{{ route('classes.edit', $schoolClass) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
                         @endcan
+                        @can('classes.create')
+                          <form action="{{ route('classes.duplicate', $schoolClass) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                          </form>
+                        @endcan
                         @can('classes.delete')
                           <form action="{{ route('classes.destroy', $schoolClass) }}" method="POST" class="d-inline">
                             @csrf

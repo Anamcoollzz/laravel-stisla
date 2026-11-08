@@ -52,6 +52,32 @@ class FieldController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(Field $field): RedirectResponse
+    {
+        Gate::authorize('fields.create');
+
+        $baseCode = substr($field->code, 0, 20);
+        $newCode = $baseCode.'-COPY';
+        $counter = 1;
+        while (Field::where('code', $newCode)->exists()) {
+            $counter++;
+            $newCode = substr($field->code, 0, 18).'-CP'.$counter;
+        }
+
+        Field::create([
+            'code' => $newCode,
+            'name' => $field->name.' (Copy)',
+            'description' => $field->description,
+        ]);
+
+        return redirect()
+            ->route('fields.index')
+            ->with('success', __('Field duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Field $field): View

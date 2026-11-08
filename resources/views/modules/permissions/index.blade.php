@@ -104,6 +104,12 @@
                         @can('permissions.edit')
                           <a href="{{ route('permissions.edit', $permission) }}" class="btn btn-sm btn-icon btn-primary mr-1" data-toggle="tooltip" title="{{ __('Edit') }}"><i class="fas fa-pencil-alt"></i></a>
                         @endcan
+                        @can('permissions.create')
+                          <form action="{{ route('permissions.duplicate', $permission) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
+                          </form>
+                        @endcan
                         @can('permissions.delete')
                           <form action="{{ route('permissions.destroy', $permission) }}" method="POST" class="d-inline">
                             @csrf

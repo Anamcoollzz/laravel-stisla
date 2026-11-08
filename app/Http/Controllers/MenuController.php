@@ -75,6 +75,30 @@ class MenuController extends Controller
     }
 
     /**
+     * Duplicate the specified menu.
+     */
+    public function duplicate(Menu $menu): RedirectResponse
+    {
+        Gate::authorize('menus.create');
+
+        Menu::query()->create([
+            'parent_id' => $menu->parent_id,
+            'name' => $menu->name.' (Copy)',
+            'type' => $menu->type,
+            'icon' => $menu->icon,
+            'route' => $menu->route,
+            'url' => $menu->url,
+            'permission' => $menu->permission,
+            'order' => $menu->order + 1,
+            'is_active' => $menu->is_active,
+        ]);
+
+        return redirect()
+            ->route('menus.index')
+            ->with('success', __('Menu duplicated successfully.'));
+    }
+
+    /**
      * Display the specified menu.
      */
     public function show(Menu $menu): View

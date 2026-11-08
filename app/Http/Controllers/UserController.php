@@ -72,6 +72,36 @@ class UserController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(User $user): RedirectResponse
+    {
+        Gate::authorize('users.create');
+
+        $emailParts = explode('@', $user->email);
+        $newEmail = $emailParts[0].'+copy'.rand(100, 999).'@'.($emailParts[1] ?? 'example.com');
+        while (User::where('email', $newEmail)->exists()) {
+            $newEmail = $emailParts[0].'+copy'.rand(1000, 99999).'@'.($emailParts[1] ?? 'example.com');
+        }
+
+        $newUser = User::query()->create([
+            'name' => $user->name.' (Copy)',
+            'email' => $newEmail,
+            'password' => $user->password,
+            'role' => $user->role,
+        ]);
+
+        $roleNames = $user->roles->pluck('name')->all();
+        if (! empty($roleNames)) {
+            $newUser->syncRoles($roleNames);
+        }
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', __('User duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(User $user): View

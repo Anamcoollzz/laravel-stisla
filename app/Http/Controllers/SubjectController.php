@@ -58,6 +58,32 @@ class SubjectController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(Subject $subject): RedirectResponse
+    {
+        Gate::authorize('subjects.create');
+
+        $baseCode = substr($subject->code, 0, 20);
+        $newCode = $baseCode.'-COPY';
+        $counter = 1;
+        while (Subject::where('code', $newCode)->exists()) {
+            $counter++;
+            $newCode = substr($subject->code, 0, 18).'-CP'.$counter;
+        }
+
+        Subject::create([
+            'code' => $newCode,
+            'name' => $subject->name.' (Copy)',
+            'description' => $subject->description,
+        ]);
+
+        return redirect()
+            ->route('subjects.index')
+            ->with('success', __('Subject duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Subject $subject): View

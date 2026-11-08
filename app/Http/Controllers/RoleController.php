@@ -63,6 +63,36 @@ class RoleController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(Role $role): RedirectResponse
+    {
+        Gate::authorize('roles.create');
+
+        $baseName = $role->name;
+        $newName = $baseName.'-copy';
+        $counter = 1;
+        while (Role::where('name', $newName)->where('guard_name', 'web')->exists()) {
+            $counter++;
+            $newName = $baseName.'-copy-'.$counter;
+        }
+
+        $newRole = Role::create([
+            'name' => $newName,
+            'guard_name' => 'web',
+        ]);
+
+        $permissions = $role->permissions->pluck('name')->all();
+        if (! empty($permissions)) {
+            $newRole->syncPermissions($permissions);
+        }
+
+        return redirect()
+            ->route('roles.index')
+            ->with('success', __('Role duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Role $role): View

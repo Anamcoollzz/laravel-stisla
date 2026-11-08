@@ -66,6 +66,44 @@ class StudentController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(Student $student): RedirectResponse
+    {
+        Gate::authorize('students.create');
+
+        $baseNis = substr($student->nis, 0, 20);
+        $newNis = $baseNis.'-'.rand(100, 999);
+        while (Student::where('nis', $newNis)->exists()) {
+            $newNis = $baseNis.'-'.rand(1000, 9999);
+        }
+
+        $newEmail = null;
+        if ($student->email) {
+            $emailParts = explode('@', $student->email);
+            $newEmail = $emailParts[0].'+copy'.rand(100, 999).'@'.($emailParts[1] ?? 'example.com');
+            while (Student::where('email', $newEmail)->exists()) {
+                $newEmail = $emailParts[0].'+copy'.rand(1000, 99999).'@'.($emailParts[1] ?? 'example.com');
+            }
+        }
+
+        Student::create([
+            'class_id' => $student->class_id,
+            'nis' => $newNis,
+            'name' => $student->name.' (Copy)',
+            'email' => $newEmail,
+            'phone' => $student->phone,
+            'gender' => $student->gender,
+            'birth_date' => $student->birth_date,
+            'address' => $student->address,
+        ]);
+
+        return redirect()
+            ->route('students.index')
+            ->with('success', __('Student duplicated successfully.'));
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Student $student): View

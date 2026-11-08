@@ -56,6 +56,33 @@ class PermissionController extends Controller
     }
 
     /**
+     * Duplicate the specified resource.
+     */
+    public function duplicate(Permission $permission): RedirectResponse
+    {
+        Gate::authorize('permissions.create');
+
+        $baseName = $permission->name;
+        $newName = $baseName.'-copy';
+        $counter = 1;
+        while (Permission::where('name', $newName)->where('guard_name', 'web')->exists()) {
+            $counter++;
+            $newName = $baseName.'-copy-'.$counter;
+        }
+
+        Permission::query()->create([
+            'name' => $newName,
+            'guard_name' => 'web',
+        ]);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        return redirect()
+            ->route('permissions.index')
+            ->with('success', __('Permission duplicated successfully.'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Permission $permission): View
