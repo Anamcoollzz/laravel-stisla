@@ -41,15 +41,26 @@ class AuthController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $request->validate([
+            'first_name' => ['nullable', 'string', 'max:120'],
             'firstname' => ['nullable', 'string', 'max:120'],
+            'last_name' => ['nullable', 'string', 'max:120'],
             'lastname' => ['nullable', 'string', 'max:120'],
             'name' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'phonenumber' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'city' => ['nullable', 'string', 'max:100'],
+            'state' => ['nullable', 'string', 'max:100'],
+            'postal_code' => ['nullable', 'string', 'max:20'],
+            'postalcode' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $firstName = trim((string) $request->input('firstname', ''));
-        $lastName = trim((string) $request->input('lastname', ''));
+        $firstName = trim((string) ($request->input('first_name') ?: $request->input('firstname', '')));
+        $lastName = trim((string) ($request->input('last_name') ?: $request->input('lastname', '')));
+        $phone = trim((string) ($request->input('phone') ?: $request->input('phonenumber', '')));
+        $postalCode = trim((string) ($request->input('postal_code') ?: $request->input('postalcode', '')));
         $fullName = trim("{$firstName} {$lastName}");
 
         if ($fullName === '') {
@@ -62,7 +73,14 @@ class AuthController extends Controller
 
         $user = User::query()->create([
             'name' => $fullName,
+            'first_name' => $firstName ?: null,
+            'last_name' => $lastName ?: null,
             'email' => $request->input('email'),
+            'phone' => $phone ?: null,
+            'address' => $request->input('address') ?: null,
+            'city' => $request->input('city') ?: null,
+            'state' => $request->input('state') ?: null,
+            'postal_code' => $postalCode ?: null,
             'password' => $request->input('password'),
             'role' => 'user',
             'last_logged_in' => now(),

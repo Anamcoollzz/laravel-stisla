@@ -72,12 +72,12 @@
 
 									<span class="mn-register-wrap mn-register-half">
 										<label>First Name*</label>
-										<input type="text" name="firstname" value="{{ old('firstname') }}" placeholder="Enter your first name"
+										<input type="text" name="first_name" value="{{ old('first_name') }}" placeholder="Enter your first name"
 											required autofocus>
 									</span>
 									<span class="mn-register-wrap mn-register-half">
 										<label>Last Name</label>
-										<input type="text" name="lastname" value="{{ old('lastname') }}" placeholder="Enter your last name">
+										<input type="text" name="last_name" value="{{ old('last_name') }}" placeholder="Enter your last name">
 									</span>
 									<span class="mn-register-wrap mn-register-half">
 										<label>Email*</label>
@@ -85,7 +85,7 @@
 									</span>
 									<span class="mn-register-wrap mn-register-half">
 										<label>Phone Number</label>
-										<input type="text" name="phonenumber" value="{{ old('phonenumber') }}" placeholder="Enter your phone number">
+										<input type="text" name="phone" value="{{ old('phone') }}" placeholder="Enter your phone number">
 									</span>
 									<span class="mn-register-wrap mn-register-half">
 										<label>Password*</label>
@@ -114,33 +114,22 @@
 										</span>
 									</span>
 									<span class="mn-register-wrap mn-register-half">
-										<label>Post Code</label>
-										<input type="text" name="postalcode" value="{{ old('postalcode') }}" placeholder="Post Code">
-									</span>
-									<span class="mn-register-wrap mn-register-half">
-										<label>Country</label>
-										<span class="mn-rg-select-inner">
-											<select name="country" id="mn-select-country"
-												class="mn-register-select">
-												<option value="Indonesia" selected>Indonesia</option>
-												<option value="Malaysia">Malaysia</option>
-												<option value="Singapore">Singapore</option>
-											</select>
-										</span>
-									</span>
-									<span class="mn-register-wrap mn-register-half">
 										<label>Region State</label>
 										<span class="mn-rg-select-inner">
 											<select name="state" id="mn-select-state"
 												class="mn-register-select">
 												<option value="" selected disabled>Region/State</option>
-												<option value="DKI Jakarta">DKI Jakarta</option>
-												<option value="Jawa Barat">Jawa Barat</option>
-												<option value="Jawa Tengah">Jawa Tengah</option>
-												<option value="Jawa Timur">Jawa Timur</option>
-												<option value="DI Yogyakarta">DI Yogyakarta</option>
+												<option value="DKI Jakarta" {{ old('state') == 'DKI Jakarta' ? 'selected' : '' }}>DKI Jakarta</option>
+												<option value="Jawa Barat" {{ old('state') == 'Jawa Barat' ? 'selected' : '' }}>Jawa Barat</option>
+												<option value="Jawa Tengah" {{ old('state') == 'Jawa Tengah' ? 'selected' : '' }}>Jawa Tengah</option>
+												<option value="Jawa Timur" {{ old('state') == 'Jawa Timur' ? 'selected' : '' }}>Jawa Timur</option>
+												<option value="DI Yogyakarta" {{ old('state') == 'DI Yogyakarta' ? 'selected' : '' }}>DI Yogyakarta</option>
 											</select>
 										</span>
+									</span>
+									<span class="mn-register-wrap mn-register-half">
+										<label>Post Code</label>
+										<input type="text" name="postal_code" value="{{ old('postal_code') }}" placeholder="Post Code">
 									</span>
 									<span class="mn-register-wrap mn-register-btn">
 										<span>Have an account? <a href="{{ route('ecommerce.login') }}">Login</a></span>
