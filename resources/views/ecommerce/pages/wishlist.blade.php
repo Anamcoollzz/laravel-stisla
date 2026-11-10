@@ -97,6 +97,7 @@
 													<td>
 														<span class="tbl-btn">
 															<a class="mn-btn-2 add-to-cart mn-add-cart" href="javascript:void(0)"
+																data-product-id="{{ $product->id }}"
 																title="Add To Cart">
 																<span><i class="ri-shopping-cart-line"></i></span>
 															</a>

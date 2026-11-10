@@ -172,7 +172,7 @@
 																				title="Compare" class="mn-compare"><i
 																					class="ri-repeat-line"></i></a></li>
 																		<li><a href="javascript:void(0)" data-tooltip
-																				title="Add To Cart" class="mn-add-cart"><i
+																				title="Add To Cart" class="mn-add-cart" data-product-id="{{ $product->id }}"><i
 																					class="ri-shopping-cart-line"></i></a>
 																		</li>
 																	</ul>

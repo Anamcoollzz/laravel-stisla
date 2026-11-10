@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,20 @@ Route::post('/ecommerce/wishlist/remove/{product}', [EcommerceWishlistController
 Route::delete('/ecommerce/wishlist/{product}', [EcommerceWishlistController::class, 'remove'])
     ->name('ecommerce.wishlist.destroy');
 
+Route::get('/ecommerce/cart', [EcommerceCartController::class, 'index'])
+    ->name('ecommerce.cart');
+Route::get('/ecommerce-pages/cart.html', [EcommerceCartController::class, 'index'])
+    ->name('ecommerce.cart.html');
+Route::get('/ecommerce-pages/cart', [EcommerceCartController::class, 'index']);
+Route::post('/ecommerce/cart/add/{product}', [EcommerceCartController::class, 'add'])
+    ->name('ecommerce.cart.add');
+Route::post('/ecommerce/cart/update/{product}', [EcommerceCartController::class, 'update'])
+    ->name('ecommerce.cart.update');
+Route::post('/ecommerce/cart/remove/{product}', [EcommerceCartController::class, 'remove'])
+    ->name('ecommerce.cart.remove');
+Route::delete('/ecommerce/cart/{product}', [EcommerceCartController::class, 'remove'])
+    ->name('ecommerce.cart.destroy');
+
 // Route::get('/ecommerce-pages/shop-right-sidebar.html', [EcommerceProductController::class, 'index'])
 //     ->name('ecommerce.shop-right-sidebar.html');
 // Route::get('/ecommerce-pages/shop-right-sidebar', [EcommerceProductController::class, 'index'])
@@ -41,7 +56,6 @@ $ecommercePages = [
     'blog-detail-right-sidebar',
     'blog-full-width',
     'blog-right-sidebar',
-    'cart',
     'checkout',
     'compare',
     'contact-us',

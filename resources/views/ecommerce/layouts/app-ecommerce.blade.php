@@ -537,7 +537,7 @@
 							</div>
 							<div class="mn-tool-cart">
 								<a href="javascript:void(0)" class="mn-main-cart mn-cart-toggle">
-									<span class="label lbl-2">4</span>
+									<span class="label lbl-2 cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
 									<svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
@@ -790,13 +790,13 @@
 				</li>
 				<li>
 					<a href="javascript:void(0)" class="mn-main-cart mn-cart-toggle">
-						<span class="label lbl-2">4</span>
+						<span class="label lbl-2 cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
 						<svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M351.552 831.424c-35.328 0-63.968 28.64-63.968 63.968 0 35.328 28.64 63.968 63.968 63.968 35.328 0 63.968-28.64 63.968-63.968C415.52 860.064 386.88 831.424 351.552 831.424L351.552 831.424 351.552 831.424zM799.296 831.424c-35.328 0-63.968 28.64-63.968 63.968 0 35.328 28.64 63.968 63.968 63.968 35.328 0 63.968-28.64 63.968-63.968C863.264 860.064 834.624 831.424 799.296 831.424L799.296 831.424 799.296 831.424zM862.752 799.456 343.264 799.456c-46.08 0-86.592-36.448-92.224-83.008L196.8 334.592 165.92 156.128c-1.92-15.584-16.128-28.288-29.984-28.288L95.2 127.84c-17.664 0-32-14.336-32-31.968 0-17.664 14.336-32 32-32l40.736 0c46.656 0 87.616 36.448 93.28 83.008l30.784 177.792 54.464 383.488c1.792 14.848 15.232 27.36 28.768 27.36l519.488 0c17.696 0 32 14.304 32 31.968S880.416 799.456 862.752 799.456L862.752 799.456zM383.232 671.52c-16.608 0-30.624-12.8-31.872-29.632-1.312-17.632 11.936-32.928 29.504-34.208l433.856-31.968c15.936-0.096 29.344-12.608 31.104-26.816l50.368-288.224c1.28-10.752-1.696-22.528-8.128-29.792-4.128-4.672-9.312-7.04-15.36-7.04L319.04 223.84c-17.664 0-32-14.336-32-31.968 0-17.664 14.336-31.968 32-31.968l553.728 0c24.448 0 46.88 10.144 63.232 28.608 18.688 21.088 27.264 50.784 23.52 81.568l-50.4 288.256c-5.44 44.832-45.92 81.28-92 81.28L385.6 671.424C384.8 671.488 384 671.52 383.232 671.52L383.232 671.52zM383.232 671.52">
 							</path>
 						</svg>
-						<span>4</span>
+						<span class="cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
 					</a>
 				</li>
 			</ul>
@@ -983,54 +983,11 @@
 						</a>
 					</div>
 					<ul class="mn-cart-pro-items">
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/11.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">Smart watch</a>
-								<span class="cart-price"><span>$255.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/5.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">T-Shirt for men</a>
-								<span class="cart-price"><span>$64.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/13.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">Leather Belt</a>
-								<span class="cart-price"><span>$59.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/2.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">T-Shirt for girls</a>
-								<span class="cart-price"><span>$39.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
+						@php
+							$layoutCart = (array) session('ecommerce_cart', []);
+							$layoutCartSubtotal = array_sum(array_map(fn($i) => ($i['price'] ?? 0) * ($i['quantity'] ?? 1), $layoutCart));
+						@endphp
+						@include('ecommerce.partials.cart-sidebar-items', ['cartItems' => $layoutCart])
 					</ul>
 				</div>
 				<div class="mn-cart-bottom">
@@ -1039,21 +996,17 @@
 							<tbody>
 								<tr>
 									<td class="text-left">Sub-Total :</td>
-									<td class="text-right">$417.00</td>
-								</tr>
-								<tr>
-									<td class="text-left">VAT (20%) :</td>
-									<td class="text-right">$83.40</td>
+									<td class="text-right cart-subtotal-val">Rp {{ number_format($layoutCartSubtotal, 0, ',', '.') }}</td>
 								</tr>
 								<tr>
 									<td class="text-left">Total :</td>
-									<td class="text-right primary-color">$500.40</td>
+									<td class="text-right primary-color cart-total-val">Rp {{ number_format($layoutCartSubtotal, 0, ',', '.') }}</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					<div class="cart_btn">
-						<a href="{{ route('ecommerce.cart.html') }}" class="mn-btn-1"><span>Cart<i class="ri-arrow-right-s-line"></i></span></a>
+						<a href="{{ route('ecommerce.cart') }}" class="mn-btn-1"><span>Cart<i class="ri-arrow-right-s-line"></i></span></a>
 						<a href="{{ route('ecommerce.checkout.html') }}" class="mn-btn-2"><span>Checkout<i
 									class="ri-arrow-right-s-line"></i></span></a>
 					</div>

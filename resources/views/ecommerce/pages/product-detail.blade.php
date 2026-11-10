@@ -248,7 +248,9 @@
                               <div class="mn-btns">
                                 <div class="mn-single-cart">
                                   <button
+                                    type="button"
                                     class="btn btn-primary mn-btn-2 mn-add-cart"
+                                    data-product-id="{{ $product->id }}"
                                   >
                                     <span>Add To Cart</span>
                                   </button>
@@ -256,7 +258,8 @@
                                 <div class="mn-single-wishlist">
                                   <a
                                     href="javascript:void(0)"
-                                    class="mn-btn-group wishlist mn-wishlist"
+                                    class="mn-btn-group wishlist mn-wishlist {{ in_array($product->id, session('ecommerce_wishlist', [])) ? 'active' : '' }}"
+                                    data-product-id="{{ $product->id }}"
                                     title="Wishlist"
                                   >
                                     <i class="ri-heart-line"></i>
@@ -689,6 +692,7 @@
                                       data-tooltip
                                       title="Add To Cart"
                                       class="mn-add-cart"
+                                      data-product-id="{{ $relProduct->id }}"
                                     ><i class="ri-shopping-cart-line"></i
                                     ></a>
                                   </li>
