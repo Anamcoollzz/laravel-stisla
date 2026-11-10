@@ -510,12 +510,24 @@
 									</svg>
 								</a>
 								<ul class="sub-menu">
-									<li>
-										<a href="{{ route('ecommerce.login.html') }}">Login</a>
-									</li>
-									<li>
-										<a href="{{ route('ecommerce.register.html') }}">Register</a>
-									</li>
+									@auth
+										<li>
+											<a href="{{ route('dashboard') }}">Dashboard ({{ Auth::user()->name }})</a>
+										</li>
+										<li>
+											<form method="POST" action="{{ route('ecommerce.logout') }}" class="d-inline">
+												@csrf
+												<a href="javascript:void(0)" onclick="this.closest('form').submit()">Logout</a>
+											</form>
+										</li>
+									@else
+										<li>
+											<a href="{{ route('ecommerce.login') }}">Login</a>
+										</li>
+										<li>
+											<a href="{{ route('ecommerce.register') }}">Register</a>
+										</li>
+									@endauth
 									<li>
 										<a href="{{ route('ecommerce.checkout.html') }}">Checkout</a>
 									</li>
