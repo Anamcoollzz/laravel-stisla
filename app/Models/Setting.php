@@ -128,6 +128,39 @@ class Setting extends Model
     }
 
     /**
+     * Get an about showcase image URL, with fallback to default template asset.
+     */
+    public static function getAboutImage(int $index): string
+    {
+        $key = 'about_image_'.$index;
+        $path = static::getValue($key);
+
+        if ($path && Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->url($path);
+        }
+
+        return asset('mantu/assets/img/common/about-'.$index.'.png');
+    }
+
+    /**
+     * Get resolved About Us page settings with fallbacks.
+     *
+     * @return array<string, mixed>
+     */
+    public static function getAboutData(): array
+    {
+        return [
+            'title' => static::getValue('about_title') ?: 'Who We <span>Are?</span>',
+            'subtitle' => static::getValue('about_subtitle') ?: 'We’re here to serve only the best products for you. Enriching your homes with the best essentials.',
+            'content' => static::getValue('about_content') ?: '<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p><p>Lorem Ipsum has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>',
+            'image_1' => static::getAboutImage(1),
+            'image_2' => static::getAboutImage(2),
+            'image_3' => static::getAboutImage(3),
+            'image_4' => static::getAboutImage(4),
+        ];
+    }
+
+    /**
      * Get all stored values of a group keyed by setting key.
      *
      * @return array<string, string|null>

@@ -1,5 +1,12 @@
 @php
   $ourTeams = $ourTeams ?? \App\Models\OurTeam::query()->active()->orderBy('order')->latest('id')->get();
+  $about = $about ?? \App\Models\Setting::getAboutData();
+  $facts = $facts ?? [
+      'vendors' => \App\Models\ProductVendor::count(),
+      'brands' => \App\Models\ProductBrand::count(),
+      'stock' => (int) \App\Models\Product::where('is_active', true)->sum('stock'),
+      'products' => \App\Models\Product::where('is_active', true)->count(),
+  ];
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
@@ -54,37 +61,19 @@
 				<div class="row">
 					<div class="col-lg-6 col-md-12">
 						<div class="mn-about-img">
-							<img src="{{ asset('mantu/assets/img/common/about-1.png') }}" class="v-img" alt="about">
-							<img src="{{ asset('mantu/assets/img/common/about-2.png') }}" class="h-img" alt="about">
-							<img src="{{ asset('mantu/assets/img/common/about-3.png') }}" class="h-img" alt="about">
-							<img src="{{ asset('mantu/assets/img/common/about-4.png') }}" class="h-img" alt="about">
+							<img src="{{ $about['image_1'] }}" class="v-img" alt="about 1">
+							<img src="{{ $about['image_2'] }}" class="h-img" alt="about 2">
+							<img src="{{ $about['image_3'] }}" class="h-img" alt="about 3">
+							<img src="{{ $about['image_4'] }}" class="h-img" alt="about 4">
 						</div>
 					</div>
 					<div class="col-lg-6 col-md-12">
 						<div class="mn-about-detail">
 							<div class="section-title m-t-991">
-								<h2>Who We <span>Are?</span></h2>
-								<p>We’re here to serve only the best products for you. Enriching your homes with
-									the best
-									essentials.</p>
+								<h2>{!! $about['title'] !!}</h2>
+								<p>{{ $about['subtitle'] }}</p>
 							</div>
-							<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-								Ipsum has
-								been the industry's standard dummy text ever since the 1500s, when an unknown
-								printer took a
-								galley of type and scrambled it to make a type specimen book. It has survived
-								not only five
-								centuries, but also the leap into electronic typesetting, remaining essentially
-								unchanged.
-							</p>
-							<p>Lorem Ipsum has survived not only five centuries, but also the leap into
-								electronic
-								typesetting, remaining essentially unchanged.</p>
-							<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-								Ipsum has
-								been the industry's standard dummy text ever since the 1500s, when an unknown
-								printer took a
-								galley of type and scrambled it to make a type specimen book.</p>
+							{!! $about['content'] !!}
 						</div>
 					</div>
 				</div>
@@ -275,44 +264,44 @@
 					<div class="mn-facts-content col-sm-6 col-xl-3 m-b-24">
 						<div class="mn-facts-inner">
 							<div class="mn-count">
-								<span class="counter">65K+</span>
+								<span class="counter">{{ number_format($facts['vendors'] ?? 0) }}{{ ($facts['vendors'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
 								<h4>Vendors</h4>
-								<p>Contrary to popular belief, Lorem is not simply random text.</p>
+								<p>Verified and trusted merchant partners providing premium catalog goods.</p>
 							</div>
 						</div>
 					</div>
 					<div class="mn-facts-content col-sm-6 col-xl-3 m-b-24">
 						<div class="mn-facts-inner">
 							<div class="mn-count">
-								<span class="counter">$45B+</span>
+								<span class="counter">{{ number_format($facts['brands'] ?? 0) }}{{ ($facts['brands'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
-								<h4>Earnings</h4>
-								<p>Contrary to popular belief, Lorem is not simply random text.</p>
+								<h4>Brands</h4>
+								<p>Recognized and curated domestic and international brands.</p>
 							</div>
 						</div>
 					</div>
 					<div class="mn-facts-content col-sm-6 col-xl-3 m-b-24">
 						<div class="mn-facts-inner">
 							<div class="mn-count">
-								<span class="counter">25M+</span>
+								<span class="counter">{{ number_format($facts['stock'] ?? 0, 0, ',', '.') }}{{ ($facts['stock'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
-								<h4>Sold</h4>
-								<p>Contrary to popular belief, Lorem is not simply random text.</p>
+								<h4>Items in Stock</h4>
+								<p>Ready to ship units stored across active fulfillment warehouses.</p>
 							</div>
 						</div>
 					</div>
 					<div class="mn-facts-content col-sm-6 col-xl-3 m-b-24">
 						<div class="mn-facts-inner">
 							<div class="mn-count">
-								<span class="counter">70K+</span>
+								<span class="counter">{{ number_format($facts['products'] ?? 0) }}{{ ($facts['products'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
 								<h4>Products</h4>
-								<p>Contrary to popular belief, Lorem is not simply random text.</p>
+								<p>Diverse range of verified and quality guaranteed items.</p>
 							</div>
 						</div>
 					</div>

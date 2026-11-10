@@ -27,7 +27,7 @@ class UpdateSettingRequest extends FormRequest
 
         foreach ($fields as $key => $field) {
             $rules[$key] = match ($field['type']) {
-                'image' => ['nullable', 'image', 'max:1024'],
+                'image' => array_merge(['nullable'], $field['rules'] ?? ['image', 'max:2048']),
                 'switch' => ['nullable', 'boolean'],
                 default => array_merge(['nullable'], $field['rules'] ?? ['string']),
             };

@@ -5,6 +5,10 @@ use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use App\Models\OurTeam;
+use App\Models\Product;
+use App\Models\ProductBrand;
+use App\Models\ProductVendor;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/ecommerce', '/ecommerce-pages/index.html');
@@ -73,41 +77,22 @@ Route::get('/ecommerce-pages/register', [EcommerceAuthController::class, 'showRe
 Route::get('/ecommerce/products/{slug}', [EcommerceProductController::class, 'show'])
     ->name('ecommerce.products.detail');
 
-Route::get('/ecommerce/about-us', function () {
+$aboutUsHandler = function () {
     $ourTeams = OurTeam::query()->active()->orderBy('order')->latest('id')->get();
+    $about = Setting::getAboutData();
+    $facts = [
+        'vendors' => ProductVendor::count(),
+        'brands' => ProductBrand::count(),
+        'stock' => (int) Product::where('is_active', true)->sum('stock'),
+        'products' => Product::where('is_active', true)->count(),
+    ];
 
-    return view('ecommerce.pages.about-us', compact('ourTeams'));
-})->name('ecommerce.about-us');
+    return view('ecommerce.pages.about-us', compact('ourTeams', 'about', 'facts'));
+};
 
-Route::get('/ecommerce-pages/about-us.html', function () {
-    $ourTeams = OurTeam::query()->active()->orderBy('order')->latest('id')->get();
-
-    return view('ecommerce.pages.about-us', compact('ourTeams'));
-})->name('ecommerce.about-us.html');
-
-Route::get('/ecommerce-pages/about-us', function () {
-    $ourTeams = OurTeam::query()->active()->orderBy('order')->latest('id')->get();
-
-    return view('ecommerce.pages.about-us', compact('ourTeams'));
-});
-
-Route::get('/ecommerce/about-us', function () {
-    $ourTeams = \App\Models\OurTeam::query()->active()->orderBy('order')->latest('id')->get();
-
-    return view('ecommerce.pages.about-us', compact('ourTeams'));
-})->name('ecommerce.about-us');
-
-Route::get('/ecommerce-pages/about-us.html', function () {
-    $ourTeams = \App\Models\OurTeam::query()->active()->orderBy('order')->latest('id')->get();
-
-    return view('ecommerce.pages.about-us', compact('ourTeams'));
-})->name('ecommerce.about-us.html');
-
-Route::get('/ecommerce-pages/about-us', function () {
-    $ourTeams = \App\Models\OurTeam::query()->active()->orderBy('order')->latest('id')->get();
-
-    return view('ecommerce.pages.about-us', compact('ourTeams'));
-});
+Route::get('/ecommerce/about-us', $aboutUsHandler)->name('ecommerce.about-us');
+Route::get('/ecommerce-pages/about-us.html', $aboutUsHandler)->name('ecommerce.about-us.html');
+Route::get('/ecommerce-pages/about-us', $aboutUsHandler);
 
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [

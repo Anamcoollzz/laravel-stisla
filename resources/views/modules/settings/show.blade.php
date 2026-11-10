@@ -4,6 +4,7 @@
 
 @php
   $hasCode = collect($definition['fields'])->contains(fn ($field) => $field['type'] === 'code');
+  $hasSummernote = collect($definition['fields'])->contains(fn ($field) => in_array($field['type'], ['html', 'summernote']) || ($field['editor'] ?? '') === 'summernote');
   $canEdit = auth()->user()->can('settings.edit');
 @endphp
 
@@ -12,6 +13,9 @@
     <link rel="stylesheet" href="{{ asset('node_modules/codemirror/lib/codemirror.css') }}">
     <link rel="stylesheet" href="{{ asset('node_modules/codemirror/theme/duotone-dark.css') }}">
   @endif
+  @if ($hasSummernote)
+    <link rel="stylesheet" href="{{ asset('node_modules/summernote/dist/summernote-bs4.css') }}">
+  @endif
 @endpush
 
 @push('js')
@@ -19,6 +23,9 @@
   @if ($hasCode)
     <script src="{{ asset('node_modules/codemirror/lib/codemirror.js') }}"></script>
     <script src="{{ asset('node_modules/codemirror/mode/javascript/javascript.js') }}"></script>
+  @endif
+  @if ($hasSummernote)
+    <script src="{{ asset('node_modules/summernote/dist/summernote-bs4.js') }}"></script>
   @endif
 @endpush
 
@@ -48,6 +55,31 @@
           height: 200
         });
         editor.setSize("100%", 200);
+      });
+    @endif
+
+    @if ($hasSummernote)
+      $('.summernote').summernote({
+        dialogsInBody: true,
+        minHeight: 250,
+        toolbar: [
+          ['style', ['bold', 'italic', 'underline', 'clear']],
+          ['font', ['strikethrough', 'superscript', 'subscript']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['insert', ['link', 'picture', 'video']],
+          ['view', ['codeview', 'help']]
+        ]
+      });
+      @if (! $canEdit)
+        $('.summernote').summernote('disable');
+      @endif
+
+      $('#setting-form').on('submit', function() {
+        $('.summernote').each(function() {
+          $(this).val($(this).summernote('code'));
+        });
       });
     @endif
 
@@ -121,10 +153,15 @@
                 @php
                   $value = old($key, $values[$key] ?? ($field['default'] ?? null));
                 @endphp
-                <div class="form-group row {{ in_array($field['type'], ['code', 'textarea']) ? '' : 'align-items-center' }}">
-                  <label for="{{ $key }}" class="form-control-label col-sm-3 text-md-right {{ $field['type'] === 'code' ? 'mt-3' : '' }}">{{ __($field['label']) }}</label>
+                <div class="form-group row {{ in_array($field['type'], ['code', 'textarea', 'html', 'summernote']) ? '' : 'align-items-center' }}">
+                  <label for="{{ $key }}" class="form-control-label col-sm-3 text-md-right {{ in_array($field['type'], ['code', 'html', 'summernote']) ? 'mt-3' : '' }}">{{ __($field['label']) }}</label>
                   <div class="col-sm-6 col-md-9">
                     @switch($field['type'])
+                      @case('html')
+                      @case('summernote')
+                        <textarea id="{{ $key }}" name="{{ $key }}" class="form-control summernote @error($key) is-invalid @enderror" @disabled(! $canEdit)>{{ $value }}</textarea>
+                        @break
+
                       @case('textarea')
                         <textarea id="{{ $key }}" name="{{ $key }}" class="form-control @error($key) is-invalid @enderror" style="height: {{ $field['height'] ?? '100px' }}" @disabled(! $canEdit)>{{ $value }}</textarea>
                         @break
