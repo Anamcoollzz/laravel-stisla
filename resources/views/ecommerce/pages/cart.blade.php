@@ -69,108 +69,44 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr class="mn-cart-product">
+													@forelse ($cartItems as $item)
+													<tr class="mn-cart-product" data-product-id="{{ $item['id'] }}">
 														<td data-label="Product" class="mn-cart-pro-name">
-															<a href="{{ route('ecommerce.product-detail.html') }}">
+															<a href="{{ route('ecommerce.products.detail', $item['slug']) }}">
 																<img class="mn-cart-pro-img"
-																	src="{{ asset('mantu/assets/img/product/11.jpg') }}" alt="">Mantu smart
-																watch
+																	src="{{ $item['thumbnail'] }}" alt="{{ $item['title'] }}">{{ $item['title'] }}
 															</a>
 														</td>
 														<td data-label="Price" class="mn-cart-pro-price">
-															<span class="amount">$516.00</span>
+															<span class="amount">Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
 														</td>
 														<td data-label="Quantity" class="mn-cart-pro-qty"
 															style="text-align: center;">
-															<div class="cart-qty-plus-minus">
-																<input class="cart-plus-minus" type="text"
-																	name="cartqtybutton" value="1">
+															<div class="cart-qty-plus-minus cart-item-qty-control" data-product-id="{{ $item['id'] }}">
+																<input class="cart-plus-minus cart-qty-input" type="text"
+																	name="cartqtybutton" value="{{ $item['quantity'] }}" data-product-id="{{ $item['id'] }}">
 															</div>
 														</td>
-														<td data-label="Total" class="mn-cart-pro-subtotal">$516.00
+														<td data-label="Total" class="mn-cart-pro-subtotal">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
 														</td>
 														<td data-label="Remove" class="mn-cart-pro-remove">
-															<a href="#"><i class="ri-delete-bin-line"></i></a>
+															<a href="javascript:void(0)" class="cart-remove-item" data-product-id="{{ $item['id'] }}"><i class="ri-delete-bin-line"></i></a>
 														</td>
 													</tr>
-													<tr class="mn-cart-product">
-														<td data-label="Product" class="mn-cart-pro-name">
-															<a href="{{ route('ecommerce.product-detail.html') }}">
-																<img class="mn-cart-pro-img"
-																	src="{{ asset('mantu/assets/img/product/15.jpg') }}" alt="">Leather bag
-															</a>
-														</td>
-														<td data-label="Price" class="mn-cart-pro-price">
-															<span class="amount">$75.00</span>
-														</td>
-														<td data-label="Quantity" class="mn-cart-pro-qty"
-															style="text-align: center;">
-															<div class="cart-qty-plus-minus">
-																<input class="cart-plus-minus" type="text"
-																	name="cartqtybutton" value="1">
-															</div>
-														</td>
-														<td data-label="Total" class="mn-cart-pro-subtotal">$75.00
-														</td>
-														<td data-label="Remove" class="mn-cart-pro-remove">
-															<a href="#"><i class="ri-delete-bin-line"></i></a>
+													@empty
+													<tr>
+														<td colspan="5" class="text-center p-4">
+															<p class="mn-cart-page-msg m-0">Your Cart is empty!</p>
 														</td>
 													</tr>
-													<tr class="mn-cart-product">
-														<td data-label="Product" class="mn-cart-pro-name"><a
-																href="{{ route('ecommerce.product-detail.html') }}">
-																<img class="mn-cart-pro-img"
-																	src="{{ asset('mantu/assets/img/product/21.jpg') }}" alt="">Cotton fabric
-																T-shirt
-															</a>
-														</td>
-														<td data-label="Price" class="mn-cart-pro-price">
-															<span class="amount">$48.00</span>
-														</td>
-														<td data-label="Quantity" class="mn-cart-pro-qty"
-															style="text-align: center;">
-															<div class="cart-qty-plus-minus">
-																<input class="cart-plus-minus" type="text"
-																	name="cartqtybutton" value="1">
-															</div>
-														</td>
-														<td data-label="Total" class="mn-cart-pro-subtotal">$48.00
-														</td>
-														<td data-label="Remove" class="mn-cart-pro-remove">
-															<a href="#"><i class="ri-delete-bin-line"></i></a>
-														</td>
-													</tr>
-													<tr class="mn-cart-product">
-														<td data-label="Product" class="mn-cart-pro-name"><a
-																href="{{ route('ecommerce.product-detail.html') }}">
-																<img class="mn-cart-pro-img"
-																	src="{{ asset('mantu/assets/img/product/9.jpg') }}" alt="">Special sport
-																shoes
-															</a>
-														</td>
-														<td data-label="Price" class="mn-cart-pro-price">
-															<span class="amount">$95.00</span>
-														</td>
-														<td data-label="Quantity" class="mn-cart-pro-qty"
-															style="text-align: center;">
-															<div class="cart-qty-plus-minus">
-																<input class="cart-plus-minus" type="text"
-																	name="cartqtybutton" value="1">
-															</div>
-														</td>
-														<td data-label="Total" class="mn-cart-pro-subtotal">$95.00
-														</td>
-														<td data-label="Remove" class="mn-cart-pro-remove">
-															<a href="#"><i class="ri-delete-bin-line"></i></a>
-														</td>
-													</tr>
+													@endforelse
 												</tbody>
 											</table>
 										</div>
 											<div class="col-lg-12">
 												<div class="mn-cart-update-bottom">
-													<a href="#">Continue Shopping</a>
-													<button class="mn-btn-2"><span>Check Out</span></button>
+													<a href="{{ route('ecommerce.shop') }}">Continue Shopping</a>
+													<button type="button" class="mn-btn-2" onclick="window.location.href='{{ route('ecommerce.checkout.html') }}'"><span>Check Out</span></button>
 												</div>
 											</div>
 									</form>
@@ -234,11 +170,11 @@
 										<div class="mn-cart-summary">
 											<div>
 												<span class="text-left">Sub-Total</span>
-												<span class="text-right">$734.00</span>
+												<span class="text-right cart-subtotal-val">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 											</div>
 											<div>
 												<span class="text-left">Delivery Charges</span>
-												<span class="text-right">$80.00</span>
+												<span class="text-right">Free</span>
 											</div>
 											<div>
 												<span class="text-left">Coupan Discount</span>
@@ -256,7 +192,7 @@
 											</div>
 											<div class="mn-cart-summary-total">
 												<span class="text-left">Total Amount</span>
-												<span class="text-right">$814.00</span>
+												<span class="text-right cart-total-val">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 											</div>
 										</div>
 

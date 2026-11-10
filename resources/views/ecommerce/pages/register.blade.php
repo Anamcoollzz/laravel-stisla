@@ -57,86 +57,82 @@
 					<div class="mn-register-wrapper">
 						<div class="mn-register-container">
 							<div class="mn-register-form">
-								<form action="#" method="post">
+								<form action="{{ route('ecommerce.register.submit') }}" method="POST">
+									@csrf
+
+									@if ($errors->any())
+										<div class="alert alert-danger py-2 px-3 mb-3" style="font-size: 14px;">
+											<ul class="mb-0 ps-3">
+												@foreach ($errors->all() as $error)
+													<li>{{ $error }}</li>
+												@endforeach
+											</ul>
+										</div>
+									@endif
+
 									<span class="mn-register-wrap mn-register-half">
 										<label>First Name*</label>
-										<input type="text" name="firstname" placeholder="Enter your first name"
-											required>
+										<input type="text" name="first_name" value="{{ old('first_name') }}" placeholder="Enter your first name"
+											required autofocus>
 									</span>
 									<span class="mn-register-wrap mn-register-half">
-										<label>Last Name*</label>
-										<input type="text" name="lastname" placeholder="Enter your last name" required>
+										<label>Last Name</label>
+										<input type="text" name="last_name" value="{{ old('last_name') }}" placeholder="Enter your last name">
 									</span>
 									<span class="mn-register-wrap mn-register-half">
 										<label>Email*</label>
-										<input type="email" name="email" placeholder="Enter your email add..." required>
+										<input type="email" name="email" value="{{ old('email') }}" placeholder="Enter your email address..." required>
 									</span>
 									<span class="mn-register-wrap mn-register-half">
-										<label>Phone Number*</label>
-										<input type="text" name="phonenumber" placeholder="Enter your phone number"
-											required>
+										<label>Phone Number</label>
+										<input type="text" name="phone" value="{{ old('phone') }}" placeholder="Enter your phone number">
+									</span>
+									<span class="mn-register-wrap mn-register-half">
+										<label>Password*</label>
+										<input type="password" name="password" placeholder="Enter password (min 8 characters)" required>
+									</span>
+									<span class="mn-register-wrap mn-register-half">
+										<label>Confirm Password*</label>
+										<input type="password" name="password_confirmation" placeholder="Confirm your password" required>
 									</span>
 									<span class="mn-register-wrap">
 										<label>Address</label>
-										<input type="text" name="address" placeholder="Address Line 1">
+										<input type="text" name="address" value="{{ old('address') }}" placeholder="Address Line 1">
 									</span>
 									<span class="mn-register-wrap mn-register-half">
-										<label>City *</label>
+										<label>City</label>
 										<span class="mn-rg-select-inner">
-											<select name="gi_select_city" id="mn-select-city"
+											<select name="city" id="mn-select-city"
 												class="mn-register-select">
-												<option selected disabled>City</option>
-												<option value="1">City 1</option>
-												<option value="2">City 2</option>
-												<option value="3">City 3</option>
-												<option value="4">City 4</option>
-												<option value="5">City 5</option>
-											</select>
-										</span>
-									</span>
-									<span class="mn-register-wrap mn-register-half">
-										<label>Post Code</label>
-										<input type="text" name="postalcode" placeholder="Post Code">
-									</span>
-									<span class="mn-register-wrap mn-register-half">
-										<label>Country *</label>
-										<span class="mn-rg-select-inner">
-											<select name="gi_select_country" id="mn-select-country"
-												class="mn-register-select">
-												<option selected disabled>Country</option>
-												<option value="1">Country 1</option>
-												<option value="2">Country 2</option>
-												<option value="3">Country 3</option>
-												<option value="4">Country 4</option>
-												<option value="5">Country 5</option>
+												<option value="" selected disabled>Select City</option>
+												<option value="Jakarta" {{ old('city') == 'Jakarta' ? 'selected' : '' }}>Jakarta</option>
+												<option value="Bandung" {{ old('city') == 'Bandung' ? 'selected' : '' }}>Bandung</option>
+												<option value="Surabaya" {{ old('city') == 'Surabaya' ? 'selected' : '' }}>Surabaya</option>
+												<option value="Semarang" {{ old('city') == 'Semarang' ? 'selected' : '' }}>Semarang</option>
+												<option value="Yogyakarta" {{ old('city') == 'Yogyakarta' ? 'selected' : '' }}>Yogyakarta</option>
 											</select>
 										</span>
 									</span>
 									<span class="mn-register-wrap mn-register-half">
 										<label>Region State</label>
 										<span class="mn-rg-select-inner">
-											<select name="gi_select_state" id="mn-select-state"
+											<select name="state" id="mn-select-state"
 												class="mn-register-select">
-												<option selected disabled>Region/State</option>
-												<option value="1">Region/State 1</option>
-												<option value="2">Region/State 2</option>
-												<option value="3">Region/State 3</option>
-												<option value="4">Region/State 4</option>
-												<option value="5">Region/State 5</option>
+												<option value="" selected disabled>Region/State</option>
+												<option value="DKI Jakarta" {{ old('state') == 'DKI Jakarta' ? 'selected' : '' }}>DKI Jakarta</option>
+												<option value="Jawa Barat" {{ old('state') == 'Jawa Barat' ? 'selected' : '' }}>Jawa Barat</option>
+												<option value="Jawa Tengah" {{ old('state') == 'Jawa Tengah' ? 'selected' : '' }}>Jawa Tengah</option>
+												<option value="Jawa Timur" {{ old('state') == 'Jawa Timur' ? 'selected' : '' }}>Jawa Timur</option>
+												<option value="DI Yogyakarta" {{ old('state') == 'DI Yogyakarta' ? 'selected' : '' }}>DI Yogyakarta</option>
 											</select>
 										</span>
 									</span>
-									<span class="mn-register-wrap mn-recaptcha">
-										<span class="g-recaptcha"
-											data-sitekey="6LfKURIUAAAAAO50vlwWZkyK_G2ywqE52NU7YO0S"
-											data-callback="verifyRecaptchaCallback"
-											data-expired-callback="expiredRecaptchaCallback"></span>
-										<input class="form-control d-none" data-recaptcha="true" required
-											data-error="Please complete the Captcha">
-										<span class="help-block with-errors"></span>
+									<span class="mn-register-wrap mn-register-half">
+										<label>Post Code</label>
+										<input type="text" name="postal_code" value="{{ old('postal_code') }}" placeholder="Post Code">
 									</span>
 									<span class="mn-register-wrap mn-register-btn">
-										<span>Have an account?<a href="{{ route('ecommerce.login.html') }}">Login</a></span>
+										<span>Have an account? <a href="{{ route('ecommerce.login') }}">Login</a></span>
 										<button class="mn-btn-1" type="submit"><span>Register</span></button>
 									</span>
 								</form>

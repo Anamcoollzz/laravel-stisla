@@ -58,11 +58,31 @@
 						<div class="mn-login-wrapper">
 							<div class="mn-login-container">
 								<div class="mn-login-form">
-									<form action="#" method="post">
+									<form action="{{ route('ecommerce.login.submit') }}" method="POST">
+										@csrf
+
+										@if (session('status'))
+											<div class="alert alert-info py-2 px-3 mb-3" style="font-size: 14px;">
+												{{ session('status') }}
+											</div>
+										@endif
+
+										@if (session('success'))
+											<div class="alert alert-success py-2 px-3 mb-3" style="font-size: 14px;">
+												{{ session('success') }}
+											</div>
+										@endif
+
+										@if ($errors->any())
+											<div class="alert alert-danger py-2 px-3 mb-3" style="font-size: 14px;">
+												{{ $errors->first() }}
+											</div>
+										@endif
+
 										<span class="mn-login-wrap">
 											<label>Email Address*</label>
-											<input type="text" name="name" placeholder="Enter your email add..."
-												required>
+											<input type="email" name="email" value="{{ old('email') }}" placeholder="Enter your email address..."
+												required autofocus>
 										</span>
 										<span class="mn-login-wrap">
 											<label>Password*</label>
@@ -71,14 +91,14 @@
 										</span>
 										<span class="mn-login-wrap mn-login-fp">
 											<span class="mn-remember">
-												<input type="checkbox" value="">
+												<input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
 												Remember
 												<span class="checked"></span>
 											</span>
-											<label><a href="#">Forgot Password?</a></label>
+											<label><a href="{{ route('password.request') }}">Forgot Password?</a></label>
 										</span>
 										<span class="mn-login-wrap mn-login-btn">
-											<span><a href="{{ route('ecommerce.register.html') }}" class="">Create Account?</a></span>
+											<span><a href="{{ route('ecommerce.register') }}" class="">Create Account?</a></span>
 											<button class="mn-btn-1 btn" type="submit"><span>Login</span></button>
 										</span>
 									</form>

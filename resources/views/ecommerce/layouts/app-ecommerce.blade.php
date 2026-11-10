@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 
 	@include('partials.seo')
 
@@ -39,7 +40,11 @@
 				<ul class="mn-sb-list">
 					@if (isset($ecommerceCategories) && $ecommerceCategories->isNotEmpty())
 						@foreach ($ecommerceCategories as $level1)
-							<li class="mn-sb-title condense"><span>{{ $level1->name }}</span></li>
+							<li class="mn-sb-title condense">
+								<a href="{{ route('ecommerce.products.index', ['category' => $level1->slug]) }}" class="text-reset">
+									<span>{{ $level1->name }}</span>
+								</a>
+							</li>
 							@foreach ($level1->children as $level2)
 								<li class="mn-sb-item sb-drop-item">
 									@if ($level2->children->isNotEmpty())
@@ -52,12 +57,12 @@
 										<ul class="mn-sb-drop">
 											@foreach ($level2->children as $level3)
 												<li class="list">
-													<a href="{{ $level3->resolvedUrl() }}" class="mn-page-link drop">{{ $level3->name }}</a>
+													<a href="{{ route('ecommerce.products.index', ['category' => $level3->slug]) }}" class="mn-page-link drop">{{ $level3->name }}</a>
 												</li>
 											@endforeach
 										</ul>
 									@else
-										<a href="{{ $level2->resolvedUrl() }}" class="mn-drop-toggle">
+										<a href="{{ route('ecommerce.products.index', ['category' => $level2->slug]) }}" class="mn-drop-toggle">
 											@if ($level2->icon_url)
 												<img src="{{ $level2->icon_url }}" alt="{{ $level2->name }}">
 											@endif
@@ -68,7 +73,11 @@
 							@endforeach
 						@endforeach
 					@else
-						<li class="mn-sb-title condense"><span>Fashion</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'fashion']) }}" class="text-reset">
+								<span>Fashion</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
 							<a href="javascript:void(0)" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/clothes-2.svg') }}" alt="clothes">
@@ -76,33 +85,33 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">T-shirts</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 't-shirts']) }}" class="mn-page-link drop">T-shirts</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Shirts</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'shirts']) }}" class="mn-page-link drop">Shirts</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">gowns</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'gowns']) }}" class="mn-page-link drop">gowns</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Dresses</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'dresses']) }}" class="mn-page-link drop">Dresses</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">sharees</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'sharees']) }}" class="mn-page-link drop">sharees</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">jeans</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'jeans']) }}" class="mn-page-link drop">jeans</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/shoes.svg') }}" alt="clothes">
 								<span class="condense">Shoes</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'glasses']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/glasses.svg') }}" alt="glasses">
 								<span class="condense">glasses</span>
 							</a>
@@ -114,18 +123,18 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Purse</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'purse']) }}" class="mn-page-link drop">Purse</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Bags</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}" class="mn-page-link drop">Bags</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">wallet</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'wallet']) }}" class="mn-page-link drop">wallet</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'hat']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/hat.svg') }}" alt="hat">
 								<span class="condense">Hat</span>
 							</a>
@@ -137,16 +146,16 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Lipstick</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'lipstick']) }}" class="mn-page-link drop">Lipstick</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">eye liner</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'eye-liner']) }}" class="mn-page-link drop">eye liner</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">nail paint</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'nail-paint']) }}" class="mn-page-link drop">nail paint</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Makeup kit</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'makeup-kit']) }}" class="mn-page-link drop">Makeup kit</a>
 								</li>
 							</ul>
 						</li>
@@ -157,23 +166,27 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Shampoo</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'shampoo']) }}" class="mn-page-link drop">Shampoo</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">face wash</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'face-wash']) }}" class="mn-page-link drop">face wash</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">body wash</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'body-wash']) }}" class="mn-page-link drop">body wash</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">sunscreen</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'sunscreen']) }}" class="mn-page-link drop">sunscreen</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">serum</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'serum']) }}" class="mn-page-link drop">serum</a>
 								</li>
 							</ul>
 						</li>
-						<li class="mn-sb-title condense"><span>Bakery</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'bakery']) }}" class="text-reset">
+								<span>Bakery</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
 							<a href="javascript:void(0)" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/cake.svg') }}" alt="Cake">
@@ -181,23 +194,27 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">cup cake</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'cup-cake']) }}" class="mn-page-link drop">cup cake</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">pastry</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'pastry']) }}" class="mn-page-link drop">pastry</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Cake</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'cake']) }}" class="mn-page-link drop">Cake</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'bread']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/bread.svg') }}" alt="Bread">
 								<span class="condense">Bread</span>
 							</a>
 						</li>
-						<li class="mn-sb-title condense"><span>Vegetables</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'vegetables']) }}" class="text-reset">
+								<span>Vegetables</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
 							<a href="javascript:void(0)" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/tuber.svg') }}" alt="tuber">
@@ -205,49 +222,53 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Sweet Potato</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'sweet-potato']) }}" class="mn-page-link drop">Sweet Potato</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Ginger</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'ginger']) }}" class="mn-page-link drop">Ginger</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">cassava</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'cassava']) }}" class="mn-page-link drop">cassava</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'tomato']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/tomato.svg') }}" alt="tomato">
 								<span class="condense">Tomato</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'lemon']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/lemon.svg') }}" alt="lemon">
 								<span class="condense">Lemon</span>
 							</a>
 						</li>
-						<li class="mn-sb-title condense"><span>Fruits</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'fruits']) }}" class="text-reset">
+								<span>Fruits</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'avocado']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/avocado.svg') }}" alt="avocado">
 								<span class="condense">avocado</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'strawberry']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/strawberry.svg') }}" alt="strawberry">
 								<span class="condense">strawberry</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'cherry']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/cherry.svg') }}" alt="cherry">
 								<span class="condense">cherry</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'lychee']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/lychee.svg') }}" alt="Lychee">
 								<span class="condense">Lychee</span>
 							</a>
@@ -489,12 +510,24 @@
 									</svg>
 								</a>
 								<ul class="sub-menu">
-									<li>
-										<a href="{{ route('ecommerce.login.html') }}">Login</a>
-									</li>
-									<li>
-										<a href="{{ route('ecommerce.register.html') }}">Register</a>
-									</li>
+									@auth
+										<li>
+											<a href="{{ route('dashboard') }}">Dashboard ({{ Auth::user()->name }})</a>
+										</li>
+										<li>
+											<form method="POST" action="{{ route('ecommerce.logout') }}" class="d-inline">
+												@csrf
+												<a href="javascript:void(0)" onclick="this.closest('form').submit()">Logout</a>
+											</form>
+										</li>
+									@else
+										<li>
+											<a href="{{ route('ecommerce.login') }}">Login</a>
+										</li>
+										<li>
+											<a href="{{ route('ecommerce.register') }}">Register</a>
+										</li>
+									@endauth
 									<li>
 										<a href="{{ route('ecommerce.checkout.html') }}">Checkout</a>
 									</li>
@@ -502,7 +535,7 @@
 							</div>
 							<div class="mn-tool-wish">
 								<a href="javascript:void(0)" class="mn-main-wishlist mn-wishlist-toggle">
-									<span class="label lbl-1">3</span>
+									<span class="label lbl-1 wishlist-count">{{ count((array) session('ecommerce_wishlist', [])) }}</span>
 									<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0"
 										y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512"
 										xml:space="preserve">
@@ -516,7 +549,7 @@
 							</div>
 							<div class="mn-tool-cart">
 								<a href="javascript:void(0)" class="mn-main-cart mn-cart-toggle">
-									<span class="label lbl-2">4</span>
+									<span class="label lbl-2 cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
 									<svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
@@ -563,22 +596,22 @@
 									<div class="mn-footer-links mn-footer-dropdown">
 										<ul class="align-items-center">
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Fashion</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'fashion']) }}">Fashion</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Cosmetics</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'cosmetics']) }}">Cosmetics</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bags & Purse</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}">Bags & Purse</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shoes</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}">Shoes</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Belts</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'hat']) }}">Hat & Accessories</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Perfumes</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'makeup']) }}">Makeup</a>
 											</li>
 										</ul>
 									</div>
@@ -755,7 +788,7 @@
 				</li>
 				<li>
 					<a href="javascript:void(0)" class="mn-main-wishlist mn-wishlist-toggle">
-						<span class="label lbl-1">3</span>
+						<span class="label lbl-1 wishlist-count">{{ count((array) session('ecommerce_wishlist', [])) }}</span>
 						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0"
 							viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve">
 							<g>
@@ -769,13 +802,13 @@
 				</li>
 				<li>
 					<a href="javascript:void(0)" class="mn-main-cart mn-cart-toggle">
-						<span class="label lbl-2">4</span>
+						<span class="label lbl-2 cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
 						<svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M351.552 831.424c-35.328 0-63.968 28.64-63.968 63.968 0 35.328 28.64 63.968 63.968 63.968 35.328 0 63.968-28.64 63.968-63.968C415.52 860.064 386.88 831.424 351.552 831.424L351.552 831.424 351.552 831.424zM799.296 831.424c-35.328 0-63.968 28.64-63.968 63.968 0 35.328 28.64 63.968 63.968 63.968 35.328 0 63.968-28.64 63.968-63.968C863.264 860.064 834.624 831.424 799.296 831.424L799.296 831.424 799.296 831.424zM862.752 799.456 343.264 799.456c-46.08 0-86.592-36.448-92.224-83.008L196.8 334.592 165.92 156.128c-1.92-15.584-16.128-28.288-29.984-28.288L95.2 127.84c-17.664 0-32-14.336-32-31.968 0-17.664 14.336-32 32-32l40.736 0c46.656 0 87.616 36.448 93.28 83.008l30.784 177.792 54.464 383.488c1.792 14.848 15.232 27.36 28.768 27.36l519.488 0c17.696 0 32 14.304 32 31.968S880.416 799.456 862.752 799.456L862.752 799.456zM383.232 671.52c-16.608 0-30.624-12.8-31.872-29.632-1.312-17.632 11.936-32.928 29.504-34.208l433.856-31.968c15.936-0.096 29.344-12.608 31.104-26.816l50.368-288.224c1.28-10.752-1.696-22.528-8.128-29.792-4.128-4.672-9.312-7.04-15.36-7.04L319.04 223.84c-17.664 0-32-14.336-32-31.968 0-17.664 14.336-31.968 32-31.968l553.728 0c24.448 0 46.88 10.144 63.232 28.608 18.688 21.088 27.264 50.784 23.52 81.568l-50.4 288.256c-5.44 44.832-45.92 81.28-92 81.28L385.6 671.424C384.8 671.488 384 671.52 383.232 671.52L383.232 671.52zM383.232 671.52">
 							</path>
 						</svg>
-						<span>4</span>
+						<span class="cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
 					</a>
 				</li>
 			</ul>
@@ -885,7 +918,7 @@
 									alt="product"></a>
 							<div class="mn-pro-content">
 								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">Sport Shoes</a>
-								<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="search-cat">Shoes</a>
+								<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}" class="search-cat">Shoes</a>
 								<ul class="mn-ratings">
 									<li><i class="ri-star-fill"></i></li>
 									<li><i class="ri-star-fill"></i></li>
@@ -903,7 +936,7 @@
 									alt="product"></a>
 							<div class="mn-pro-content">
 								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">Leather bag</a>
-								<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="search-cat">Bags</a>
+								<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}" class="search-cat">Bags</a>
 								<ul class="mn-ratings">
 									<li><i class="ri-star-fill"></i></li>
 									<li><i class="ri-star-fill"></i></li>
@@ -921,7 +954,7 @@
 									alt="product"></a>
 							<div class="mn-pro-content">
 								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">T-shirt for girls</a>
-								<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="search-cat">Clothes</a>
+								<a href="{{ route('ecommerce.products.index', ['category' => 'clothes']) }}" class="search-cat">Clothes</a>
 								<ul class="mn-ratings">
 									<li><i class="ri-star-fill"></i></li>
 									<li><i class="ri-star-fill"></i></li>
@@ -941,10 +974,10 @@
 						<span class="search_title">Recently searches</span>
 					</div>
 					<ul>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirts</a></li>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">watches</a></li>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bags</a></li>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Belts</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 't-shirts']) }}">T-shirts</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 'watches']) }}">watches</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}">Bags</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 'belts']) }}">Belts</a></li>
 					</ul>
 				</div>
 			</div>
@@ -962,54 +995,11 @@
 						</a>
 					</div>
 					<ul class="mn-cart-pro-items">
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/11.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">Smart watch</a>
-								<span class="cart-price"><span>$255.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/5.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">T-Shirt for men</a>
-								<span class="cart-price"><span>$64.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/13.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">Leather Belt</a>
-								<span class="cart-price"><span>$59.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
-						<li class="cart-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/2.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="cart-pro-title">T-Shirt for girls</a>
-								<span class="cart-price"><span>$39.00</span> x 1</span>
-								<div class="qty-plus-minus">
-									<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-								</div>
-								<a href="javascript:void(0)" class="cart-remove-item">×</a>
-							</div>
-						</li>
+						@php
+							$layoutCart = (array) session('ecommerce_cart', []);
+							$layoutCartSubtotal = array_sum(array_map(fn($i) => ($i['price'] ?? 0) * ($i['quantity'] ?? 1), $layoutCart));
+						@endphp
+						@include('ecommerce.partials.cart-sidebar-items', ['cartItems' => $layoutCart])
 					</ul>
 				</div>
 				<div class="mn-cart-bottom">
@@ -1018,21 +1008,17 @@
 							<tbody>
 								<tr>
 									<td class="text-left">Sub-Total :</td>
-									<td class="text-right">$417.00</td>
-								</tr>
-								<tr>
-									<td class="text-left">VAT (20%) :</td>
-									<td class="text-right">$83.40</td>
+									<td class="text-right cart-subtotal-val">Rp {{ number_format($layoutCartSubtotal, 0, ',', '.') }}</td>
 								</tr>
 								<tr>
 									<td class="text-left">Total :</td>
-									<td class="text-right primary-color">$500.40</td>
+									<td class="text-right primary-color cart-total-val">Rp {{ number_format($layoutCartSubtotal, 0, ',', '.') }}</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					<div class="cart_btn">
-						<a href="{{ route('ecommerce.cart.html') }}" class="mn-btn-1"><span>Cart<i class="ri-arrow-right-s-line"></i></span></a>
+						<a href="{{ route('ecommerce.cart') }}" class="mn-btn-1"><span>Cart<i class="ri-arrow-right-s-line"></i></span></a>
 						<a href="{{ route('ecommerce.checkout.html') }}" class="mn-btn-2"><span>Checkout<i
 									class="ri-arrow-right-s-line"></i></span></a>
 					</div>
@@ -1052,41 +1038,18 @@
 						</a>
 					</div>
 					<ul class="mn-wishlist-pro-items">
-						<li class="wishlist-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/15.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="wishlist-pro-title">Leather bag</a>
-								<span class="wishlist-price"><span>$499.00</span><span class="stock">- 9 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="wishlist-remove-item">×</a>
-							</div>
-						</li>
-						<li class="wishlist-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/13.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="wishlist-pro-title">Leather Belt</a>
-								<span class="wishlist-price"><span>$59.00</span><span class="stock">- 4 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="wishlist-remove-item">×</a>
-							</div>
-						</li>
-						<li class="wishlist-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/5.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="wishlist-pro-title">T-Shirt for men</a>
-								<span class="wishlist-price"><span>$65.00</span><span class="stock">- 54 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="wishlist-remove-item">×</a>
-							</div>
-						</li>
+						@php
+							$layoutWishlistIds = array_map('intval', (array) session('ecommerce_wishlist', []));
+							$layoutWishlistProducts = !empty($layoutWishlistIds)
+								? \App\Models\Product::query()->active()->whereIn('id', $layoutWishlistIds)->get()
+								: collect();
+						@endphp
+						@include('ecommerce.partials.wishlist-sidebar-items', ['wishlistProducts' => $layoutWishlistProducts])
 					</ul>
 				</div>
 				<div class="mn-wishlist-bottom">
 					<div class="wishlist_btn">
-						<a href="{{ route('ecommerce.wishlist.html') }}" class="mn-btn-1"><span>View Wishlist<i
+						<a href="{{ route('ecommerce.wishlist') }}" class="mn-btn-1"><span>View Wishlist<i
 									class="ri-arrow-right-s-line"></i></span></a>
 					</div>
 				</div>
@@ -1099,6 +1062,8 @@
 
 	<!-- Main Custom -->
 	<script src="{{ asset('mantu/assets/js/main.js') }}"></script>
+
+	@stack('scripts')
 </body>
 
 </html>

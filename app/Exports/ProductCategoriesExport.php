@@ -77,4 +77,3 @@ class ProductCategoriesExport implements FromCollection, ShouldAutoSize, WithHea
         ];
     }
 }
-

@@ -111,6 +111,14 @@ class ProductCategory extends Model
      */
     public function resolvedUrl(): string
     {
+        if ($this->url && (str_starts_with($this->url, 'http://') || str_starts_with($this->url, 'https://'))) {
+            return $this->url;
+        }
+
+        if ($this->slug) {
+            return route('ecommerce.products.index', ['category' => $this->slug]);
+        }
+
         if ($this->route && Route::has($this->route)) {
             return route($this->route);
         }

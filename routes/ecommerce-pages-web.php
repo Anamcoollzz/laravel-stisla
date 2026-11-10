@@ -1,10 +1,69 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\AuthController as EcommerceAuthController;
+use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
+use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/ecommerce', '/ecommerce-pages/index.html');
 Route::redirect('/ecommerce-pages', '/ecommerce-pages/index.html');
+
+Route::get('/ecommerce/products', [EcommerceProductController::class, 'index'])
+    ->name('ecommerce.products.index');
+Route::get('/ecommerce/shop', [EcommerceProductController::class, 'index'])
+    ->name('ecommerce.shop');
+Route::get('/ecommerce/category/{category:slug}', [EcommerceProductController::class, 'category'])
+    ->name('ecommerce.category');
+
+Route::get('/ecommerce/wishlist', [EcommerceWishlistController::class, 'index'])
+    ->name('ecommerce.wishlist');
+Route::get('/ecommerce-pages/wishlist.html', [EcommerceWishlistController::class, 'index'])
+    ->name('ecommerce.wishlist.html');
+Route::get('/ecommerce-pages/wishlist', [EcommerceWishlistController::class, 'index']);
+Route::post('/ecommerce/wishlist/toggle/{product}', [EcommerceWishlistController::class, 'toggle'])
+    ->name('ecommerce.wishlist.toggle');
+Route::post('/ecommerce/wishlist/remove/{product}', [EcommerceWishlistController::class, 'remove'])
+    ->name('ecommerce.wishlist.remove');
+Route::delete('/ecommerce/wishlist/{product}', [EcommerceWishlistController::class, 'remove'])
+    ->name('ecommerce.wishlist.destroy');
+
+Route::get('/ecommerce/cart', [EcommerceCartController::class, 'index'])
+    ->name('ecommerce.cart');
+Route::get('/ecommerce-pages/cart.html', [EcommerceCartController::class, 'index'])
+    ->name('ecommerce.cart.html');
+Route::get('/ecommerce-pages/cart', [EcommerceCartController::class, 'index']);
+Route::post('/ecommerce/cart/add/{product}', [EcommerceCartController::class, 'add'])
+    ->name('ecommerce.cart.add');
+Route::post('/ecommerce/cart/update/{product}', [EcommerceCartController::class, 'update'])
+    ->name('ecommerce.cart.update');
+Route::post('/ecommerce/cart/remove/{product}', [EcommerceCartController::class, 'remove'])
+    ->name('ecommerce.cart.remove');
+Route::delete('/ecommerce/cart/{product}', [EcommerceCartController::class, 'remove'])
+    ->name('ecommerce.cart.destroy');
+
+Route::get('/ecommerce/login', [EcommerceAuthController::class, 'showLoginForm'])
+    ->name('ecommerce.login');
+Route::post('/ecommerce/login', [EcommerceAuthController::class, 'login'])
+    ->name('ecommerce.login.submit');
+Route::post('/ecommerce/logout', [EcommerceAuthController::class, 'logout'])
+    ->name('ecommerce.logout');
+Route::get('/ecommerce-pages/login.html', [EcommerceAuthController::class, 'showLoginForm'])
+    ->name('ecommerce.login.html');
+Route::get('/ecommerce-pages/login', [EcommerceAuthController::class, 'showLoginForm']);
+
+Route::get('/ecommerce/register', [EcommerceAuthController::class, 'showRegistrationForm'])
+    ->name('ecommerce.register');
+Route::post('/ecommerce/register', [EcommerceAuthController::class, 'register'])
+    ->name('ecommerce.register.submit');
+Route::get('/ecommerce-pages/register.html', [EcommerceAuthController::class, 'showRegistrationForm'])
+    ->name('ecommerce.register.html');
+Route::get('/ecommerce-pages/register', [EcommerceAuthController::class, 'showRegistrationForm']);
+
+// Route::get('/ecommerce-pages/shop-right-sidebar.html', [EcommerceProductController::class, 'index'])
+//     ->name('ecommerce.shop-right-sidebar.html');
+// Route::get('/ecommerce-pages/shop-right-sidebar', [EcommerceProductController::class, 'index'])
+//     ->name('ecommerce.shop-right-sidebar');
 
 Route::get('/ecommerce/products/{slug}', [EcommerceProductController::class, 'show'])
     ->name('ecommerce.products.detail');
@@ -16,18 +75,15 @@ $ecommercePages = [
     'blog-detail-right-sidebar',
     'blog-full-width',
     'blog-right-sidebar',
-    'cart',
     'checkout',
     'compare',
     'contact-us',
     'faq',
     'index',
-    'login',
     'product-accordion-full-width',
     'product-accordion',
     'product-detail',
     'product-full-width',
-    'register',
     'shop-banner-full-width',
     'shop-banner-left-sidebar',
     'shop-banner-right-sidebar',
@@ -42,7 +98,6 @@ $ecommercePages = [
     'shop-right-sidebar',
     'terms',
     'track-order',
-    'wishlist',
 ];
 
 foreach ($ecommercePages as $page) {
