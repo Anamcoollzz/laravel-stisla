@@ -1119,6 +1119,8 @@
 
 	<!-- Main Custom -->
 	<script src="{{ asset('mantu/assets/js/main.js') }}"></script>
+
+	@stack('scripts')
 </body>
 
 </html>

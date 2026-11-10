@@ -122,6 +122,24 @@ test('products can be filtered by brand', function () {
         ->assertOk()
         ->assertSee('Alpha Jacket')
         ->assertDontSee('Beta Shoes');
+
+    // Test with category + string brand slug (reproducing Oracle ORA-01722 scenario)
+    $category = ProductCategory::create(['name' => 'Sportswear', 'slug' => 'sportswear', 'is_active' => true]);
+    $productWithCat = Product::create([
+        'category_id' => $category->id,
+        'brand_id' => $brandA->id,
+        'title' => 'Alpha Sport Hooded Top',
+        'slug' => 'alpha-sport-hooded-top',
+        'sku' => 'ASHT-003',
+        'price' => 250000,
+        'stock' => 5,
+        'is_active' => true,
+    ]);
+
+    $this->get(route('ecommerce.products.index', ['category' => 'sportswear', 'brand' => 'brand-alpha']))
+        ->assertOk()
+        ->assertSee('Alpha Sport Hooded Top')
+        ->assertDontSee('Beta Shoes');
 });
 
 test('app ecommerce layout categories link to product list with category', function () {
@@ -134,4 +152,34 @@ test('app ecommerce layout categories link to product list with category', funct
     $this->get(route('ecommerce.index.html'))
         ->assertOk()
         ->assertSee(route('ecommerce.products.index', ['category' => 'gadgets']), false);
+});
+
+test('products can be sorted by price and name', function () {
+    Product::create([
+        'title' => 'Expensive Watch',
+        'slug' => 'expensive-watch',
+        'sku' => 'EW-001',
+        'price' => 500000,
+        'stock' => 5,
+        'is_active' => true,
+    ]);
+
+    Product::create([
+        'title' => 'Affordable Pen',
+        'slug' => 'affordable-pen',
+        'sku' => 'AP-002',
+        'price' => 20000,
+        'stock' => 50,
+        'is_active' => true,
+    ]);
+
+    $responseLow = $this->get(route('ecommerce.products.index', ['sort' => 'price_low']));
+    $responseLow->assertOk();
+    $contentLow = $responseLow->getContent();
+    expect(strpos($contentLow, 'Affordable Pen'))->toBeLessThan(strpos($contentLow, 'Expensive Watch'));
+
+    $responseHigh = $this->get(route('ecommerce.products.index', ['sort' => 'price_high']));
+    $responseHigh->assertOk();
+    $contentHigh = $responseHigh->getContent();
+    expect(strpos($contentHigh, 'Expensive Watch'))->toBeLessThan(strpos($contentHigh, 'Affordable Pen'));
 });

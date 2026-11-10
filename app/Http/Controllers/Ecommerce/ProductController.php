@@ -43,16 +43,34 @@ class ProductController extends Controller
         if ($request->filled('brand')) {
             $brandParam = $request->query('brand');
             $query->whereHas('brand', function ($q) use ($brandParam) {
-                $q->where('slug', $brandParam)->orWhere('id', $brandParam);
+                if (is_numeric($brandParam)) {
+                    $q->where('id', (int) $brandParam)->orWhere('slug', (string) $brandParam);
+                } else {
+                    $q->where('slug', (string) $brandParam);
+                }
             });
         }
 
         if ($request->filled('size')) {
-            $query->where('size_id', $request->query('size'));
+            $sizeParam = $request->query('size');
+            $query->whereHas('size', function ($q) use ($sizeParam) {
+                if (is_numeric($sizeParam)) {
+                    $q->where('id', (int) $sizeParam)->orWhere('code', (string) $sizeParam);
+                } else {
+                    $q->where('code', (string) $sizeParam)->orWhere('name', (string) $sizeParam);
+                }
+            });
         }
 
         if ($request->filled('color')) {
-            $query->where('color_id', $request->query('color'));
+            $colorParam = $request->query('color');
+            $query->whereHas('color', function ($q) use ($colorParam) {
+                if (is_numeric($colorParam)) {
+                    $q->where('id', (int) $colorParam);
+                } else {
+                    $q->where('name', (string) $colorParam);
+                }
+            });
         }
 
         if ($request->filled('min_price')) {

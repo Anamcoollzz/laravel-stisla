@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', ($currentCategory ? $currentCategory->name . ' - ' : '') . 'Shop Right Sidebar - Ecommerce')
+@section('title', ($currentCategory ? $currentCategory->name . ' - ' : '') . ' - Ecommerce')
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -71,7 +71,7 @@
 									</div>
 									<div class="col-md-6 mn-sort-select">
 										<div class="mn-select-inner">
-											<select name="mn-select" id="mn-select">
+											<select name="mn-select" id="mn-select" onchange="const u = new URL(window.location.href); u.searchParams.set('sort', this.value); u.searchParams.delete('page'); window.location.href = u.toString();">
 												<option {{ empty($sort) || $sort === 'latest' ? 'selected' : '' }} value="latest">Sort by: Latest</option>
 												<option {{ $sort === 'name_asc' ? 'selected' : '' }} value="name_asc">Name, A to Z</option>
 												<option {{ $sort === 'name_desc' ? 'selected' : '' }} value="name_desc">Name, Z to A</option>
@@ -96,7 +96,7 @@
 
 										@if (request('brand'))
 											@php
-												$activeBrand = $brands->firstWhere('slug', request('brand')) ?? $brands->firstWhere('id', request('brand'));
+												$activeBrand = $brands->firstWhere('slug', request('brand')) ?? (is_numeric(request('brand')) ? $brands->firstWhere('id', (int) request('brand')) : null);
 											@endphp
 											<span class="mn-select-btn">Brand: {{ $activeBrand?->name ?? request('brand') }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['brand', 'page']) }}">×</a></span>
@@ -104,7 +104,7 @@
 
 										@if (request('size'))
 											@php
-												$activeSize = $sizes->firstWhere('id', request('size'));
+												$activeSize = (is_numeric(request('size')) ? $sizes->firstWhere('id', (int) request('size')) : null) ?? $sizes->firstWhere('code', request('size')) ?? $sizes->firstWhere('name', request('size'));
 											@endphp
 											<span class="mn-select-btn">Size: {{ strtoupper($activeSize?->code ?: $activeSize?->name ?: request('size')) }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['size', 'page']) }}">×</a></span>
@@ -112,7 +112,7 @@
 
 										@if (request('color'))
 											@php
-												$activeColor = $colors->firstWhere('id', request('color'));
+												$activeColor = (is_numeric(request('color')) ? $colors->firstWhere('id', (int) request('color')) : null) ?? $colors->firstWhere('name', request('color'));
 											@endphp
 											<span class="mn-select-btn">Color: {{ $activeColor?->name ?? request('color') }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['color', 'page']) }}">×</a></span>
@@ -335,7 +335,7 @@
 													<ul>
 														@foreach ($brands as $brand)
 															@php
-																$isBrandActive = request('brand') == $brand->slug || request('brand') == $brand->id;
+																$isBrandActive = request('brand') == $brand->slug || (is_numeric(request('brand')) && (int) request('brand') == $brand->id);
 																$brandUrl = $isBrandActive ? request()->fullUrlWithoutQuery(['brand', 'page']) : request()->fullUrlWithQuery(['brand' => $brand->slug, 'page' => null]);
 															@endphp
 															<li>
