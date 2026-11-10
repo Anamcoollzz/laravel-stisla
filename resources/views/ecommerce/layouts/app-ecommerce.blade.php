@@ -906,78 +906,61 @@
 					</a>
 				</div>
 				<div class="mn-search">
-					<form>
-						<input type="text" placeholder="Search here...">
-						<a href="javascript:void(0)"><i class="ri-search-line"></i></a>
+					<form action="{{ route('ecommerce.products.index') }}" method="GET">
+						<input type="text" name="q" placeholder="Search here..." value="{{ request('q') }}">
+						<a href="javascript:void(0)" onclick="$(this).closest('form').submit();"><i class="ri-search-line"></i></a>
 					</form>
 				</div>
 				<div class="mn-search-list">
+					@php
+						$randomProducts = $randomProducts ?? (\App\Models\Product::active()->with(['category', 'brand'])->inRandomOrder()->take(4)->get());
+					@endphp
 					<ul class="mn-search-pro-items">
-						<li class="search-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/9.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">Sport Shoes</a>
-								<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}" class="search-cat">Shoes</a>
-								<ul class="mn-ratings">
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill grey"></i></li>
-								</ul>
-								<span class="search-price"><span>$255.00</span><span class="stock">- 11 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="search-remove-item">×</a>
-							</div>
-						</li>
-						<li class="search-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/15.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">Leather bag</a>
-								<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}" class="search-cat">Bags</a>
-								<ul class="mn-ratings">
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill grey"></i></li>
-									<li><i class="ri-star-fill grey"></i></li>
-									<li><i class="ri-star-fill grey"></i></li>
-								</ul>
-								<span class="search-price"><span>$65.00</span><span class="stock">- 54 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="search-remove-item">×</a>
-							</div>
-						</li>
-						<li class="search-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/1.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">T-shirt for girls</a>
-								<a href="{{ route('ecommerce.products.index', ['category' => 'clothes']) }}" class="search-cat">Clothes</a>
-								<ul class="mn-ratings">
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill"></i></li>
-									<li><i class="ri-star-fill grey"></i></li>
-									<li><i class="ri-star-fill grey"></i></li>
-								</ul>
-								<span class="search-price"><span>$59.00</span><span class="stock">- 4 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="search-remove-item">×</a>
-							</div>
-						</li>
+						@forelse ($randomProducts as $randProd)
+							<li class="search-sidebar-list">
+								<a href="{{ route('ecommerce.products.detail', $randProd->slug) }}" class="mn-pro-img">
+									<img src="{{ $randProd->thumbnail_url }}" alt="{{ $randProd->title }}">
+								</a>
+								<div class="mn-pro-content">
+									<a href="{{ route('ecommerce.products.detail', $randProd->slug) }}" class="search-pro-title">{{ $randProd->title }}</a>
+									@if ($randProd->category)
+										<a href="{{ route('ecommerce.products.index', ['category' => $randProd->category->slug]) }}" class="search-cat">{{ $randProd->category->name }}</a>
+									@endif
+									<ul class="mn-ratings">
+										<li><i class="ri-star-fill"></i></li>
+										<li><i class="ri-star-fill"></i></li>
+										<li><i class="ri-star-fill"></i></li>
+										<li><i class="ri-star-fill"></i></li>
+										<li><i class="ri-star-fill {{ $randProd->stock > 0 ? '' : 'grey' }}"></i></li>
+									</ul>
+									<span class="search-price">
+										<span>Rp {{ number_format($randProd->final_price, 0, ',', '.') }}</span>
+										<span class="stock">- {{ $randProd->stock > 0 ? $randProd->stock . ' in Stock' : 'Out of Stock' }}</span>
+									</span>
+									<a href="javascript:void(0)" class="search-remove-item">×</a>
+								</div>
+							</li>
+						@empty
+							<li class="p-3 text-muted text-center">No products available.</li>
+						@endforelse
 					</ul>
 				</div>
 				<div class="mn-search-also m-t-15">
-					<div class="mn-search-title">
+					<div class="mn-search-title d-flex justify-content-between align-items-center">
 						<span class="search_title">Recently searches</span>
+						@php
+							$recentSearches = array_filter((array) session('recent_searches', []));
+						@endphp
+						@if (! empty($recentSearches))
+							<a href="javascript:void(0)" onclick="clearSearchHistory()" id="clear-recent-searches-btn" class="small text-muted" style="font-size: 11px; text-decoration: underline;">Clear</a>
+						@endif
 					</div>
-					<ul>
-						<li><a href="{{ route('ecommerce.products.index', ['category' => 't-shirts']) }}">T-shirts</a></li>
-						<li><a href="{{ route('ecommerce.products.index', ['category' => 'watches']) }}">watches</a></li>
-						<li><a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}">Bags</a></li>
-						<li><a href="{{ route('ecommerce.products.index', ['category' => 'belts']) }}">Belts</a></li>
+					<ul id="recent-searches-list">
+						@forelse ($recentSearches as $recentTerm)
+							<li><a href="{{ route('ecommerce.products.index', ['q' => $recentTerm]) }}">{{ $recentTerm }}</a></li>
+						@empty
+							<li class="text-muted small">No recent searches</li>
+						@endforelse
 					</ul>
 				</div>
 			</div>
@@ -1062,6 +1045,27 @@
 
 	<!-- Main Custom -->
 	<script src="{{ asset('mantu/assets/js/main.js') }}"></script>
+
+	<script>
+		function clearSearchHistory() {
+			fetch('{{ route("ecommerce.recent-searches.clear") }}', {
+				method: 'DELETE',
+				headers: {
+					'X-CSRF-TOKEN': '{{ csrf_token() }}',
+					'Accept': 'application/json'
+				}
+			}).then(function() {
+				var list = document.getElementById('recent-searches-list');
+				if (list) {
+					list.innerHTML = '<li class="text-muted small">No recent searches</li>';
+				}
+				var btn = document.getElementById('clear-recent-searches-btn');
+				if (btn) {
+					btn.remove();
+				}
+			});
+		}
+	</script>
 
 	@stack('scripts')
 </body>

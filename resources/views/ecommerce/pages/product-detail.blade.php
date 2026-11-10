@@ -1,10 +1,10 @@
 @php
   $product = $product ?? \App\Models\Product::with(['category', 'brand', 'vendor', 'size', 'color', 'images'])->first();
   $relatedProducts = $relatedProducts ?? ($product ? \App\Models\Product::query()->active()->where('id', '!=', $product->id)->with(['category', 'brand', 'size', 'color'])->take(8)->get() : collect());
-  $sidebarCategories = $sidebarCategories ?? \App\Models\ProductCategory::query()->whereNull('parent_id')->where('is_active', true)->withCount('products')->get();
-  $sidebarBrands = $sidebarBrands ?? \App\Models\ProductBrand::query()->orderBy('name')->get();
-  $sidebarSizes = $sidebarSizes ?? \App\Models\ProductSize::query()->orderBy('id')->get();
-  $sidebarColors = $sidebarColors ?? \App\Models\ProductColor::query()->orderBy('name')->get();
+  $sidebarCategories = $sidebarCategories ?? \App\Models\ProductCategory::query()->whereNull('parent_id')->where('is_active', true)->withCount('products')->get()->unique('name')->values();
+  $sidebarBrands = $sidebarBrands ?? \App\Models\ProductBrand::query()->orderBy('name')->get()->unique('name')->values();
+  $sidebarSizes = $sidebarSizes ?? \App\Models\ProductSize::query()->orderBy('id')->get()->unique('name')->values();
+  $sidebarColors = $sidebarColors ?? \App\Models\ProductColor::query()->orderBy('name')->get()->unique('name')->values();
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 

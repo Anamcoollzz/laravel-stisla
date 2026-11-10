@@ -166,33 +166,37 @@ class ProductCategorySeeder extends Seeder
         ];
 
         foreach ($structure as $level1) {
-            $l1 = ProductCategory::create([
-                'name' => $level1['name'],
-                'slug' => ProductCategory::generateUniqueSlug($level1['name']),
-                'order' => $level1['order'],
-                'is_active' => true,
-            ]);
+            $l1 = ProductCategory::firstOrCreate(
+                ['name' => $level1['name'], 'parent_id' => null],
+                [
+                    'slug' => ProductCategory::generateUniqueSlug($level1['name']),
+                    'order' => $level1['order'],
+                    'is_active' => true,
+                ]
+            );
 
             foreach ($level1['children'] ?? [] as $level2) {
-                $l2 = ProductCategory::create([
-                    'parent_id' => $l1->id,
-                    'name' => $level2['name'],
-                    'slug' => ProductCategory::generateUniqueSlug($level2['name']),
-                    'icon' => $level2['icon'] ?? null,
-                    'route' => $level2['route'] ?? null,
-                    'order' => $level2['order'],
-                    'is_active' => true,
-                ]);
+                $l2 = ProductCategory::firstOrCreate(
+                    ['name' => $level2['name'], 'parent_id' => $l1->id],
+                    [
+                        'slug' => ProductCategory::generateUniqueSlug($level2['name']),
+                        'icon' => $level2['icon'] ?? null,
+                        'route' => $level2['route'] ?? null,
+                        'order' => $level2['order'],
+                        'is_active' => true,
+                    ]
+                );
 
                 foreach ($level2['children'] ?? [] as $level3) {
-                    ProductCategory::create([
-                        'parent_id' => $l2->id,
-                        'name' => $level3['name'],
-                        'slug' => ProductCategory::generateUniqueSlug($level3['name']),
-                        'route' => $level3['route'] ?? null,
-                        'order' => $level3['order'],
-                        'is_active' => true,
-                    ]);
+                    ProductCategory::firstOrCreate(
+                        ['name' => $level3['name'], 'parent_id' => $l2->id],
+                        [
+                            'slug' => ProductCategory::generateUniqueSlug($level3['name']),
+                            'route' => $level3['route'] ?? null,
+                            'order' => $level3['order'],
+                            'is_active' => true,
+                        ]
+                    );
                 }
             }
         }

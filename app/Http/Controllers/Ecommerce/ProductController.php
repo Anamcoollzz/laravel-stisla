@@ -9,6 +9,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductColor;
 use App\Models\ProductSize;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -82,12 +83,19 @@ class ProductController extends Controller
         }
 
         if ($request->filled('q')) {
-            $search = $request->query('q');
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('sku', 'like', "%{$search}%")
-                    ->orWhere('short_description', 'like', "%{$search}%");
-            });
+            $search = trim((string) $request->query('q'));
+            if ($search !== '') {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%")
+                        ->orWhere('short_description', 'like', "%{$search}%");
+                });
+
+                // Store search query into session history
+                $recentSearches = (array) session('recent_searches', []);
+                $recentSearches = array_values(array_filter(array_unique(array_merge([$search], $recentSearches))));
+                session(['recent_searches' => array_slice($recentSearches, 0, 6)]);
+            }
         }
 
         $sort = $request->query('sort', 'latest');
@@ -109,22 +117,37 @@ class ProductController extends Controller
             ])
             ->withCount('products')
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values()
+            ->map(function ($category) {
+                if ($category->relationLoaded('children')) {
+                    $category->setRelation('children', $category->children->unique('name')->values());
+                }
+
+                return $category;
+            });
 
         $brands = ProductBrand::query()
             ->withCount('products')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
 
         $sizes = ProductSize::query()
             ->withCount('products')
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
 
         $colors = ProductColor::query()
             ->withCount('products')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
 
         return view('ecommerce.pages.shop', [
             'products' => $products,
@@ -183,19 +206,27 @@ class ProductController extends Controller
             ->where('is_active', true)
             ->withCount('products')
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
 
         $sidebarBrands = ProductBrand::query()
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
 
         $sidebarSizes = ProductSize::query()
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
 
         $sidebarColors = ProductColor::query()
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->unique('name')
+            ->values();
 
         return view('ecommerce.pages.product-detail', [
             'product' => $product,
@@ -213,5 +244,15 @@ class ProductController extends Controller
     public function detail(string $slug): View
     {
         return $this->show($slug);
+    }
+
+    /**
+     * Clear recent searches from session.
+     */
+    public function clearRecentSearches(): JsonResponse
+    {
+        session()->forget('recent_searches');
+
+        return response()->json(['success' => true]);
     }
 }

@@ -80,11 +80,26 @@ class AppServiceProvider extends ServiceProvider
                     ->whereNull('parent_id')
                     ->where('is_active', true)
                     ->orderBy('order')
-                    ->get();
+                    ->get()
+                    ->unique('name')
+                    ->values();
 
                 $view->with('ecommerceCategories', $ecommerceCategories);
             } else {
                 $view->with('ecommerceCategories', collect());
+            }
+
+            if (Schema::hasTable('products')) {
+                $randomProducts = Product::query()
+                    ->active()
+                    ->with(['category', 'brand'])
+                    ->inRandomOrder()
+                    ->take(4)
+                    ->get();
+
+                $view->with('randomProducts', $randomProducts);
+            } else {
+                $view->with('randomProducts', collect());
             }
         });
 
