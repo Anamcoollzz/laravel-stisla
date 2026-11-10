@@ -1,3 +1,10 @@
+@php
+  $minPrice = $minPrice ?? (int) floor((\App\Models\Product::active()->min('price') ?? 0) / 10000) * 10000;
+  $maxPrice = $maxPrice ?? (int) ceil((\App\Models\Product::active()->max('price') ?? 10000000) / 10000) * 10000;
+  if ($minPrice >= $maxPrice) {
+    $maxPrice = $minPrice + 100000;
+  }
+@endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
 @section('title', ($currentCategory ? $currentCategory->name . ' - ' : '') . ' - Ecommerce')
@@ -426,8 +433,12 @@
 															To<input type="text" class="filter__input">
 														</label>
 													</div>
-													<div id="mn-sliderPrice" class="filter__slider-price" data-min="0"
-														data-max="250" data-step="10"></div>
+													<div id="mn-sliderPrice" class="filter__slider-price"
+														data-min="{{ $minPrice }}"
+														data-max="{{ $maxPrice }}"
+														data-step="10000"
+														data-start-min="{{ request('min_price', $minPrice) }}"
+														data-start-max="{{ request('max_price', $maxPrice) }}"></div>
 												</div>
 											</div>
 										</div>
@@ -460,5 +471,37 @@
 		url.searchParams.delete('page');
 		window.location.href = url.toString();
 	});
+
+	(function () {
+		const priceSlider = document.getElementById('mn-sliderPrice');
+		if (!priceSlider) return;
+
+		function handleShopPriceChange(minVal, maxVal) {
+			const url = new URL(window.location.href);
+			url.searchParams.set('min_price', Math.round(minVal));
+			url.searchParams.set('max_price', Math.round(maxVal));
+			url.searchParams.delete('page');
+			window.location.href = url.toString();
+		}
+
+		if (priceSlider.noUiSlider) {
+			priceSlider.noUiSlider.on('change', function (values) {
+				handleShopPriceChange(values[0], values[1]);
+			});
+		}
+
+		const priceInputs = document.querySelectorAll('.mn-price-filter input.filter__input');
+		priceInputs.forEach(function (input) {
+			input.addEventListener('keydown', function (e) {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					if (priceSlider.noUiSlider) {
+						const vals = priceSlider.noUiSlider.get();
+						handleShopPriceChange(vals[0], vals[1]);
+					}
+				}
+			});
+		});
+	})();
 </script>
 @endpush

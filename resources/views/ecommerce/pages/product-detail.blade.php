@@ -5,6 +5,11 @@
   $sidebarBrands = $sidebarBrands ?? \App\Models\ProductBrand::query()->orderBy('name')->get()->unique('name')->values();
   $sidebarSizes = $sidebarSizes ?? \App\Models\ProductSize::query()->orderBy('id')->get()->unique('name')->values();
   $sidebarColors = $sidebarColors ?? \App\Models\ProductColor::query()->orderBy('name')->get()->unique('name')->values();
+  $minPrice = $minPrice ?? (int) floor((\App\Models\Product::active()->min('price') ?? 0) / 10000) * 10000;
+  $maxPrice = $maxPrice ?? (int) ceil((\App\Models\Product::active()->max('price') ?? 10000000) / 10000) * 10000;
+  if ($minPrice >= $maxPrice) {
+    $maxPrice = $minPrice + 100000;
+  }
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
@@ -856,9 +861,12 @@
                             <div
                               id="mn-sliderPrice"
                               class="filter__slider-price"
-                              data-min="0"
-                              data-max="250"
-                              data-step="10"
+                              data-min="{{ $minPrice }}"
+                              data-max="{{ $maxPrice }}"
+                              data-step="10000"
+                              data-start-min="{{ request('min_price', $minPrice) }}"
+                              data-start-max="{{ request('max_price', $maxPrice) }}"
+                              data-redirect-url="{{ route('ecommerce.products.index') }}"
                             ></div>
                           </div>
                         </div>
@@ -871,12 +879,12 @@
                         <div class="mn-tag-block mn-sb-block-content">
                           @if (! empty($product?->tags) && is_array($product->tags))
                             @foreach ($product->tags as $tag)
-                              <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>{{ $tag }}</span></a>
+                              <a href="{{ route('ecommerce.products.index', ['q' => $tag]) }}"><span>{{ $tag }}</span></a>
                             @endforeach
                           @else
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>Clothes</span></a>
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>Shoes</span></a>
-                            <a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><span>Bags</span></a>
+                            <a href="{{ route('ecommerce.products.index', ['q' => 'Clothes']) }}"><span>Clothes</span></a>
+                            <a href="{{ route('ecommerce.products.index', ['q' => 'Shoes']) }}"><span>Shoes</span></a>
+                            <a href="{{ route('ecommerce.products.index', ['q' => 'Bags']) }}"><span>Bags</span></a>
                           @endif
                         </div>
                       </div>
@@ -889,3 +897,39 @@
         </div>
       </div>
 @endsection
+
+@push('scripts')
+<script>
+  (function () {
+    const slider = document.getElementById('mn-sliderPrice');
+    if (!slider) return;
+
+    function handlePriceRedirect(minVal, maxVal) {
+      const redirectBase = slider.dataset.redirectUrl || '{{ route('ecommerce.products.index') }}';
+      const redirectUrl = new URL(redirectBase, window.location.origin);
+      redirectUrl.searchParams.set('min_price', Math.round(minVal));
+      redirectUrl.searchParams.set('max_price', Math.round(maxVal));
+      window.location.href = redirectUrl.toString();
+    }
+
+    if (slider.noUiSlider) {
+      slider.noUiSlider.on('change', function (values) {
+        handlePriceRedirect(values[0], values[1]);
+      });
+    }
+
+    const priceInputs = document.querySelectorAll('.mn-price-filter input.filter__input');
+    priceInputs.forEach(function (input) {
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (slider.noUiSlider) {
+            const vals = slider.noUiSlider.get();
+            handlePriceRedirect(vals[0], vals[1]);
+          }
+        }
+      });
+    });
+  })();
+</script>
+@endpush

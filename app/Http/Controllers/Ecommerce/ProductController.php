@@ -149,6 +149,12 @@ class ProductController extends Controller
             ->unique('name')
             ->values();
 
+        $minPrice = (int) floor((Product::active()->min('price') ?? 0) / 10000) * 10000;
+        $maxPrice = (int) ceil((Product::active()->max('price') ?? 10000000) / 10000) * 10000;
+        if ($minPrice >= $maxPrice) {
+            $maxPrice = $minPrice + 100000;
+        }
+
         return view('ecommerce.pages.shop', [
             'products' => $products,
             'currentCategory' => $currentCategory,
@@ -158,6 +164,8 @@ class ProductController extends Controller
             'sizes' => $sizes,
             'colors' => $colors,
             'sort' => $sort,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
         ]);
     }
 
@@ -228,6 +236,12 @@ class ProductController extends Controller
             ->unique('name')
             ->values();
 
+        $minPrice = (int) floor((Product::active()->min('price') ?? 0) / 10000) * 10000;
+        $maxPrice = (int) ceil((Product::active()->max('price') ?? 10000000) / 10000) * 10000;
+        if ($minPrice >= $maxPrice) {
+            $maxPrice = $minPrice + 100000;
+        }
+
         return view('ecommerce.pages.product-detail', [
             'product' => $product,
             'relatedProducts' => $relatedProducts,
@@ -235,6 +249,8 @@ class ProductController extends Controller
             'sidebarBrands' => $sidebarBrands,
             'sidebarSizes' => $sidebarSizes,
             'sidebarColors' => $sidebarColors,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
         ]);
     }
 
