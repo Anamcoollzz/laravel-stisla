@@ -325,8 +325,8 @@
                   </li>
                 @endcanany
 
-                @canany(['products.view', 'product-categories.view', 'product-brands.view', 'product-vendors.view', 'product-sizes.view', 'product-colors.view', 'product-banners.view'])
-                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('products.*', 'product-categories.*', 'product-brands.*', 'product-vendors.*', 'product-sizes.*', 'product-colors.*', 'product-banners.*')])>
+                @canany(['products.view', 'product-categories.view', 'product-brands.view', 'product-vendors.view', 'product-sizes.view', 'product-colors.view', 'product-banners.view', 'our-teams.view'])
+                  <li @class(['nav-item dropdown', 'active' => request()->routeIs('products.*', 'product-categories.*', 'product-brands.*', 'product-vendors.*', 'product-sizes.*', 'product-colors.*', 'product-banners.*', 'our-teams.*')])>
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-shopping-bag"></i> <span>{{ __('Shop / Products') }}</span></a>
                     <ul class="dropdown-menu">
                       @can('products.view')
@@ -349,6 +349,9 @@
                       @endcan
                       @can('product-banners.view')
                         <li @class(['active' => request()->routeIs('product-banners.*')])><a class="nav-link" href="{{ route('product-banners.index') }}">{{ __('Banners') }}</a></li>
+                      @endcan
+                      @can('our-teams.view')
+                        <li @class(['active' => request()->routeIs('our-teams.*')])><a class="nav-link" href="{{ route('our-teams.index') }}">{{ __('Our Team') }}</a></li>
                       @endcan
                     </ul>
                   </li>

@@ -370,7 +370,7 @@
 																		Width</a></li>
 															</ul>
 														</li>
-														<li><a href="{{ route('ecommerce.about-us.html') }}">About Us</a></li>
+														<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
 														<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
 														<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
 														<li><a href="{{ route('ecommerce.checkout.html') }}">Checkout</a></li>
@@ -441,7 +441,7 @@
 										<li>
 											<a href="javascript:void(0)">Pages</a>
 											<ul class="sub-menu">
-												<li><a href="{{ route('ecommerce.about-us.html') }}">About Us</a></li>
+												<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
 												<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
 												<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
 												<li><a href="{{ route('ecommerce.checkout.html') }}">Checkout</a></li>
@@ -625,7 +625,7 @@
 									<div class="mn-footer-links mn-footer-dropdown">
 										<ul class="align-items-center">
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.about-us.html') }}">About us</a>
+												<a href="{{ route('ecommerce.about-us') }}">About us</a>
 											</li>
 											<li class="mn-footer-link">
 												<a href="{{ route('ecommerce.track-order.html') }}">Delivery</a>

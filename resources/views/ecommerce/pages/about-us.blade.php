@@ -1,3 +1,6 @@
+@php
+  $ourTeams = $ourTeams ?? \App\Models\OurTeam::query()->active()->orderBy('order')->latest('id')->get();
+@endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
 @section('title', 'About Us - Ecommerce')
@@ -323,160 +326,46 @@
 					<h2>Our <span>Team</span></h2>
 				</div>
 				<div class="mn-team owl-carousel">
-					<div class="mn-team-box">
-						<div class="mn-team-img">
-							<img src="{{ asset('mantu/assets/img/user/1.jpg') }}" alt="user">
-							<div class="mn-team-socials">
-								<ul class="align-itemn-center">
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-twitter-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-facebook-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-linkedin-line"></i></a>
-									</li>
-								</ul>
+					@forelse ($ourTeams as $member)
+						<div class="mn-team-box">
+							<div class="mn-team-img">
+								<img src="{{ $member->image_url }}" alt="{{ $member->name }}">
+								<div class="mn-team-socials">
+									<ul class="align-itemn-center">
+										@if ($member->twitter_url)
+											<li class="mn-social-link">
+												<a href="{{ $member->twitter_url }}" target="_blank"><i class="ri-twitter-line"></i></a>
+											</li>
+										@endif
+										@if ($member->facebook_url)
+											<li class="mn-social-link">
+												<a href="{{ $member->facebook_url }}" target="_blank"><i class="ri-facebook-line"></i></a>
+											</li>
+										@endif
+										@if ($member->linkedin_url)
+											<li class="mn-social-link">
+												<a href="{{ $member->linkedin_url }}" target="_blank"><i class="ri-linkedin-line"></i></a>
+											</li>
+										@endif
+									</ul>
+								</div>
+							</div>
+							<div class="mn-team-info">
+								<h5>{{ $member->name }}</h5>
+								<p>{{ $member->position }}</p>
 							</div>
 						</div>
-						<div class="mn-team-info">
-							<h5>Olivia Smith</h5>
-							<p>Founder</p>
-						</div>
-					</div>
-					<div class="mn-team-box">
-						<div class="mn-team-img">
-							<img src="{{ asset('mantu/assets/img/user/2.jpg') }}" alt="user">
-							<div class="mn-team-socials">
-								<ul class="align-itemn-center">
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-twitter-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-facebook-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-linkedin-line"></i></a>
-									</li>
-								</ul>
+					@empty
+						<div class="mn-team-box">
+							<div class="mn-team-img">
+								<img src="{{ asset('mantu/assets/img/user/1.jpg') }}" alt="user">
+							</div>
+							<div class="mn-team-info">
+								<h5>Olivia Smith</h5>
+								<p>Founder</p>
 							</div>
 						</div>
-						<div class="mn-team-info">
-							<h5>William Dalin</h5>
-							<p>Co-Founder</p>
-						</div>
-					</div>
-					<div class="mn-team-box">
-						<div class="mn-team-img">
-							<img src="{{ asset('mantu/assets/img/user/3.jpg') }}" alt="user">
-							<div class="mn-team-socials">
-								<ul class="align-itemn-center">
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-twitter-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-facebook-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-linkedin-line"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="mn-team-info">
-							<h5>Emma Welson</h5>
-							<p>Manager</p>
-						</div>
-					</div>
-					<div class="mn-team-box">
-						<div class="mn-team-img">
-							<img src="{{ asset('mantu/assets/img/user/4.jpg') }}" alt="user">
-							<div class="mn-team-socials">
-								<ul class="align-itemn-center">
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-twitter-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-facebook-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-linkedin-line"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="mn-team-info">
-							<h5>Benjamin Martin</h5>
-							<p>Leader</p>
-						</div>
-					</div>
-					<div class="mn-team-box">
-						<div class="mn-team-img">
-							<img src="{{ asset('mantu/assets/img/user/5.jpg') }}" alt="user">
-							<div class="mn-team-socials">
-								<ul class="align-itemn-center">
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-twitter-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-facebook-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-linkedin-line"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="mn-team-info">
-							<h5>Amelia Martin</h5>
-							<p>Leader</p>
-						</div>
-					</div>
-					<div class="mn-team-box">
-						<div class="mn-team-img">
-							<img src="{{ asset('mantu/assets/img/user/7.jpg') }}" alt="user">
-							<div class="mn-team-socials">
-								<ul class="align-itemn-center">
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-twitter-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-facebook-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-linkedin-line"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="mn-team-info">
-							<h5>Margret Smith</h5>
-							<p>Marketing</p>
-						</div>
-					</div>
-					<div class="mn-team-box">
-						<div class="mn-team-img">
-							<img src="{{ asset('mantu/assets/img/user/8.jpg') }}" alt="user">
-							<div class="mn-team-socials">
-								<ul class="align-itemn-center">
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-twitter-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-facebook-line"></i></a>
-									</li>
-									<li class="mn-social-link">
-										<a href="#"><i class="ri-linkedin-line"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="mn-team-info">
-							<h5>Julee Beans</h5>
-							<p>Manager</p>
-						</div>
-					</div>
+					@endforelse
 				</div>
 			</section>
 			<!-- Facts Section End -->

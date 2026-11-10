@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OurTeamController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProductBannerController;
@@ -192,6 +193,11 @@ Route::prefix('app')->group(function () {
         Route::post('product-banners/import', [ProductBannerController::class, 'import'])->name('product-banners.import');
         Route::resource('product-banners', ProductBannerController::class)->parameters([
             'product-banners' => 'productBanner',
+        ]);
+
+        Route::post('our-teams/{ourTeam}/duplicate', [OurTeamController::class, 'duplicate'])->name('our-teams.duplicate');
+        Route::resource('our-teams', OurTeamController::class)->parameters([
+            'our-teams' => 'ourTeam',
         ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
