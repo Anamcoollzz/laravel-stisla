@@ -108,7 +108,10 @@
 					</div>
 					<div class="mn-login-box d-n-991">
 						<div class="mn-login-img">
-							<img src="{{ asset('mantu/assets/img/common/about-3.png') }}" alt="login">
+							<img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=800&auto=format&fit=crop"
+								alt="Special Promo"
+								style="width: 100%; border-radius: 15px; object-fit: cover;"
+								onerror="this.onerror=null; this.src='{{ asset('mantu/assets/img/common/about-3.png') }}';">
 						</div>
 					</div>
 				</div>
