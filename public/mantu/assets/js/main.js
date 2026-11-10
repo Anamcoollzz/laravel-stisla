@@ -148,39 +148,146 @@
         $(".mn-side-wishlist-overlay").fadeOut();
         $('.mn-side-wishlist').removeClass("mn-open-wishlist");
     });
-    $(".wishlist-remove-item").on("click", function (e) {
-        $(this).parents(".wishlist-sidebar-list").remove();
-        var wishlist_product_count = $(".wishlist-sidebar-list").length;
-        if (wishlist_product_count == 0) {
-            $('.mn-wishlist-pro-items').html('<p class="mn-wishlist-msg">Your Wishlist is empty!</p>');
+    /*== Wishlist sidebar remove item ==*/
+    $(document).on("click", ".wishlist-remove-item", function (e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var productId = $btn.data('product-id');
+        if (!productId) {
+            $btn.parents(".wishlist-sidebar-list").remove();
+            return;
         }
+
+        $.ajax({
+            url: '/ecommerce/wishlist/remove/' + productId,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            success: function (res) {
+                if (res.status === 'success') {
+                    // Update badges
+                    $('.mn-wishlist-toggle .label.lbl-1, .mn-tool-wish .label.lbl-1').text(res.count);
+                    // Update drawer
+                    $('.mn-wishlist-pro-items').html(res.html);
+
+                    // Update any matching card on page
+                    var $cardHeart = $('.mn-wishlist[data-product-id="' + productId + '"]');
+                    $cardHeart.removeClass('active');
+                    $cardHeart.attr('title', 'Add to Wishlist');
+                    $cardHeart.find('i').removeClass('ri-heart-fill').addClass('ri-heart-line');
+
+                    // If on wishlist page, remove the table row too
+                    $('.pro-gl-content[data-product-id="' + productId + '"]').remove();
+                    if ($(".wish-empt .pro-gl-content").length === 0) {
+                        $('.mn-vendor-card-table').html('<p class="mn-wishlist-msg p-4 text-center">Your Wishlist is empty!</p>');
+                    }
+
+                    // Show notification
+                    $('.mn-wish-notify').remove();
+                    $('footer').after('<div class="mn-wish-notify"><p class="wish-note remove">' + res.message + '</p></div>');
+                    setTimeout(function () {
+                        $('.mn-wish-notify').fadeOut(function () { $(this).remove(); });
+                    }, 2500);
+                }
+            }
+        });
     });
 
-    /*  Wishlist notify js  */
-    $('.mn-wishlist').on("click", function () {
-        $('.mn-wish-notify').remove();
-        $('.mn-compare-notify').remove();
-        $('.mn-cart-notify').remove();
-        if ($(this).hasClass("active")) {
-            $(this).removeClass("active");
-            $('footer').after('<div class="mn-wish-notify"><p class="wish-note remove">Remove product on <a href="wishlist.html"> Wishlist</a> Successfully!</p></div>');
-        } else {
-            $(this).addClass("active");
-            $('footer').after('<div class="mn-wish-notify"><p class="wish-note add">Add product in <a href="wishlist.html"> Wishlist</a> Successfully!</p></div>');
+    /*== Wishlist toggle (Product Cards) ==*/
+    $(document).on("click", ".mn-wishlist", function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var productId = $this.data('product-id');
+
+        // If no product-id, just toggle visually
+        if (!productId) {
+            $this.toggleClass('active');
+            return;
         }
 
-        setTimeout(function () {
-            $('.mn-wish-notify').fadeOut();
-        }, 2000);
+        var url = $this.data('url') || ('/ecommerce/wishlist/toggle/' + productId);
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            success: function (res) {
+                if (res.status === 'success') {
+                    if (res.is_wishlisted) {
+                        $this.addClass('active');
+                        $this.attr('title', 'Remove from Wishlist');
+                        $this.find('i').removeClass('ri-heart-line').addClass('ri-heart-fill');
+                    } else {
+                        $this.removeClass('active');
+                        $this.attr('title', 'Add to Wishlist');
+                        $this.find('i').removeClass('ri-heart-fill').addClass('ri-heart-line');
+                    }
+
+                    // Update badges
+                    $('.mn-wishlist-toggle .label.lbl-1, .mn-tool-wish .label.lbl-1').text(res.count);
+
+                    // Update drawer
+                    if (res.html) {
+                        $('.mn-wishlist-pro-items').html(res.html);
+                    }
+
+                    // Show notification
+                    $('.mn-wish-notify').remove();
+                    $('.mn-compare-notify').remove();
+                    $('.mn-cart-notify').remove();
+
+                    var noteClass = res.is_wishlisted ? 'add' : 'remove';
+                    var wishlistUrl = '/ecommerce/wishlist';
+                    $('footer').after('<div class="mn-wish-notify"><p class="wish-note ' + noteClass + '">' + res.message + ' <a href="' + wishlistUrl + '">View Wishlist</a></p></div>');
+                    setTimeout(function () {
+                        $('.mn-wish-notify').fadeOut(function () { $(this).remove(); });
+                    }, 2500);
+                }
+            }
+        });
     });
 
-    $('.mn-remove-wish').on("click", function () {
-        $(this).parents(".pro-gl-content").remove();
+    /*== Remove from Wishlist Table page ==*/
+    $(document).on("click", ".mn-remove-wish", function (e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var productId = $btn.data('product-id');
+        var $row = $btn.parents(".pro-gl-content");
 
-        var wishlist_page_count = $(".pro-gl-content").length;
-        if (wishlist_page_count == 0) {
-            $('.mn-vendor-card-table').html('<p class="mn-wishlist-msg">Your Wishlist is empty!</p>');
+        if (!productId) {
+            $row.remove();
+            return;
         }
+
+        $.ajax({
+            url: '/ecommerce/wishlist/remove/' + productId,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            success: function (res) {
+                if (res.status === 'success') {
+                    $row.remove();
+                    $('.mn-wishlist-toggle .label.lbl-1, .mn-tool-wish .label.lbl-1').text(res.count);
+                    $('.mn-wishlist-pro-items').html(res.html);
+
+                    var $cardHeart = $('.mn-wishlist[data-product-id="' + productId + '"]');
+                    $cardHeart.removeClass('active');
+                    $cardHeart.attr('title', 'Add to Wishlist');
+                    $cardHeart.find('i').removeClass('ri-heart-fill').addClass('ri-heart-line');
+
+                    if ($(".wish-empt .pro-gl-content").length === 0) {
+                        $('.mn-vendor-card-table').html('<p class="mn-wishlist-msg p-4 text-center">Your Wishlist is empty!</p>');
+                    }
+                }
+            }
+        });
     });
 
     /*== Add to cart button notify js ==*/

@@ -213,9 +213,16 @@
 																		</ul>
 																	</div>
 																@endif
-																<a href="javascript:void(0);" class="mn-wishlist"
-																	data-tooltip title="Wishlist">
-																	<i class="ri-heart-line"></i>
+																@php
+																	$isWishlisted = in_array((int) $product->id, (array) session('ecommerce_wishlist', []), true);
+																@endphp
+																<a href="javascript:void(0);"
+																	class="mn-wishlist {{ $isWishlisted ? 'active' : '' }}"
+																	data-product-id="{{ $product->id }}"
+																	data-url="{{ route('ecommerce.wishlist.toggle', $product->id) }}"
+																	data-tooltip
+																	title="{{ $isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+																	<i class="{{ $isWishlisted ? 'ri-heart-fill' : 'ri-heart-line' }}"></i>
 																</a>
 															</div>
 														</div>

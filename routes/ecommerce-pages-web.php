@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
+use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/ecommerce', '/ecommerce-pages/index.html');
@@ -12,6 +13,18 @@ Route::get('/ecommerce/shop', [EcommerceProductController::class, 'index'])
     ->name('ecommerce.shop');
 Route::get('/ecommerce/category/{category:slug}', [EcommerceProductController::class, 'category'])
     ->name('ecommerce.category');
+
+Route::get('/ecommerce/wishlist', [EcommerceWishlistController::class, 'index'])
+    ->name('ecommerce.wishlist');
+Route::get('/ecommerce-pages/wishlist.html', [EcommerceWishlistController::class, 'index'])
+    ->name('ecommerce.wishlist.html');
+Route::get('/ecommerce-pages/wishlist', [EcommerceWishlistController::class, 'index']);
+Route::post('/ecommerce/wishlist/toggle/{product}', [EcommerceWishlistController::class, 'toggle'])
+    ->name('ecommerce.wishlist.toggle');
+Route::post('/ecommerce/wishlist/remove/{product}', [EcommerceWishlistController::class, 'remove'])
+    ->name('ecommerce.wishlist.remove');
+Route::delete('/ecommerce/wishlist/{product}', [EcommerceWishlistController::class, 'remove'])
+    ->name('ecommerce.wishlist.destroy');
 
 // Route::get('/ecommerce-pages/shop-right-sidebar.html', [EcommerceProductController::class, 'index'])
 //     ->name('ecommerce.shop-right-sidebar.html');
@@ -54,7 +67,6 @@ $ecommercePages = [
     'shop-right-sidebar',
     'terms',
     'track-order',
-    'wishlist',
 ];
 
 foreach ($ecommercePages as $page) {

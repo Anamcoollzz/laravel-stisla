@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 
 	@include('partials.seo')
 
@@ -522,7 +523,7 @@
 							</div>
 							<div class="mn-tool-wish">
 								<a href="javascript:void(0)" class="mn-main-wishlist mn-wishlist-toggle">
-									<span class="label lbl-1">3</span>
+									<span class="label lbl-1 wishlist-count">{{ count((array) session('ecommerce_wishlist', [])) }}</span>
 									<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0"
 										y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512"
 										xml:space="preserve">
@@ -775,7 +776,7 @@
 				</li>
 				<li>
 					<a href="javascript:void(0)" class="mn-main-wishlist mn-wishlist-toggle">
-						<span class="label lbl-1">3</span>
+						<span class="label lbl-1 wishlist-count">{{ count((array) session('ecommerce_wishlist', [])) }}</span>
 						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0"
 							viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve">
 							<g>
@@ -1072,41 +1073,18 @@
 						</a>
 					</div>
 					<ul class="mn-wishlist-pro-items">
-						<li class="wishlist-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/15.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="wishlist-pro-title">Leather bag</a>
-								<span class="wishlist-price"><span>$499.00</span><span class="stock">- 9 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="wishlist-remove-item">×</a>
-							</div>
-						</li>
-						<li class="wishlist-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/13.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="wishlist-pro-title">Leather Belt</a>
-								<span class="wishlist-price"><span>$59.00</span><span class="stock">- 4 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="wishlist-remove-item">×</a>
-							</div>
-						</li>
-						<li class="wishlist-sidebar-list">
-							<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-pro-img"><img src="{{ asset('mantu/assets/img/product/5.jpg') }}"
-									alt="product"></a>
-							<div class="mn-pro-content">
-								<a href="{{ route('ecommerce.product-detail.html') }}" class="wishlist-pro-title">T-Shirt for men</a>
-								<span class="wishlist-price"><span>$65.00</span><span class="stock">- 54 in
-										Stock</span></span>
-								<a href="javascript:void(0)" class="wishlist-remove-item">×</a>
-							</div>
-						</li>
+						@php
+							$layoutWishlistIds = array_map('intval', (array) session('ecommerce_wishlist', []));
+							$layoutWishlistProducts = !empty($layoutWishlistIds)
+								? \App\Models\Product::query()->active()->whereIn('id', $layoutWishlistIds)->get()
+								: collect();
+						@endphp
+						@include('ecommerce.partials.wishlist-sidebar-items', ['wishlistProducts' => $layoutWishlistProducts])
 					</ul>
 				</div>
 				<div class="mn-wishlist-bottom">
 					<div class="wishlist_btn">
-						<a href="{{ route('ecommerce.wishlist.html') }}" class="mn-btn-1"><span>View Wishlist<i
+						<a href="{{ route('ecommerce.wishlist') }}" class="mn-btn-1"><span>View Wishlist<i
 									class="ri-arrow-right-s-line"></i></span></a>
 					</div>
 				</div>
