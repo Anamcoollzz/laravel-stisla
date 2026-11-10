@@ -731,10 +731,10 @@
             $optImgMain = $optImgWrapper.find('.image img.main-img'),
             $optImgMainHover = $optImgWrapper.find('.image img.hover-img');
         // alert();
-        if ($opImg.length) {
+        if ($opImg && $opImg.length) {
             $optImgMain.attr('src', $opImg);
         }
-        if ($opImg.length) {
+        if ($opImgHover && $opImgHover.length) {
             var checkDisable = $optImgMainHover.closest('img.hover-img');
             $optImgMainHover.attr('src', $opImgHover);
             if (checkDisable.hasClass('disable')) {

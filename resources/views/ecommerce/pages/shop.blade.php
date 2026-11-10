@@ -205,6 +205,8 @@
 																	<div class="mn-pro-color">
 																		<ul class="mn-opt-swatch mn-change-img">
 																			<li class="active"><a href="javascript:void(0)" class="mn-opt-clr-img"
+																					data-src="{{ $product->thumbnail_url }}"
+																					data-src-hover="{{ $product->images->first()?->image_url ?? $product->thumbnail_url }}"
 																					data-tooltip="{{ $product->color->name }}"><span
 																						style="background-color:{{ $product->color->color_code ?? '#333' }};"></span></a>
 																			</li>
