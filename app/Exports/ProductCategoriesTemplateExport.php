@@ -75,4 +75,3 @@ class ProductCategoriesTemplateExport implements FromCollection, ShouldAutoSize,
         ];
     }
 }
-

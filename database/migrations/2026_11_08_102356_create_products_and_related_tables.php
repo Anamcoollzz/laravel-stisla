@@ -11,6 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Clean up partial leftovers if previous migration run failed
+        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_brands');
+        Schema::dropIfExists('product_vendors');
+        Schema::dropIfExists('product_colors');
+        Schema::dropIfExists('product_sizes');
+
         // 1. Product Sizes
         Schema::create('product_sizes', function (Blueprint $table) {
             $table->id();
@@ -63,8 +70,8 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->text('short_description')->nullable();
             $table->longText('description_detail')->nullable();
-            $table->json('spesifications')->nullable();
-            $table->json('tags')->nullable();
+            $table->longText('spesifications')->nullable();
+            $table->longText('tags')->nullable();
             $table->string('thumbnail')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

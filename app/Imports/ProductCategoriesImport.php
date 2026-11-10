@@ -96,4 +96,3 @@ class ProductCategoriesImport implements SkipsEmptyRows, ToModel, WithHeadingRow
         ];
     }
 }
-

@@ -6,6 +6,18 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/ecommerce', '/ecommerce-pages/index.html');
 Route::redirect('/ecommerce-pages', '/ecommerce-pages/index.html');
 
+Route::get('/ecommerce/products', [EcommerceProductController::class, 'index'])
+    ->name('ecommerce.products.index');
+Route::get('/ecommerce/shop', [EcommerceProductController::class, 'index'])
+    ->name('ecommerce.shop');
+Route::get('/ecommerce/category/{category:slug}', [EcommerceProductController::class, 'category'])
+    ->name('ecommerce.category');
+
+// Route::get('/ecommerce-pages/shop-right-sidebar.html', [EcommerceProductController::class, 'index'])
+//     ->name('ecommerce.shop-right-sidebar.html');
+// Route::get('/ecommerce-pages/shop-right-sidebar', [EcommerceProductController::class, 'index'])
+//     ->name('ecommerce.shop-right-sidebar');
+
 Route::get('/ecommerce/products/{slug}', [EcommerceProductController::class, 'show'])
     ->name('ecommerce.products.detail');
 

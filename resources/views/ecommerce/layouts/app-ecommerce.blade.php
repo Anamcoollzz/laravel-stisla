@@ -39,7 +39,11 @@
 				<ul class="mn-sb-list">
 					@if (isset($ecommerceCategories) && $ecommerceCategories->isNotEmpty())
 						@foreach ($ecommerceCategories as $level1)
-							<li class="mn-sb-title condense"><span>{{ $level1->name }}</span></li>
+							<li class="mn-sb-title condense">
+								<a href="{{ route('ecommerce.products.index', ['category' => $level1->slug]) }}" class="text-reset">
+									<span>{{ $level1->name }}</span>
+								</a>
+							</li>
 							@foreach ($level1->children as $level2)
 								<li class="mn-sb-item sb-drop-item">
 									@if ($level2->children->isNotEmpty())
@@ -52,12 +56,12 @@
 										<ul class="mn-sb-drop">
 											@foreach ($level2->children as $level3)
 												<li class="list">
-													<a href="{{ $level3->resolvedUrl() }}" class="mn-page-link drop">{{ $level3->name }}</a>
+													<a href="{{ route('ecommerce.products.index', ['category' => $level3->slug]) }}" class="mn-page-link drop">{{ $level3->name }}</a>
 												</li>
 											@endforeach
 										</ul>
 									@else
-										<a href="{{ $level2->resolvedUrl() }}" class="mn-drop-toggle">
+										<a href="{{ route('ecommerce.products.index', ['category' => $level2->slug]) }}" class="mn-drop-toggle">
 											@if ($level2->icon_url)
 												<img src="{{ $level2->icon_url }}" alt="{{ $level2->name }}">
 											@endif
@@ -68,7 +72,11 @@
 							@endforeach
 						@endforeach
 					@else
-						<li class="mn-sb-title condense"><span>Fashion</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'fashion']) }}" class="text-reset">
+								<span>Fashion</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
 							<a href="javascript:void(0)" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/clothes-2.svg') }}" alt="clothes">
@@ -76,33 +84,33 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">T-shirts</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 't-shirts']) }}" class="mn-page-link drop">T-shirts</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Shirts</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'shirts']) }}" class="mn-page-link drop">Shirts</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">gowns</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'gowns']) }}" class="mn-page-link drop">gowns</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Dresses</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'dresses']) }}" class="mn-page-link drop">Dresses</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">sharees</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'sharees']) }}" class="mn-page-link drop">sharees</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">jeans</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'jeans']) }}" class="mn-page-link drop">jeans</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/shoes.svg') }}" alt="clothes">
 								<span class="condense">Shoes</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'glasses']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/glasses.svg') }}" alt="glasses">
 								<span class="condense">glasses</span>
 							</a>
@@ -114,18 +122,18 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Purse</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'purse']) }}" class="mn-page-link drop">Purse</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Bags</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}" class="mn-page-link drop">Bags</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">wallet</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'wallet']) }}" class="mn-page-link drop">wallet</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'hat']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/hat.svg') }}" alt="hat">
 								<span class="condense">Hat</span>
 							</a>
@@ -137,16 +145,16 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Lipstick</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'lipstick']) }}" class="mn-page-link drop">Lipstick</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">eye liner</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'eye-liner']) }}" class="mn-page-link drop">eye liner</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">nail paint</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'nail-paint']) }}" class="mn-page-link drop">nail paint</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Makeup kit</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'makeup-kit']) }}" class="mn-page-link drop">Makeup kit</a>
 								</li>
 							</ul>
 						</li>
@@ -157,23 +165,27 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Shampoo</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'shampoo']) }}" class="mn-page-link drop">Shampoo</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">face wash</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'face-wash']) }}" class="mn-page-link drop">face wash</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">body wash</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'body-wash']) }}" class="mn-page-link drop">body wash</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">sunscreen</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'sunscreen']) }}" class="mn-page-link drop">sunscreen</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">serum</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'serum']) }}" class="mn-page-link drop">serum</a>
 								</li>
 							</ul>
 						</li>
-						<li class="mn-sb-title condense"><span>Bakery</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'bakery']) }}" class="text-reset">
+								<span>Bakery</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
 							<a href="javascript:void(0)" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/cake.svg') }}" alt="Cake">
@@ -181,23 +193,27 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">cup cake</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'cup-cake']) }}" class="mn-page-link drop">cup cake</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">pastry</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'pastry']) }}" class="mn-page-link drop">pastry</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Cake</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'cake']) }}" class="mn-page-link drop">Cake</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'bread']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/bread.svg') }}" alt="Bread">
 								<span class="condense">Bread</span>
 							</a>
 						</li>
-						<li class="mn-sb-title condense"><span>Vegetables</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'vegetables']) }}" class="text-reset">
+								<span>Vegetables</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
 							<a href="javascript:void(0)" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/tuber.svg') }}" alt="tuber">
@@ -205,49 +221,53 @@
 							</a>
 							<ul class="mn-sb-drop">
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Sweet Potato</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'sweet-potato']) }}" class="mn-page-link drop">Sweet Potato</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">Ginger</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'ginger']) }}" class="mn-page-link drop">Ginger</a>
 								</li>
 								<li class="list">
-									<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-page-link drop">cassava</a>
+									<a href="{{ route('ecommerce.products.index', ['category' => 'cassava']) }}" class="mn-page-link drop">cassava</a>
 								</li>
 							</ul>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'tomato']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/tomato.svg') }}" alt="tomato">
 								<span class="condense">Tomato</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'lemon']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/lemon.svg') }}" alt="lemon">
 								<span class="condense">Lemon</span>
 							</a>
 						</li>
-						<li class="mn-sb-title condense"><span>Fruits</span></li>
+						<li class="mn-sb-title condense">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'fruits']) }}" class="text-reset">
+								<span>Fruits</span>
+							</a>
+						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'avocado']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/avocado.svg') }}" alt="avocado">
 								<span class="condense">avocado</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'strawberry']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/strawberry.svg') }}" alt="strawberry">
 								<span class="condense">strawberry</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'cherry']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/cherry.svg') }}" alt="cherry">
 								<span class="condense">cherry</span>
 							</a>
 						</li>
 						<li class="mn-sb-item sb-drop-item">
-							<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-drop-toggle">
+							<a href="{{ route('ecommerce.products.index', ['category' => 'lychee']) }}" class="mn-drop-toggle">
 								<img src="{{ asset('mantu/assets/img/icons/lychee.svg') }}" alt="Lychee">
 								<span class="condense">Lychee</span>
 							</a>
@@ -563,22 +583,22 @@
 									<div class="mn-footer-links mn-footer-dropdown">
 										<ul class="align-items-center">
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Fashion</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'fashion']) }}">Fashion</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Cosmetics</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'cosmetics']) }}">Cosmetics</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bags & Purse</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}">Bags & Purse</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shoes</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}">Shoes</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Belts</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'hat']) }}">Hat & Accessories</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Perfumes</a>
+												<a href="{{ route('ecommerce.products.index', ['category' => 'makeup']) }}">Makeup</a>
 											</li>
 										</ul>
 									</div>
@@ -885,7 +905,7 @@
 									alt="product"></a>
 							<div class="mn-pro-content">
 								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">Sport Shoes</a>
-								<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="search-cat">Shoes</a>
+								<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}" class="search-cat">Shoes</a>
 								<ul class="mn-ratings">
 									<li><i class="ri-star-fill"></i></li>
 									<li><i class="ri-star-fill"></i></li>
@@ -903,7 +923,7 @@
 									alt="product"></a>
 							<div class="mn-pro-content">
 								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">Leather bag</a>
-								<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="search-cat">Bags</a>
+								<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}" class="search-cat">Bags</a>
 								<ul class="mn-ratings">
 									<li><i class="ri-star-fill"></i></li>
 									<li><i class="ri-star-fill"></i></li>
@@ -921,7 +941,7 @@
 									alt="product"></a>
 							<div class="mn-pro-content">
 								<a href="{{ route('ecommerce.product-detail.html') }}" class="search-pro-title">T-shirt for girls</a>
-								<a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="search-cat">Clothes</a>
+								<a href="{{ route('ecommerce.products.index', ['category' => 'clothes']) }}" class="search-cat">Clothes</a>
 								<ul class="mn-ratings">
 									<li><i class="ri-star-fill"></i></li>
 									<li><i class="ri-star-fill"></i></li>
@@ -941,10 +961,10 @@
 						<span class="search_title">Recently searches</span>
 					</div>
 					<ul>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirts</a></li>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">watches</a></li>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bags</a></li>
-						<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Belts</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 't-shirts']) }}">T-shirts</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 'watches']) }}">watches</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}">Bags</a></li>
+						<li><a href="{{ route('ecommerce.products.index', ['category' => 'belts']) }}">Belts</a></li>
 					</ul>
 				</div>
 			</div>

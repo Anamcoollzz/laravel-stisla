@@ -92,4 +92,3 @@ class ProductMasterDataSeeder extends Seeder
         }
     }
 }
-
