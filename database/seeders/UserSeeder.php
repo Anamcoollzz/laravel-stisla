@@ -31,5 +31,26 @@ class UserSeeder extends Seeder
         if (! $admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }
+
+        $buyer = User::query()->updateOrCreate(
+            ['email' => 'buyer@example.com'],
+            [
+                'name' => 'Buyer Tester',
+                'first_name' => 'Buyer',
+                'last_name' => 'Tester',
+                'role' => 'user',
+                'phone' => '08123456789',
+                'address' => 'Jl. Jendral Sudirman No. 123',
+                'city' => 'Jakarta Pusat',
+                'state' => 'DKI Jakarta',
+                'postal_code' => '10220',
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        if (! $buyer->hasRole('user')) {
+            $buyer->assignRole('user');
+        }
     }
 }
