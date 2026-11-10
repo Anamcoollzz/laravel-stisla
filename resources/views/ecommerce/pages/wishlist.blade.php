@@ -59,7 +59,7 @@
 							<div class="mn-vendor-card-header">
 								<h5>Wishlist</h5>
 								<div class="mn-header-btn">
-									<a class="mn-btn-2" href="#"><span>Shop Now</span></a>
+									<a class="mn-btn-2" href="{{ route('ecommerce.products.index') }}"><span>Shop Now</span></a>
 								</div>
 							</div>
 							<div class="mn-vendor-card-body">
@@ -76,103 +76,51 @@
 											</tr>
 										</thead>
 										<tbody class="wish-empt">
-											<tr class="pro-gl-content">
-												<td><span>548</span></td>
-												<td data-label="Product" class="mn-cart-pro-name">
-													<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-item">
-														<img class="prod-img"
-															src="{{ asset('mantu/assets/img/product/1.jpg') }}" alt="product image">T-shirt for womens
-													</a>
-												</td>
-												<td><span>13 Aug 2026</span></td>
-												<td><span>$25</span></td>
-												<td><span class="out">Out Of Stock</span></td>
-												<td>
-													<span class="tbl-btn">
-														<a class="mn-btn-2 add-to-cart mn-add-cart" href="javascript:void(0)"
-															title="Add To Cart">
-															<span><i class="ri-shopping-cart-line"></i></span>
+											@forelse ($products as $product)
+												<tr class="pro-gl-content" data-product-id="{{ $product->id }}">
+													<td><span>#{{ $product->id }}</span></td>
+													<td data-label="Product" class="mn-cart-pro-name">
+														<a href="{{ route('ecommerce.products.detail', $product->slug) }}" class="mn-item">
+															<img class="prod-img"
+																src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}">{{ $product->title }}
 														</a>
-														<a class="mn-btn-1 mn-remove-wish btn"
-															href="javascript:void(0)" title="Remove From List">
-															<span><i class="ri-close-line"></i></span>
-														</a>
-													</span>
-												</td>
-											</tr>
-											<tr class="pro-gl-content">
-												<td><span>684</span></td>
-												<td data-label="Product" class="mn-cart-pro-name">
-													<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-item">
-														<img class="prod-img"
-															src="{{ asset('mantu/assets/img/product/23.jpg') }}" alt="product image">Women's winter coat
-													</a>
-												</td>
-												<td><span>20 Jul 2027</span></td>
-												<td><span>$360</span></td>
-												<td><span class="avl">Available</span></td>
-												<td>
-													<span class="tbl-btn">
-														<a class="mn-btn-2 add-to-cart mn-add-cart" href="javascript:void(0)"
-															title="Add To Cart">
-															<span><i class="ri-shopping-cart-line"></i></span>
-														</a>
-														<a class="mn-btn-1 mn-remove-wish btn"
-															href="javascript:void(0)" title="Remove From List">
-															<span><i class="ri-close-line"></i></span>
-														</a>
-													</span>
-												</td>
-											</tr>
-											<tr class="pro-gl-content">
-												<td><span>548</span></td>
-												<td data-label="Product" class="mn-cart-pro-name">
-													<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-item">
-														<img class="prod-img"
-															src="{{ asset('mantu/assets/img/product/11.jpg') }}" alt="product image">Mantu smart
-														watch
-													</a>
-												</td>
-												<td><span>28 Mar 2024</span></td>
-												<td><span>$74</span></td>
-												<td><span class="dis">Disabled</span></td>
-												<td>
-													<span class="tbl-btn">
-														<a class="mn-btn-2 add-to-cart mn-add-cart" href="javascript:void(0)"
-															title="Add To Cart">
-															<span><i class="ri-shopping-cart-line"></i></span>
-														</a>
-														<a class="mn-btn-1 mn-remove-wish btn"
-															href="javascript:void(0)" title="Remove From List">
-															<span><i class="ri-close-line"></i></span>
-														</a>
-													</span>
-												</td>
-											</tr>
-											<tr class="pro-gl-content">
-												<td><span>684</span></td>
-												<td data-label="Product" class="mn-cart-pro-name">
-													<a href="{{ route('ecommerce.product-detail.html') }}" class="mn-item">
-														<img class="prod-img"
-															src="{{ asset('mantu/assets/img/product/15.jpg') }}" alt="product image">Leather textured bag
-													</a>
-												</td>
-												<td><span>16 Apr 2026</span></td>
-												<td><span>$245</span></td>
-												<td><span class="avl">Available</span></td>
-												<td>
-													<span class="tbl-btn">
-														<a class="mn-btn-2 add-to-cart mn-add-cart" href="javascript:void(0)"
-															title="Add To Cart">
-															<span><i class="ri-shopping-cart-line"></i></span>
-														</a>
-														<a class="mn-btn-1 mn-remove-wish btn"
-															href="javascript:void(0)" title="Remove From List">
-															<span><i class="ri-close-line"></i></span>
-														</a>
-													</span>
-												</td>
-											</tr>
+													</td>
+													<td><span>{{ $product->created_at?->format('d M Y') ?? 'Recently' }}</span></td>
+													<td><span>Rp {{ number_format($product->final_price, 0, ',', '.') }}</span></td>
+													<td>
+														@if ($product->stock > 0)
+															<span class="avl">Available</span>
+														@else
+															<span class="out">Out Of Stock</span>
+														@endif
+													</td>
+													<td>
+														<span class="tbl-btn">
+															<a class="mn-btn-2 add-to-cart mn-add-cart" href="javascript:void(0)"
+																title="Add To Cart">
+																<span><i class="ri-shopping-cart-line"></i></span>
+															</a>
+															<a class="mn-btn-1 mn-remove-wish btn" data-product-id="{{ $product->id }}"
+																href="javascript:void(0)" title="Remove From List">
+																<span><i class="ri-close-line"></i></span>
+															</a>
+														</span>
+													</td>
+												</tr>
+											@empty
+												<tr>
+													<td colspan="6" class="text-center p-5">
+														<div class="m-b-15">
+															<i class="ri-heart-line" style="font-size: 48px; color: #adb5bd;"></i>
+														</div>
+														<h4>Your Wishlist is empty</h4>
+														<p class="text-muted">Explore our shop and save your favorite items here.</p>
+														<div class="m-t-15">
+															<a href="{{ route('ecommerce.products.index') }}" class="btn btn-primary btn-sm">Shop Now</a>
+														</div>
+													</td>
+												</tr>
+											@endforelse
 										</tbody>
 									</table>
 								</div>
