@@ -4,41 +4,57 @@ namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductWishlist;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class WishlistController extends Controller
 {
     /**
-     * Session key for wishlist product IDs.
-     */
-    public const SESSION_KEY = 'ecommerce_wishlist';
-
-    /**
      * Display wishlist page or return JSON for AJAX.
      */
-    public function index(Request $request): View|JsonResponse
+    public function index(Request $request): View|JsonResponse|RedirectResponse
     {
-        $wishlistIds = $this->getWishlistIds();
-        $products = Product::query()
-            ->active()
-            ->with(['category', 'brand', 'size', 'color', 'images'])
-            ->whereIn('id', $wishlistIds)
-            ->get();
+        if (! Auth::check()) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'unauthenticated',
+                    'message' => 'Silakan login terlebih dahulu untuk mengakses wishlist!',
+                    'redirect' => route('ecommerce.login'),
+                ], 401);
+            }
+
+            session()->flash('alert', 'Silakan login terlebih dahulu untuk mengakses wishlist!');
+            session()->flash('warning', 'Silakan login terlebih dahulu untuk mengakses wishlist!');
+
+            return redirect()->guest(route('ecommerce.login'));
+        }
+
+        $userId = (int) Auth::id();
+        $wishlistProducts = ProductWishlist::query()
+            ->where('user_id', $userId)
+            ->with(['product' => fn ($q) => $q->active()->with(['category', 'brand', 'size', 'color', 'images'])])
+            ->latest('id')
+            ->get()
+            ->pluck('product')
+            ->filter()
+            ->values();
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'count' => $products->count(),
+                'count' => $wishlistProducts->count(),
                 'html' => view('ecommerce.partials.wishlist-sidebar-items', [
-                    'wishlistProducts' => $products,
+                    'wishlistProducts' => $wishlistProducts,
                 ])->render(),
             ]);
         }
 
         return view('ecommerce.pages.wishlist', [
-            'products' => $products,
+            'products' => $wishlistProducts,
         ]);
     }
 
@@ -47,33 +63,50 @@ class WishlistController extends Controller
      */
     public function toggle(Request $request, Product $product): JsonResponse
     {
-        $wishlistIds = $this->getWishlistIds();
+        if (! Auth::check()) {
+            return response()->json([
+                'status' => 'unauthenticated',
+                'message' => 'Silakan login terlebih dahulu untuk menambahkan produk ke wishlist!',
+                'redirect' => route('ecommerce.login'),
+            ], 401);
+        }
+
+        $userId = (int) Auth::id();
         $productId = (int) $product->id;
 
-        if (in_array($productId, $wishlistIds, true)) {
-            $wishlistIds = array_values(array_diff($wishlistIds, [$productId]));
+        $existing = ProductWishlist::query()
+            ->where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
             $isWishlisted = false;
             $message = 'Removed from Wishlist successfully!';
         } else {
-            $wishlistIds[] = $productId;
+            ProductWishlist::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+            ]);
             $isWishlisted = true;
             $message = 'Added to Wishlist successfully!';
         }
 
-        session()->put(self::SESSION_KEY, $wishlistIds);
-
-        $wishlistProducts = Product::query()
-            ->active()
-            ->with(['category', 'brand', 'size', 'color', 'images'])
-            ->whereIn('id', $wishlistIds)
-            ->get();
+        $wishlistProducts = ProductWishlist::query()
+            ->where('user_id', $userId)
+            ->with(['product' => fn ($q) => $q->active()->with(['category', 'brand', 'size', 'color', 'images'])])
+            ->latest('id')
+            ->get()
+            ->pluck('product')
+            ->filter()
+            ->values();
 
         return response()->json([
             'status' => 'success',
             'action' => $isWishlisted ? 'added' : 'removed',
             'is_wishlisted' => $isWishlisted,
             'message' => $message,
-            'count' => count($wishlistIds),
+            'count' => $wishlistProducts->count(),
             'product_id' => $productId,
             'html' => view('ecommerce.partials.wishlist-sidebar-items', [
                 'wishlistProducts' => $wishlistProducts,
@@ -86,40 +119,41 @@ class WishlistController extends Controller
      */
     public function remove(Request $request, Product $product): JsonResponse
     {
-        $wishlistIds = $this->getWishlistIds();
+        if (! Auth::check()) {
+            return response()->json([
+                'status' => 'unauthenticated',
+                'message' => 'Silakan login terlebih dahulu!',
+                'redirect' => route('ecommerce.login'),
+            ], 401);
+        }
+
+        $userId = (int) Auth::id();
         $productId = (int) $product->id;
 
-        $wishlistIds = array_values(array_diff($wishlistIds, [$productId]));
-        session()->put(self::SESSION_KEY, $wishlistIds);
+        ProductWishlist::query()
+            ->where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->delete();
 
-        $wishlistProducts = Product::query()
-            ->active()
-            ->with(['category', 'brand', 'size', 'color', 'images'])
-            ->whereIn('id', $wishlistIds)
-            ->get();
+        $wishlistProducts = ProductWishlist::query()
+            ->where('user_id', $userId)
+            ->with(['product' => fn ($q) => $q->active()->with(['category', 'brand', 'size', 'color', 'images'])])
+            ->latest('id')
+            ->get()
+            ->pluck('product')
+            ->filter()
+            ->values();
 
         return response()->json([
             'status' => 'success',
             'action' => 'removed',
             'is_wishlisted' => false,
             'message' => 'Removed from Wishlist successfully!',
-            'count' => count($wishlistIds),
+            'count' => $wishlistProducts->count(),
             'product_id' => $productId,
             'html' => view('ecommerce.partials.wishlist-sidebar-items', [
                 'wishlistProducts' => $wishlistProducts,
             ])->render(),
         ]);
-    }
-
-    /**
-     * Get array of integer product IDs currently in wishlist.
-     *
-     * @return array<int>
-     */
-    protected function getWishlistIds(): array
-    {
-        $ids = session()->get(self::SESSION_KEY, []);
-
-        return array_map('intval', (array) $ids);
     }
 }

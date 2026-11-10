@@ -182,7 +182,7 @@
                           <li><a href="{{ route('ecommerce.products.detail', $product->slug) }}" data-tooltip title="Quick View">
                               <i class="ri-eye-line"></i></a></li>
                           <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                          <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
+                          <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart" data-product-id="{{ $product->id }}"><i class="ri-shopping-cart-line"></i></a>
                           </li>
                         </ul>
                       </div>
@@ -216,8 +216,8 @@
                           </ul>
                         @endif
                       </div>
-                      <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                        <i class="ri-heart-line"></i>
+                      <a href="javascript:void(0);" class="mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $product->id }}" data-tooltip title="Wishlist">
+                        <i class="ri-heart-{{ in_array($product->id, $userWishlistIds ?? []) ? 'fill' : 'line' }}"></i>
                       </a>
                     </div>
                   </div>

@@ -86,6 +86,22 @@ class User extends Authenticatable
     }
 
     /**
+     * @return HasMany<ProductCart, $this>
+     */
+    public function carts(): HasMany
+    {
+        return $this->hasMany(ProductCart::class);
+    }
+
+    /**
+     * @return HasMany<ProductWishlist, $this>
+     */
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(ProductWishlist::class);
+    }
+
+    /**
      * Check if user was recently active.
      */
     public function isOnline(): bool

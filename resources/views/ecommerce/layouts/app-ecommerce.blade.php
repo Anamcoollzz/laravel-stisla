@@ -6,6 +6,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
+	<meta name="user-authenticated" content="{{ auth()->check() ? '1' : '0' }}">
+	<meta name="login-url" content="{{ route('ecommerce.login') }}">
 
 	@include('partials.seo')
 
@@ -535,7 +537,7 @@
 							</div>
 							<div class="mn-tool-wish">
 								<a href="javascript:void(0)" class="mn-main-wishlist mn-wishlist-toggle">
-									<span class="label lbl-1 wishlist-count">{{ count((array) session('ecommerce_wishlist', [])) }}</span>
+									<span class="label lbl-1 wishlist-count">{{ $wishlistCount ?? 0 }}</span>
 									<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0"
 										y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512"
 										xml:space="preserve">
@@ -549,7 +551,7 @@
 							</div>
 							<div class="mn-tool-cart">
 								<a href="javascript:void(0)" class="mn-main-cart mn-cart-toggle">
-									<span class="label lbl-2 cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
+									<span class="label lbl-2 cart-count">{{ $cartCount ?? 0 }}</span>
 									<svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
@@ -788,7 +790,7 @@
 				</li>
 				<li>
 					<a href="javascript:void(0)" class="mn-main-wishlist mn-wishlist-toggle">
-						<span class="label lbl-1 wishlist-count">{{ count((array) session('ecommerce_wishlist', [])) }}</span>
+						<span class="label lbl-1 wishlist-count">{{ $wishlistCount ?? 0 }}</span>
 						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" x="0" y="0"
 							viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve">
 							<g>
@@ -797,18 +799,18 @@
 									fill="#000000" opacity="1" data-original="#000000"></path>
 							</g>
 						</svg>
-						<span>3</span>
+						<span class="wishlist-count">{{ $wishlistCount ?? 0 }}</span>
 					</a>
 				</li>
 				<li>
 					<a href="javascript:void(0)" class="mn-main-cart mn-cart-toggle">
-						<span class="label lbl-2 cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
+						<span class="label lbl-2 cart-count">{{ $cartCount ?? 0 }}</span>
 						<svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M351.552 831.424c-35.328 0-63.968 28.64-63.968 63.968 0 35.328 28.64 63.968 63.968 63.968 35.328 0 63.968-28.64 63.968-63.968C415.52 860.064 386.88 831.424 351.552 831.424L351.552 831.424 351.552 831.424zM799.296 831.424c-35.328 0-63.968 28.64-63.968 63.968 0 35.328 28.64 63.968 63.968 63.968 35.328 0 63.968-28.64 63.968-63.968C863.264 860.064 834.624 831.424 799.296 831.424L799.296 831.424 799.296 831.424zM862.752 799.456 343.264 799.456c-46.08 0-86.592-36.448-92.224-83.008L196.8 334.592 165.92 156.128c-1.92-15.584-16.128-28.288-29.984-28.288L95.2 127.84c-17.664 0-32-14.336-32-31.968 0-17.664 14.336-32 32-32l40.736 0c46.656 0 87.616 36.448 93.28 83.008l30.784 177.792 54.464 383.488c1.792 14.848 15.232 27.36 28.768 27.36l519.488 0c17.696 0 32 14.304 32 31.968S880.416 799.456 862.752 799.456L862.752 799.456zM383.232 671.52c-16.608 0-30.624-12.8-31.872-29.632-1.312-17.632 11.936-32.928 29.504-34.208l433.856-31.968c15.936-0.096 29.344-12.608 31.104-26.816l50.368-288.224c1.28-10.752-1.696-22.528-8.128-29.792-4.128-4.672-9.312-7.04-15.36-7.04L319.04 223.84c-17.664 0-32-14.336-32-31.968 0-17.664 14.336-31.968 32-31.968l553.728 0c24.448 0 46.88 10.144 63.232 28.608 18.688 21.088 27.264 50.784 23.52 81.568l-50.4 288.256c-5.44 44.832-45.92 81.28-92 81.28L385.6 671.424C384.8 671.488 384 671.52 383.232 671.52L383.232 671.52zM383.232 671.52">
 							</path>
 						</svg>
-						<span class="cart-count">{{ array_sum(array_column((array) session('ecommerce_cart', []), 'quantity')) }}</span>
+						<span class="cart-count">{{ $cartCount ?? 0 }}</span>
 					</a>
 				</li>
 			</ul>
@@ -978,11 +980,14 @@
 						</a>
 					</div>
 					<ul class="mn-cart-pro-items">
-						@php
-							$layoutCart = (array) session('ecommerce_cart', []);
-							$layoutCartSubtotal = array_sum(array_map(fn($i) => ($i['price'] ?? 0) * ($i['quantity'] ?? 1), $layoutCart));
-						@endphp
-						@include('ecommerce.partials.cart-sidebar-items', ['cartItems' => $layoutCart])
+						@if (!auth()->check())
+							<li class="p-4 text-center text-muted">
+								<p class="mb-2">Silakan login untuk mengakses keranjang Anda.</p>
+								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white">Login Sekarang</a>
+							</li>
+						@else
+							@include('ecommerce.partials.cart-sidebar-items', ['cartItems' => $layoutCart ?? []])
+						@endif
 					</ul>
 				</div>
 				<div class="mn-cart-bottom">
@@ -991,11 +996,11 @@
 							<tbody>
 								<tr>
 									<td class="text-left">Sub-Total :</td>
-									<td class="text-right cart-subtotal-val">Rp {{ number_format($layoutCartSubtotal, 0, ',', '.') }}</td>
+									<td class="text-right cart-subtotal-val">Rp {{ number_format($layoutCartSubtotal ?? 0, 0, ',', '.') }}</td>
 								</tr>
 								<tr>
 									<td class="text-left">Total :</td>
-									<td class="text-right primary-color cart-total-val">Rp {{ number_format($layoutCartSubtotal, 0, ',', '.') }}</td>
+									<td class="text-right primary-color cart-total-val">Rp {{ number_format($layoutCartSubtotal ?? 0, 0, ',', '.') }}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -1021,13 +1026,14 @@
 						</a>
 					</div>
 					<ul class="mn-wishlist-pro-items">
-						@php
-							$layoutWishlistIds = array_map('intval', (array) session('ecommerce_wishlist', []));
-							$layoutWishlistProducts = !empty($layoutWishlistIds)
-								? \App\Models\Product::query()->active()->whereIn('id', $layoutWishlistIds)->get()
-								: collect();
-						@endphp
-						@include('ecommerce.partials.wishlist-sidebar-items', ['wishlistProducts' => $layoutWishlistProducts])
+						@if (!auth()->check())
+							<li class="p-4 text-center text-muted">
+								<p class="mb-2">Silakan login untuk mengakses wishlist Anda.</p>
+								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white">Login Sekarang</a>
+							</li>
+						@else
+							@include('ecommerce.partials.wishlist-sidebar-items', ['wishlistProducts' => $layoutWishlistProducts ?? collect()])
+						@endif
 					</ul>
 				</div>
 				<div class="mn-wishlist-bottom">

@@ -109,9 +109,25 @@
         responsiveClass: true,
     });
 
+    /*== Helper: check user authentication ==*/
+    function checkAuthOrRedirect(actionMsg) {
+        var isAuth = $('meta[name="user-authenticated"]').attr('content') === '1';
+        if (!isAuth) {
+            var loginUrl = $('meta[name="login-url"]').attr('content') || '/ecommerce/login';
+            alert(actionMsg || 'Silakan login terlebih dahulu!');
+            window.location.href = loginUrl;
+            return false;
+        }
+        return true;
+    }
+    window.checkAuthOrRedirect = checkAuthOrRedirect;
+
     /*== Cart sidebar JS ==*/
     $('.mn-cart-toggle').on("click", function (e) {
         e.preventDefault();
+        if (!checkAuthOrRedirect('Silakan login terlebih dahulu untuk mengakses keranjang belanja!')) {
+            return;
+        }
         $(".mn-side-cart-overlay").fadeIn();
         $('.mn-side-cart').addClass("mn-open-cart");
     });
@@ -225,6 +241,9 @@
     /*== Wishlist sidebar JS ==*/
     $('.mn-wishlist-toggle').on("click", function (e) {
         e.preventDefault();
+        if (!checkAuthOrRedirect('Silakan login terlebih dahulu untuk mengakses wishlist!')) {
+            return;
+        }
         $(".mn-side-wishlist-overlay").fadeIn();
         $('.mn-side-wishlist').addClass("mn-open-wishlist");
     });
@@ -283,6 +302,10 @@
     /*== Wishlist toggle (Product Cards) ==*/
     $(document).on("click", ".mn-wishlist", function (e) {
         e.preventDefault();
+        if (!checkAuthOrRedirect('Silakan login terlebih dahulu untuk mengakses wishlist!')) {
+            return;
+        }
+
         var $this = $(this);
         var productId = $this.data('product-id');
 
@@ -333,6 +356,13 @@
                         $('.mn-wish-notify').fadeOut(function () { $(this).remove(); });
                     }, 2500);
                 }
+            },
+            error: function (xhr) {
+                if (xhr.status === 401) {
+                    var data = xhr.responseJSON || {};
+                    alert(data.message || 'Silakan login terlebih dahulu untuk mengakses wishlist!');
+                    window.location.href = data.redirect || '/ecommerce/login';
+                }
             }
         });
     });
@@ -378,6 +408,10 @@
     /*== Add to cart button notify js & AJAX ==*/
     $(document).on("click", ".mn-add-cart", function (e) {
         e.preventDefault();
+        if (!checkAuthOrRedirect('Silakan login terlebih dahulu untuk menambahkan produk ke keranjang belanja!')) {
+            return;
+        }
+
         var $btn = $(this);
         var productId = $btn.data('product-id');
 
@@ -447,7 +481,13 @@
                 }
             },
             error: function (xhr) {
-                console.error('Failed to add product to cart', xhr);
+                if (xhr.status === 401) {
+                    var data = xhr.responseJSON || {};
+                    alert(data.message || 'Silakan login terlebih dahulu untuk menambahkan produk ke keranjang belanja!');
+                    window.location.href = data.redirect || '/ecommerce/login';
+                } else {
+                    console.error('Failed to add product to cart', xhr);
+                }
             }
         });
     });

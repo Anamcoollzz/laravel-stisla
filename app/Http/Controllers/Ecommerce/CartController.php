@@ -4,23 +4,37 @@ namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductCart;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class CartController extends Controller
 {
     /**
-     * Session key for cart data.
-     */
-    public const SESSION_KEY = 'ecommerce_cart';
-
-    /**
      * Display cart page or return JSON for AJAX.
      */
-    public function index(Request $request): View|JsonResponse
+    public function index(Request $request): View|JsonResponse|RedirectResponse
     {
-        $cart = $this->getCart();
+        if (! Auth::check()) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'unauthenticated',
+                    'message' => 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!',
+                    'redirect' => route('ecommerce.login'),
+                ], 401);
+            }
+
+            session()->flash('alert', 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!');
+            session()->flash('warning', 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!');
+
+            return redirect()->guest(route('ecommerce.login'));
+        }
+
+        $userId = (int) Auth::id();
+        $cart = $this->getUserCartArray($userId);
         $subtotal = $this->calculateSubtotal($cart);
         $totalQuantity = $this->calculateTotalQuantity($cart);
 
@@ -49,36 +63,43 @@ class CartController extends Controller
      */
     public function add(Request $request, Product $product): JsonResponse
     {
+        if (! Auth::check()) {
+            return response()->json([
+                'status' => 'unauthenticated',
+                'message' => 'Silakan login terlebih dahulu untuk menambahkan produk ke keranjang belanja!',
+                'redirect' => route('ecommerce.login'),
+            ], 401);
+        }
+
+        $userId = (int) Auth::id();
         $quantity = max(1, (int) $request->input('quantity', 1));
-        $cart = $this->getCart();
         $productId = (int) $product->id;
 
-        if (isset($cart[$productId])) {
-            $newQuantity = $cart[$productId]['quantity'] + $quantity;
+        $cartRow = ProductCart::query()
+            ->where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($cartRow) {
+            $newQuantity = $cartRow->quantity + $quantity;
             if ($product->stock > 0 && $newQuantity > $product->stock) {
-                $newQuantity = $product->stock;
+                $newQuantity = (int) $product->stock;
             }
-            $cart[$productId]['quantity'] = $newQuantity;
+            $cartRow->update(['quantity' => $newQuantity]);
         } else {
             $initialQty = $quantity;
             if ($product->stock > 0 && $initialQty > $product->stock) {
-                $initialQty = $product->stock;
+                $initialQty = (int) $product->stock;
             }
 
-            $cart[$productId] = [
-                'id' => $productId,
-                'title' => $product->title,
-                'slug' => $product->slug,
-                'price' => (float) $product->final_price,
-                'original_price' => (float) $product->price,
-                'thumbnail' => $product->thumbnail_url,
+            ProductCart::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
                 'quantity' => $initialQty,
-                'stock' => (int) $product->stock,
-            ];
+            ]);
         }
 
-        session()->put(self::SESSION_KEY, $cart);
-
+        $cart = $this->getUserCartArray($userId);
         $subtotal = $this->calculateSubtotal($cart);
         $totalQuantity = $this->calculateTotalQuantity($cart);
 
@@ -100,21 +121,38 @@ class CartController extends Controller
      */
     public function update(Request $request, Product $product): JsonResponse
     {
+        if (! Auth::check()) {
+            return response()->json([
+                'status' => 'unauthenticated',
+                'message' => 'Silakan login terlebih dahulu!',
+                'redirect' => route('ecommerce.login'),
+            ], 401);
+        }
+
+        $userId = (int) Auth::id();
         $quantity = (int) $request->input('quantity', 1);
-        $cart = $this->getCart();
         $productId = (int) $product->id;
 
         if ($quantity <= 0) {
-            unset($cart[$productId]);
-        } elseif (isset($cart[$productId])) {
-            if ($product->stock > 0 && $quantity > $product->stock) {
-                $quantity = $product->stock;
+            ProductCart::query()
+                ->where('user_id', $userId)
+                ->where('product_id', $productId)
+                ->delete();
+        } else {
+            $cartRow = ProductCart::query()
+                ->where('user_id', $userId)
+                ->where('product_id', $productId)
+                ->first();
+
+            if ($cartRow) {
+                if ($product->stock > 0 && $quantity > $product->stock) {
+                    $quantity = (int) $product->stock;
+                }
+                $cartRow->update(['quantity' => $quantity]);
             }
-            $cart[$productId]['quantity'] = $quantity;
         }
 
-        session()->put(self::SESSION_KEY, $cart);
-
+        $cart = $this->getUserCartArray($userId);
         $subtotal = $this->calculateSubtotal($cart);
         $totalQuantity = $this->calculateTotalQuantity($cart);
 
@@ -136,12 +174,23 @@ class CartController extends Controller
      */
     public function remove(Request $request, Product $product): JsonResponse
     {
-        $cart = $this->getCart();
+        if (! Auth::check()) {
+            return response()->json([
+                'status' => 'unauthenticated',
+                'message' => 'Silakan login terlebih dahulu!',
+                'redirect' => route('ecommerce.login'),
+            ], 401);
+        }
+
+        $userId = (int) Auth::id();
         $productId = (int) $product->id;
 
-        unset($cart[$productId]);
-        session()->put(self::SESSION_KEY, $cart);
+        ProductCart::query()
+            ->where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->delete();
 
+        $cart = $this->getUserCartArray($userId);
         $subtotal = $this->calculateSubtotal($cart);
         $totalQuantity = $this->calculateTotalQuantity($cart);
 
@@ -159,13 +208,37 @@ class CartController extends Controller
     }
 
     /**
-     * Retrieve cart array from session.
+     * Retrieve cart array for given user from database.
      *
      * @return array<int, array<string, mixed>>
      */
-    protected function getCart(): array
+    protected function getUserCartArray(int $userId): array
     {
-        return (array) session()->get(self::SESSION_KEY, []);
+        $cartRows = ProductCart::query()
+            ->where('user_id', $userId)
+            ->with(['product' => fn ($q) => $q->active()])
+            ->get();
+
+        $cart = [];
+        foreach ($cartRows as $row) {
+            $product = $row->product;
+            if (! $product) {
+                continue;
+            }
+
+            $cart[$product->id] = [
+                'id' => (int) $product->id,
+                'title' => $product->title,
+                'slug' => $product->slug,
+                'price' => (float) $product->final_price,
+                'original_price' => (float) $product->price,
+                'thumbnail' => $product->thumbnail_url,
+                'quantity' => (int) $row->quantity,
+                'stock' => (int) $product->stock,
+            ];
+        }
+
+        return $cart;
     }
 
     /**

@@ -116,6 +116,26 @@ class Product extends Model
     }
 
     /**
+     * Cart items relation.
+     *
+     * @return HasMany<ProductCart, $this>
+     */
+    public function carts(): HasMany
+    {
+        return $this->hasMany(ProductCart::class);
+    }
+
+    /**
+     * Wishlist entries relation.
+     *
+     * @return HasMany<ProductWishlist, $this>
+     */
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(ProductWishlist::class);
+    }
+
+    /**
      * Get final price after discount.
      */
     public function getFinalPriceAttribute(): float

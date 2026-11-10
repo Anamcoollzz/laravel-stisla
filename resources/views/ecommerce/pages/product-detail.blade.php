@@ -263,7 +263,7 @@
                                 <div class="mn-single-wishlist">
                                   <a
                                     href="javascript:void(0)"
-                                    class="mn-btn-group wishlist mn-wishlist {{ in_array($product->id, session('ecommerce_wishlist', [])) ? 'active' : '' }}"
+                                    class="mn-btn-group wishlist mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}"
                                     data-product-id="{{ $product->id }}"
                                     title="Wishlist"
                                   >

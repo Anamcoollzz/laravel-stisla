@@ -221,7 +221,7 @@
 																	</div>
 																@endif
 																@php
-																	$isWishlisted = in_array((int) $product->id, (array) session('ecommerce_wishlist', []), true);
+																	$isWishlisted = in_array((int) $product->id, (array) ($userWishlistIds ?? []), true);
 																@endphp
 																<a href="javascript:void(0);"
 																	class="mn-wishlist {{ $isWishlisted ? 'active' : '' }}"

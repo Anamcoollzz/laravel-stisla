@@ -6,7 +6,9 @@ use App\Models\ChatMessage;
 use App\Models\Menu;
 use App\Models\Product;
 use App\Models\ProductBanner;
+use App\Models\ProductCart;
 use App\Models\ProductCategory;
+use App\Models\ProductWishlist;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -101,6 +103,59 @@ class AppServiceProvider extends ServiceProvider
             } else {
                 $view->with('randomProducts', collect());
             }
+
+            $authUser = auth()->user();
+            if ($authUser !== null && Schema::hasTable('product_carts') && Schema::hasTable('product_wishlists')) {
+                $cartRows = ProductCart::query()
+                    ->where('user_id', $authUser->id)
+                    ->with(['product' => fn ($q) => $q->active()])
+                    ->get();
+
+                $layoutCart = [];
+                foreach ($cartRows as $row) {
+                    if ($p = $row->product) {
+                        $layoutCart[$p->id] = [
+                            'id' => (int) $p->id,
+                            'title' => $p->title,
+                            'slug' => $p->slug,
+                            'price' => (float) $p->final_price,
+                            'original_price' => (float) $p->price,
+                            'thumbnail' => $p->thumbnail_url,
+                            'quantity' => (int) $row->quantity,
+                            'stock' => (int) $p->stock,
+                        ];
+                    }
+                }
+
+                $layoutCartSubtotal = array_sum(array_map(fn ($i) => ($i['price'] ?? 0) * ($i['quantity'] ?? 1), $layoutCart));
+                $cartCount = array_sum(array_column($layoutCart, 'quantity'));
+
+                $layoutWishlistProducts = ProductWishlist::query()
+                    ->where('user_id', $authUser->id)
+                    ->with(['product' => fn ($q) => $q->active()->with(['category', 'brand', 'size', 'color', 'images'])])
+                    ->latest('id')
+                    ->get()
+                    ->pluck('product')
+                    ->filter()
+                    ->values();
+
+                $userWishlistIds = $layoutWishlistProducts->pluck('id')->map(fn ($id) => (int) $id)->toArray();
+                $wishlistCount = count($userWishlistIds);
+            } else {
+                $layoutCart = [];
+                $layoutCartSubtotal = 0.0;
+                $cartCount = 0;
+                $layoutWishlistProducts = collect();
+                $userWishlistIds = [];
+                $wishlistCount = 0;
+            }
+
+            $view->with('layoutCart', $layoutCart)
+                ->with('layoutCartSubtotal', $layoutCartSubtotal)
+                ->with('cartCount', $cartCount)
+                ->with('layoutWishlistProducts', $layoutWishlistProducts)
+                ->with('userWishlistIds', $userWishlistIds)
+                ->with('wishlistCount', $wishlistCount);
         });
 
         View::composer('ecommerce.pages.index', function ($view) {

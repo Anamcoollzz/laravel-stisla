@@ -73,6 +73,23 @@
 											</div>
 										@endif
 
+										@if (session('warning'))
+											<div class="alert alert-warning py-2 px-3 mb-3" style="font-size: 14px;">
+												{{ session('warning') }}
+											</div>
+										@endif
+
+										@if (session('alert'))
+											<div class="alert alert-warning py-2 px-3 mb-3" style="font-size: 14px;">
+												{{ session('alert') }}
+											</div>
+											<script>
+												document.addEventListener('DOMContentLoaded', function () {
+													alert(@json(session('alert')));
+												});
+											</script>
+										@endif
+
 										@if ($errors->any())
 											<div class="alert alert-danger py-2 px-3 mb-3" style="font-size: 14px;">
 												{{ $errors->first() }}
