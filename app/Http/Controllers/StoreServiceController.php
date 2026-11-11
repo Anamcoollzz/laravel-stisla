@@ -125,3 +125,4 @@ class StoreServiceController extends Controller
         return redirect()->route('store-services.index')->with('success', __('Service deleted successfully.'));
     }
 }
+

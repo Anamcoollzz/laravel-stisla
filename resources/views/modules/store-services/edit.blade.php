@@ -177,3 +177,4 @@
     svgInput.addEventListener('input', updateSvgPreview);
   </script>
 @endpush
+

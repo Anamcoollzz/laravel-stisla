@@ -28,3 +28,4 @@ class UpdateStoreServiceRequest extends FormRequest
         ];
     }
 }
+

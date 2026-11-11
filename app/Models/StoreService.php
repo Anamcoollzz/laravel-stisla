@@ -64,3 +64,4 @@ class StoreService extends Model
         );
     }
 }
+
