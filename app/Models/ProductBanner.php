@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class ProductBanner extends Model
@@ -19,9 +20,34 @@ class ProductBanner extends Model
         'button_url',
         'image',
         'position',
+        'product_id',
         'order',
         'is_active',
     ];
+
+    /**
+     * Product linked to this banner.
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Resolved button URL prioritizing linked product detail.
+     */
+    public function getTargetUrlAttribute(): string
+    {
+        if ($this->product) {
+            return route('ecommerce.products.detail', $this->product->slug);
+        }
+
+        if ($this->button_url && $this->button_url !== '#' && $this->button_url !== '/ecommerce-pages/shop-left-sidebar.html') {
+            return $this->button_url;
+        }
+
+        return route('ecommerce.products.index');
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

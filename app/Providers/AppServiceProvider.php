@@ -170,6 +170,7 @@ class AppServiceProvider extends ServiceProvider
                 $heroBanners = ProductBanner::query()
                     ->active()
                     ->hero()
+                    ->with('product')
                     ->orderBy('order')
                     ->latest('id')
                     ->get();
@@ -177,6 +178,26 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('heroBanners', $heroBanners);
             } else {
                 $view->with('heroBanners', collect());
+            }
+
+            if (Schema::hasTable('product_categories')) {
+                $featuredCategories = ProductCategory::query()
+                    ->where('is_active', true)
+                    ->whereHas('products', fn ($q) => $q->active())
+                    ->with('parent')
+                    ->withCount(['products' => fn ($q) => $q->active()])
+                    ->withMax(['products' => fn ($q) => $q->active()], 'discount_percent')
+                    ->with(['products' => fn ($q) => $q->active()->latest('id')])
+                    ->orderByDesc('products_count')
+                    ->take(8)
+                    ->get()
+                    ->each(function ($cat) {
+                        $cat->setRelation('products', $cat->products->take(3));
+                    });
+
+                $view->with('featuredCategories', $featuredCategories);
+            } else {
+                $view->with('featuredCategories', collect());
             }
 
             if (Schema::hasTable('products')) {

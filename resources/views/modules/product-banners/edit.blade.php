@@ -82,6 +82,20 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <label for="product_id">{{ __('Linked Product (Shop Now Target)') }}</label>
+                <select id="product_id" name="product_id" class="form-control @error('product_id') is-invalid @enderror">
+                  <option value="">{{ __('-- Select Product (Optional) --') }}</option>
+                  @foreach ($products as $prod)
+                    <option value="{{ $prod->id }}" @selected(old('product_id', $banner->product_id) == $prod->id)>{{ $prod->title }}</option>
+                  @endforeach
+                </select>
+                @error('product_id')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <small class="form-text text-muted">{{ __('If selected, clicking the Shop Now button will navigate directly to this product detail page.') }}</small>
+              </div>
+
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">

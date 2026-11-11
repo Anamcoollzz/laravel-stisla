@@ -1,4 +1,16 @@
 @php
+  $heroBanners = $heroBanners ?? \App\Models\ProductBanner::query()->active()->hero()->with('product')->orderBy('order')->latest('id')->get();
+  $featuredCategories = $featuredCategories ?? \App\Models\ProductCategory::query()
+      ->where('is_active', true)
+      ->whereHas('products', fn ($q) => $q->active())
+      ->with('parent')
+      ->withCount(['products' => fn ($q) => $q->active()])
+      ->withMax(['products' => fn ($q) => $q->active()], 'discount_percent')
+      ->with(['products' => fn ($q) => $q->active()->latest('id')])
+      ->orderByDesc('products_count')
+      ->take(8)
+      ->get()
+      ->each(fn ($cat) => $cat->setRelation('products', $cat->products->take(3)));
   $blogs = $blogs ?? \App\Models\Blog::query()->active()->orderBy('order')->latest('published_at')->latest('id')->get();
   $testimonials = $testimonials ?? \App\Models\Testimonial::query()->active()->orderBy('order')->latest('id')->get();
   $dealProducts = $dealProducts ?? \App\Models\Product::query()->active()->deal()->with(['category', 'brand', 'size', 'color'])->latest('id')->take(12)->get();
@@ -36,116 +48,73 @@
         <!-- Hero Section -->
         <section class="mn-hero swiper-container m-b-15">
           <div class="mn-hero-slider owl-carousel">
-            <div class="mn-hero-slide swiper-slide slide-1">
-              <div class="mn-hero-detail">
-                <p class="label"><span>50%<br>Off</span></p>
-                <h1>Fashion sale <br>for women's</h1>
-                <p>Elevate your every day. Style that speaks volumes.</p>
-                <a href="javascript:void(0)" class="mn-btn-2"><span>Shop Now</span></a>
+            @forelse ($heroBanners as $banner)
+              <div class="mn-hero-slide swiper-slide slide-{{ ($loop->index % 4) + 1 }}" style="background-image: url('{{ $banner->image_url }}'); background-size: cover; background-position: center;">
+                <div class="mn-hero-detail">
+                  @if ($banner->badge_label)
+                    <p class="label"><span>{!! nl2br(e(preg_replace('/\s+/', "\n", trim($banner->badge_label), 1))) !!}</span></p>
+                  @endif
+                  @if ($loop->first)
+                    <h1>{!! $banner->title !!}</h1>
+                  @else
+                    <h2>{!! $banner->title !!}</h2>
+                  @endif
+                  @if ($banner->subtitle)
+                    <p>{{ $banner->subtitle }}</p>
+                  @endif
+                  <a href="{{ $banner->target_url }}" class="mn-btn-2"><span>{{ $banner->button_text ?: 'Shop Now' }}</span></a>
+                </div>
               </div>
-            </div>
-            <div class="mn-hero-slide swiper-slide slide-2">
-              <div class="mn-hero-detail">
-                <p class="label"><span>35%<br>Off</span></p>
-                <h2>Fashion sale <br>for Men's</h2>
-                <p>Wear the change. Fashion that feels good.</p>
-                <a href="javascript:void(0)" class="mn-btn-2"><span>Shop Now</span></a>
+            @empty
+              <div class="mn-hero-slide swiper-slide slide-1">
+                <div class="mn-hero-detail">
+                  <p class="label"><span>50%<br>Off</span></p>
+                  <h1>Fashion sale <br>for women's</h1>
+                  <p>Elevate your every day. Style that speaks volumes.</p>
+                  <a href="{{ route('ecommerce.products.index') }}" class="mn-btn-2"><span>Shop Now</span></a>
+                </div>
               </div>
-            </div>
-            <div class="mn-hero-slide swiper-slide slide-3">
-              <div class="mn-hero-detail">
-                <p class="label"><span>44%<br>Off</span></p>
-                <h2>Fashion sale <br>for Children's</h2>
-                <p>Wear the change. Fashion that feels good.</p>
-                <a href="javascript:void(0)" class="mn-btn-2"><span>Shop Now</span></a>
-              </div>
-            </div>
-            <div class="mn-hero-slide swiper-slide slide-4">
-              <div class="mn-hero-detail">
-                <p class="label"><span>22%<br>Off</span></p>
-                <h2>Cosmetics sale <br>for Women's</h2>
-                <p>Wear the change. Fashion that feels good.</p>
-                <a href="javascript:void(0)" class="mn-btn-2"><span>Shop Now</span></a>
-              </div>
-            </div>
+            @endforelse
           </div>
         </section>
 
         <!-- Category Section -->
         <section class="mn-category p-tb-15">
           <div class="mn-cat owl-carousel">
-            <div class="mn-cat-card cat-card-1">
-              <p class="lbl"><span>35%</span></p>
-              <span class="bg">35%</span>
-              <h4>Fashion</h4>
-              <h3>Clothes</h3>
-              <p>Items (16)</p>
-              <ul>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/1.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/2.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/3.jpg') }}" alt="category"></a></li>
-              </ul>
-            </div>
-            <div class="mn-cat-card cat-card-2">
-              <p class="lbl"><span>22%</span></p>
-              <span class="bg">22%</span>
-              <h4>Generic</h4>
-              <h3>Cosmetics</h3>
-              <p>Items (45)</p>
-              <ul>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/4.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/5.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/6.jpg') }}" alt="category"></a></li>
-              </ul>
-            </div>
-            <div class="mn-cat-card cat-card-3">
-              <p class="lbl"><span>65%</span></p>
-              <span class="bg">65%</span>
-              <h4>Stylish</h4>
-              <h3>Shoes</h3>
-              <p>Items (58)</p>
-              <ul>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/7.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/8.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/9.jpg') }}" alt="category"></a></li>
-              </ul>
-            </div>
-            <div class="mn-cat-card cat-card-4">
-              <p class="lbl"><span>45%</span></p>
-              <span class="bg">45%</span>
-              <h4>Digital</h4>
-              <h3>watches</h3>
-              <p>Items (64)</p>
-              <ul>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/10.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/11.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/12.jpg') }}" alt="category"></a></li>
-              </ul>
-            </div>
-            <div class="mn-cat-card cat-card-5">
-              <p class="lbl"><span>63%</span></p>
-              <span class="bg">63%</span>
-              <h4>leather</h4>
-              <h3>belts</h3>
-              <p>Items (75)</p>
-              <ul>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/13.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/14.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/15.jpg') }}" alt="category"></a></li>
-              </ul>
-            </div>
-            <div class="mn-cat-card cat-card-6">
-              <p class="lbl"><span>23%</span></p>
-              <span class="bg">23%</span>
-              <h4>Cotton</h4>
-              <h3>Bags</h3>
-              <p>Items (15)</p>
-              <ul>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/16.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/17.jpg') }}" alt="category"></a></li>
-                <li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}"><img src="{{ asset('mantu/assets/img/category/18.jpg') }}" alt="category"></a></li>
-              </ul>
-            </div>
+            @forelse ($featuredCategories as $category)
+              @php
+                $maxDiscount = (int) ($category->products_max_discount_percent ?? 0);
+                $badgeText = $maxDiscount > 0 ? $maxDiscount.'%' : 'Hot';
+              @endphp
+              <div class="mn-cat-card cat-card-{{ ($loop->index % 6) + 1 }}">
+                <p class="lbl"><span>{{ $badgeText }}</span></p>
+                <span class="bg">{{ $badgeText }}</span>
+                <h4>{{ $category->parent?->name ?? 'Collection' }}</h4>
+                <h3>
+                  <a href="{{ route('ecommerce.products.index', ['category' => $category->slug]) }}" style="color: inherit;">
+                    {{ $category->name }}
+                  </a>
+                </h3>
+                <p>Items ({{ $category->products_count }})</p>
+                <ul>
+                  @foreach ($category->products->take(3) as $catProduct)
+                    <li>
+                      <a href="{{ route('ecommerce.products.detail', $catProduct->slug) }}" title="{{ $catProduct->title }}">
+                        <img src="{{ $catProduct->thumbnail_url }}" alt="{{ $catProduct->title }}" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                      </a>
+                    </li>
+                  @endforeach
+                </ul>
+              </div>
+            @empty
+              <div class="mn-cat-card cat-card-1">
+                <p class="lbl"><span>Hot</span></p>
+                <span class="bg">Hot</span>
+                <h4>Collection</h4>
+                <h3>Products</h3>
+                <p>Items (0)</p>
+              </div>
+            @endforelse
           </div>
         </section>
 

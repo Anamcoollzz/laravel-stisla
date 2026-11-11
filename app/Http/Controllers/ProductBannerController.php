@@ -7,6 +7,7 @@ use App\Exports\ProductBannersTemplateExport;
 use App\Http\Requests\StoreProductBannerRequest;
 use App\Http\Requests\UpdateProductBannerRequest;
 use App\Imports\ProductBannersImport;
+use App\Models\Product;
 use App\Models\ProductBanner;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
@@ -24,7 +25,7 @@ class ProductBannerController extends Controller
     {
         Gate::authorize('product-banners.view');
 
-        $banners = ProductBanner::query()->orderBy('order')->latest('id')->get();
+        $banners = ProductBanner::query()->with('product')->orderBy('order')->latest('id')->get();
 
         $stats = [
             'total' => $banners->count(),
@@ -39,7 +40,9 @@ class ProductBannerController extends Controller
     {
         Gate::authorize('product-banners.create');
 
-        return view('modules.product-banners.create');
+        $products = Product::query()->active()->orderBy('title')->get(['id', 'title', 'slug']);
+
+        return view('modules.product-banners.create', compact('products'));
     }
 
     public function store(StoreProductBannerRequest $request): RedirectResponse
@@ -64,6 +67,8 @@ class ProductBannerController extends Controller
     {
         Gate::authorize('product-banners.view');
 
+        $productBanner->load('product');
+
         return view('modules.product-banners.show', ['banner' => $productBanner]);
     }
 
@@ -71,7 +76,9 @@ class ProductBannerController extends Controller
     {
         Gate::authorize('product-banners.edit');
 
-        return view('modules.product-banners.edit', ['banner' => $productBanner]);
+        $products = Product::query()->active()->orderBy('title')->get(['id', 'title', 'slug']);
+
+        return view('modules.product-banners.edit', ['banner' => $productBanner, 'products' => $products]);
     }
 
     public function update(UpdateProductBannerRequest $request, ProductBanner $productBanner): RedirectResponse
@@ -135,7 +142,7 @@ class ProductBannerController extends Controller
     {
         Gate::authorize('product-banners.view');
 
-        $banners = ProductBanner::query()->orderBy('order')->latest('id')->get();
+        $banners = ProductBanner::query()->with('product')->orderBy('order')->latest('id')->get();
 
         $pdf = Pdf::loadView('modules.product-banners.pdf', compact('banners'));
 

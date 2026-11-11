@@ -26,6 +26,7 @@ class UpdateProductBannerRequest extends FormRequest
             'image' => ['nullable', 'image', 'max:2048'],
             'remove_image' => ['nullable', 'boolean'],
             'position' => ['nullable', 'string', 'max:50'],
+            'product_id' => ['nullable', 'exists:products,id'],
             'order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ];

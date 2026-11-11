@@ -25,6 +25,7 @@ class StoreProductBannerRequest extends FormRequest
             'button_url' => ['nullable', 'string', 'max:500'],
             'image' => ['nullable', 'image', 'max:2048'],
             'position' => ['nullable', 'string', 'max:50'],
+            'product_id' => ['nullable', 'exists:products,id'],
             'order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ];
