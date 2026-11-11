@@ -2,13 +2,29 @@
 
 @section('title', __('Shop › Blog Comments'))
 
+@push('css')
+  <link rel="stylesheet" href="{{ asset('node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('node_modules/datatables.net-select-bs4/css/select.bootstrap4.min.css') }}">
+@endpush
+
 @push('js')
+  <script src="{{ asset('node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('node_modules/datatables.net-select-bs4/js/select.bootstrap4.min.js') }}"></script>
   <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('page-js')
   <script>
     "use strict";
+
+    $("#table-comments").dataTable({
+      "pageLength": 10,
+      "order": [[0, "desc"]],
+      "columnDefs": [
+        { "sortable": false, "targets": [1, 3, 6] }
+      ]
+    });
 
     $(document).on('click', '.btn-delete', function(e) {
       e.preventDefault();
@@ -107,48 +123,48 @@
         <div class="card">
           <div class="card-header">
             <h4>{{ __('All Comments') }}</h4>
-            <div class="card-header-form">
-              <form action="{{ route('blog-comments.index') }}" method="GET">
-                <div class="input-group">
-                  <select name="status" class="form-control mr-2" onchange="this.form.submit()" style="border-radius: 4px;">
-                    <option value="">{{ __('All Status') }}</option>
-                    <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>{{ __('Approved') }}</option>
-                    <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>{{ __('Pending') }}</option>
-                  </select>
-                  <input type="text" name="search" class="form-control" placeholder="{{ __('Search comments...') }}" value="{{ request('search') }}">
-                  <div class="input-group-btn">
-                    <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                    @if (request('search') || request('status'))
-                      <a href="{{ route('blog-comments.index') }}" class="btn btn-light"><i class="fas fa-times"></i></a>
-                    @endif
-                  </div>
-                </div>
-              </form>
+            <div class="card-header-action">
+              <div class="btn-group" role="group">
+                <a href="{{ route('blog-comments.index') }}" class="btn btn-sm {{ !request('status') ? 'btn-primary' : 'btn-outline-primary' }}">
+                  {{ __('All') }}
+                </a>
+                <a href="{{ route('blog-comments.index', ['status' => 'approved']) }}" class="btn btn-sm {{ request('status') === 'approved' ? 'btn-success' : 'btn-outline-success' }}">
+                  {{ __('Approved') }}
+                </a>
+                <a href="{{ route('blog-comments.index', ['status' => 'pending']) }}" class="btn btn-sm {{ request('status') === 'pending' ? 'btn-warning' : 'btn-outline-warning' }}">
+                  {{ __('Pending') }}
+                </a>
+              </div>
             </div>
           </div>
-          <div class="card-body p-0">
+          <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-striped table-hover mb-0">
+              <table class="table table-striped table-hover" id="table-comments">
                 <thead>
                   <tr>
-                    <th style="width: 60px;">#</th>
+                    <th style="width: 50px;">#</th>
                     <th style="width: 200px;">{{ __('Commenter') }}</th>
                     <th>{{ __('Article') }}</th>
                     <th>{{ __('Comment') }}</th>
-                    <th style="width: 120px;">{{ __('Status') }}</th>
+                    <th style="width: 110px;">{{ __('Status') }}</th>
                     <th style="width: 140px;">{{ __('Date') }}</th>
-                    <th style="width: 130px;" class="text-center">{{ __('Action') }}</th>
+                    <th style="width: 120px;" class="text-center">{{ __('Action') }}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @forelse ($comments as $comment)
+                  @foreach ($comments as $comment)
                     <tr>
                       <td>{{ $comment->id }}</td>
                       <td>
                         <div class="d-flex align-items-center">
                           <img src="{{ $comment->avatar_url }}" alt="{{ $comment->name }}" class="rounded-circle mr-2" width="35" height="35" style="object-fit: cover;">
                           <div>
-                            <div class="font-weight-bold text-dark">{{ $comment->name }}</div>
+                            <div class="font-weight-bold text-dark">
+                              {{ $comment->name }}
+                              @if ($comment->user_id)
+                                <span class="badge badge-primary py-0 px-1 ml-1" style="font-size: 10px;" title="{{ __('Registered Member') }}"><i class="fas fa-user-check"></i> Member</span>
+                              @endif
+                            </div>
                             <div class="small text-muted">{{ $comment->email }}</div>
                           </div>
                         </div>
@@ -215,30 +231,13 @@
                         </div>
                       </td>
                     </tr>
-                  @empty
-                    <tr>
-                      <td colspan="7" class="text-center py-4 text-muted">
-                        {{ __('No comments found.') }}
-                      </td>
-                    </tr>
-                  @endforelse
+                  @endforeach
                 </tbody>
               </table>
             </div>
           </div>
-          @if ($comments->hasPages())
-            <div class="card-footer bg-whitesmoke text-right">
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="text-muted small">
-                  {{ __('Showing') }} {{ $comments->firstItem() ?? 0 }} - {{ $comments->lastItem() ?? 0 }} {{ __('of') }} {{ $comments->total() }}
-                </span>
-                {{ $comments->links() }}
-              </div>
-            </div>
-          @endif
         </div>
       </div>
     </div>
   </div>
 @endsection
-

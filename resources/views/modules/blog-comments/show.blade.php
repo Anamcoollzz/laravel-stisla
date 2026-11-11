@@ -142,7 +142,12 @@
           </div>
           <div class="card-body text-center">
             <img src="{{ $blogComment->avatar_url }}" alt="{{ $blogComment->name }}" class="rounded-circle shadow-sm mb-3" width="70" height="70" style="object-fit: cover;">
-            <h5 class="mb-1 text-dark">{{ $blogComment->name }}</h5>
+            <h5 class="mb-1 text-dark">
+              {{ $blogComment->name }}
+              @if ($blogComment->user_id)
+                <span class="badge badge-primary py-0 px-2 ml-1" style="font-size: 11px;"><i class="fas fa-user-check"></i> Member</span>
+              @endif
+            </h5>
             <p class="text-muted small mb-3">{{ $blogComment->email }}</p>
             <p class="small text-muted mb-0">
               <i class="far fa-calendar-alt"></i> {{ $blogComment->created_at->format('d M Y, H:i') }}

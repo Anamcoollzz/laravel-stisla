@@ -9,6 +9,7 @@ use App\Models\ProductBanner;
 use App\Models\ProductCart;
 use App\Models\ProductCategory;
 use App\Models\ProductWishlist;
+use App\Models\Testimonial;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -181,8 +182,41 @@ class AppServiceProvider extends ServiceProvider
                     ->get();
 
                 $view->with('newArrivalProducts', $newArrivalProducts);
+
+                $dealProducts = Product::query()
+                    ->active()
+                    ->deal()
+                    ->with(['category', 'brand', 'size', 'color'])
+                    ->latest('id')
+                    ->take(12)
+                    ->get();
+
+                if ($dealProducts->isEmpty()) {
+                    $dealProducts = Product::query()
+                        ->active()
+                        ->where('discount_percent', '>', 0)
+                        ->with(['category', 'brand', 'size', 'color'])
+                        ->latest('id')
+                        ->take(12)
+                        ->get();
+                }
+
+                $view->with('dealProducts', $dealProducts);
             } else {
-                $view->with('newArrivalProducts', collect());
+                $view->with('newArrivalProducts', collect())
+                    ->with('dealProducts', collect());
+            }
+
+            if (Schema::hasTable('testimonials')) {
+                $testimonials = Testimonial::query()
+                    ->active()
+                    ->orderBy('order')
+                    ->latest('id')
+                    ->get();
+
+                $view->with('testimonials', $testimonials);
+            } else {
+                $view->with('testimonials', collect());
             }
         });
     }

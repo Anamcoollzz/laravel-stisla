@@ -1,5 +1,7 @@
 @php
   $blogs = $blogs ?? \App\Models\Blog::query()->active()->orderBy('order')->latest('published_at')->latest('id')->get();
+  $testimonials = $testimonials ?? \App\Models\Testimonial::query()->active()->orderBy('order')->latest('id')->get();
+  $dealProducts = $dealProducts ?? \App\Models\Product::query()->active()->deal()->with(['category', 'brand', 'size', 'color'])->latest('id')->take(12)->get();
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
@@ -670,395 +672,84 @@
             </div>
           </div>
           <div class="mn-product owl-carousel">
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="lbl">
-                  <span class="new">new</span>
+            @forelse ($dealProducts as $deal)
+              <div class="mn-product-card">
+                <div class="mn-product-img">
+                  @if ($deal->discount_percent > 0)
+                    <div class="lbl">
+                      <span class="discount">{{ (int) $deal->discount_percent }}% off</span>
+                    </div>
+                  @elseif ($deal->is_deal)
+                    <div class="lbl">
+                      <span class="sale">deal</span>
+                    </div>
+                  @elseif ($deal->is_trending)
+                    <div class="lbl">
+                      <span class="trending">trending</span>
+                    </div>
+                  @elseif ($deal->is_new)
+                    <div class="lbl">
+                      <span class="new">new</span>
+                    </div>
+                  @elseif ($deal->is_sale)
+                    <div class="lbl">
+                      <span class="sale">sale</span>
+                    </div>
+                  @endif
+                  <div class="mn-img">
+                    <a href="{{ route('ecommerce.products.detail', $deal->slug) }}" class="image">
+                      <img class="main-img" src="{{ $deal->thumbnail_url }}" alt="{{ $deal->title }}">
+                      <img class="hover-img" src="{{ $deal->thumbnail_url }}" alt="{{ $deal->title }}">
+                    </a>
+                    <div class="mn-pro-loader"></div>
+                    <div class="mn-options">
+                      <ul>
+                        <li><a href="{{ route('ecommerce.products.detail', $deal->slug) }}" data-tooltip title="Quick View"><i class="ri-eye-line"></i></a></li>
+                        <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
+                        <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart" data-product-id="{{ $deal->id }}"><i class="ri-shopping-cart-line"></i></a></li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/17.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/18.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
+                <div class="mn-product-detail">
+                  <div class="cat">
+                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $deal->category?->name ?? 'Product' }}</a>
+                    @if ($deal->size)
+                      <ul>
+                        <li>{{ strtolower($deal->size->code ?: $deal->size->name) }}</li>
+                      </ul>
+                    @endif
+                  </div>
+                  <h5><a href="{{ route('ecommerce.products.detail', $deal->slug) }}">{{ $deal->title }}</a></h5>
+                  <div class="mn-price">
+                    <div class="mn-price-new">Rp {{ number_format($deal->final_price, 0, ',', '.') }}</div>
+                    @if ($deal->discount_percent > 0)
+                      <div class="mn-price-old">Rp {{ number_format($deal->price, 0, ',', '.') }}</div>
+                    @endif
+                  </div>
+                  <div class="mn-pro-option">
+                    <div class="mn-pro-color">
+                      @if ($deal->color)
+                        <ul class="mn-opt-swatch mn-change-img">
+                          <li class="active">
+                            <a href="#" class="mn-opt-clr-img active" data-src="{{ $deal->thumbnail_url }}" data-src-hover="{{ $deal->thumbnail_url }}" data-tooltip="{{ $deal->color->name }}">
+                              <span style="background-color: {{ $deal->color->color_code ?: '#000000' }};"></span>
+                            </a>
+                          </li>
+                        </ul>
+                      @endif
+                    </div>
+                    <a href="javascript:void(0);" class="mn-wishlist {{ in_array($deal->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $deal->id }}" data-tooltip title="Wishlist">
+                      <i class="ri-heart-{{ in_array($deal->id, $userWishlistIds ?? []) ? 'fill' : 'line' }}"></i>
+                    </a>
                   </div>
                 </div>
               </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
-                  <ul>
-                    <li>s</li>
-                    <li>m</li>
-                    <li>xl</li>
-                  </ul>
-                </div>
-                <h5><a href="">Cotton fabric T-shirt</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$120</div>
-                  <div class="mn-price-old">$130</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/19.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/20.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#de8abc;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/21.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/22.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#5e68ce;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/17.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/18.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#eee;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
+            @empty
+              <div class="mn-product-card text-center py-4">
+                <p class="text-muted">{{ __('No deal products available.') }}</p>
               </div>
-            </div>
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="lbl">
-                  <span class="sale">Sale</span>
-                </div>
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/23.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/24.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
-                  <ul>
-                    <li>s</li>
-                    <li>m</li>
-                    <li>xl</li>
-                  </ul>
-                </div>
-                <h5><a href="">Cotton fabric T-shirt</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$120</div>
-                  <div class="mn-price-old">$130</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/19.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/20.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#de8abc;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/23.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/24.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#a14f3b;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="lbl">
-                  <span class="trending">trending</span>
-                </div>
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/5.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/6.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">T-shirt</a>
-                  <ul>
-                    <li>s</li>
-                    <li>m</li>
-                    <li>xl</li>
-                  </ul>
-                </div>
-                <h5><a href="">Cotton fabric T-shirt</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$120</div>
-                  <div class="mn-price-old">$130</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li class="active"><a href="#" class="mn-opt-clr-img active" data-src="{{ asset('mantu/assets/img/product/5.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/5.jpg') }}" data-tooltip="Gray"><span
-                            style="background-image:url('{{ asset('mantu/assets/img/product/bg/5.jpg') }}');"></span></a>
-                      </li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/6.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/6.jpg') }}" data-tooltip="Orange"><span
-                            style="background-image:url('{{ asset('mantu/assets/img/product/bg/6.jpg') }}');"></span></a>
-                      </li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/7.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/7.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#e97e70;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/8.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/8.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#70e98a;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/9.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/10.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shoes</a>
-                  <ul>
-                    <li>7</li>
-                    <li>8</li>
-                    <li>10</li>
-                  </ul>
-                </div>
-                <h5><a href="">Special sport shoes</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$55</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/9.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/9.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#0e0e0e;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/10.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/10.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#c54367;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist active" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="lbl">
-                  <span class="new">new</span>
-                </div>
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/1.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/3.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Top</a>
-                  <ul>
-                    <li>s</li>
-                    <li>m</li>
-                  </ul>
-                </div>
-                <h5><a href="">Cotton fabric Top</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$120</div>
-                  <div class="mn-price-old">$130</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li class="active"><a href="#" class="mn-opt-clr-img active" data-src="{{ asset('mantu/assets/img/product/1.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/3.jpg') }}" data-tooltip="Gray"><span
-                            style="background-color:#f3f3f3;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/2.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/4.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#e8c2ff;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="lbl">
-                  <span class="sale">sale</span>
-                </div>
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/11.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/12.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">watches</a>
-                </div>
-                <h5><a href="">Mantu smart watch</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$955</div>
-                  <div class="mn-price-old">$999</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/11.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/12.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#f3f3f3;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/12.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/11.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#242424;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="lbl">
-                  <span class="discount">20% off</span>
-                </div>
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/13.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/14.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">belt</a>
-                </div>
-                <h5><a href="">Mantu leather belt</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$10</div>
-                  <div class="mn-price-old">$12</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/13.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/14.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#d48a5b;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/14.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/13.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#242424;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="mn-product-card">
-              <div class="mn-product-img">
-                <div class="mn-img">
-                  <a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-                    <img class="main-img" src="{{ asset('mantu/assets/img/product/15.jpg') }}" alt="product">
-                    <img class="hover-img" src="{{ asset('mantu/assets/img/product/16.jpg') }}" alt="product">
-                  </a>
-                  <div class="mn-pro-loader"></div>
-                  <div class="mn-options">
-                    <ul>
-                      <li><a href="javascript:void(0)" data-tooltip title="Quick View" data-link-action="quickview" data-bs-toggle="modal" data-bs-target="#quickview_modal"><i class="ri-eye-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare"><i class="ri-repeat-line"></i></a></li>
-                      <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mn-product-detail">
-                <div class="cat">
-                  <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Bag</a>
-                  <ul>
-                    <li>m</li>
-                    <li>l</li>
-                  </ul>
-                </div>
-                <h5><a href="">Leather bag</a></h5>
-                <div class="mn-price">
-                  <div class="mn-price-new">$66</div>
-                </div>
-                <div class="mn-pro-option">
-                  <div class="mn-pro-color">
-                    <ul class="mn-opt-swatch mn-change-img">
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/15.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/16.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#b75956;"></span></a></li>
-                      <li><a href="#" class="mn-opt-clr-img" data-src="{{ asset('mantu/assets/img/product/16.jpg') }}" data-src-hover="{{ asset('mantu/assets/img/product/15.jpg') }}" data-tooltip="Orange"><span
-                            style="background-color:#0e0e0e;"></span></a></li>
-                    </ul>
-                  </div>
-                  <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                    <i class="ri-heart-line"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
+            @endforelse
           </div>
         </section>
 
@@ -1072,55 +763,28 @@
                 </div>
                 <div class="mn-test-outer mn-testimonials">
                   <ul class="mn-testimonial-slider owl-carousel">
-                    <li class="mn-test-item">
-                      <img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="user">
-                      <div class="mn-test-inner">
-                        <div class="mn-test-img">
-                          <img alt="testimonial" title="testimonial" src="{{ asset('mantu/assets/img/user/1.jpg') }}">
-                        </div>
-                        <div class="mn-test-content">
-                          <div class="mn-test-desc">Lorem Ipsum is simply dummy text of
-                            the printing and industry. Lorem Ipsum has been the
-                            industry's standard dummy text ever since the 1500s.</div>
-                          <div class="mn-test-name">Mariya Klinton</div>
-                          <div class="mn-test-designation">(CEO)</div>
-                        </div>
-                      </div>
-                      <img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom" alt="">
-                    </li>
-                    <li class="mn-test-item ">
-                      <img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="">
-                      <div class="mn-test-inner">
-                        <div class="mn-test-img">
-                          <img alt="testimonial" title="testimonial" src="{{ asset('mantu/assets/img/user/2.jpg') }}">
-                        </div>
-                        <div class="mn-test-content">
-                          <div class="mn-test-desc">Standard dummy text ever since the
-                            1500s, when an unknown printer took a galley of type and
-                            this is the lorem and scrambled it to make a type specimen.
+                    @forelse ($testimonials as $testimonial)
+                      <li class="mn-test-item">
+                        <img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="quotes">
+                        <div class="mn-test-inner">
+                          <div class="mn-test-img">
+                            <img alt="{{ $testimonial->name }}" title="{{ $testimonial->name }}" src="{{ $testimonial->image_url }}">
                           </div>
-                          <div class="mn-test-name">John Doe</div>
-                          <div class="mn-test-designation">(CFO)</div>
+                          <div class="mn-test-content">
+                            <div class="mn-test-desc">{{ $testimonial->content }}</div>
+                            <div class="mn-test-name">{{ $testimonial->name }}</div>
+                            <div class="mn-test-designation">({{ $testimonial->designation ?: 'Customer' }})</div>
+                          </div>
                         </div>
-                      </div>
-                      <img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom" alt="">
-                    </li>
-                    <li class="mn-test-item">
-                      <img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="">
-                      <div class="mn-test-inner">
-                        <div class="mn-test-img">
-                          <img alt="testimonial" title="testimonial" src="{{ asset('mantu/assets/img/user/3.jpg') }}">
+                        <img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom" alt="quotes">
+                      </li>
+                    @empty
+                      <li class="mn-test-item">
+                        <div class="mn-test-inner text-center py-4">
+                          <p class="text-muted">{{ __('No customer reviews yet.') }}</p>
                         </div>
-                        <div class="mn-test-content">
-                          <div class="mn-test-desc">When an unknown printer took a galley
-                            of type and scrambled it to make a type specimen Lorem Ipsum
-                            has been the industry's and ever since to the 1500s, </div>
-                          <div class="mn-test-name">Nency Lykra</div>
-                          <div class="mn-test-designation">(Manager)</div>
-                        </div>
-                      </div>
-                      <img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom" alt="">
-                    </li>
+                      </li>
+                    @endforelse
                   </ul>
                 </div>
                 <span class="mn-testi-shape-2"></span>

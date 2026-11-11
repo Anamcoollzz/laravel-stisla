@@ -7,7 +7,47 @@
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', $blog->title . ' - Blog')
+@section('meta')
+  @php
+    $siteName = \App\Models\Setting::getValue('site_title') ?: config('app.name', 'Stisla');
+    $metaTitle = $blog->title . ' — ' . $siteName;
+    $metaDesc = Str::limit(strip_tags($blog->short_description ?: $blog->content), 160);
+    $metaKeywords = implode(', ', array_filter([$blog->category, 'blog', 'ecommerce', Str::slug($blog->title, ' ')]));
+    $canonicalUrl = route('ecommerce.blogs.detail', $blog->slug);
+    $favicon = \App\Models\Setting::getValue('site_favicon');
+    $faviconUrl = ($favicon && \Illuminate\Support\Facades\Storage::disk('public')->exists($favicon))
+        ? \Illuminate\Support\Facades\Storage::disk('public')->url($favicon)
+        : (file_exists(public_path('mantu/assets/img/favicon/favicon.png')) ? asset('mantu/assets/img/favicon/favicon.png') : asset('favicon.ico'));
+  @endphp
+  <title>{{ $metaTitle }}</title>
+  <meta name="description" content="{{ $metaDesc }}">
+  <meta name="keywords" content="{{ $metaKeywords }}">
+  <meta name="author" content="{{ $blog->author_name ?: $siteName }}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ $canonicalUrl }}">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{{ $faviconUrl }}">
+  <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
+  <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="{{ $siteName }}">
+  <meta property="og:title" content="{{ $blog->title }}">
+  <meta property="og:description" content="{{ $metaDesc }}">
+  <meta property="og:url" content="{{ $canonicalUrl }}">
+  <meta property="og:image" content="{{ $blog->image_url }}">
+  <meta property="article:published_time" content="{{ $blog->published_at ? $blog->published_at->toIso8601String() : $blog->created_at->toIso8601String() }}">
+  <meta property="article:section" content="{{ $blog->category ?? 'General' }}">
+  <meta property="article:author" content="{{ $blog->author_name ?: $siteName }}">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ $blog->title }}">
+  <meta name="twitter:description" content="{{ $metaDesc }}">
+  <meta name="twitter:image" content="{{ $blog->image_url }}">
+@endsection
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -146,10 +186,20 @@
 								@csrf
 								<input type="hidden" name="parent_id" id="comment-parent-id" value="{{ old('parent_id') }}">
 
+								@auth
+									<div class="mb-3 p-3 bg-light rounded d-flex align-items-center">
+										<img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
+										<div>
+											<span class="small text-muted d-block">{{ __('Posting comment as logged in user:') }}</span>
+											<strong class="text-dark">{{ auth()->user()->name }}</strong> <span class="text-muted small">({{ auth()->user()->email }})</span>
+										</div>
+									</div>
+								@endauth
+
 								<div class="row">
 									<div class="col-md-6">
 										<div class="mn-leave-form">
-											<input type="text" name="name" placeholder="Full Name" value="{{ old('name', auth()->user()?->name) }}" required>
+											<input type="text" name="name" placeholder="Full Name" value="{{ old('name', auth()->user()?->name) }}" {{ auth()->check() ? 'readonly style=background-color:#f8f9fa;' : '' }} required>
 										</div>
 										@error('name')
 											<small class="text-danger d-block mt-1">{{ $message }}</small>
@@ -157,7 +207,7 @@
 									</div>
 									<div class="col-md-6">
 										<div class="mn-leave-form">
-											<input type="email" name="email" placeholder="Email Address" value="{{ old('email', auth()->user()?->email) }}" required>
+											<input type="email" name="email" placeholder="Email Address" value="{{ old('email', auth()->user()?->email) }}" {{ auth()->check() ? 'readonly style=background-color:#f8f9fa;' : '' }} required>
 										</div>
 										@error('email')
 											<small class="text-danger d-block mt-1">{{ $message }}</small>

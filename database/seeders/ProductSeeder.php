@@ -1303,6 +1303,7 @@ class ProductSeeder extends Seeder
                 'is_trending' => $item['is_trending'],
                 'is_new' => $item['is_new'],
                 'is_sale' => $item['is_sale'],
+                'is_deal' => $item['is_deal'] ?? false,
             ];
 
             if ($existing) {

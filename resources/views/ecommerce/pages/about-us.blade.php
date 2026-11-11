@@ -1,5 +1,6 @@
 @php
   $ourTeams = $ourTeams ?? \App\Models\OurTeam::query()->active()->orderBy('order')->latest('id')->get();
+  $testimonials = $testimonials ?? \App\Models\Testimonial::query()->active()->orderBy('order')->latest('id')->get();
   $about = $about ?? \App\Models\Setting::getAboutData();
   $facts = $facts ?? [
       'vendors' => \App\Models\ProductVendor::count(),
@@ -197,59 +198,28 @@
 							</div>
 							<div class="mn-test-outer mn-testimonials">
 								<ul class="mn-testimonial-slider owl-carousel">
-									<li class="mn-test-item">
-										<img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top"
-											alt="user">
-										<div class="mn-test-inner">
-											<div class="mn-test-img">
-												<img alt="testimonial" title="testimonial" src="{{ asset('mantu/assets/img/user/1.jpg') }}">
-											</div>
-											<div class="mn-test-content">
-												<div class="mn-test-desc">Lorem Ipsum is simply dummy text of
-													the printing and industry. Lorem Ipsum has been the
-													industry's standard dummy text ever since the 1500s.</div>
-												<div class="mn-test-name">Mariya Klinton</div>
-												<div class="mn-test-designation">(CEO)</div>
-											</div>
-										</div>
-										<img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom"
-											alt="">
-									</li>
-									<li class="mn-test-item ">
-										<img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="">
-										<div class="mn-test-inner">
-											<div class="mn-test-img">
-												<img alt="testimonial" title="testimonial" src="{{ asset('mantu/assets/img/user/2.jpg') }}">
-											</div>
-											<div class="mn-test-content">
-												<div class="mn-test-desc">Standard dummy text ever since the
-													1500s, when an unknown printer took a galley of type and
-													this is the lorem and scrambled it to make a type specimen.
+									@forelse ($testimonials as $testimonial)
+										<li class="mn-test-item">
+											<img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="quotes">
+											<div class="mn-test-inner">
+												<div class="mn-test-img">
+													<img alt="{{ $testimonial->name }}" title="{{ $testimonial->name }}" src="{{ $testimonial->image_url }}">
 												</div>
-												<div class="mn-test-name">John Doe</div>
-												<div class="mn-test-designation">(CFO)</div>
+												<div class="mn-test-content">
+													<div class="mn-test-desc">{{ $testimonial->content }}</div>
+													<div class="mn-test-name">{{ $testimonial->name }}</div>
+													<div class="mn-test-designation">({{ $testimonial->designation ?: 'Customer' }})</div>
+												</div>
 											</div>
-										</div>
-										<img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom"
-											alt="">
-									</li>
-									<li class="mn-test-item">
-										<img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="">
-										<div class="mn-test-inner">
-											<div class="mn-test-img">
-												<img alt="testimonial" title="testimonial" src="{{ asset('mantu/assets/img/user/3.jpg') }}">
+											<img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom" alt="quotes">
+										</li>
+									@empty
+										<li class="mn-test-item">
+											<div class="mn-test-inner text-center py-4">
+												<p class="text-muted">{{ __('No customer reviews yet.') }}</p>
 											</div>
-											<div class="mn-test-content">
-												<div class="mn-test-desc">When an unknown printer took a galley
-													of type and scrambled it to make a type specimen Lorem Ipsum
-													has been the industry's and ever since to the 1500s, </div>
-												<div class="mn-test-name">Nency Lykra</div>
-												<div class="mn-test-designation">(Manager)</div>
-											</div>
-										</div>
-										<img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom"
-											alt="">
-									</li>
+										</li>
+									@endforelse
 								</ul>
 							</div>
 							<span class="mn-testi-shape-2"></span>

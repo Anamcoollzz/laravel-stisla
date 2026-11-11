@@ -17,7 +17,7 @@ class BlogCommentController extends Controller
     {
         Gate::authorize('blog-comments.view');
 
-        $query = BlogComment::query()->with(['blog', 'parent'])->latest('id');
+        $query = BlogComment::query()->with(['blog', 'parent', 'user'])->latest('id');
 
         if ($search = trim((string) $request->input('search'))) {
             $query->where(function ($q) use ($search) {
@@ -39,7 +39,7 @@ class BlogCommentController extends Controller
             }
         }
 
-        $comments = $query->paginate(15)->withQueryString();
+        $comments = $query->get();
 
         $stats = [
             'total' => BlogComment::count(),
@@ -57,7 +57,7 @@ class BlogCommentController extends Controller
     {
         Gate::authorize('blog-comments.view');
 
-        $blogComment->load(['blog', 'parent', 'replies']);
+        $blogComment->load(['blog', 'parent', 'replies.user', 'user']);
 
         return view('modules.blog-comments.show', compact('blogComment'));
     }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Blog;
 use App\Models\BlogComment;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -246,10 +247,13 @@ class BlogSeeder extends Seeder
 
             // Add sample comments to first few blogs if empty
             if ($blog->comments()->count() === 0 && in_array($blog->order, [1, 2, 3])) {
+                $sampleUser = User::first();
+
                 $c1 = BlogComment::create([
                     'blog_id' => $blog->id,
-                    'name' => 'John Deo',
-                    'email' => 'john.deo@example.com',
+                    'user_id' => $sampleUser?->id,
+                    'name' => $sampleUser ? $sampleUser->name : 'John Deo',
+                    'email' => $sampleUser ? $sampleUser->email : 'john.deo@example.com',
                     'comment' => 'Artikel yang sangat informatif dan bermanfaat! Tips strategi pemasarannya sangat relevan dan mudah diaplikasikan.',
                     'is_approved' => true,
                     'created_at' => now()->subDays(2),

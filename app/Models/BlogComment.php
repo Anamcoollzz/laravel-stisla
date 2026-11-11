@@ -15,6 +15,7 @@ class BlogComment extends Model
 
     protected $fillable = [
         'blog_id',
+        'user_id',
         'parent_id',
         'name',
         'email',
@@ -30,6 +31,14 @@ class BlogComment extends Model
         return [
             'is_approved' => 'boolean',
         ];
+    }
+
+    /**
+     * The registered user who wrote this comment (if logged in).
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -79,6 +88,10 @@ class BlogComment extends Model
     {
         return Attribute::make(
             get: function () {
+                if ($this->user_id && $this->user) {
+                    return $this->user->avatar_url;
+                }
+
                 $hash = md5(strtolower(trim($this->email ?? 'user@example.com')));
 
                 return "https://www.gravatar.com/avatar/{$hash}?s=120&d=mp";

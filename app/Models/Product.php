@@ -35,6 +35,7 @@ class Product extends Model
         'is_trending',
         'is_new',
         'is_sale',
+        'is_deal',
     ];
 
     /**
@@ -52,6 +53,7 @@ class Product extends Model
             'is_trending' => 'boolean',
             'is_new' => 'boolean',
             'is_sale' => 'boolean',
+            'is_deal' => 'boolean',
         ];
     }
 
@@ -232,6 +234,17 @@ class Product extends Model
     public function scopeSale(Builder $query): Builder
     {
         return $query->where('is_sale', true);
+    }
+
+    /**
+     * Scope deal products.
+     *
+     * @param  Builder<Product>  $query
+     * @return Builder<Product>
+     */
+    public function scopeDeal(Builder $query): Builder
+    {
+        return $query->where('is_deal', true);
     }
 
     /**

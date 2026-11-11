@@ -106,6 +106,7 @@ class ProductController extends Controller
         $data['is_trending'] = $request->boolean('is_trending');
         $data['is_new'] = $request->boolean('is_new');
         $data['is_sale'] = $request->boolean('is_sale');
+        $data['is_deal'] = $request->boolean('is_deal');
         $data['discount_percent'] = $data['discount_percent'] ?? 0;
 
         // Thumbnail file upload
@@ -193,6 +194,7 @@ class ProductController extends Controller
         $data['is_trending'] = $request->boolean('is_trending');
         $data['is_new'] = $request->boolean('is_new');
         $data['is_sale'] = $request->boolean('is_sale');
+        $data['is_deal'] = $request->boolean('is_deal');
         $data['discount_percent'] = $data['discount_percent'] ?? 0;
 
         // Thumbnail file upload
@@ -288,6 +290,7 @@ class ProductController extends Controller
             'is_trending' => $product->is_trending,
             'is_new' => $product->is_new,
             'is_sale' => $product->is_sale,
+            'is_deal' => $product->is_deal,
         ]);
 
         foreach ($product->images as $img) {

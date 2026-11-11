@@ -30,6 +30,7 @@ use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -209,6 +210,9 @@ Route::prefix('app')->group(function () {
         Route::resource('blog-comments', BlogCommentController::class)->only(['index', 'show', 'destroy'])->parameters([
             'blog-comments' => 'blogComment',
         ]);
+
+        Route::post('testimonials/{testimonial}/duplicate', [TestimonialController::class, 'duplicate'])->name('testimonials.duplicate');
+        Route::resource('testimonials', TestimonialController::class);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');

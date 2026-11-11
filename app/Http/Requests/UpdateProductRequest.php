@@ -51,6 +51,7 @@ class UpdateProductRequest extends FormRequest
             'is_trending' => ['nullable', 'boolean'],
             'is_new' => ['nullable', 'boolean'],
             'is_sale' => ['nullable', 'boolean'],
+            'is_deal' => ['nullable', 'boolean'],
         ];
     }
 }

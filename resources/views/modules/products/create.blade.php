@@ -457,7 +457,7 @@
                 </label>
               </div>
 
-              <div class="custom-control custom-switch">
+              <div class="custom-control custom-switch mb-2">
                 <input
                   type="checkbox"
                   class="custom-control-input"
@@ -469,6 +469,21 @@
                 <label class="custom-control-label" for="is_sale">
                   <span class="badge badge-danger font-weight-bold mr-1">{{ __('Sale') }}</span>
                   {{ __('Mark as On Sale') }}
+                </label>
+              </div>
+
+              <div class="custom-control custom-switch">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="is_deal"
+                  name="is_deal"
+                  value="1"
+                  @checked(old('is_deal'))
+                >
+                <label class="custom-control-label" for="is_deal">
+                  <span class="badge badge-primary font-weight-bold mr-1">{{ __('Deal') }}</span>
+                  {{ __('Mark as Day of the Deals') }}
                 </label>
               </div>
             </div>

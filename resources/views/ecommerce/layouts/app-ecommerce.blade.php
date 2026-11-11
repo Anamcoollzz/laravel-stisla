@@ -9,7 +9,11 @@
 	<meta name="user-authenticated" content="{{ auth()->check() ? '1' : '0' }}">
 	<meta name="login-url" content="{{ route('ecommerce.login') }}">
 
-	@include('partials.seo')
+	@hasSection('meta')
+		@yield('meta')
+	@else
+		@include('partials.seo')
+	@endif
 
 	<!-- Icon CSS -->
 	<link href="{{ asset('mantu/assets/css/vendor/materialdesignicons.min.css') }}" rel="stylesheet">

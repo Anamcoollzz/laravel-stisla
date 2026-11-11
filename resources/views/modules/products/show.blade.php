@@ -87,6 +87,9 @@
               @if ($product->is_sale)
                 <span class="badge badge-danger font-weight-bold mr-1">{{ __('On Sale') }}</span>
               @endif
+              @if ($product->is_deal)
+                <span class="badge badge-primary font-weight-bold mr-1">{{ __('Day of the Deals') }}</span>
+              @endif
             </div>
 
             <!-- Price & Stock Summary -->

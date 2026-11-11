@@ -101,6 +101,12 @@ class BlogController extends Controller
         $validated['blog_id'] = $blog->id;
         $validated['is_approved'] = true;
 
+        if (auth()->check()) {
+            $validated['user_id'] = auth()->id();
+            $validated['name'] = $validated['name'] ?: auth()->user()->name;
+            $validated['email'] = $validated['email'] ?: auth()->user()->email;
+        }
+
         BlogComment::create($validated);
 
         return redirect()
