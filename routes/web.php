@@ -28,6 +28,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SppPaymentController;
+use App\Http\Controllers\StoreServiceController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
@@ -218,6 +219,10 @@ Route::prefix('app')->group(function () {
         Route::patch('product-reviews/{productReview}/toggle-approval', [ProductReviewController::class, 'toggleApproval'])->name('product-reviews.toggleApproval');
         Route::resource('product-reviews', ProductReviewController::class)->only(['index', 'show', 'destroy'])->parameters([
             'product-reviews' => 'productReview',
+        ]);
+
+        Route::resource('store-services', StoreServiceController::class)->parameters([
+            'store-services' => 'storeService',
         ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');

@@ -10,6 +10,7 @@ use App\Models\ProductCart;
 use App\Models\ProductCategory;
 use App\Models\ProductWishlist;
 use App\Models\Setting;
+use App\Models\StoreService;
 use App\Models\Testimonial;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -229,9 +230,18 @@ class AppServiceProvider extends ServiceProvider
                 }
 
                 $view->with('dealProducts', $dealProducts);
+
+                $instaProducts = Product::query()
+                    ->active()
+                    ->inRandomOrder()
+                    ->take(8)
+                    ->get();
+
+                $view->with('instaProducts', $instaProducts);
             } else {
                 $view->with('newArrivalProducts', collect())
-                    ->with('dealProducts', collect());
+                    ->with('dealProducts', collect())
+                    ->with('instaProducts', collect());
             }
 
             if (Schema::hasTable('testimonials')) {
@@ -244,6 +254,18 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('testimonials', $testimonials);
             } else {
                 $view->with('testimonials', collect());
+            }
+
+            if (Schema::hasTable('store_services')) {
+                $storeServices = StoreService::query()
+                    ->active()
+                    ->orderBy('order')
+                    ->latest('id')
+                    ->get();
+
+                $view->with('storeServices', $storeServices);
+            } else {
+                $view->with('storeServices', collect());
             }
         });
     }

@@ -59,12 +59,18 @@ class ProductBanner extends Model
      */
     public function getImageUrlAttribute(): string
     {
-        if ($this->image && Storage::disk('public')->exists($this->image)) {
-            return Storage::disk('public')->url($this->image);
-        }
+        if ($this->image) {
+            if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+                return $this->image;
+            }
 
-        if ($this->image && file_exists(public_path($this->image))) {
-            return asset($this->image);
+            if (Storage::disk('public')->exists($this->image)) {
+                return Storage::disk('public')->url($this->image);
+            }
+
+            if (file_exists(public_path($this->image))) {
+                return asset($this->image);
+            }
         }
 
         $fallbackIndex = (($this->order ?: $this->id ?: 1) % 4) ?: 4;
