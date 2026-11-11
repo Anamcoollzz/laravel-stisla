@@ -73,6 +73,12 @@ class ProductBanner extends Model
             }
         }
 
+        if ($this->position === 'modern') {
+            $fallbackIndex = (($this->order ?: $this->id ?: 1) % 2) ?: 2;
+
+            return asset("mantu/assets/img/banner/{$fallbackIndex}.jpg");
+        }
+
         $fallbackIndex = (($this->order ?: $this->id ?: 1) % 4) ?: 4;
 
         return asset("mantu/assets/img/hero/{$fallbackIndex}.jpg");
@@ -98,5 +104,16 @@ class ProductBanner extends Model
     public function scopeHero(Builder $query): Builder
     {
         return $query->where('position', 'hero');
+    }
+
+    /**
+     * Scope modern middle slider banners.
+     *
+     * @param  Builder<ProductBanner>  $query
+     * @return Builder<ProductBanner>
+     */
+    public function scopeModern(Builder $query): Builder
+    {
+        return $query->where('position', 'modern');
     }
 }

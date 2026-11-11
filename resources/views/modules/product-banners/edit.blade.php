@@ -74,6 +74,7 @@
                     <label for="position">{{ __('Position') }} <span class="text-danger">*</span></label>
                     <select id="position" name="position" class="form-control @error('position') is-invalid @enderror">
                       <option value="hero" @selected(old('position', $banner->position) === 'hero')>{{ __('Hero Slider (Homepage)') }}</option>
+                      <option value="modern" @selected(old('position', $banner->position) === 'modern')>{{ __('Banner Slider (Homepage Middle)') }}</option>
                     </select>
                     @error('position')
                       <div class="invalid-feedback">{{ $message }}</div>

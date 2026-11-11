@@ -176,9 +176,23 @@ class AppServiceProvider extends ServiceProvider
                     ->latest('id')
                     ->get();
 
-                $view->with('heroBanners', $heroBanners);
+                $modernBanners = ProductBanner::query()
+                    ->active()
+                    ->modern()
+                    ->with('product.category')
+                    ->orderBy('order')
+                    ->latest('id')
+                    ->get();
+
+                if ($modernBanners->isEmpty()) {
+                    $modernBanners = $heroBanners;
+                }
+
+                $view->with('heroBanners', $heroBanners)
+                    ->with('modernBanners', $modernBanners);
             } else {
-                $view->with('heroBanners', collect());
+                $view->with('heroBanners', collect())
+                    ->with('modernBanners', collect());
             }
 
             if (Schema::hasTable('product_categories')) {

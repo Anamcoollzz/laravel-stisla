@@ -1,5 +1,9 @@
 @php
   $heroBanners = $heroBanners ?? \App\Models\ProductBanner::query()->active()->hero()->with('product')->orderBy('order')->latest('id')->get();
+  $modernBanners = $modernBanners ?? \App\Models\ProductBanner::query()->active()->modern()->with('product.category')->orderBy('order')->latest('id')->get();
+  if ($modernBanners->isEmpty()) {
+      $modernBanners = $heroBanners;
+  }
   $featuredCategories = $featuredCategories ?? \App\Models\ProductCategory::query()
       ->where('is_active', true)
       ->whereHas('products', fn ($q) => $q->active())
@@ -519,48 +523,40 @@
         @endif
 
         <!-- Banner slider -->
-        <section class="mn-banner p-tb-15">
-          <div class="row">
-            <div class="col-12" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-              <div class="mn-modern-banner owl-carousel">
-                <div class="modern-banner">
-                  <div class="mn-banner-img img-1"></div>
-                  <div class="mn-banner-contact banner-animation">
-                    <div class="inner-banner">
-                      <h3>WOMEN'S</h3>
-                      <h4>Fashion COLLECTION</h4>
+        @if ($modernBanners->isNotEmpty())
+          <section class="mn-banner p-tb-15">
+            <div class="row">
+              <div class="col-12" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                <div class="mn-modern-banner owl-carousel">
+                  @foreach ($modernBanners as $banner)
+                    <div class="modern-banner">
+                      <div class="mn-banner-img img-{{ ($loop->index % 2) + 1 }}" style="background-image: url('{{ $banner->image_url }}');"></div>
+                      <div class="mn-banner-contact banner-animation">
+                        <div class="inner-banner">
+                          @if ($banner->badge_label)
+                            <h3>{!! strip_tags($banner->badge_label) !!}</h3>
+                          @endif
+                          <h4>{!! strip_tags($banner->title, '<br>') !!}</h4>
+                        </div>
+                        <div class="inner-text">
+                          @if ($banner->product?->category)
+                            <span class="bnr-text">{{ $banner->product->category->name }}</span>
+                          @endif
+                          @if ($banner->subtitle)
+                            <p>{{ $banner->subtitle }}</p>
+                          @endif
+                        </div>
+                        <div class="banner-btn">
+                          <a href="{{ $banner->target_url }}" class="mn-btn-1"><span>{{ $banner->button_text ?: __('Shop Now') }}</span></a>
+                        </div>
+                      </div>
                     </div>
-                    <div class="inner-text">
-                      <span class="bnr-text">Summer</span>
-                      <p>New Stylish Shirts, Pants & Accessries.</p>
-                    </div>
-                    <div class="banner-btn">
-                      <a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-btn-1"><span>Book
-                          Now</span></a>
-                    </div>
-                  </div>
-                </div>
-                <div class="modern-banner">
-                  <div class="mn-banner-img img-2"></div>
-                  <div class="mn-banner-contact banner-animation">
-                    <div class="inner-banner">
-                      <h3>WOMEN'S</h3>
-                      <h4>goggles COLLECTION</h4>
-                    </div>
-                    <div class="inner-text">
-                      <span class="bnr-text">Summer</span>
-                      <p>New Stylish Shirts, Pants & Accessries.</p>
-                    </div>
-                    <div class="banner-btn">
-                      <a href="{{ route('ecommerce.shop-right-sidebar.html') }}" class="mn-btn-1"><span>Book
-                          Now</span></a>
-                    </div>
-                  </div>
+                  @endforeach
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        @endif
 
         <!-- Deal Section -->
         <section class="mn-new-product p-tb-15">

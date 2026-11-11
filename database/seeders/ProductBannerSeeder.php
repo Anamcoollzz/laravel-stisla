@@ -74,6 +74,30 @@ class ProductBannerSeeder extends Seeder
                 'order' => 4,
                 'is_active' => true,
             ],
+            [
+                'title' => 'Fashion COLLECTION',
+                'subtitle' => 'New Stylish Shirts, Pants & Accessories.',
+                'badge_label' => "WOMEN'S",
+                'button_text' => 'Book Now',
+                'product_id' => $womenProduct?->id,
+                'button_url' => $womenProduct ? route('ecommerce.products.detail', $womenProduct->slug, false) : '/ecommerce/products',
+                'image' => 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&h=700&auto=format&fit=crop&q=80',
+                'position' => 'modern',
+                'order' => 1,
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Goggles COLLECTION',
+                'subtitle' => 'New Stylish Eyewear, Shades & Accessories.',
+                'badge_label' => "WOMEN'S",
+                'button_text' => 'Book Now',
+                'product_id' => $cosmeticProduct?->id,
+                'button_url' => $cosmeticProduct ? route('ecommerce.products.detail', $cosmeticProduct->slug, false) : '/ecommerce/products',
+                'image' => 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=1200&h=700&auto=format&fit=crop&q=80',
+                'position' => 'modern',
+                'order' => 2,
+                'is_active' => true,
+            ],
         ];
 
         foreach ($banners as $banner) {
