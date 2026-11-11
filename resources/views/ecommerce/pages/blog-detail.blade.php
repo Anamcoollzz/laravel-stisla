@@ -150,8 +150,8 @@
 		<!-- Sidebar Area Start -->
 		<div class="mn-blogs-sidebar mn-blogs-leftside col-lg-4 col-md-12 m-t-991">
 			<div class="mn-blog-search">
-				<form class="mn-blog-search-form" action="javascript:void(0)">
-					<input class="form-control" placeholder="Search Our Blog" type="text">
+				<form class="mn-blog-search-form" action="{{ route('ecommerce.blogs.index') }}" method="GET">
+					<input class="form-control" name="search" placeholder="Search Our Blog" type="text" value="{{ request('search') }}">
 					<button class="submit" type="submit"><i class="ri-search-line"></i></button>
 				</form>
 			</div>
@@ -195,7 +195,7 @@
 								@foreach ($categories as $cat)
 									<li>
 										<div class="mn-sidebar-block-item d-flex justify-content-between align-items-center py-1">
-											<span class="text-dark font-weight-bold">{{ $cat->category }}</span>
+											<a href="{{ route('ecommerce.blogs.index', ['category' => $cat->category]) }}" class="text-dark font-weight-bold">{{ $cat->category }}</a>
 											<span class="badge bg-light text-muted border">{{ $cat->count }}</span>
 										</div>
 									</li>

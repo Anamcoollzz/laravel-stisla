@@ -79,8 +79,17 @@ Route::get('/ecommerce-pages/register', [EcommerceAuthController::class, 'showRe
 Route::get('/ecommerce/products/{slug}', [EcommerceProductController::class, 'show'])
     ->name('ecommerce.products.detail');
 
+Route::get('/ecommerce/blogs', [EcommerceBlogController::class, 'index'])
+    ->name('ecommerce.blogs.index');
+
 Route::get('/ecommerce/blog/{slug}', [EcommerceBlogController::class, 'show'])
     ->name('ecommerce.blogs.detail');
+
+Route::get('/ecommerce-pages/blog-full-width.html', [EcommerceBlogController::class, 'index'])
+    ->name('ecommerce.blog-full-width.html');
+
+Route::get('/ecommerce-pages/blog-full-width', [EcommerceBlogController::class, 'index'])
+    ->name('ecommerce.blog-full-width');
 
 Route::get('/ecommerce-pages/blog-detail-right-sidebar.html', function () {
     $firstBlog = Blog::query()->active()->orderBy('order')->first();
@@ -120,7 +129,6 @@ Route::get('/ecommerce-pages/about-us', $aboutUsHandler);
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [
     'blog-detail-full-width',
-    'blog-full-width',
     'blog-right-sidebar',
     'checkout',
     'compare',
