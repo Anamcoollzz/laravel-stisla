@@ -41,6 +41,7 @@ class RolePermissionSeeder extends Seeder
             'blogs' => ['view', 'create', 'edit', 'delete'],
             'blog-comments' => ['view', 'edit', 'delete'],
             'testimonials' => ['view', 'create', 'edit', 'delete'],
+            'product-reviews' => ['view', 'edit', 'delete'],
             'chat' => ['view', 'create', 'delete'],
             'backup' => ['view', 'create', 'download', 'delete'],
             'settings' => ['view', 'edit'],

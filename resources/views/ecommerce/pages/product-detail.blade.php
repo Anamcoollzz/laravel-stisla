@@ -1,6 +1,10 @@
 @php
-  $product = $product ?? \App\Models\Product::with(['category', 'brand', 'vendor', 'size', 'color', 'images'])->first();
+  $product = $product ?? \App\Models\Product::with(['category', 'brand', 'vendor', 'size', 'color', 'images'])->withAvg('approvedReviews', 'rating')->withCount('approvedReviews')->first();
+  $reviews = $reviews ?? ($product ? $product->approvedReviews()->with('user')->get() : collect());
+  $randomProducts = $randomProducts ?? \App\Models\Product::query()->active()->when($product, fn($q) => $q->where('id', '!=', $product->id))->withAvg('approvedReviews', 'rating')->inRandomOrder()->take(6)->get();
   $relatedProducts = $relatedProducts ?? ($product ? \App\Models\Product::query()->active()->where('id', '!=', $product->id)->with(['category', 'brand', 'size', 'color'])->take(8)->get() : collect());
+  $avgRating = $product ? ($product->average_rating ?: 0) : 0;
+  $reviewCount = $reviews->count();
   $sidebarCategories = $sidebarCategories ?? \App\Models\ProductCategory::query()->whereNull('parent_id')->where('is_active', true)->withCount('products')->get()->unique('name')->values();
   $sidebarBrands = $sidebarBrands ?? \App\Models\ProductBrand::query()->orderBy('name')->get()->unique('name')->values();
   $sidebarSizes = $sidebarSizes ?? \App\Models\ProductSize::query()->orderBy('id')->get()->unique('name')->values();
@@ -135,16 +139,16 @@
                             </h5>
                             <div class="mn-single-rating-wrap">
                               <div class="mn-single-rating mn-pro-rating">
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill"></i>
-                                <i class="ri-star-fill grey"></i>
+                                @php $roundedAvg = round($avgRating); @endphp
+                                @for ($i = 1; $i <= 5; $i++)
+                                  <i class="ri-star-fill {{ $i <= $roundedAvg ? '' : 'grey' }}"></i>
+                                @endfor
                               </div>
                               <span class="mn-read-review">
-                                |&nbsp;&nbsp;<a href="#mn-spt-nav-review"
-                                  >4.8 / 5.0 Rating</a
-                                >
+                                |&nbsp;&nbsp;<a href="#mn-spt-nav-review" onclick="$('#review-tab').tab('show');">
+                                  {{ $avgRating > 0 ? number_format($avgRating, 1) . ' / 5.0 Rating' : __('No ratings yet') }}
+                                  ({{ $reviewCount }} {{ __('reviews') }})
+                                </a>
                               </span>
                             </div>
 
@@ -290,94 +294,39 @@
                   <!-- Add More and get discount content Start -->
                   <div class="single-add-more m-tb-30">
                     <div class="mn-add-more-slider owl-carousel">
-                      <div class="add-more-item">
-                        <a href="javascript:void(0)" class="mn-btn-2"
-                          ><span>+</span></a
-                        >
-                        <div class="add-more-img">
-                          <img src="{{ asset('mantu/assets/img/product/1.jpg') }}" alt="product" />
+                      @foreach ($randomProducts as $rndProduct)
+                        @php
+                          $rndRating = round((float) ($rndProduct->approved_reviews_avg_rating ?? 0));
+                        @endphp
+                        <div class="add-more-item">
+                          <a href="javascript:void(0)" class="mn-btn-2 mn-add-cart" data-product-id="{{ $rndProduct->id }}" title="Add To Cart">
+                            <span>+</span>
+                          </a>
+                          <div class="add-more-img">
+                            <a href="{{ route('ecommerce.products.detail', $rndProduct->slug) }}">
+                              <img src="{{ $rndProduct->thumbnail_url }}" alt="{{ $rndProduct->title }}" style="object-fit: cover;" />
+                            </a>
+                          </div>
+                          <div class="add-more-info">
+                            <h5>
+                              <a href="{{ route('ecommerce.products.detail', $rndProduct->slug) }}" class="text-dark">
+                                {{ Str::limit($rndProduct->title, 26) }}
+                              </a>
+                            </h5>
+                            <span class="mn-pro-rating">
+                              @for ($i = 1; $i <= 5; $i++)
+                                <i class="ri-star-fill {{ $i <= $rndRating ? '' : 'grey' }}"></i>
+                              @endfor
+                            </span>
+                            <span class="mn-price">
+                              <span class="new-price">Rp {{ number_format($rndProduct->final_price, 0, ',', '.') }}</span>
+                              @if ($rndProduct->discount_percent > 0)
+                                <span class="old-price">Rp {{ number_format($rndProduct->price, 0, ',', '.') }}</span>
+                              @endif
+                            </span>
+                          </div>
                         </div>
-                        <div class="add-more-info">
-                          <h5>Honey Spiced Nuts</h5>
-                          <span class="mn-pro-rating">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill grey"></i>
-                            <i class="ri-star-fill grey"></i>
-                          </span>
-                          <span class="mn-price">
-                            <span class="new-price">$32.00</span>
-                            <span class="old-price">$45.00</span>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="add-more-item">
-                        <a href="javascript:void(0)" class="mn-btn-2"
-                          ><span>+</span></a
-                        >
-                        <div class="add-more-img">
-                          <img src="{{ asset('mantu/assets/img/product/31.jpg') }}" alt="product" />
-                        </div>
-                        <div class="add-more-info">
-                          <h5>Dates Value Pouch</h5>
-                          <span class="mn-pro-rating">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                          </span>
-                          <span class="mn-price">
-                            <span class="new-price">$56.00</span>
-                            <span class="old-price">$60.00</span>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="add-more-item">
-                        <a href="javascript:void(0)" class="mn-btn-2"
-                          ><span>+</span></a
-                        >
-                        <div class="add-more-img">
-                          <img src="{{ asset('mantu/assets/img/product/17.jpg') }}" alt="product" />
-                        </div>
-                        <div class="add-more-info">
-                          <h5>Graps Mix Snack</h5>
-                          <span class="mn-pro-rating">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill grey"></i>
-                            <i class="ri-star-fill grey"></i>
-                            <i class="ri-star-fill grey"></i>
-                          </span>
-                          <span class="mn-price">
-                            <span class="new-price">$28.00</span>
-                            <span class="old-price">$35.00</span>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="add-more-item">
-                        <a href="javascript:void(0)" class="mn-btn-2"
-                          ><span>+</span></a
-                        >
-                        <div class="add-more-img">
-                          <img src="{{ asset('mantu/assets/img/product/35.jpg') }}" alt="product" />
-                        </div>
-                        <div class="add-more-info">
-                          <h5>Roasted Almonds Pack</h5>
-                          <span class="mn-pro-rating">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                          </span>
-                          <span class="mn-price">
-                            <span class="new-price">$16.00</span>
-                            <span class="old-price">$23.00</span>
-                          </span>
-                        </div>
-                      </div>
+                      @endforeach
                     </div>
                   </div>
                   <!-- Single product tab start -->
@@ -438,7 +387,7 @@
                               aria-controls="mn-spt-nav-review"
                               aria-selected="false"
                             >
-                              Reviews
+                              Reviews ({{ $reviewCount }})
                             </button>
                           </li>
                         </ul>
@@ -526,105 +475,94 @@
                         </div>
                         <div id="mn-spt-nav-review" class="tab-pane fade">
                           <div class="row">
+                            @if (session('review_success'))
+                              <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                                {{ session('review_success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                            @endif
+
+                            @if ($errors->any())
+                              <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <ul class="mb-0 ps-3">
+                                  @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                  @endforeach
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                            @endif
+
                             <div class="mn-t-review-wrapper mt-0">
-                              <div class="mn-t-review-item">
-                                <div class="mn-t-review-avtar">
-                                  <img src="{{ asset('mantu/assets/img/user/1.jpg') }}" alt="user" />
-                                </div>
-                                <div class="mn-t-review-content">
-                                  <div class="mn-t-review-top">
-                                    <div class="mn-t-review-name">
-                                      Mariya Lykra
-                                    </div>
-                                    <div
-                                      class="mn-t-review-rating mn-pro-rating"
-                                    >
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill grey"></i>
-                                    </div>
+                              @forelse ($reviews as $review)
+                                <div class="mn-t-review-item">
+                                  <div class="mn-t-review-avtar">
+                                    <img src="{{ $review->avatar_url }}" alt="{{ $review->name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;" />
                                   </div>
-                                  <div class="mn-t-review-bottom">
-                                    <p>
-                                      Lorem Ipsum is simply dummy text of the
-                                      printing and typesetting industry. Lorem
-                                      Ipsum has been the industry's standard
-                                      dummy text ever since the 1500s, when an
-                                      unknown printer took a galley of type and
-                                      scrambled it to make a type specimen.
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="mn-t-review-item">
-                                <div class="mn-t-review-avtar">
-                                  <img src="{{ asset('mantu/assets/img/user/2.jpg') }}" alt="user" />
-                                </div>
-                                <div class="mn-t-review-content">
-                                  <div class="mn-t-review-top">
-                                    <div class="mn-t-review-name">
-                                      Moris Willson
+                                  <div class="mn-t-review-content">
+                                    <div class="mn-t-review-top">
+                                      <div class="mn-t-review-name">
+                                        {{ $review->name }}
+                                        <span class="text-muted ms-2" style="font-weight: normal; font-size: 12px;">
+                                          {{ $review->created_at?->format('d M Y') }}
+                                        </span>
+                                      </div>
+                                      <div class="mn-t-review-rating mn-pro-rating">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                          <i class="ri-star-fill {{ $i <= $review->rating ? '' : 'grey' }}"></i>
+                                        @endfor
+                                      </div>
                                     </div>
-                                    <div
-                                      class="mn-t-review-rating mn-pro-rating"
-                                    >
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill grey"></i>
-                                      <i class="ri-star-fill grey"></i>
+                                    <div class="mn-t-review-bottom">
+                                      <p>{{ $review->comment }}</p>
                                     </div>
                                   </div>
-                                  <div class="mn-t-review-bottom">
-                                    <p>
-                                      Lorem Ipsum has been the industry's
-                                      standard dummy text ever since the 1500s,
-                                      when an unknown printer took a galley of
-                                      type and scrambled it to make a type
-                                      specimen.
-                                    </p>
-                                  </div>
                                 </div>
-                              </div>
+                              @empty
+                                <div class="text-center py-4 text-muted">
+                                  <p class="mb-0">{{ __('Belum ada ulasan untuk produk ini. Jadilah yang pertama mengulas!') }}</p>
+                                </div>
+                              @endforelse
                             </div>
-                            <div class="mn-ratting-content">
+
+                            <div class="mn-ratting-content mt-4">
                               <h3>Add a Review</h3>
                               <div class="mn-ratting-form">
-                                <form action="#">
+                                <form action="{{ $product ? route('ecommerce.products.review.store', $product->slug) : '#' }}" method="POST">
+                                  @csrf
+                                  <input type="hidden" name="rating" id="review-rating-input" value="{{ old('rating', 5) }}">
                                   <div class="mn-ratting-star">
                                     <span>Your rating:</span>
-                                    <div
-                                      class="mn-t-review-rating mn-pro-rating"
-                                    >
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill"></i>
-                                      <i class="ri-star-fill grey"></i>
-                                      <i class="ri-star-fill grey"></i>
-                                      <i class="ri-star-fill grey"></i>
+                                    <div class="mn-t-review-rating mn-pro-rating" id="interactive-rating-stars" style="cursor: pointer;">
+                                      @for ($i = 1; $i <= 5; $i++)
+                                        <i class="ri-star-fill rating-star-item {{ $i <= old('rating', 5) ? '' : 'grey' }}" data-value="{{ $i }}"></i>
+                                      @endfor
                                     </div>
                                   </div>
                                   <div class="mn-ratting-input">
                                     <input
-                                      name="your-name"
-                                      placeholder="Name"
+                                      name="name"
+                                      placeholder="Name*"
                                       type="text"
+                                      value="{{ old('name', auth()->check() ? auth()->user()->name : '') }}"
+                                      required
                                     />
                                   </div>
                                   <div class="mn-ratting-input">
                                     <input
-                                      name="your-email"
+                                      name="email"
                                       placeholder="Email*"
                                       type="email"
+                                      value="{{ old('email', auth()->check() ? auth()->user()->email : '') }}"
                                       required
                                     />
                                   </div>
                                   <div class="mn-ratting-input form-submit">
                                     <textarea
-                                      name="your-commemt"
-                                      placeholder="Enter Your Comment"
-                                    ></textarea>
+                                      name="comment"
+                                      placeholder="Enter Your Comment*"
+                                      required
+                                    >{{ old('comment') }}</textarea>
                                     <button
                                       class="mn-btn-2"
                                       type="submit"
@@ -930,6 +868,32 @@
         }
       });
     });
+
+    // Interactive Rating Stars
+    const starContainer = document.getElementById('interactive-rating-stars');
+    const ratingInput = document.getElementById('review-rating-input');
+    if (starContainer && ratingInput) {
+      const stars = starContainer.querySelectorAll('.rating-star-item');
+      stars.forEach(function (star) {
+        star.addEventListener('click', function () {
+          const val = parseInt(this.dataset.value, 10);
+          ratingInput.value = val;
+          stars.forEach(function (s) {
+            const sVal = parseInt(s.dataset.value, 10);
+            s.classList.toggle('grey', sVal > val);
+          });
+        });
+      });
+    }
+
+    @if (session('review_success') || $errors->any())
+      const reviewTabTrigger = document.getElementById('review-tab');
+      if (reviewTabTrigger && typeof bootstrap !== 'undefined') {
+        const tab = new bootstrap.Tab(reviewTabTrigger);
+        tab.show();
+        reviewTabTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    @endif
   })();
 </script>
 @endpush

@@ -118,6 +118,42 @@ class Product extends Model
     }
 
     /**
+     * Product reviews relation.
+     *
+     * @return HasMany<ProductReview, $this>
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class)->latest('id');
+    }
+
+    /**
+     * Approved product reviews relation.
+     *
+     * @return HasMany<ProductReview, $this>
+     */
+    public function approvedReviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class)->where('is_approved', true)->latest('id');
+    }
+
+    /**
+     * Average rating accessor.
+     */
+    protected function averageRating(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (array_key_exists('approved_reviews_avg_rating', $this->attributes)) {
+                    return round((float) ($this->attributes['approved_reviews_avg_rating'] ?? 0), 1);
+                }
+
+                return round((float) ($this->approvedReviews()->avg('rating') ?? 0), 1);
+            }
+        );
+    }
+
+    /**
      * Cart items relation.
      *
      * @return HasMany<ProductCart, $this>

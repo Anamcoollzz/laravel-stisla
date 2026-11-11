@@ -79,6 +79,9 @@ Route::get('/ecommerce-pages/register', [EcommerceAuthController::class, 'showRe
 Route::get('/ecommerce/products/{slug}', [EcommerceProductController::class, 'show'])
     ->name('ecommerce.products.detail');
 
+Route::post('/ecommerce/products/{slug}/review', [EcommerceProductController::class, 'storeReview'])
+    ->name('ecommerce.products.review.store');
+
 Route::get('/ecommerce/blogs', [EcommerceBlogController::class, 'index'])
     ->name('ecommerce.blogs.index');
 

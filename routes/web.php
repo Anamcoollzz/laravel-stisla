@@ -20,6 +20,7 @@ use App\Http\Controllers\ProductBrandController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductColorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\ProductVendorController;
 use App\Http\Controllers\ProfileController;
@@ -213,6 +214,11 @@ Route::prefix('app')->group(function () {
 
         Route::post('testimonials/{testimonial}/duplicate', [TestimonialController::class, 'duplicate'])->name('testimonials.duplicate');
         Route::resource('testimonials', TestimonialController::class);
+
+        Route::patch('product-reviews/{productReview}/toggle-approval', [ProductReviewController::class, 'toggleApproval'])->name('product-reviews.toggleApproval');
+        Route::resource('product-reviews', ProductReviewController::class)->only(['index', 'show', 'destroy'])->parameters([
+            'product-reviews' => 'productReview',
+        ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');

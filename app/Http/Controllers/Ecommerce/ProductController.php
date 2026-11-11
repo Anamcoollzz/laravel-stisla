@@ -7,9 +7,11 @@ use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
 use App\Models\ProductColor;
+use App\Models\ProductReview;
 use App\Models\ProductSize;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -185,7 +187,19 @@ class ProductController extends Controller
         $product = Product::query()
             ->where('slug', $slug)
             ->with(['category', 'brand', 'vendor', 'size', 'color', 'images'])
+            ->withAvg('approvedReviews', 'rating')
+            ->withCount('approvedReviews')
             ->firstOrFail();
+
+        $reviews = $product->approvedReviews()->with('user')->get();
+
+        $randomProducts = Product::query()
+            ->active()
+            ->where('id', '!=', $product->id)
+            ->withAvg('approvedReviews', 'rating')
+            ->inRandomOrder()
+            ->take(6)
+            ->get();
 
         $relatedProducts = Product::query()
             ->active()
@@ -244,6 +258,8 @@ class ProductController extends Controller
 
         return view('ecommerce.pages.product-detail', [
             'product' => $product,
+            'reviews' => $reviews,
+            'randomProducts' => $randomProducts,
             'relatedProducts' => $relatedProducts,
             'sidebarCategories' => $sidebarCategories,
             'sidebarBrands' => $sidebarBrands,
@@ -252,6 +268,36 @@ class ProductController extends Controller
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
         ]);
+    }
+
+    /**
+     * Store a review for a product.
+     */
+    public function storeReview(Request $request, string $slug): RedirectResponse
+    {
+        $product = Product::query()->where('slug', $slug)->firstOrFail();
+
+        $validated = $request->validate([
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150'],
+            'comment' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $validated['product_id'] = $product->id;
+        $validated['is_approved'] = true;
+
+        if (auth()->check()) {
+            $validated['user_id'] = auth()->id();
+            $validated['name'] = $validated['name'] ?: auth()->user()->name;
+            $validated['email'] = $validated['email'] ?: auth()->user()->email;
+        }
+
+        ProductReview::create($validated);
+
+        return redirect()
+            ->route('ecommerce.products.detail', $product->slug)
+            ->with('review_success', __('Terima kasih! Ulasan Anda berhasil dikirim.'));
     }
 
     /**
