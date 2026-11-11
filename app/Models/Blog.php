@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -67,6 +68,34 @@ class Blog extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * All comments for this blog post.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class);
+    }
+
+    /**
+     * Approved comments for this blog post.
+     */
+    public function approvedComments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class)->where('is_approved', true);
+    }
+
+    /**
+     * Top-level approved comments with replies.
+     */
+    public function topLevelComments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class)
+            ->whereNull('parent_id')
+            ->where('is_approved', true)
+            ->with(['replies' => fn ($q) => $q->where('is_approved', true)->latest()])
+            ->latest();
     }
 
     /**

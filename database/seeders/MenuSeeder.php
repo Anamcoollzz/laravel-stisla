@@ -91,6 +91,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Banners', 'route' => 'product-banners.index', 'permission' => 'product-banners.view', 'order' => 7],
             ['name' => 'Our Team', 'route' => 'our-teams.index', 'permission' => 'our-teams.view', 'order' => 8],
             ['name' => 'Blogs', 'route' => 'blogs.index', 'permission' => 'blogs.view', 'order' => 9],
+            ['name' => 'Blog Comments', 'route' => 'blog-comments.index', 'permission' => 'blog-comments.view', 'order' => 10],
         ];
 
         foreach ($shopChildren as $child) {

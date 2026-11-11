@@ -85,6 +85,9 @@ Route::get('/ecommerce/blogs', [EcommerceBlogController::class, 'index'])
 Route::get('/ecommerce/blog/{slug}', [EcommerceBlogController::class, 'show'])
     ->name('ecommerce.blogs.detail');
 
+Route::post('/ecommerce/blog/{slug}/comment', [EcommerceBlogController::class, 'storeComment'])
+    ->name('ecommerce.blogs.comment.store');
+
 Route::get('/ecommerce-pages/blog-full-width.html', [EcommerceBlogController::class, 'index'])
     ->name('ecommerce.blog-full-width.html');
 

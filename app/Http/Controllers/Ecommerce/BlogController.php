@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\BlogComment;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -76,6 +78,33 @@ class BlogController extends Controller
             ->orderBy('category')
             ->get();
 
-        return view('ecommerce.pages.blog-detail', compact('blog', 'recentBlogs', 'categories'));
+        $comments = $blog->topLevelComments()->get();
+        $totalComments = $blog->approvedComments()->count();
+
+        return view('ecommerce.pages.blog-detail', compact('blog', 'recentBlogs', 'categories', 'comments', 'totalComments'));
+    }
+
+    /**
+     * Store a comment on a blog post.
+     */
+    public function storeComment(Request $request, string $slug): RedirectResponse
+    {
+        $blog = Blog::query()->where('slug', $slug)->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150'],
+            'comment' => ['required', 'string', 'max:2000'],
+            'parent_id' => ['nullable', 'exists:blog_comments,id'],
+        ]);
+
+        $validated['blog_id'] = $blog->id;
+        $validated['is_approved'] = true;
+
+        BlogComment::create($validated);
+
+        return redirect()
+            ->route('ecommerce.blogs.detail', $blog->slug)
+            ->with('comment_success', __('Terima kasih! Komentar Anda berhasil dikirim.'));
     }
 }

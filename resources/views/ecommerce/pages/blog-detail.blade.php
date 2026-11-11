@@ -2,6 +2,8 @@
   $blog = $blog ?? \App\Models\Blog::query()->active()->firstOrFail();
   $recentBlogs = $recentBlogs ?? \App\Models\Blog::query()->active()->where('id', '!=', $blog->id)->orderBy('order')->latest('published_at')->latest('id')->take(5)->get();
   $categories = $categories ?? \App\Models\Blog::query()->active()->whereNotNull('category')->where('category', '!=', '')->select('category')->selectRaw('count(*) as count')->groupBy('category')->orderBy('category')->get();
+  $comments = $comments ?? $blog->topLevelComments()->get();
+  $totalComments = $totalComments ?? $blog->approvedComments()->count();
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
@@ -85,58 +87,90 @@
 				</div>
 
 				<!-- Comments Start -->
-				<div class="mn-blog-comments m-t-30">
+				<div class="mn-blog-comments m-t-30" id="comments">
+					@if (session('comment_success'))
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<strong><i class="ri-checkbox-circle-line me-1"></i> {{ session('comment_success') }}</strong>
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					@endif
+
 					<div class="mn-blog-cmt-preview">
 						<div class="mn-blog-comment-wrapper">
-							<h4 class="mn-blog-dmn-title">Comments : 02</h4>
-							<div class="mn-single-comment-wrapper mt-35">
-								<div class="mn-blog-user-img">
-									<img src="{{ asset('mantu/assets/img/user/1.jpg') }}" alt="user image">
-								</div>
-								<div class="mn-blog-comment-content">
-									<h5>John Deo</h5>
-									<span>October 14, 2025</span>
-									<p>Artikel yang sangat informatif dan bermanfaat! Tips strategi pemasarannya sangat relevan dan mudah diaplikasikan.</p>
-									<div class="mn-blog-details-btn">
-										<a href="javascript:void(0)">Reply</a>
+							<h4 class="mn-blog-dmn-title">Comments : {{ str_pad($totalComments, 2, '0', STR_PAD_LEFT) }}</h4>
+							@forelse ($comments as $comment)
+								<div class="mn-single-comment-wrapper mt-35" id="comment-{{ $comment->id }}">
+									<div class="mn-blog-user-img">
+										<img src="{{ $comment->avatar_url }}" alt="{{ $comment->name }}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+									</div>
+									<div class="mn-blog-comment-content">
+										<h5>{{ $comment->name }}</h5>
+										<span>{{ $comment->created_at->format('F d, Y') }}</span>
+										<p>{{ $comment->comment }}</p>
+										<div class="mn-blog-details-btn">
+											<a href="#comment-form" onclick="setReply({{ $comment->id }}, '{{ addslashes($comment->name) }}')">Reply</a>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="mn-single-comment-wrapper sub-cmt">
-								<div class="mn-blog-user-img">
-									<img src="{{ asset('mantu/assets/img/user/2.jpg') }}" alt="user image">
-								</div>
-								<div class="mn-blog-comment-content">
-									<h5>Jenifer Lowes</h5>
-									<span>October 15, 2025</span>
-									<p>Setuju sekali dengan poin di atas, terutama mengenai pentingnya data analytics untuk loyalitas pelanggan.</p>
-									<div class="mn-blog-details-btn">
-										<a href="javascript:void(0)">Reply</a>
+
+								@foreach ($comment->replies as $reply)
+									<div class="mn-single-comment-wrapper sub-cmt" id="comment-{{ $reply->id }}">
+										<div class="mn-blog-user-img">
+											<img src="{{ $reply->avatar_url }}" alt="{{ $reply->name }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+										</div>
+										<div class="mn-blog-comment-content">
+											<h5>{{ $reply->name }} <span class="badge bg-light text-muted small border ms-1">Reply</span></h5>
+											<span>{{ $reply->created_at->format('F d, Y') }}</span>
+											<p>{{ $reply->comment }}</p>
+											<div class="mn-blog-details-btn">
+												<a href="#comment-form" onclick="setReply({{ $comment->id }}, '{{ addslashes($reply->name) }}')">Reply</a>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
+								@endforeach
+							@empty
+								<p class="text-muted py-3">Belum ada komentar untuk artikel ini. Jadilah yang pertama berkomentar!</p>
+							@endforelse
 						</div>
 					</div>
-					<div class="mn-blog-cmt-form">
+
+					<div class="mn-blog-cmt-form" id="comment-form">
 						<div class="mn-blog-reply-wrapper mt-50">
-							<h4 class="mn-blog-dmn-title">Leave A Reply</h4>
-							<form class="mn-blog-form" action="javascript:void(0)">
+							<h4 class="mn-blog-dmn-title" id="reply-title">Leave A Reply</h4>
+							<div id="reply-alert" class="alert alert-info py-2 px-3 d-none align-items-center justify-content-between mb-3" style="border-radius: 6px;">
+								<span>Membalas komentar <strong id="reply-to-name"></strong></span>
+								<button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="cancelReply()">Batal Balas</button>
+							</div>
+
+							<form class="mn-blog-form" action="{{ route('ecommerce.blogs.comment.store', $blog->slug) }}" method="POST">
+								@csrf
+								<input type="hidden" name="parent_id" id="comment-parent-id" value="{{ old('parent_id') }}">
+
 								<div class="row">
 									<div class="col-md-6">
 										<div class="mn-leave-form">
-											<input type="text" placeholder="Full Name" required>
+											<input type="text" name="name" placeholder="Full Name" value="{{ old('name', auth()->user()?->name) }}" required>
 										</div>
+										@error('name')
+											<small class="text-danger d-block mt-1">{{ $message }}</small>
+										@enderror
 									</div>
 									<div class="col-md-6">
 										<div class="mn-leave-form">
-											<input type="email" placeholder="Email Address" required>
+											<input type="email" name="email" placeholder="Email Address" value="{{ old('email', auth()->user()?->email) }}" required>
 										</div>
+										@error('email')
+											<small class="text-danger d-block mt-1">{{ $message }}</small>
+										@enderror
 									</div>
 									<div class="col-md-12">
 										<div class="mn-text-leave">
-											<textarea placeholder="Message" required></textarea>
-											<button type="submit" class="mn-btn-2 border-0"><span>Submit</span></button>
+											<textarea name="comment" placeholder="Your Message / Comment" required>{{ old('comment') }}</textarea>
+											<button type="submit" class="mn-btn-2 border-0"><span>Submit Comment</span></button>
 										</div>
+										@error('comment')
+											<small class="text-danger d-block mt-1">{{ $message }}</small>
+										@enderror
 									</div>
 								</div>
 							</form>
@@ -209,5 +243,23 @@
 		</div>
 	</div>
 </div>
+<script>
+function setReply(parentId, authorName) {
+    document.getElementById('comment-parent-id').value = parentId;
+    document.getElementById('reply-to-name').innerText = authorName;
+    document.getElementById('reply-alert').classList.remove('d-none');
+    document.getElementById('reply-alert').classList.add('d-flex');
+    document.getElementById('reply-title').innerText = 'Reply to ' + authorName;
+    const form = document.getElementById('comment-form');
+    if (form) form.scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelReply() {
+    document.getElementById('comment-parent-id').value = '';
+    document.getElementById('reply-alert').classList.add('d-none');
+    document.getElementById('reply-alert').classList.remove('d-flex');
+    document.getElementById('reply-title').innerText = 'Leave A Reply';
+}
+</script>
 @endsection
 

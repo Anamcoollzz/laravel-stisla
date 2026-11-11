@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\BlogCommentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
@@ -203,6 +204,11 @@ Route::prefix('app')->group(function () {
 
         Route::post('blogs/{blog}/duplicate', [BlogController::class, 'duplicate'])->name('blogs.duplicate');
         Route::resource('blogs', BlogController::class);
+
+        Route::patch('blog-comments/{blogComment}/toggle-approval', [BlogCommentController::class, 'toggleApproval'])->name('blog-comments.toggleApproval');
+        Route::resource('blog-comments', BlogCommentController::class)->only(['index', 'show', 'destroy'])->parameters([
+            'blog-comments' => 'blogComment',
+        ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');
