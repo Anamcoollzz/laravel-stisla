@@ -216,8 +216,8 @@
             <p><strong>{{ __('Created At') }}:</strong><br>{{ $blog->created_at->format('d M Y, H:i') }}</p>
             <p><strong>{{ __('Last Updated') }}:</strong><br>{{ $blog->updated_at->format('d M Y, H:i') }}</p>
             <p><strong>{{ __('Public URL') }}:</strong><br>
-              <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}" target="_blank" class="text-primary small">
-                {{ url('/ecommerce-pages/blog-detail-right-sidebar.html') }} <i class="fas fa-external-link-alt"></i>
+              <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}" target="_blank" class="text-primary small">
+                {{ url('/ecommerce/blog/' . $blog->slug) }} <i class="fas fa-external-link-alt"></i>
               </a>
             </p>
           </div>

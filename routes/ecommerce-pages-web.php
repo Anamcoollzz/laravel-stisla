@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Ecommerce\AuthController as EcommerceAuthController;
+use App\Http\Controllers\Ecommerce\BlogController as EcommerceBlogController;
 use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
+use App\Models\Blog;
 use App\Models\OurTeam;
 use App\Models\Product;
 use App\Models\ProductBrand;
@@ -77,6 +79,27 @@ Route::get('/ecommerce-pages/register', [EcommerceAuthController::class, 'showRe
 Route::get('/ecommerce/products/{slug}', [EcommerceProductController::class, 'show'])
     ->name('ecommerce.products.detail');
 
+Route::get('/ecommerce/blog/{slug}', [EcommerceBlogController::class, 'show'])
+    ->name('ecommerce.blogs.detail');
+
+Route::get('/ecommerce-pages/blog-detail-right-sidebar.html', function () {
+    $firstBlog = Blog::query()->active()->orderBy('order')->first();
+    if ($firstBlog) {
+        return redirect()->route('ecommerce.blogs.detail', $firstBlog->slug);
+    }
+
+    return view('ecommerce.pages.blog-detail');
+})->name('ecommerce.blog-detail-right-sidebar.html');
+
+Route::get('/ecommerce-pages/blog-detail-right-sidebar', function () {
+    $firstBlog = Blog::query()->active()->orderBy('order')->first();
+    if ($firstBlog) {
+        return redirect()->route('ecommerce.blogs.detail', $firstBlog->slug);
+    }
+
+    return view('ecommerce.pages.blog-detail');
+});
+
 $aboutUsHandler = function () {
     $ourTeams = OurTeam::query()->active()->orderBy('order')->latest('id')->get();
     $about = Setting::getAboutData();
@@ -97,7 +120,6 @@ Route::get('/ecommerce-pages/about-us', $aboutUsHandler);
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [
     'blog-detail-full-width',
-    'blog-detail-right-sidebar',
     'blog-full-width',
     'blog-right-sidebar',
     'checkout',

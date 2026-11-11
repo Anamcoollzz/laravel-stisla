@@ -139,6 +139,11 @@
                 <span class="text-muted">{{ __('Slug') }}</span>
                 <code class="text-dark">{{ $blog->slug }}</code>
               </li>
+              <li class="list-group-item px-0 pt-3">
+                <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}" target="_blank" class="btn btn-outline-primary btn-block">
+                  <i class="fas fa-external-link-alt"></i> {{ __('View on Store') }}
+                </a>
+              </li>
             </ul>
           </div>
         </div>

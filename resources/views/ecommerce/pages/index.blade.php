@@ -1139,13 +1139,13 @@
               <div class="mn-blog-card">
                 <div class="blog-info">
                   <figure class="blog-img">
-                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}"><img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"></a>
+                    <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}"><img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"></a>
                   </figure>
                   <div class="detail">
-                    <label>{{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }} - <a href="#">{{ $blog->category ?? 'General' }}</a></label>
-                    <h3><a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">{{ $blog->title }}</a></h3>
+                    <label>{{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }} - <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ $blog->category ?? 'General' }}</a></label>
+                    <h3><a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ $blog->title }}</a></h3>
                     <div class="more-info">
-                      <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
+                      <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">Read More<i class="ri-arrow-right-double-line"></i></a>
                     </div>
                   </div>
                 </div>
