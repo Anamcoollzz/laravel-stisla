@@ -677,31 +677,40 @@
 									</div>
 								</div>
 							</div>
+							@php
+								$siteContact = $siteContact ?? \App\Models\Setting::getContactData();
+								$telHref = preg_replace('/[^\d+]/', '', $siteContact['phone'] ?? '');
+							@endphp
 							<div class="col-sm-12 col-lg-3 mn-footer-cont-social">
 								<div class="mn-footer-contact">
 									<div class="mn-footer-widget">
 										<h4 class="mn-footer-heading">Contact</h4>
 										<div class="mn-footer-links mn-footer-dropdown">
 											<ul class="align-items-center">
-												<li class="mn-footer-link mn-foo-location">
-													<span class="mt-15px">
-														<i class="ri-map-pin-line"></i>
-													</span>
-													<p>1234 Elm Street Springfield Avenue, Brooklyn den, IL 62704 USA.
-													</p>
-												</li>
-												<li class="mn-footer-link mn-foo-call">
-													<span>
-														<i class="ri-whatsapp-line"></i>
-													</span>
-													<a href="tel:+009876543210">+00 9876543210</a>
-												</li>
-												<li class="mn-footer-link mn-foo-mail">
-													<span>
-														<i class="ri-mail-line"></i>
-													</span>
-													<a href="mailto:example@email.com">example@email.com</a>
-												</li>
+												@if (!empty($siteContact['address']))
+													<li class="mn-footer-link mn-foo-location">
+														<span class="mt-15px">
+															<i class="ri-map-pin-line"></i>
+														</span>
+														<p>{{ $siteContact['address'] }}</p>
+													</li>
+												@endif
+												@if (!empty($siteContact['phone']))
+													<li class="mn-footer-link mn-foo-call">
+														<span>
+															<i class="ri-whatsapp-line"></i>
+														</span>
+														<a href="tel:{{ $telHref }}">{{ $siteContact['phone'] }}</a>
+													</li>
+												@endif
+												@if (!empty($siteContact['email']))
+													<li class="mn-footer-link mn-foo-mail">
+														<span>
+															<i class="ri-mail-line"></i>
+														</span>
+														<a href="mailto:{{ $siteContact['email'] }}">{{ $siteContact['email'] }}</a>
+													</li>
+												@endif
 											</ul>
 										</div>
 									</div>
@@ -710,18 +719,26 @@
 									<div class="mn-footer-widget">
 										<div class="mn-footer-links mn-footer-dropdown">
 											<ul class="align-items-center">
-												<li class="mn-footer-link">
-													<a href="javascript:void(0)"><i class="ri-facebook-fill"></i></a>
-												</li>
-												<li class="mn-footer-link">
-													<a href="javascript:void(0)"><i class="ri-twitter-fill"></i></a>
-												</li>
-												<li class="mn-footer-link">
-													<a href="javascript:void(0)"><i class="ri-linkedin-fill"></i></a>
-												</li>
-												<li class="mn-footer-link">
-													<a href="javascript:void(0)"><i class="ri-instagram-line"></i></a>
-												</li>
+												@if (!empty($siteContact['facebook']))
+													<li class="mn-footer-link">
+														<a href="{{ $siteContact['facebook'] }}" target="_blank" rel="noopener"><i class="ri-facebook-fill"></i></a>
+													</li>
+												@endif
+												@if (!empty($siteContact['twitter']))
+													<li class="mn-footer-link">
+														<a href="{{ $siteContact['twitter'] }}" target="_blank" rel="noopener"><i class="ri-twitter-fill"></i></a>
+													</li>
+												@endif
+												@if (!empty($siteContact['linkedin']))
+													<li class="mn-footer-link">
+														<a href="{{ $siteContact['linkedin'] }}" target="_blank" rel="noopener"><i class="ri-linkedin-fill"></i></a>
+													</li>
+												@endif
+												@if (!empty($siteContact['instagram']))
+													<li class="mn-footer-link">
+														<a href="{{ $siteContact['instagram'] }}" target="_blank" rel="noopener"><i class="ri-instagram-line"></i></a>
+													</li>
+												@endif
 											</ul>
 										</div>
 									</div>

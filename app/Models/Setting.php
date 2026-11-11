@@ -161,6 +161,24 @@ class Setting extends Model
     }
 
     /**
+     * Get resolved Contact & Social settings with fallbacks.
+     *
+     * @return array<string, string|null>
+     */
+    public static function getContactData(): array
+    {
+        return [
+            'address' => static::getValue('contact_address') ?: '1234 Elm Street Springfield Avenue, Brooklyn den, IL 62704 USA.',
+            'phone' => static::getValue('contact_phone') ?: '+00 9876543210',
+            'email' => static::getValue('contact_email') ?: 'example@email.com',
+            'facebook' => static::getValue('social_facebook'),
+            'twitter' => static::getValue('social_twitter'),
+            'linkedin' => static::getValue('social_linkedin'),
+            'instagram' => static::getValue('social_instagram'),
+        ];
+    }
+
+    /**
      * Get all stored values of a group keyed by setting key.
      *
      * @return array<string, string|null>

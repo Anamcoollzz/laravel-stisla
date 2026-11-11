@@ -16,7 +16,7 @@ class OurTeamSeeder extends Seeder
             [
                 'name' => 'Olivia Smith',
                 'position' => 'Founder',
-                'image' => 'mantu/assets/img/user/1.jpg',
+                'image' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=600&auto=format&fit=crop&q=80',
                 'twitter_url' => 'https://twitter.com',
                 'facebook_url' => 'https://facebook.com',
                 'linkedin_url' => 'https://linkedin.com',
@@ -26,7 +26,7 @@ class OurTeamSeeder extends Seeder
             [
                 'name' => 'William Dalin',
                 'position' => 'Co-Founder',
-                'image' => 'mantu/assets/img/user/2.jpg',
+                'image' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&h=600&auto=format&fit=crop&q=80',
                 'twitter_url' => 'https://twitter.com',
                 'facebook_url' => 'https://facebook.com',
                 'linkedin_url' => 'https://linkedin.com',
@@ -36,7 +36,7 @@ class OurTeamSeeder extends Seeder
             [
                 'name' => 'Emma Welson',
                 'position' => 'Manager',
-                'image' => 'mantu/assets/img/user/3.jpg',
+                'image' => 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&h=600&auto=format&fit=crop&q=80',
                 'twitter_url' => 'https://twitter.com',
                 'facebook_url' => 'https://facebook.com',
                 'linkedin_url' => 'https://linkedin.com',
@@ -46,7 +46,7 @@ class OurTeamSeeder extends Seeder
             [
                 'name' => 'Benjamin Martin',
                 'position' => 'Leader',
-                'image' => 'mantu/assets/img/user/4.jpg',
+                'image' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&h=600&auto=format&fit=crop&q=80',
                 'twitter_url' => 'https://twitter.com',
                 'facebook_url' => 'https://facebook.com',
                 'linkedin_url' => 'https://linkedin.com',
@@ -56,7 +56,7 @@ class OurTeamSeeder extends Seeder
             [
                 'name' => 'Amelia Martin',
                 'position' => 'Leader',
-                'image' => 'mantu/assets/img/user/5.jpg',
+                'image' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=600&auto=format&fit=crop&q=80',
                 'twitter_url' => 'https://twitter.com',
                 'facebook_url' => 'https://facebook.com',
                 'linkedin_url' => 'https://linkedin.com',
@@ -66,7 +66,7 @@ class OurTeamSeeder extends Seeder
             [
                 'name' => 'Margret Smith',
                 'position' => 'Marketing',
-                'image' => 'mantu/assets/img/user/7.jpg',
+                'image' => 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=600&auto=format&fit=crop&q=80',
                 'twitter_url' => 'https://twitter.com',
                 'facebook_url' => 'https://facebook.com',
                 'linkedin_url' => 'https://linkedin.com',
@@ -76,7 +76,7 @@ class OurTeamSeeder extends Seeder
             [
                 'name' => 'Julee Beans',
                 'position' => 'Manager',
-                'image' => 'mantu/assets/img/user/8.jpg',
+                'image' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&auto=format&fit=crop&q=80',
                 'twitter_url' => 'https://twitter.com',
                 'facebook_url' => 'https://facebook.com',
                 'linkedin_url' => 'https://linkedin.com',
@@ -86,7 +86,7 @@ class OurTeamSeeder extends Seeder
         ];
 
         foreach ($members as $member) {
-            OurTeam::query()->firstOrCreate(
+            OurTeam::query()->updateOrCreate(
                 ['name' => $member['name'], 'position' => $member['position']],
                 $member
             );

@@ -9,6 +9,7 @@ use App\Models\ProductBanner;
 use App\Models\ProductCart;
 use App\Models\ProductCategory;
 use App\Models\ProductWishlist;
+use App\Models\Setting;
 use App\Models\Testimonial;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -151,12 +152,17 @@ class AppServiceProvider extends ServiceProvider
                 $wishlistCount = 0;
             }
 
+            $siteContact = Schema::hasTable('settings')
+                ? Setting::getContactData()
+                : [];
+
             $view->with('layoutCart', $layoutCart)
                 ->with('layoutCartSubtotal', $layoutCartSubtotal)
                 ->with('cartCount', $cartCount)
                 ->with('layoutWishlistProducts', $layoutWishlistProducts)
                 ->with('userWishlistIds', $userWishlistIds)
-                ->with('wishlistCount', $wishlistCount);
+                ->with('wishlistCount', $wishlistCount)
+                ->with('siteContact', $siteContact);
         });
 
         View::composer('ecommerce.pages.index', function ($view) {

@@ -496,8 +496,8 @@
                             <div class="mn-t-review-wrapper mt-0">
                               @forelse ($reviews as $review)
                                 <div class="mn-t-review-item">
-                                  <div class="mn-t-review-avtar">
-                                    <img src="{{ $review->avatar_url }}" alt="{{ $review->name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;" />
+                                  <div class="mn-t-review-avtar" style="flex: 0 0 60px; width: 60px; height: 60px; overflow: hidden; border-radius: 50%;">
+                                    <img src="{{ $review->avatar_url }}" alt="{{ $review->name }}" style="width: 100%; height: 100%; max-width: none; object-fit: cover; border-radius: 50%; display: block;" />
                                   </div>
                                   <div class="mn-t-review-content">
                                     <div class="mn-t-review-top">

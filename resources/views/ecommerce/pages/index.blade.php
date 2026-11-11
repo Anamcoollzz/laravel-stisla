@@ -767,8 +767,8 @@
                       <li class="mn-test-item">
                         <img src="{{ asset('mantu/assets/img/icons/top-quotes.svg') }}" class="svg_img test_svg top" alt="quotes">
                         <div class="mn-test-inner">
-                          <div class="mn-test-img">
-                            <img alt="{{ $testimonial->name }}" title="{{ $testimonial->name }}" src="{{ $testimonial->image_url }}">
+                          <div class="mn-test-img" style="width: 100px; height: 100px; overflow: hidden; border-radius: 50%;">
+                            <img alt="{{ $testimonial->name }}" title="{{ $testimonial->name }}" src="{{ $testimonial->image_url }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; display: block;">
                           </div>
                           <div class="mn-test-content">
                             <div class="mn-test-desc">{{ $testimonial->content }}</div>
