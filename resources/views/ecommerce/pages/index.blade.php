@@ -1,3 +1,6 @@
+@php
+  $blogs = $blogs ?? \App\Models\Blog::query()->active()->orderBy('order')->latest('published_at')->latest('id')->get();
+@endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
 @section('title', 'Ecommerce')
@@ -1132,85 +1135,28 @@
             <h2>Our <span>Blogs</span></h2>
           </div>
           <div class="mn-blog-carousel owl-carousel">
-            <div class="mn-blog-card">
-              <div class="blog-info">
-                <figure class="blog-img"><a href="#"><img src="{{ asset('mantu/assets/img/blog/1.jpg') }}" alt="news imag"></a>
-                </figure>
-                <div class="detail">
-                  <label>June 30, 2025 - <a href="#">Fashion</a></label>
-                  <h3><a href="#">Marketing Guide: 5 Steps to Success to way.</a></h3>
-                  <div class="more-info">
-                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
+            @forelse ($blogs as $blog)
+              <div class="mn-blog-card">
+                <div class="blog-info">
+                  <figure class="blog-img">
+                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}"><img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"></a>
+                  </figure>
+                  <div class="detail">
+                    <label>{{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }} - <a href="#">{{ $blog->category ?? 'General' }}</a></label>
+                    <h3><a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">{{ $blog->title }}</a></h3>
+                    <div class="more-info">
+                      <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="mn-blog-card">
-              <div class="blog-info">
-                <figure class="blog-img"><a href="#"><img src="{{ asset('mantu/assets/img/blog/2.jpg') }}" alt="news imag"></a>
-                </figure>
-                <div class="detail">
-                  <label>April 02, 2025 - <a href="#">Shoes</a></label>
-                  <h3><a href="#">Best way to solve business issue in market.</a>
-                  </h3>
-                  <div class="more-info">
-                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
-                  </div>
+            @empty
+              <div class="mn-blog-card">
+                <div class="blog-info text-center py-4 text-muted">
+                  <p>{{ __('No blog posts available at the moment.') }}</p>
                 </div>
               </div>
-            </div>
-            <div class="mn-blog-card">
-              <div class="blog-info">
-                <figure class="blog-img"><a href="#"><img src="{{ asset('mantu/assets/img/blog/3.jpg') }}" alt="news imag"></a>
-                </figure>
-                <div class="detail">
-                  <label>Mar 09, 2025 - <a href="#">Grocery</a></label>
-                  <h3><a href="#">31 grocery customer service stats know in 2025.</a></h3>
-                  <div class="more-info">
-                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mn-blog-card">
-              <div class="blog-info">
-                <figure class="blog-img"><a href="#"><img src="{{ asset('mantu/assets/img/blog/4.jpg') }}" alt="news imag"></a>
-                </figure>
-                <div class="detail">
-                  <label>January 25, 2025 - <a href="#">Bags</a></label>
-                  <h3><a href="#">Business ideas to grow your business traffic.</a></h3>
-                  <div class="more-info">
-                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mn-blog-card">
-              <div class="blog-info">
-                <figure class="blog-img"><a href="#"><img src="{{ asset('mantu/assets/img/blog/5.jpg') }}" alt="news imag"></a>
-                </figure>
-                <div class="detail">
-                  <label>December 10, 2026 - <a href="#">Cosmetics</a></label>
-                  <h3><a href="#">Marketing Guide: 5 Steps way to Success.</a></h3>
-                  <div class="more-info">
-                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mn-blog-card">
-              <div class="blog-info">
-                <figure class="blog-img"><a href="#"><img src="{{ asset('mantu/assets/img/blog/6.jpg') }}" alt="news imag"></a>
-                </figure>
-                <div class="detail">
-                  <label>August 08, 2027 - <a href="#">Bags</a></label>
-                  <h3><a href="#">15 customer service stats idea know in 2026.</a></h3>
-                  <div class="more-info">
-                    <a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Read More<i class="ri-arrow-right-double-line"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
+            @endforelse
           </div>
         </section>
 

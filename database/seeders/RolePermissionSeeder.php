@@ -38,6 +38,7 @@ class RolePermissionSeeder extends Seeder
             'product-colors' => ['view', 'create', 'edit', 'delete'],
             'product-banners' => ['view', 'create', 'edit', 'delete'],
             'our-teams' => ['view', 'create', 'edit', 'delete'],
+            'blogs' => ['view', 'create', 'edit', 'delete'],
             'chat' => ['view', 'create', 'delete'],
             'backup' => ['view', 'create', 'download', 'delete'],
             'settings' => ['view', 'edit'],

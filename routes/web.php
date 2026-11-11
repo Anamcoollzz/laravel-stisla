@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldController;
@@ -199,6 +200,9 @@ Route::prefix('app')->group(function () {
         Route::resource('our-teams', OurTeamController::class)->parameters([
             'our-teams' => 'ourTeam',
         ]);
+
+        Route::post('blogs/{blog}/duplicate', [BlogController::class, 'duplicate'])->name('blogs.duplicate');
+        Route::resource('blogs', BlogController::class);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');
