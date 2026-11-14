@@ -9,6 +9,7 @@ use App\Http\Controllers\BlogCommentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EcommerceFaqController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
@@ -223,6 +224,14 @@ Route::prefix('app')->group(function () {
 
         Route::resource('store-services', StoreServiceController::class)->parameters([
             'store-services' => 'storeService',
+        ]);
+
+        Route::post('ecommerce-faqs/{ecommerceFaq}/duplicate', [EcommerceFaqController::class, 'duplicate'])->name('ecommerce-faqs.duplicate');
+        Route::get('ecommerce-faqs/export', [EcommerceFaqController::class, 'export'])->name('ecommerce-faqs.export');
+        Route::get('ecommerce-faqs/template', [EcommerceFaqController::class, 'template'])->name('ecommerce-faqs.template');
+        Route::post('ecommerce-faqs/import', [EcommerceFaqController::class, 'import'])->name('ecommerce-faqs.import');
+        Route::resource('ecommerce-faqs', EcommerceFaqController::class)->parameters([
+            'ecommerce-faqs' => 'ecommerceFaq',
         ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');

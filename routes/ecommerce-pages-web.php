@@ -6,6 +6,7 @@ use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use App\Models\Blog;
+use App\Models\EcommerceFaq;
 use App\Models\OurTeam;
 use App\Models\Product;
 use App\Models\ProductBrand;
@@ -132,6 +133,18 @@ Route::get('/ecommerce/about-us', $aboutUsHandler)->name('ecommerce.about-us');
 Route::get('/ecommerce-pages/about-us.html', $aboutUsHandler)->name('ecommerce.about-us.html');
 Route::get('/ecommerce-pages/about-us', $aboutUsHandler);
 
+$faqHandler = function () {
+    $faqs = EcommerceFaq::query()->active()->orderBy('order')->latest('id')->get();
+    $leftFaqs = $faqs->where('column', 'left')->values();
+    $rightFaqs = $faqs->where('column', 'right')->values();
+
+    return view('ecommerce.pages.faq', compact('faqs', 'leftFaqs', 'rightFaqs'));
+};
+
+Route::get('/ecommerce/faq', $faqHandler)->name('ecommerce.faq');
+Route::get('/ecommerce-pages/faq.html', $faqHandler)->name('ecommerce.faq.html');
+Route::get('/ecommerce-pages/faq', $faqHandler);
+
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [
     'blog-detail-full-width',
@@ -139,7 +152,6 @@ $ecommercePages = [
     'checkout',
     'compare',
     'contact-us',
-    'faq',
     'index',
     'product-accordion-full-width',
     'product-accordion',
