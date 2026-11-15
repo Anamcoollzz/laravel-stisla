@@ -168,9 +168,9 @@ class Setting extends Model
     public static function getContactData(): array
     {
         return [
-            'address' => static::getValue('contact_address') ?: '1234 Elm Street Springfield Avenue, Brooklyn den, IL 62704 USA.',
-            'phone' => static::getValue('contact_phone') ?: '+00 9876543210',
-            'email' => static::getValue('contact_email') ?: 'example@email.com',
+            'address' => static::getValue('contact_address') ?: 'Jl PB Sudirman Dusun Krajan Tanggul, Jember',
+            'phone' => static::getValue('contact_phone') ?: '6285322778935',
+            'email' => static::getValue('contact_email') ?: 'hairulanam21@gmail.com',
             'facebook' => static::getValue('social_facebook'),
             'twitter' => static::getValue('social_twitter'),
             'linkedin' => static::getValue('social_linkedin'),

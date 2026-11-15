@@ -100,7 +100,7 @@ return [
                 'contact_address' => [
                     'label' => 'Store Address',
                     'type' => 'textarea',
-                    'default' => '1234 Elm Street Springfield Avenue, Brooklyn den, IL 62704 USA.',
+                    'default' => 'Jl PB Sudirman Dusun Krajan Tanggul, Jember',
                     'height' => '80px',
                     'help' => 'Physical store or office address shown in the footer.',
                     'rules' => ['nullable', 'string', 'max:500'],
@@ -108,14 +108,14 @@ return [
                 'contact_phone' => [
                     'label' => 'Phone / WhatsApp',
                     'type' => 'text',
-                    'default' => '+00 9876543210',
+                    'default' => '6285322778935',
                     'help' => 'Phone or WhatsApp contact number.',
                     'rules' => ['nullable', 'string', 'max:50'],
                 ],
                 'contact_email' => [
                     'label' => 'Contact Email',
                     'type' => 'email',
-                    'default' => 'example@email.com',
+                    'default' => 'hairulanam21@gmail.com',
                     'help' => 'Customer support email address.',
                     'rules' => ['nullable', 'email', 'max:150'],
                 ],
