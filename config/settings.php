@@ -147,6 +147,20 @@ return [
                     'help' => 'Full URL to your Instagram profile. Leave empty to hide.',
                     'rules' => ['nullable', 'string', 'max:255'],
                 ],
+                'play_store_url' => [
+                    'label' => 'Google Play Store URL',
+                    'type' => 'url',
+                    'default' => '',
+                    'help' => 'Full URL to your Android app on Google Play Store. Leave empty to hide the logo in footer.',
+                    'rules' => ['nullable', 'url', 'max:255'],
+                ],
+                'app_store_url' => [
+                    'label' => 'Apple App Store URL',
+                    'type' => 'url',
+                    'default' => '',
+                    'help' => 'Full URL to your iOS app on Apple App Store. Leave empty to hide the logo in footer.',
+                    'rules' => ['nullable', 'url', 'max:255'],
+                ],
             ],
         ],
         'seo' => [

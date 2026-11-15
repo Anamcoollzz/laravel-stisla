@@ -85,7 +85,7 @@
 						<!-- mn-breadcrumb-list start -->
 						<ul class="mn-breadcrumb-list">
 							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-							<li class="mn-breadcrumb-item"><a href="javascript:void(0)">Blog</a></li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.blogs.index') }}">Blog</a></li>
 							<li class="mn-breadcrumb-item active">{{ Str::limit($blog->title, 25) }}</li>
 						</ul>
 						<!-- mn-breadcrumb-list end -->

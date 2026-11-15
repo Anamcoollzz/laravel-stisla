@@ -586,14 +586,20 @@
 										alt="footer logo">
 									<p class="mn-footer-detail">The Mantu is the biggest market of grocery products. Get
 										your daily needs from our store.</p>
-									<div class="mn-app-store">
-										<a href="javascript:void(0)" class="app-img">
-											<img src="{{ asset('mantu/assets/img/footer/android.png') }}" class="adroid" alt="apple">
-										</a>
-										<a href="javascript:void(0)" class="app-img">
-											<img src="{{ asset('mantu/assets/img/footer/apple.png') }}" class="apple" alt="apple">
-										</a>
-									</div>
+									@if (!empty($siteContact['play_store_url']) || !empty($siteContact['app_store_url']))
+										<div class="mn-app-store">
+											@if (!empty($siteContact['play_store_url']))
+												<a href="{{ $siteContact['play_store_url'] }}" target="_blank" rel="noopener" class="app-img">
+													<img src="{{ asset('mantu/assets/img/footer/android.png') }}" class="adroid" alt="Google Play Store">
+												</a>
+											@endif
+											@if (!empty($siteContact['app_store_url']))
+												<a href="{{ $siteContact['app_store_url'] }}" target="_blank" rel="noopener" class="app-img">
+													<img src="{{ asset('mantu/assets/img/footer/apple.png') }}" class="apple" alt="Apple App Store">
+												</a>
+											@endif
+										</div>
+									@endif
 								</div>
 							</div>
 							<div class="col-sm-12 col-lg-2 mn-footer-info">

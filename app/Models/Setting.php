@@ -175,6 +175,8 @@ class Setting extends Model
             'twitter' => static::getValue('social_twitter'),
             'linkedin' => static::getValue('social_linkedin'),
             'instagram' => static::getValue('social_instagram'),
+            'play_store_url' => static::getValue('play_store_url'),
+            'app_store_url' => static::getValue('app_store_url'),
         ];
     }
 
