@@ -493,32 +493,87 @@
     });
 
     /*== Compare notify js ==*/
-    $('.mn-compare').on("click", function () {
-        $('.mn-wish-notify').remove();
-        $('.mn-compare-notify').remove();
-        $('.mn-cart-notify').remove();
-        var isCompare = $(this).hasClass("active");
-        if (isCompare) {
-            $(this).removeClass("active");
-            $('footer').after('<div class="mn-compare-notify"><p class="compare-note remove">Remove product on <a href="compare.html"> Compare list</a> Successfully!</p></div>');
-        } else {
-            $(this).addClass("active");
-            $('footer').after('<div class="mn-compare-notify"><p class="compare-note add">Add product in <a href="compare.html"> Compare list</a> Successfully!</p></div>');
+    $(document).on("click", '.mn-compare', function (e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var productId = $btn.data('product-id');
+
+        if (!productId) {
+            $('.mn-wish-notify').remove();
+            $('.mn-compare-notify').remove();
+            $('.mn-cart-notify').remove();
+            var isCompare = $btn.hasClass("active");
+            if (isCompare) {
+                $btn.removeClass("active");
+                $('footer').after('<div class="mn-compare-notify"><p class="compare-note remove">Remove product on <a href="/ecommerce/compare"> Compare list</a> Successfully!</p></div>');
+            } else {
+                $btn.addClass("active");
+                $('footer').after('<div class="mn-compare-notify"><p class="compare-note add">Add product in <a href="/ecommerce/compare"> Compare list</a> Successfully!</p></div>');
+            }
+            setTimeout(function () {
+                $('.mn-compare-notify').fadeOut();
+            }, 2000);
+            return;
         }
 
-        setTimeout(function () {
-            $('.mn-compare-notify').fadeOut();
-        }, 2000);
+        $.ajax({
+            url: '/ecommerce/compare/toggle/' + productId,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            success: function (res) {
+                if (res.status === 'success') {
+                    if (res.is_compared) {
+                        $('.mn-compare[data-product-id="' + productId + '"]').addClass("active");
+                    } else {
+                        $('.mn-compare[data-product-id="' + productId + '"]').removeClass("active");
+                    }
+                    $('.mn-wish-notify').remove();
+                    $('.mn-compare-notify').remove();
+                    $('.mn-cart-notify').remove();
+                    var noteClass = res.is_compared ? 'add' : 'remove';
+                    $('footer').after('<div class="mn-compare-notify"><p class="compare-note ' + noteClass + '">' + res.message + ' <a href="/ecommerce/compare">Compare list</a></p></div>');
+                    setTimeout(function () {
+                        $('.mn-compare-notify').fadeOut(function () { $(this).remove(); });
+                    }, 2500);
+                }
+            }
+        });
     });
 
     /*== Remove Product (Compare page) ==*/
-    $('.remove-compare-product').on("click", function () {
-        $(this).parents(".product-col").remove();
-        var compare_page_count = $(".product-col").length;
-        if (compare_page_count == 0) {
-            $(this).parents(".title-col").remove();
-            $('.mn-compare-box').html('<p class="mn-compare-page-msg">Your Wishlist is empty!</p>');
+    $(document).on("click", '.remove-compare-product', function (e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var productId = $btn.data('product-id');
+        var $col = $btn.parents(".product-col");
+
+        var removeColumn = function () {
+            $col.remove();
+            var compare_page_count = $(".product-col").length;
+            if (compare_page_count == 0) {
+                $('.mn-compare-box').html('<div class="p-4 text-center w-100"><p class="mn-compare-page-msg mb-3">Your Compare list is empty!</p><a href="/ecommerce/products" class="mn-btn-1"><span>Browse Products</span></a></div>');
+            }
+        };
+
+        if (!productId) {
+            removeColumn();
+            return;
         }
+
+        $.ajax({
+            url: '/ecommerce/compare/remove/' + productId,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
+            success: function () {
+                removeColumn();
+            }
+        });
     });
 
     /*== Search sidebar JS ==*/

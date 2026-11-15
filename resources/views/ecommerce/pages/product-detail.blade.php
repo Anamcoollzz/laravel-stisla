@@ -278,7 +278,8 @@
                                   <a
                                     href="javascript:void(0)"
                                     class="mn-btn-group mn-compare"
-                                    title="Quick view"
+                                    data-product-id="{{ $product->id }}"
+                                    title="Compare"
                                   >
                                     <i class="ri-repeat-line"></i>
                                   </a>

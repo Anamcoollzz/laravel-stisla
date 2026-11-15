@@ -176,7 +176,7 @@
 																				title="Quick View"><i
 																					class="ri-eye-line"></i></a></li>
 																		<li><a href="javascript:void(0)" data-tooltip
-																				title="Compare" class="mn-compare"><i
+																				title="Compare" class="mn-compare" data-product-id="{{ $product->id }}"><i
 																					class="ri-repeat-line"></i></a></li>
 																		<li><a href="javascript:void(0)" data-tooltip
 																				title="Add To Cart" class="mn-add-cart" data-product-id="{{ $product->id }}"><i

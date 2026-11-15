@@ -53,289 +53,124 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="mn-compare-box">
-							<div class="mn-compare-col title-col">
-								<div class="mn-compare-cell">
-									<div class="title">
-										<h5>Product Image</h5>
+							@if (($compares ?? collect())->isEmpty())
+								<div class="p-4 text-center w-100">
+									<p class="mn-compare-page-msg mb-3">Your Compare list is empty!</p>
+									<a href="{{ route('ecommerce.products.index') }}" class="mn-btn-1"><span>Browse Products</span></a>
+								</div>
+							@else
+								<div class="mn-compare-col title-col">
+									<div class="mn-compare-cell">
+										<div class="title">
+											<h5>Product Image</h5>
+										</div>
 									</div>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>Name</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>Category</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>Ratings</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>Availability</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>location</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>Brand</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>SKU</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>Quantity</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<h5>Size</h5>
-								</div>
-								<div class="mn-compare-cell">
-									<div class="desc">
-										<h5>Description</h5>
+									<div class="mn-compare-cell">
+										<h5>Name</h5>
 									</div>
-								</div>
-							</div>
-							<div class="mn-compare-col product-col">
-								<a href="javascript:void(0)" class="remove-compare-product"><i
-										class="ri-close-large-line"></i></a>
-								<div class="mn-compare-cell">
-									<div class="list">
-										<img src="{{ asset('mantu/assets/img/product/31.jpg') }}" alt="product">
-										<div class="mn-action">
-											<ul>
-												<li>
-													<a class="mn-btn-group wishlist mn-wishlist" title="Wishlist"><i
-															class="ri-heart-line"></i></a>
-												</li>
-												<li>
-													<a href="javascript:void(0)" title="Add To Cart"
-														class="mn-btn-group add-to-cart mn-add-cart"><i
-															class="ri-shopping-cart-line"></i></a>
-												</li>
-											</ul>
+									<div class="mn-compare-cell">
+										<h5>Category</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<h5>Ratings</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<h5>Availability</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<h5>location</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<h5>Brand</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<h5>SKU</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<h5>Quantity</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<h5>Size</h5>
+									</div>
+									<div class="mn-compare-cell">
+										<div class="desc">
+											<h5>Description</h5>
 										</div>
 									</div>
 								</div>
-								<div class="mn-compare-cell">
-									<p>Men office suit cotton</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Snack & Spices</p>
-								</div>
-								<div class="mn-compare-cell">
-									<span class="mn-pro-rating">
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill grey"></i>
-									</span>
-									<p class="rating-info">(15 Review)</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p class="i-stock">In Stock</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>In Store , Online</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Bhisma Fashion</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>54786</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>1</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>XL</p>
-								</div>
-								<div class="mn-compare-cell">
-									<div class="desc">
-										<p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour.</p>
-									</div>
-								</div>
-							</div>
-							<div class="mn-compare-col product-col">
-								<a href="javascript:void(0)" class="remove-compare-product"><i
-										class="ri-close-large-line"></i></a>
-								<div class="mn-compare-cell">
-									<div class="list">
-										<img src="{{ asset('mantu/assets/img/product/1.jpg') }}" alt="product">
-										<div class="mn-action">
-											<ul>
-												<li>
-													<a class="mn-btn-group wishlist mn-wishlist" title="Wishlist"><i
-															class="ri-heart-line"></i></a>
-												</li>
-												<li>
-													<a href="javascript:void(0)" title="Add To Cart"
-														class="mn-btn-group add-to-cart mn-add-cart"><i
-															class="ri-shopping-cart-line"></i></a>
-												</li>
-											</ul>
+								@foreach ($compares as $compare)
+									@php
+										$product = $compare->product;
+										$avgRating = round($product->average_rating ?? 0);
+										$reviewCount = $product->approved_reviews_count ?? 0;
+									@endphp
+									<div class="mn-compare-col product-col" data-product-id="{{ $product->id }}">
+										<a href="javascript:void(0)" class="remove-compare-product" data-product-id="{{ $product->id }}"><i
+												class="ri-close-large-line"></i></a>
+										<div class="mn-compare-cell">
+											<div class="list" style="overflow: hidden; border-radius: 15px;">
+												<a href="{{ route('ecommerce.products.detail', $product->slug) }}" class="d-block w-100">
+													<img src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}" style="width: 100%; height: 200px; object-fit: cover; display: block;">
+												</a>
+												<div class="mn-action">
+													<ul>
+														<li>
+															<a href="javascript:void(0);" class="mn-btn-group wishlist mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $product->id }}" title="Wishlist"><i
+																	class="ri-heart-line"></i></a>
+														</li>
+														<li>
+															<a href="javascript:void(0)" title="Add To Cart"
+																class="mn-btn-group add-to-cart mn-add-cart" data-product-id="{{ $product->id }}"><i
+																	class="ri-shopping-cart-line"></i></a>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<div class="mn-compare-cell">
+											<p><a href="{{ route('ecommerce.products.detail', $product->slug) }}" class="text-reset">{{ $product->title }}</a></p>
+										</div>
+										<div class="mn-compare-cell">
+											<p>{{ $product->category?->name ?? '-' }}</p>
+										</div>
+										<div class="mn-compare-cell">
+											<span class="mn-pro-rating">
+												@for ($star = 1; $star <= 5; $star++)
+													<i class="ri-star-fill {{ $star <= $avgRating ? '' : 'grey' }}"></i>
+												@endfor
+											</span>
+											<p class="rating-info">({{ $reviewCount }} Review)</p>
+										</div>
+										<div class="mn-compare-cell">
+											@if ($product->stock > 0)
+												<p class="i-stock">In Stock</p>
+											@else
+												<p class="o-stock">Out Of Stock</p>
+											@endif
+										</div>
+										<div class="mn-compare-cell">
+											<p>{{ $compare->location ?: 'In Store, Online' }}</p>
+										</div>
+										<div class="mn-compare-cell">
+											<p>{{ $product->brand?->name ?? ($product->vendor?->name ?? '-') }}</p>
+										</div>
+										<div class="mn-compare-cell">
+											<p>{{ $product->sku ?? '-' }}</p>
+										</div>
+										<div class="mn-compare-cell">
+											<p>{{ $compare->quantity }}</p>
+										</div>
+										<div class="mn-compare-cell">
+											<p>{{ $product->size?->name ?? '-' }}</p>
+										</div>
+										<div class="mn-compare-cell">
+											<div class="desc">
+												<p>{{ \Illuminate\Support\Str::limit(strip_tags($product->short_description ?: $product->description_detail), 140) }}</p>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Round neck cotton t-shirt</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>T-shirt</p>
-								</div>
-								<div class="mn-compare-cell">
-									<span class="mn-pro-rating">
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-									</span>
-									<p class="rating-info">(654 Review)</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p class="o-stock">Out Of Stock</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Online</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Darsh Store</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>85725</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>2</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>L</p>
-								</div>
-								<div class="mn-compare-cell">
-									<div class="desc">
-										<p>Recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-									</div>
-								</div>
-							</div>
-							<div class="mn-compare-col product-col">
-								<a href="javascript:void(0)" class="remove-compare-product"><i
-										class="ri-close-large-line"></i></a>
-								<div class="mn-compare-cell">
-									<div class="list">
-										<img src="{{ asset('mantu/assets/img/product/17.jpg') }}" alt="product">
-										<div class="mn-action">
-											<ul>
-												<li>
-													<a class="mn-btn-group wishlist mn-wishlist" title="Wishlist"><i
-															class="ri-heart-line"></i></a>
-												</li>
-												<li>
-													<a href="javascript:void(0)" title="Add To Cart"
-														class="mn-btn-group add-to-cart mn-add-cart"><i
-															class="ri-shopping-cart-line"></i></a>
-												</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-								<div class="mn-compare-cell">
-									<p>T-shirt for womens</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Clothes</p>
-								</div>
-								<div class="mn-compare-cell">
-									<span class="mn-pro-rating">
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill grey"></i>
-										<i class="ri-star-fill grey"></i>
-									</span>
-									<p class="rating-info">(264 Review)</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p class="i-stock">In Stock</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>In Store</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Peoples Store</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>2546</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>1</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>M</p>
-								</div>
-								<div class="mn-compare-cell">
-									<div class="desc">
-										<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.</p>
-									</div>
-								</div>
-							</div>
-							<div class="mn-compare-col product-col">
-								<a href="javascript:void(0)" class="remove-compare-product"><i
-										class="ri-close-large-line"></i></a>
-								<div class="mn-compare-cell">
-									<div class="list">
-										<img src="{{ asset('mantu/assets/img/product/35.jpg') }}" alt="product">
-										<div class="mn-action">
-											<ul>
-												<li>
-													<a class="mn-btn-group wishlist mn-wishlist" title="Wishlist"><i
-															class="ri-heart-line"></i></a>
-												</li>
-												<li>
-													<a href="javascript:void(0)" title="Add To Cart"
-														class="mn-btn-group add-to-cart mn-add-cart"><i
-															class="ri-shopping-cart-line"></i></a>
-												</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Tshirt with jacket</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Fashion</p>
-								</div>
-								<div class="mn-compare-cell">
-									<span class="mn-pro-rating">
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill"></i>
-										<i class="ri-star-fill grey"></i>
-										<i class="ri-star-fill grey"></i>
-									</span>
-									<p class="rating-info">(325 Review)</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p class="i-stock">In Stock</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>In Store</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>Mariyas Store</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>6542</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>2</p>
-								</div>
-								<div class="mn-compare-cell">
-									<p>XL</p>
-								</div>
-								<div class="mn-compare-cell">
-									<div class="desc">
-										<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's.</p>
-									</div>
-								</div>
-							</div>
+								@endforeach
+							@endif
 						</div>
 					</div>
 				</div>

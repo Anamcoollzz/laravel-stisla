@@ -3,6 +3,7 @@
 use App\Http\Controllers\Ecommerce\AuthController as EcommerceAuthController;
 use App\Http\Controllers\Ecommerce\BlogController as EcommerceBlogController;
 use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
+use App\Http\Controllers\Ecommerce\CompareController as EcommerceCompareController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use App\Models\Blog;
@@ -145,12 +146,23 @@ Route::get('/ecommerce/faq', $faqHandler)->name('ecommerce.faq');
 Route::get('/ecommerce-pages/faq.html', $faqHandler)->name('ecommerce.faq.html');
 Route::get('/ecommerce-pages/faq', $faqHandler);
 
+Route::get('/ecommerce/compare', [EcommerceCompareController::class, 'index'])
+    ->name('ecommerce.compare');
+Route::get('/ecommerce-pages/compare.html', [EcommerceCompareController::class, 'index'])
+    ->name('ecommerce.compare.html');
+Route::get('/ecommerce-pages/compare', [EcommerceCompareController::class, 'index']);
+Route::post('/ecommerce/compare/toggle/{product}', [EcommerceCompareController::class, 'toggle'])
+    ->name('ecommerce.compare.toggle');
+Route::post('/ecommerce/compare/remove/{product}', [EcommerceCompareController::class, 'remove'])
+    ->name('ecommerce.compare.remove');
+Route::delete('/ecommerce/compare/{product}', [EcommerceCompareController::class, 'remove'])
+    ->name('ecommerce.compare.destroy');
+
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [
     'blog-detail-full-width',
     'blog-right-sidebar',
     'checkout',
-    'compare',
     'contact-us',
     'index',
     'product-accordion-full-width',
