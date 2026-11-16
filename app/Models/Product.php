@@ -174,6 +174,16 @@ class Product extends Model
     }
 
     /**
+     * Order items relation.
+     *
+     * @return HasMany<OrderItem, $this>
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
      * Get final price after discount.
      */
     public function getFinalPriceAttribute(): float

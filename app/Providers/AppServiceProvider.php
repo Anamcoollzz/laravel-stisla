@@ -103,8 +103,19 @@ class AppServiceProvider extends ServiceProvider
                     ->get();
 
                 $view->with('randomProducts', $randomProducts);
+
+                $bestSellerProducts = Product::query()
+                    ->active()
+                    ->when(Schema::hasTable('order_items'), fn ($q) => $q->withSum('orderItems as total_sold', 'quantity')->orderByDesc('total_sold'))
+                    ->orderByDesc('is_trending')
+                    ->latest('id')
+                    ->take(6)
+                    ->get();
+
+                $view->with('bestSellerProducts', $bestSellerProducts);
             } else {
-                $view->with('randomProducts', collect());
+                $view->with('randomProducts', collect())
+                    ->with('bestSellerProducts', collect());
             }
 
             $authUser = auth()->user();

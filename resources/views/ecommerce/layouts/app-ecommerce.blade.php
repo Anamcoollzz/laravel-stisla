@@ -319,48 +319,47 @@
 													<a href="{{ route('ecommerce.index.html') }}">Home</a>
 												</li>
 												<li class="dropdown drop-list">
-													<a href="javascript:void(0)" class="dropdown-arrow">Categories<i
+													<a href="{{ route('ecommerce.products.index') }}" class="dropdown-arrow">Categories<i
 															class="ri-arrow-down-s-line"></i></a>
 													<ul class="mega-menu d-block">
 														<li class="d-flex">
 															<span class="bg"></span>
-															<ul class="d-block mega-block">
-																<li class="menu_title"><a
-																		href="javascript:void(0)">Classic</a></li>
-																<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shop Right
-																		sidebar</a></li>
-																<li><a href="{{ route('ecommerce.shop-banner-right-sidebar.html') }}">Banner
-																		Right sidebar</a></li>
-																<li><a href="{{ route('ecommerce.shop-full-width.html') }}">Shop Full
-																		Width</a></li>
-																<li><a href="{{ route('ecommerce.shop-banner-full-width.html') }}">Banner Full
-																		Width</a></li>
-															</ul>
-															<ul class="d-block mega-block">
-																<li class="menu_title"><a
-																		href="javascript:void(0)">List</a></li>
-																<li><a href="{{ route('ecommerce.shop-list-right-sidebar.html') }}">Shop Right
-																		sidebar</a></li>
-																<li><a href="{{ route('ecommerce.shop-list-banner-right-sidebar.html') }}">Banner
-																		Right sidebar</a></li>
-																<li><a href="{{ route('ecommerce.shop-list-full-width.html') }}">Shop
-																		Full Width</a></li>
-																<li><a href="{{ route('ecommerce.shop-list-banner-full-width.html') }}">Banner
-																		Full Width</a></li>
-															</ul>
+															@forelse (($ecommerceCategories ?? collect())->take(4) as $topCategory)
+																<ul class="d-block mega-block">
+																	<li class="menu_title">
+																		<a href="{{ route('ecommerce.products.index', ['category' => $topCategory->slug]) }}">{{ $topCategory->name }}</a>
+																	</li>
+																	@foreach ($topCategory->children->take(7) as $childCategory)
+																		<li>
+																			<a href="{{ route('ecommerce.products.index', ['category' => $childCategory->slug]) }}">{{ $childCategory->name }}</a>
+																		</li>
+																	@endforeach
+																</ul>
+															@empty
+																<ul class="d-block mega-block">
+																	<li class="menu_title"><a href="{{ route('ecommerce.products.index') }}">Shop</a></li>
+																	<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+																</ul>
+															@endforelse
 														</li>
 													</ul>
 												</li>
 												<li class="dropdown drop-list">
-													<a href="javascript:void(0)" class="dropdown-arrow">Products<i
+													<a href="{{ route('ecommerce.products.index') }}" class="dropdown-arrow">Best Sellers<i
 															class="ri-arrow-down-s-line"></i></a>
 													<ul class="sub-menu">
-														<li><a href="{{ route('ecommerce.product-detail.html') }}">product detail</a></li>
-														<li><a href="{{ route('ecommerce.product-accordion.html') }}">Product accordion</a></li>
-														<li><a href="{{ route('ecommerce.product-full-width.html') }}">Product full width</a>
+														@forelse (($bestSellerProducts ?? collect()) as $bestProduct)
+															<li>
+																<a href="{{ route('ecommerce.products.detail', $bestProduct->slug) }}" title="{{ $bestProduct->title }}">
+																	{{ \Illuminate\Support\Str::limit($bestProduct->title, 28) }}
+																</a>
+															</li>
+														@empty
+															<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+														@endforelse
+														<li class="border-top mt-1 pt-1">
+															<a href="{{ route('ecommerce.products.index') }}" class="fw-semibold text-primary">View All Products &rarr;</a>
 														</li>
-														<li><a href="{{ route('ecommerce.product-accordion-full-width.html') }}">accordion full
-																width</a></li>
 													</ul>
 												</li>
 												<li class="dropdown drop-list">
