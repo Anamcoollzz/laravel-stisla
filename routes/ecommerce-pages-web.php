@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\AddressController as EcommerceAddressController;
 use App\Http\Controllers\Ecommerce\AuthController as EcommerceAuthController;
 use App\Http\Controllers\Ecommerce\BlogController as EcommerceBlogController;
 use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
+use App\Http\Controllers\Ecommerce\CheckoutController as EcommerceCheckoutController;
 use App\Http\Controllers\Ecommerce\CompareController as EcommerceCompareController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
@@ -54,6 +56,29 @@ Route::post('/ecommerce/cart/remove/{product}', [EcommerceCartController::class,
     ->name('ecommerce.cart.remove');
 Route::delete('/ecommerce/cart/{product}', [EcommerceCartController::class, 'remove'])
     ->name('ecommerce.cart.destroy');
+
+Route::get('/ecommerce/checkout', [EcommerceCheckoutController::class, 'index'])
+    ->name('ecommerce.checkout');
+Route::post('/ecommerce/checkout', [EcommerceCheckoutController::class, 'store'])
+    ->name('ecommerce.checkout.store');
+Route::get('/ecommerce/checkout/detail/{orderNumber}', [EcommerceCheckoutController::class, 'show'])
+    ->name('ecommerce.checkout.detail');
+Route::get('/ecommerce/checkout/success/{orderNumber}', [EcommerceCheckoutController::class, 'show'])
+    ->name('ecommerce.checkout.success');
+Route::get('/ecommerce-pages/checkout.html', [EcommerceCheckoutController::class, 'index'])
+    ->name('ecommerce.checkout.html');
+Route::get('/ecommerce-pages/checkout', [EcommerceCheckoutController::class, 'index']);
+
+Route::get('/ecommerce/address-list', [EcommerceAddressController::class, 'index'])
+    ->name('ecommerce.address-list');
+Route::post('/ecommerce/address-list', [EcommerceAddressController::class, 'store'])
+    ->name('ecommerce.address-list.store');
+Route::put('/ecommerce/address-list/{address}', [EcommerceAddressController::class, 'update'])
+    ->name('ecommerce.address-list.update');
+Route::delete('/ecommerce/address-list/{address}', [EcommerceAddressController::class, 'destroy'])
+    ->name('ecommerce.address-list.destroy');
+Route::post('/ecommerce/address-list/{address}/default', [EcommerceAddressController::class, 'toggleDefault'])
+    ->name('ecommerce.address-list.default');
 
 Route::get('/ecommerce/login', [EcommerceAuthController::class, 'showLoginForm'])
     ->name('ecommerce.login');
@@ -162,7 +187,6 @@ Route::delete('/ecommerce/compare/{product}', [EcommerceCompareController::class
 $ecommercePages = [
     'blog-detail-full-width',
     'blog-right-sidebar',
-    'checkout',
     'contact-us',
     'index',
     'product-accordion-full-width',

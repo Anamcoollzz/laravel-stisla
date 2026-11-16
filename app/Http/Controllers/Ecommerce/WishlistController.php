@@ -27,7 +27,6 @@ class WishlistController extends Controller
                 ], 401);
             }
 
-            session()->flash('alert', 'Silakan login terlebih dahulu untuk mengakses wishlist!');
             session()->flash('warning', 'Silakan login terlebih dahulu untuk mengakses wishlist!');
 
             return redirect()->guest(route('ecommerce.login'));

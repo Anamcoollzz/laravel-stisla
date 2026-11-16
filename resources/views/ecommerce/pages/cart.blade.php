@@ -106,7 +106,7 @@
 											<div class="col-lg-12">
 												<div class="mn-cart-update-bottom">
 													<a href="{{ route('ecommerce.shop') }}">Continue Shopping</a>
-													<button type="button" class="mn-btn-2" onclick="window.location.href='{{ route('ecommerce.checkout.html') }}'"><span>Check Out</span></button>
+													<button type="button" class="mn-btn-2" onclick="window.location.href='{{ route('ecommerce.checkout') }}'"><span>Check Out</span></button>
 												</div>
 											</div>
 									</form>

@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             OurTeamSeeder::class,
             BlogSeeder::class,
             MenuSeeder::class,
+            EcommercePaymentShippingSeeder::class,
         ]);
     }
 }

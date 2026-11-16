@@ -14,6 +14,8 @@ use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OurTeamController;
+use App\Http\Controllers\PaymentBankController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProductBannerController;
@@ -28,6 +30,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ShippingMethodController;
 use App\Http\Controllers\SppPaymentController;
 use App\Http\Controllers\StoreServiceController;
 use App\Http\Controllers\StudentController;
@@ -232,6 +235,21 @@ Route::prefix('app')->group(function () {
         Route::post('ecommerce-faqs/import', [EcommerceFaqController::class, 'import'])->name('ecommerce-faqs.import');
         Route::resource('ecommerce-faqs', EcommerceFaqController::class)->parameters([
             'ecommerce-faqs' => 'ecommerceFaq',
+        ]);
+
+        Route::patch('shipping-methods/{shippingMethod}/toggle', [ShippingMethodController::class, 'toggle'])->name('shipping-methods.toggle');
+        Route::resource('shipping-methods', ShippingMethodController::class)->parameters([
+            'shipping-methods' => 'shippingMethod',
+        ]);
+
+        Route::patch('payment-methods/{paymentMethod}/toggle', [PaymentMethodController::class, 'toggle'])->name('payment-methods.toggle');
+        Route::resource('payment-methods', PaymentMethodController::class)->parameters([
+            'payment-methods' => 'paymentMethod',
+        ]);
+
+        Route::patch('payment-banks/{paymentBank}/toggle', [PaymentBankController::class, 'toggle'])->name('payment-banks.toggle');
+        Route::resource('payment-banks', PaymentBankController::class)->parameters([
+            'payment-banks' => 'paymentBank',
         ]);
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');

@@ -96,6 +96,9 @@ class MenuSeeder extends Seeder
             ['name' => 'Product Reviews', 'route' => 'product-reviews.index', 'permission' => 'product-reviews.view', 'order' => 12],
             ['name' => 'Services', 'route' => 'store-services.index', 'permission' => 'store-services.view', 'order' => 13],
             ['name' => 'FAQs', 'route' => 'ecommerce-faqs.index', 'permission' => 'ecommerce-faqs.view', 'order' => 14],
+            ['name' => 'Shipping Methods', 'route' => 'shipping-methods.index', 'permission' => 'shipping-methods.view', 'order' => 15],
+            ['name' => 'Payment Methods', 'route' => 'payment-methods.index', 'permission' => 'payment-methods.view', 'order' => 16],
+            ['name' => 'Payment Banks', 'route' => 'payment-banks.index', 'permission' => 'payment-banks.view', 'order' => 17],
         ];
 
         foreach ($shopChildren as $child) {

@@ -27,7 +27,6 @@ class CartController extends Controller
                 ], 401);
             }
 
-            session()->flash('alert', 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!');
             session()->flash('warning', 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!');
 
             return redirect()->guest(route('ecommerce.login'));
