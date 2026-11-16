@@ -653,12 +653,12 @@
 											<li class="mn-footer-link">
 												<a href="{{ route('ecommerce.faq.html') }}">Return Policy</a>
 											</li>
-											<li class="mn-footer-link">
+											{{-- <li class="mn-footer-link">
 												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Become a Vendor</a>
-											</li>
-											<li class="mn-footer-link">
+											</li> --}}
+											{{-- <li class="mn-footer-link">
 												<a href="{{ route('ecommerce.product-detail.html') }}">Affiliate Program</a>
-											</li>
+											</li> --}}
 											<li class="mn-footer-link">
 												<a href="{{ route('ecommerce.checkout.html') }}">Payments</a>
 											</li>
