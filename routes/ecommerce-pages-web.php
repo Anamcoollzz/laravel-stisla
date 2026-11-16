@@ -3,6 +3,7 @@
 use App\Http\Controllers\Ecommerce\AuthController as EcommerceAuthController;
 use App\Http\Controllers\Ecommerce\BlogController as EcommerceBlogController;
 use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
+use App\Http\Controllers\Ecommerce\CheckoutController as EcommerceCheckoutController;
 use App\Http\Controllers\Ecommerce\CompareController as EcommerceCompareController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
@@ -54,6 +55,12 @@ Route::post('/ecommerce/cart/remove/{product}', [EcommerceCartController::class,
     ->name('ecommerce.cart.remove');
 Route::delete('/ecommerce/cart/{product}', [EcommerceCartController::class, 'remove'])
     ->name('ecommerce.cart.destroy');
+
+Route::get('/ecommerce/checkout', [EcommerceCheckoutController::class, 'index'])
+    ->name('ecommerce.checkout');
+Route::get('/ecommerce-pages/checkout.html', [EcommerceCheckoutController::class, 'index'])
+    ->name('ecommerce.checkout.html');
+Route::get('/ecommerce-pages/checkout', [EcommerceCheckoutController::class, 'index']);
 
 Route::get('/ecommerce/login', [EcommerceAuthController::class, 'showLoginForm'])
     ->name('ecommerce.login');
@@ -162,7 +169,6 @@ Route::delete('/ecommerce/compare/{product}', [EcommerceCompareController::class
 $ecommercePages = [
     'blog-detail-full-width',
     'blog-right-sidebar',
-    'checkout',
     'contact-us',
     'index',
     'product-accordion-full-width',

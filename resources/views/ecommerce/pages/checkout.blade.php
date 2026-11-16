@@ -50,11 +50,24 @@
 			<!-- Checkout section -->
 			<section class="mn-checkout-section p-b-15">
 				<h2 class="d-none">Checkout Page</h2>
+
+				@if (session('warning'))
+					<div class="alert alert-warning py-2 px-3 mb-3" style="font-size: 14px;">
+						{{ session('warning') }}
+					</div>
+				@endif
+				@if (session('success'))
+					<div class="alert alert-success py-2 px-3 mb-3" style="font-size: 14px;">
+						{{ session('success') }}
+					</div>
+				@endif
+
 				<div class="row">
 					<div class="mn-checkout-leftside col-lg-8 col-md-12">
 						<!-- checkout content Start -->
 						<div class="mn-checkout-content">
 							<div class="mn-checkout-inner">
+								@guest
 								<div class="mn-checkout-wrap m-b-30">
 									<div class="mn-checkout-block mn-check-new">
 										<h3 class="mn-checkout-title">New Customer</h3>
@@ -78,7 +91,7 @@
 												have
 												previously made.
 											</div>
-											<div class="mn-new-btn"><a href="#"
+											<div class="mn-new-btn"><a href="{{ route('ecommerce.register') }}"
 													class="mn-btn-2"><span>Continue</span></a></div>
 
 										</div>
@@ -86,10 +99,11 @@
 									<div class="mn-checkout-block mn-check-login">
 										<h3 class="mn-checkout-title">Returning Customer</h3>
 										<div class="mn-check-login-form">
-											<form action="#" method="post">
+											<form action="{{ route('ecommerce.login.submit') }}" method="post">
+												@csrf
 												<span class="mn-check-login-wrap">
 													<label>Email Address</label>
-													<input type="text" name="name"
+													<input type="email" name="email"
 														placeholder="Enter your email address" required>
 												</span>
 												<span class="mn-check-login-wrap">
@@ -100,13 +114,14 @@
 
 												<span class="mn-check-login-wrap mn-check-login-btn">
 													<button class="mn-btn-2" type="submit"><span>Login</span></button>
-													<a class="mn-check-login-fp" href="#">Forgot Password?</a>
+													<a class="mn-check-login-fp" href="{{ route('password.request') }}">Forgot Password?</a>
 												</span>
 											</form>
 										</div>
 									</div>
 
 								</div>
+								@endguest
 								<div class="mn-checkout-wrap m-b-30 padding-bottom-3">
 									<div class="mn-checkout-block mn-check-bill">
 										<h3 class="mn-checkout-title">Billing Details</h3>
@@ -126,17 +141,17 @@
 												<form action="#" method="post">
 													<span class="mn-bill-wrap mn-bill-half">
 														<label>First Name*</label>
-														<input type="text" name="firstname"
+														<input type="text" name="firstname" value="{{ old('firstname', $user->first_name ?? (explode(' ', $user->name ?? '')[0] ?? '')) }}"
 															placeholder="Enter your first name" required>
 													</span>
 													<span class="mn-bill-wrap mn-bill-half">
 														<label>Last Name*</label>
-														<input type="text" name="lastname"
-															placeholder="Enter your last name" required>
+														<input type="text" name="lastname" value="{{ old('lastname', $user->last_name ?? (explode(' ', $user->name ?? '', 2)[1] ?? '')) }}"
+															placeholder="Enter your last name">
 													</span>
 													<span class="mn-bill-wrap">
 														<label>Address</label>
-														<input type="text" name="address" placeholder="Address Line 1">
+														<input type="text" name="address" value="{{ old('address', $user->address ?? '') }}" placeholder="Address Line 1">
 													</span>
 													<span class="mn-bill-wrap mn-bill-half">
 														<label>City *</label>
@@ -210,88 +225,59 @@
 									<div class="mn-checkout-summary">
 										<div>
 											<span class="text-left">Sub-Total</span>
-											<span class="text-right">$295.00</span>
+											<span class="text-right">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 										</div>
 										<div>
 											<span class="text-left">Delivery Charges</span>
-											<span class="text-right">$80.00</span>
+											<span class="text-right">Gratis</span>
 										</div>
 										<div>
-											<span class="text-left">Coupan Discount</span>
+											<span class="text-left">Coupon Discount</span>
 											<span class="text-right"><a class="mn-checkout-coupan">Apply
-													Coupan</a></span>
+													Coupon</a></span>
 										</div>
 										<div class="mn-checkout-coupan-content">
 											<form class="mn-checkout-coupan-form" name="mn-checkout-coupan-form"
 												method="post" action="#">
 												<input class="mn-coupan" type="text" required=""
-													placeholder="Enter Your Coupan Code" name="mn-coupan" value="">
+													placeholder="Enter Your Coupon Code" name="mn-coupan" value="">
 												<button class="mn-coupan-btn mn-btn-2" type="submit" name="subscribe"
 													value=""><span>Apply</span></button>
 											</form>
 										</div>
 										<div class="mn-checkout-summary-total">
 											<span class="text-left">Total Amount</span>
-											<span class="text-right">$375.00</span>
+											<span class="text-right">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 										</div>
 									</div>
 									<div class="mn-checkout-pro">
-										<div class="col-sm-12 mb-6">
-											<div class="mn-product-inner">
-												<div class="mn-pro-image-outer">
-													<div class="mn-pro-image">
-														<a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-															<img class="main-image" src="{{ asset('mantu/assets/img/product/1.jpg') }}"
-																alt="Product">
-															<img class="hover-image" src="{{ asset('mantu/assets/img/product/2.jpg') }}"
-																alt="Product">
-														</a>
+										@forelse ($cartItems as $item)
+											<div class="col-sm-12 mb-3">
+												<div class="mn-product-inner">
+													<div class="mn-pro-image-outer">
+														<div class="mn-pro-image">
+															<a href="{{ route('ecommerce.products.detail', $item['slug']) }}" class="image">
+																<img class="main-image" src="{{ $item['thumbnail'] }}"
+																	alt="{{ $item['title'] }}">
+															</a>
+														</div>
 													</div>
-												</div>
-												<div class="mn-pro-content">
-													<h5 class="mn-pro-title"><a href="{{ route('ecommerce.product-detail.html') }}">Round neck cotton t-shirt</a></h5>
-													<div class="mn-pro-rating">
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill grey"></i>
+													<div class="mn-pro-content">
+														<h5 class="mn-pro-title"><a href="{{ route('ecommerce.products.detail', $item['slug']) }}">{{ $item['title'] }}</a></h5>
+														<span class="mn-price">
+															<span class="new-price">Rp {{ number_format($item['price'], 0, ',', '.') }} &times; {{ $item['quantity'] }}</span>
+														</span>
+														<span class="text-muted small d-block">
+															Total: Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+														</span>
 													</div>
-													<span class="mn-price">
-														<span class="old-price">$58.00</span>
-														<span class="new-price">$45.00</span>
-													</span>
 												</div>
 											</div>
-										</div>
-										<div class="col-sm-12 mb-0">
-											<div class="mn-product-inner">
-												<div class="mn-pro-image-outer">
-													<div class="mn-pro-image">
-														<a href="{{ route('ecommerce.product-detail.html') }}" class="image">
-															<img class="main-image" src="{{ asset('mantu/assets/img/product/11.jpg') }}"
-																alt="Product">
-															<img class="hover-image" src="{{ asset('mantu/assets/img/product/12.jpg') }}"
-																alt="Product">
-														</a>
-													</div>
-												</div>
-												<div class="mn-pro-content">
-													<h5 class="mn-pro-title"><a href="{{ route('ecommerce.product-detail.html') }}">Digital smart watch</a></h5>
-													<div class="mn-pro-rating">
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill"></i>
-														<i class="ri-star-fill"></i>
-													</div>
-													<span class="mn-price">
-														<span class="old-price">$265.00</span>
-														<span class="new-price">$250.00</span>
-													</span>
-												</div>
+										@empty
+											<div class="col-sm-12 mb-0">
+												<p class="text-muted">Tidak ada produk di keranjang belanja.</p>
 											</div>
-										</div>
+										@endforelse
 									</div>
 								</div>
 							</div>

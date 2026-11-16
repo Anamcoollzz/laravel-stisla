@@ -377,7 +377,7 @@
 														<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
 														<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
 														<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
-														<li><a href="{{ route('ecommerce.checkout.html') }}">Checkout</a></li>
+														<li><a href="{{ route('ecommerce.checkout') }}">Checkout</a></li>
 														<li><a href="{{ route('ecommerce.compare.html') }}">Compare</a></li>
 														<li><a href="{{ route('ecommerce.faq.html') }}">FAQ</a></li>
 														<li><a href="{{ route('ecommerce.login.html') }}">Login</a></li>
@@ -448,7 +448,7 @@
 												<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
 												<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
 												<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
-												<li><a href="{{ route('ecommerce.checkout.html') }}">Checkout</a></li>
+												<li><a href="{{ route('ecommerce.checkout') }}">Checkout</a></li>
 												<li><a href="{{ route('ecommerce.compare.html') }}">Compare</a></li>
 												<li><a href="{{ route('ecommerce.faq.html') }}">Faq</a></li>
 												<li><a href="{{ route('ecommerce.login.html') }}">Login</a></li>
@@ -535,7 +535,7 @@
 										</li>
 									@endauth
 									<li>
-										<a href="{{ route('ecommerce.checkout.html') }}">Checkout</a>
+										<a href="{{ route('ecommerce.checkout') }}">Checkout</a>
 									</li>
 								</ul>
 							</div>
@@ -1034,7 +1034,7 @@
 					</div>
 					<div class="cart_btn">
 						<a href="{{ route('ecommerce.cart') }}" class="mn-btn-1"><span>Cart<i class="ri-arrow-right-s-line"></i></span></a>
-						<a href="{{ route('ecommerce.checkout.html') }}" class="mn-btn-2"><span>Checkout<i
+						<a href="{{ route('ecommerce.checkout') }}" class="mn-btn-2"><span>Checkout<i
 									class="ri-arrow-right-s-line"></i></span></a>
 					</div>
 				</div>
