@@ -99,31 +99,34 @@
 										<label>{{ __('Address') }}</label>
 										<input type="text" name="address" value="{{ old('address') }}" placeholder="{{ __('Address Line 1') }}">
 									</span>
+									@php
+										$provinces = $provinces ?? \App\Models\Province::query()->orderBy('name')->get(['id', 'name']);
+										$regenciesByProvince = $regenciesByProvince ?? \App\Models\Regency::query()->orderBy('name')->get(['id', 'province_id', 'name'])->groupBy('province_id');
+										$formatRegionName = static function (string $name): string {
+											$formatted = \Illuminate\Support\Str::title(\Illuminate\Support\Str::lower($name));
+											return str_replace(['Dki ', 'Di '], ['DKI ', 'DI '], $formatted);
+										};
+									@endphp
+									<span class="mn-register-wrap mn-register-half">
+										<label>{{ __('Region State') }}</label>
+										<span class="mn-rg-select-inner">
+											<select name="state" id="mn-select-state"
+												class="mn-register-select">
+												<option value="" {{ old('state') ? '' : 'selected' }} disabled>{{ __('Region/State') }}</option>
+												@foreach ($provinces as $province)
+													<option value="{{ $province->name }}" data-province-id="{{ $province->id }}" {{ old('state') === $province->name ? 'selected' : '' }}>
+														{{ $formatRegionName($province->name) }}
+													</option>
+												@endforeach
+											</select>
+										</span>
+									</span>
 									<span class="mn-register-wrap mn-register-half">
 										<label>{{ __('City') }}</label>
 										<span class="mn-rg-select-inner">
 											<select name="city" id="mn-select-city"
 												class="mn-register-select">
 												<option value="" selected disabled>{{ __('Select City') }}</option>
-												<option value="Jakarta" {{ old('city') == 'Jakarta' ? 'selected' : '' }}>Jakarta</option>
-												<option value="Bandung" {{ old('city') == 'Bandung' ? 'selected' : '' }}>Bandung</option>
-												<option value="Surabaya" {{ old('city') == 'Surabaya' ? 'selected' : '' }}>Surabaya</option>
-												<option value="Semarang" {{ old('city') == 'Semarang' ? 'selected' : '' }}>Semarang</option>
-												<option value="Yogyakarta" {{ old('city') == 'Yogyakarta' ? 'selected' : '' }}>Yogyakarta</option>
-											</select>
-										</span>
-									</span>
-									<span class="mn-register-wrap mn-register-half">
-										<label>{{ __('Region State') }}</label>
-										<span class="mn-rg-select-inner">
-											<select name="state" id="mn-select-state"
-												class="mn-register-select">
-												<option value="" selected disabled>{{ __('Region/State') }}</option>
-												<option value="DKI Jakarta" {{ old('state') == 'DKI Jakarta' ? 'selected' : '' }}>DKI Jakarta</option>
-												<option value="Jawa Barat" {{ old('state') == 'Jawa Barat' ? 'selected' : '' }}>Jawa Barat</option>
-												<option value="Jawa Tengah" {{ old('state') == 'Jawa Tengah' ? 'selected' : '' }}>Jawa Tengah</option>
-												<option value="Jawa Timur" {{ old('state') == 'Jawa Timur' ? 'selected' : '' }}>Jawa Timur</option>
-												<option value="DI Yogyakarta" {{ old('state') == 'DI Yogyakarta' ? 'selected' : '' }}>DI Yogyakarta</option>
 											</select>
 										</span>
 									</span>
@@ -143,3 +146,54 @@
 			</section>
 		</div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+	const stateSelect = document.getElementById('mn-select-state');
+	const citySelect = document.getElementById('mn-select-city');
+	if (!stateSelect || !citySelect) return;
+
+	const regenciesByProvince = {!! json_encode(
+		$regenciesByProvince->map(fn ($items) => $items->map(fn ($item) => [
+			'value' => $item->name,
+			'label' => $formatRegionName($item->name),
+		])->values())
+	) !!};
+	const selectCityPlaceholder = {!! json_encode(__('Select City')) !!};
+	const initialOldCity = {!! json_encode(old('city')) !!};
+
+	function populateCities(selectedCity) {
+		const selectedOption = stateSelect.options[stateSelect.selectedIndex];
+		const provinceId = selectedOption ? selectedOption.getAttribute('data-province-id') : null;
+		const cities = provinceId && regenciesByProvince[provinceId] ? regenciesByProvince[provinceId] : [];
+
+		citySelect.innerHTML = '';
+		const defaultOpt = document.createElement('option');
+		defaultOpt.value = '';
+		defaultOpt.textContent = selectCityPlaceholder;
+		defaultOpt.disabled = true;
+		defaultOpt.selected = !selectedCity;
+		citySelect.appendChild(defaultOpt);
+
+		cities.forEach(function (city) {
+			const opt = document.createElement('option');
+			opt.value = city.value;
+			opt.textContent = city.label;
+			if (selectedCity && selectedCity === city.value) {
+				opt.selected = true;
+			}
+			citySelect.appendChild(opt);
+		});
+	}
+
+	stateSelect.addEventListener('change', function () {
+		populateCities('');
+	});
+
+	if (stateSelect.value) {
+		populateCities(initialOldCity);
+	}
+});
+</script>
+@endpush

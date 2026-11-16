@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use App\Models\Province;
+use App\Models\Regency;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -32,7 +35,16 @@ class AuthController extends Controller
             return redirect()->route('ecommerce.shop');
         }
 
-        return view('ecommerce.pages.register');
+        $provinces = Province::query()
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $regenciesByProvince = Regency::query()
+            ->orderBy('name')
+            ->get(['id', 'province_id', 'name'])
+            ->groupBy('province_id');
+
+        return view('ecommerce.pages.register', compact('provinces', 'regenciesByProvince'));
     }
 
     /**
@@ -50,8 +62,8 @@ class AuthController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'phonenumber' => ['nullable', 'string', 'max:50'],
             'address' => ['nullable', 'string', 'max:500'],
-            'city' => ['nullable', 'string', 'max:100'],
-            'state' => ['nullable', 'string', 'max:100'],
+            'city' => ['nullable', 'string', 'max:100', Rule::exists('regencies', 'name')],
+            'state' => ['nullable', 'string', 'max:100', Rule::exists('provinces', 'name')],
             'postal_code' => ['nullable', 'string', 'max:20'],
             'postalcode' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],

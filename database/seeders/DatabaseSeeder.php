@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             EcommercePaymentShippingSeeder::class,
             EcommerceFaqSeeder::class,
             StoreServiceSeeder::class,
+            IndonesiaRegionSeeder::class,
         ]);
     }
 }
