@@ -217,6 +217,21 @@
 											<i class="ri-time-line me-1"></i> Estimasi Sampai: <strong>{{ $order->shipping_estimated_delivery }}</strong>
 										</div>
 									@endif
+									@if ($order->tracking_number || $order->tracking_proof_url)
+										<div class="mt-2 pt-2 border-top">
+											@if ($order->tracking_number)
+												<div class="small mb-1">
+													<span class="text-muted">No. Resi:</span>
+													<span class="font-monospace fw-bold text-primary">{{ $order->tracking_number }}</span>
+												</div>
+											@endif
+											@if ($order->tracking_proof_url)
+												<a href="{{ $order->tracking_proof_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;">
+													<i class="ri-file-text-line me-1"></i> Lihat Bukti Resi
+												</a>
+											@endif
+										</div>
+									@endif
 								</div>
 							</div>
 						</div>

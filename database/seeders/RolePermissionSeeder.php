@@ -44,6 +44,7 @@ class RolePermissionSeeder extends Seeder
             'product-reviews' => ['view', 'edit', 'delete'],
             'store-services' => ['view', 'create', 'edit', 'delete'],
             'ecommerce-faqs' => ['view', 'create', 'edit', 'delete'],
+            'orders' => ['view', 'edit', 'delete'],
             'shipping-methods' => ['view', 'create', 'edit', 'delete'],
             'payment-methods' => ['view', 'create', 'edit', 'delete'],
             'payment-banks' => ['view', 'create', 'edit', 'delete'],

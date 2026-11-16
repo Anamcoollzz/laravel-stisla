@@ -30,6 +30,8 @@ class Order extends Model
         'shipping_code',
         'shipping_cost',
         'shipping_estimated_delivery',
+        'tracking_number',
+        'tracking_proof',
         'payment_name',
         'payment_type',
         'payment_fee',
@@ -166,6 +168,26 @@ class Order extends Model
                 }
 
                 return asset($this->payment_proof);
+            }
+        );
+    }
+
+    /**
+     * Public URL for uploaded shipping tracking proof.
+     */
+    protected function trackingProofUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                if (! $this->tracking_proof) {
+                    return null;
+                }
+
+                if (Storage::disk('public')->exists($this->tracking_proof)) {
+                    return Storage::disk('public')->url($this->tracking_proof);
+                }
+
+                return asset($this->tracking_proof);
             }
         );
     }

@@ -13,6 +13,7 @@ use App\Http\Controllers\EcommerceFaqController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OurTeamController;
 use App\Http\Controllers\PaymentBankController;
 use App\Http\Controllers\PaymentMethodController;
@@ -236,6 +237,10 @@ Route::prefix('app')->group(function () {
         Route::resource('ecommerce-faqs', EcommerceFaqController::class)->parameters([
             'ecommerce-faqs' => 'ecommerceFaq',
         ]);
+
+        Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::patch('orders/{order}/tracking', [OrderController::class, 'updateTracking'])->name('orders.updateTracking');
+        Route::resource('orders', OrderController::class)->only(['index', 'show', 'destroy']);
 
         Route::patch('shipping-methods/{shippingMethod}/toggle', [ShippingMethodController::class, 'toggle'])->name('shipping-methods.toggle');
         Route::resource('shipping-methods', ShippingMethodController::class)->parameters([
