@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProductCart;
+use App\Models\UserAddress;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,11 +35,20 @@ class CheckoutController extends Controller
         $subtotal = $this->calculateSubtotal($cart);
         $totalQuantity = $this->calculateTotalQuantity($cart);
 
+        $addresses = UserAddress::query()
+            ->where('user_id', $userId)
+            ->orderByDesc('is_default')
+            ->latest('id')
+            ->get();
+        $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
+
         return view('ecommerce.pages.checkout', [
             'cartItems' => $cart,
             'subtotal' => $subtotal,
             'totalQuantity' => $totalQuantity,
             'user' => Auth::user(),
+            'addresses' => $addresses,
+            'defaultAddress' => $defaultAddress,
         ]);
     }
 

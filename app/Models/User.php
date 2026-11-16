@@ -102,6 +102,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return HasMany<UserAddress, $this>
+     */
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(UserAddress::class);
+    }
+
+    /**
      * Check if user was recently active.
      */
     public function isOnline(): bool

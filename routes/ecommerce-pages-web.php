@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\AddressController as EcommerceAddressController;
 use App\Http\Controllers\Ecommerce\AuthController as EcommerceAuthController;
 use App\Http\Controllers\Ecommerce\BlogController as EcommerceBlogController;
 use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
@@ -61,6 +62,17 @@ Route::get('/ecommerce/checkout', [EcommerceCheckoutController::class, 'index'])
 Route::get('/ecommerce-pages/checkout.html', [EcommerceCheckoutController::class, 'index'])
     ->name('ecommerce.checkout.html');
 Route::get('/ecommerce-pages/checkout', [EcommerceCheckoutController::class, 'index']);
+
+Route::get('/ecommerce/address-list', [EcommerceAddressController::class, 'index'])
+    ->name('ecommerce.address-list');
+Route::post('/ecommerce/address-list', [EcommerceAddressController::class, 'store'])
+    ->name('ecommerce.address-list.store');
+Route::put('/ecommerce/address-list/{address}', [EcommerceAddressController::class, 'update'])
+    ->name('ecommerce.address-list.update');
+Route::delete('/ecommerce/address-list/{address}', [EcommerceAddressController::class, 'destroy'])
+    ->name('ecommerce.address-list.destroy');
+Route::post('/ecommerce/address-list/{address}/default', [EcommerceAddressController::class, 'toggleDefault'])
+    ->name('ecommerce.address-list.default');
 
 Route::get('/ecommerce/login', [EcommerceAuthController::class, 'showLoginForm'])
     ->name('ecommerce.login');

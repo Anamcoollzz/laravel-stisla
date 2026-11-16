@@ -521,6 +521,9 @@
 											<a href="{{ route('dashboard') }}">Dashboard ({{ Auth::user()->name }})</a>
 										</li>
 										<li>
+											<a href="{{ route('ecommerce.address-list') }}">Daftar Alamat</a>
+										</li>
+										<li>
 											<form method="POST" action="{{ route('ecommerce.logout') }}" class="d-inline">
 												@csrf
 												<a href="javascript:void(0)" onclick="this.closest('form').submit()">Logout</a>

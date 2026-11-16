@@ -124,34 +124,39 @@
 								@endguest
 								<div class="mn-checkout-wrap m-b-30 padding-bottom-3">
 									<div class="mn-checkout-block mn-check-bill">
-										<h3 class="mn-checkout-title">Billing Details</h3>
+										<div class="d-flex justify-content-between align-items-center mb-3">
+											<h3 class="mn-checkout-title mb-0">Billing Details</h3>
+											<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px; font-size: 13px;">
+												<i class="ri-map-pin-line me-1"></i> Kelola Daftar Alamat
+											</a>
+										</div>
 										<div class="mn-bl-block-content">
-											<div class="mn-check-subtitle">Checkout Options</div>
-											<span class="mn-bill-option">
-												<span class="m-b-15">
-													<input type="radio" id="bill1" name="radio-group">
-													<label for="bill1">I want to use an existing address</label>
-												</span>
-												<span class="m-b-15">
-													<input type="radio" id="bill2" name="radio-group" checked>
-													<label for="bill2">I want to use new address</label>
-												</span>
-											</span>
+											@if (isset($defaultAddress) && $defaultAddress)
+												<div class="alert alert-light border p-3 mb-3" style="border-radius: 8px;">
+													<div class="d-flex justify-content-between align-items-center mb-1">
+														<span class="badge bg-success" style="font-size: 11px;"><i class="ri-check-line me-1"></i> Alamat Utama ({{ $defaultAddress->label }})</span>
+														<a href="{{ route('ecommerce.address-list') }}" class="text-primary small fw-semibold">Pilih Alamat Lain</a>
+													</div>
+													<strong>{{ $defaultAddress->recipient_name }}</strong> ({{ $defaultAddress->phone_number }})<br>
+													<span class="text-muted small">{{ $defaultAddress->address_line }}{{ $defaultAddress->city ? ', '.$defaultAddress->city : '' }}{{ $defaultAddress->state ? ', '.$defaultAddress->state : '' }}{{ $defaultAddress->postal_code ? ' '.$defaultAddress->postal_code : '' }}</span>
+												</div>
+											@endif
+
 											<div class="mn-check-bill-form">
 												<form action="#" method="post">
 													<span class="mn-bill-wrap mn-bill-half">
 														<label>First Name*</label>
-														<input type="text" name="firstname" value="{{ old('firstname', $user->first_name ?? (explode(' ', $user->name ?? '')[0] ?? '')) }}"
+														<input type="text" name="firstname" value="{{ old('firstname', isset($defaultAddress) && $defaultAddress ? (explode(' ', $defaultAddress->recipient_name)[0] ?? '') : ($user->first_name ?? (explode(' ', $user->name ?? '')[0] ?? ''))) }}"
 															placeholder="Enter your first name" required>
 													</span>
 													<span class="mn-bill-wrap mn-bill-half">
 														<label>Last Name*</label>
-														<input type="text" name="lastname" value="{{ old('lastname', $user->last_name ?? (explode(' ', $user->name ?? '', 2)[1] ?? '')) }}"
+														<input type="text" name="lastname" value="{{ old('lastname', isset($defaultAddress) && $defaultAddress ? (explode(' ', $defaultAddress->recipient_name, 2)[1] ?? '') : ($user->last_name ?? (explode(' ', $user->name ?? '', 2)[1] ?? ''))) }}"
 															placeholder="Enter your last name">
 													</span>
 													<span class="mn-bill-wrap">
 														<label>Address</label>
-														<input type="text" name="address" value="{{ old('address', $user->address ?? '') }}" placeholder="Address Line 1">
+														<input type="text" name="address" value="{{ old('address', $defaultAddress->address_line ?? ($user->address ?? '')) }}" placeholder="Address Line 1">
 													</span>
 													<span class="mn-bill-wrap mn-bill-half">
 														<label>City *</label>
