@@ -70,6 +70,7 @@ Route::prefix('app')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/ecommerce/dashboard', [DashboardController::class, 'ecommerce'])->name('dashboard.ecommerce');
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
