@@ -155,32 +155,53 @@
 							<!-- 2. Delivery Method Section -->
 							<div class="mn-checkout-wrap m-b-30">
 								<div class="mn-checkout-block">
-									<h3 class="mn-checkout-title mb-3" style="font-size: 18px;">
-										<i class="ri-truck-line me-1 text-primary"></i> 2. Metode Pengiriman
-									</h3>
+									<div class="d-flex justify-content-between align-items-center mb-3">
+										<h3 class="mn-checkout-title mb-0" style="font-size: 18px;">
+											<i class="ri-truck-line me-1 text-primary"></i> 2. Metode Pengiriman
+										</h3>
+										<span class="text-muted small">Pilih kurir / ekspedisi</span>
+									</div>
 									<div class="mn-check-block-content">
 										<p class="text-muted small mb-3">Pilih opsi pengiriman yang diinginkan untuk pesanan Anda:</p>
 										<div class="row g-3">
-											<div class="col-md-6">
-												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="del1" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
-													<input type="radio" id="del1" name="delivery_method" value="free" checked class="form-check-input mt-0" style="width: 20px; height: 20px;">
-													<div>
-														<strong class="d-block text-dark" style="font-size: 15px;">Reguler / Standard Shipping</strong>
-														<span class="text-success small fw-semibold">Gratis Ongkir</span>
-														<div class="text-muted small">Estimasi tiba 3 - 5 hari kerja</div>
+											@forelse ($shippingMethods as $shipMethod)
+												<div class="col-md-6">
+													<label class="card p-3 border h-100 d-flex flex-column justify-content-between shipping-method-card {{ $loop->first ? 'border-primary shadow-sm bg-light' : '' }}" for="shipping_{{ $shipMethod->id }}" style="cursor: pointer; border-radius: 10px; transition: all 0.2s;">
+														<div class="d-flex align-items-start gap-3">
+															<input type="radio" id="shipping_{{ $shipMethod->id }}" name="shipping_method_id" value="{{ $shipMethod->id }}" data-cost="{{ $shipMethod->cost }}" data-name="{{ $shipMethod->name }}" {{ $loop->first ? 'checked' : '' }} class="form-check-input mt-1 shipping-radio" style="width: 20px; height: 20px; cursor: pointer;">
+															<div class="flex-grow-1">
+																<div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+																	<strong class="text-dark" style="font-size: 14px;">{{ $shipMethod->name }}</strong>
+																	@if ($shipMethod->logo_url)
+																		<img src="{{ $shipMethod->logo_url }}" alt="{{ $shipMethod->name }}" style="max-height: 24px; max-width: 55px; object-fit: contain;">
+																	@endif
+																</div>
+																<div class="mb-1">
+																	@if ($shipMethod->cost <= 0)
+																		<span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" style="font-size: 12px;">Gratis Ongkir</span>
+																	@else
+																		<span class="text-primary fw-bold" style="font-size: 14px;">Rp {{ number_format($shipMethod->cost, 0, ',', '.') }}</span>
+																	@endif
+																</div>
+																@if ($shipMethod->estimated_delivery)
+																	<div class="text-muted small">
+																		<i class="ri-time-line me-1"></i>Estimasi: {{ $shipMethod->estimated_delivery }}
+																	</div>
+																@endif
+																@if ($shipMethod->description)
+																	<div class="text-secondary small mt-1" style="font-size: 12px; line-height: 1.4;">{{ $shipMethod->description }}</div>
+																@endif
+															</div>
+														</div>
+													</label>
+												</div>
+											@empty
+												<div class="col-12">
+													<div class="alert alert-warning py-3 mb-0" style="border-radius: 8px;">
+														<i class="ri-information-line me-1"></i> Belum ada metode pengiriman yang aktif saat ini.
 													</div>
-												</label>
-											</div>
-											<div class="col-md-6">
-												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="del2" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
-													<input type="radio" id="del2" name="delivery_method" value="express" class="form-check-input mt-0" style="width: 20px; height: 20px;">
-													<div>
-														<strong class="d-block text-dark" style="font-size: 15px;">Express / Kilat</strong>
-														<span class="text-dark small fw-semibold">Rp 25.000</span>
-														<div class="text-muted small">Estimasi tiba 1 - 2 hari kerja</div>
-													</div>
-												</label>
-											</div>
+												</div>
+											@endforelse
 										</div>
 									</div>
 								</div>
@@ -189,29 +210,105 @@
 							<!-- 3. Payment Method Section -->
 							<div class="mn-checkout-wrap m-b-30">
 								<div class="mn-checkout-block">
-									<h3 class="mn-checkout-title mb-3" style="font-size: 18px;">
-										<i class="ri-bank-card-line me-1 text-primary"></i> 3. Metode Pembayaran
-									</h3>
+									<div class="d-flex justify-content-between align-items-center mb-3">
+										<h3 class="mn-checkout-title mb-0" style="font-size: 18px;">
+											<i class="ri-bank-card-line me-1 text-primary"></i> 3. Metode Pembayaran
+										</h3>
+										<span class="text-muted small">Pilih cara bayar</span>
+									</div>
 									<div class="mn-check-block-content">
 										<p class="text-muted small mb-3">Pilih metode pembayaran yang paling nyaman untuk Anda:</p>
-										<div class="row g-3 mb-4">
-											<div class="col-md-6">
-												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="pay1" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
-													<input type="radio" id="pay1" name="payment_method" value="cod" checked class="form-check-input mt-0" style="width: 20px; height: 20px;">
-													<div>
-														<strong class="d-block text-dark" style="font-size: 15px;">Cash On Delivery (COD)</strong>
-														<span class="text-muted small">Bayar langsung secara tunai saat kurir tiba</span>
+										<div class="row g-3 mb-3">
+											@forelse ($paymentMethods as $payMethod)
+												<div class="col-md-6">
+													<label class="card p-3 border h-100 d-flex flex-column justify-content-between payment-method-card {{ $loop->first ? 'border-primary shadow-sm bg-light' : '' }}" for="payment_{{ $payMethod->id }}" style="cursor: pointer; border-radius: 10px; transition: all 0.2s;">
+														<div class="d-flex align-items-start gap-3">
+															<input type="radio" id="payment_{{ $payMethod->id }}" name="payment_method_id" value="{{ $payMethod->id }}" data-fee="{{ $payMethod->fee }}" data-type="{{ $payMethod->type }}" data-name="{{ $payMethod->name }}" {{ $loop->first ? 'checked' : '' }} class="form-check-input mt-1 payment-radio" style="width: 20px; height: 20px; cursor: pointer;">
+															<div class="flex-grow-1">
+																<div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+																	<strong class="text-dark" style="font-size: 14px;">{{ $payMethod->name }}</strong>
+																	@if ($payMethod->logo_url)
+																		<img src="{{ $payMethod->logo_url }}" alt="{{ $payMethod->name }}" style="max-height: 24px; max-width: 55px; object-fit: contain;">
+																	@endif
+																</div>
+																<div class="mb-1">
+																	@if ($payMethod->fee > 0)
+																		<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 11px;">
+																			+Biaya Rp {{ number_format($payMethod->fee, 0, ',', '.') }}
+																		</span>
+																	@else
+																		<span class="badge bg-light text-muted border" style="font-size: 11px;">Bebas Biaya</span>
+																	@endif
+																</div>
+																@if ($payMethod->description)
+																	<div class="text-muted small" style="font-size: 12px; line-height: 1.4;">{{ $payMethod->description }}</div>
+																@endif
+															</div>
+														</div>
+
+														@if ($payMethod->instructions)
+															<div class="payment-instruction-box text-secondary small mt-2 pt-2 border-top" id="instruction_{{ $payMethod->id }}" style="{{ $loop->first ? '' : 'display: none;' }} font-size: 12px;">
+																<i class="ri-information-line me-1 text-primary"></i> {{ $payMethod->instructions }}
+															</div>
+														@endif
+													</label>
+												</div>
+											@empty
+												<div class="col-12">
+													<div class="alert alert-warning py-3 mb-0" style="border-radius: 8px;">
+														<i class="ri-information-line me-1"></i> Belum ada metode pembayaran yang aktif saat ini.
 													</div>
-												</label>
+												</div>
+											@endforelse
+										</div>
+
+										<!-- Bank Accounts Detail Section (Shown when bank_transfer is selected) -->
+										<div id="bankAccountsSection" class="p-3 border rounded-3 mb-3 bg-light" style="display: none;">
+											<div class="d-flex align-items-center justify-content-between mb-2">
+												<h5 class="fw-bold mb-0 text-dark" style="font-size: 14px;">
+													<i class="ri-bank-line me-1 text-primary"></i> Rekening Tujuan Transfer
+												</h5>
+												<span class="badge bg-primary text-white" style="font-size: 11px;">Transfer Manual</span>
 											</div>
-											<div class="col-md-6">
-												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="pay2" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
-													<input type="radio" id="pay2" name="payment_method" value="transfer" class="form-check-input mt-0" style="width: 20px; height: 20px;">
-													<div>
-														<strong class="d-block text-dark" style="font-size: 15px;">Transfer Bank / VA</strong>
-														<span class="text-muted small">BCA, Mandiri, BNI, BRI, Permata</span>
+											<p class="text-muted small mb-3" style="font-size: 12px;">Silakan pilih salah satu rekening tujuan transfer berikut:</p>
+											<div class="row g-2">
+												@forelse ($paymentBanks as $bank)
+													<div class="col-12">
+														<label class="card p-3 border bg-white d-flex flex-row align-items-center justify-content-between gap-3 bank-option-card {{ $loop->first ? 'border-primary' : '' }}" for="bank_{{ $bank->id }}" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
+															<div class="d-flex align-items-center gap-3">
+																<input type="radio" name="payment_bank_id" id="bank_{{ $bank->id }}" value="{{ $bank->id }}" {{ $loop->first ? 'checked' : '' }} class="form-check-input bank-radio" style="width: 18px; height: 18px; cursor: pointer;">
+																@if ($bank->logo_url)
+																	<img src="{{ $bank->logo_url }}" alt="{{ $bank->bank_name }}" style="max-height: 26px; max-width: 50px; object-fit: contain;">
+																@else
+																	<div class="badge bg-light text-dark border px-2 py-1 fw-bold" style="font-size: 12px;">{{ $bank->bank_code ?? 'BANK' }}</div>
+																@endif
+																<div>
+																	<div class="fw-bold text-dark" style="font-size: 14px;">{{ $bank->bank_name }}</div>
+																	<div class="d-flex align-items-center gap-2 mt-1">
+																		<span class="font-monospace fw-bold text-primary" style="font-size: 14px;" id="accNum_{{ $bank->id }}">{{ $bank->account_number }}</span>
+																		<button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 btn-copy-acc" data-account="{{ $bank->account_number }}" style="font-size: 11px; border-radius: 4px;" title="Salin Nomor Rekening">
+																			<i class="ri-file-copy-line"></i> Salin
+																		</button>
+																	</div>
+																	<div class="text-muted small" style="font-size: 12px;">
+																		a.n. <strong>{{ $bank->account_name }}</strong> {{ $bank->branch ? '('.$bank->branch.')' : '' }}
+																	</div>
+																</div>
+															</div>
+															@if ($bank->qr_code_url)
+																<div>
+																	<button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#qrModal{{ $bank->id }}" style="font-size: 11px; border-radius: 6px;">
+																		<i class="ri-qr-code-line me-1"></i> QR Code
+																	</button>
+																</div>
+															@endif
+														</label>
 													</div>
-												</label>
+												@empty
+													<div class="col-12">
+														<p class="text-muted small mb-0">Belum ada daftar rekening bank yang aktif.</p>
+													</div>
+												@endforelse
 											</div>
 										</div>
 
@@ -262,7 +359,11 @@
 								</div>
 								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
 									<span class="text-muted">Biaya Pengiriman</span>
-									<span class="text-success fw-semibold">Gratis</span>
+									<span class="fw-semibold text-primary" id="summaryShippingCost">Rp 0</span>
+								</div>
+								<div class="d-flex justify-content-between mb-2" id="summaryFeeRow" style="font-size: 14px; display: none;">
+									<span class="text-muted">Biaya Layanan</span>
+									<span class="fw-semibold text-dark" id="summaryPaymentFee">Rp 0</span>
 								</div>
 								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
 									<span class="text-muted">Kupon Diskon</span>
@@ -276,7 +377,7 @@
 								</div>
 								<div class="d-flex justify-content-between pt-2 border-top mt-2">
 									<span class="fw-bold text-dark" style="font-size: 15px;">Total Pembayaran</span>
-									<span class="fw-bold text-primary" style="font-size: 18px;">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+									<span class="fw-bold text-primary" style="font-size: 18px;" id="summaryTotal">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 								</div>
 							</div>
 
@@ -290,7 +391,7 @@
 
 							<!-- PLACE ORDER BUTTON (PALING BAWAH KANAN) -->
 							<div class="mn-checkout-order-btn">
-								<button type="button" class="mn-btn-1 btn w-100 py-3 text-center shadow" style="border-radius: 8px; font-size: 16px; font-weight: bold;" onclick="alert('Terima kasih! Pesanan Anda berhasil diproses.');">
+								<button type="button" class="mn-btn-1 btn w-100 py-3 text-center shadow" style="border-radius: 8px; font-size: 16px; font-weight: bold;" onclick="handlePlaceOrder()">
 									<span><i class="ri-shopping-cart-2-line me-1"></i> Place Order</span>
 								</button>
 							</div>
@@ -309,4 +410,194 @@
 		</form>
 	</section>
 </div>
+
+<!-- Modals for QR Code Bank -->
+@foreach ($paymentBanks as $bank)
+	@if ($bank->qr_code_url)
+		<div class="modal fade" id="qrModal{{ $bank->id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ $bank->id }}" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm">
+				<div class="modal-content text-center p-3" style="border-radius: 12px;">
+					<div class="modal-header border-0 pb-0">
+						<h5 class="modal-title w-100 fw-bold" id="qrModalLabel{{ $bank->id }}" style="font-size: 15px;">QR Code {{ $bank->bank_name }}</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<img src="{{ $bank->qr_code_url }}" alt="QR Code {{ $bank->bank_name }}" class="img-fluid rounded border p-2 mb-2" style="max-height: 240px; width: 100%; object-fit: contain;">
+						<p class="small text-muted mb-1">a.n. <strong>{{ $bank->account_name }}</strong></p>
+						<p class="font-monospace fw-bold text-primary mb-0" style="font-size: 15px;">{{ $bank->account_number }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	@endif
+@endforeach
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+	const subtotal = {{ (float) $subtotal }};
+
+	function formatRupiah(num) {
+		return 'Rp ' + Number(num).toLocaleString('id-ID');
+	}
+
+	function updateTotalSummary() {
+		const selectedShipping = document.querySelector('input[name="shipping_method_id"]:checked');
+		const shippingCost = selectedShipping ? parseFloat(selectedShipping.dataset.cost || 0) : 0;
+
+		const selectedPayment = document.querySelector('input[name="payment_method_id"]:checked');
+		const paymentFee = selectedPayment ? parseFloat(selectedPayment.dataset.fee || 0) : 0;
+		const paymentType = selectedPayment ? selectedPayment.dataset.type : '';
+
+		// Update Shipping summary
+		const shippingCostEl = document.getElementById('summaryShippingCost');
+		if (shippingCostEl) {
+			if (shippingCost <= 0) {
+				shippingCostEl.innerHTML = '<span class="text-success fw-bold">Gratis</span>';
+			} else {
+				shippingCostEl.textContent = formatRupiah(shippingCost);
+			}
+		}
+
+		// Update Payment Fee summary
+		const feeRow = document.getElementById('summaryFeeRow');
+		const feeEl = document.getElementById('summaryPaymentFee');
+		if (feeRow && feeEl) {
+			if (paymentFee > 0) {
+				feeRow.style.display = 'flex';
+				feeEl.textContent = formatRupiah(paymentFee);
+			} else {
+				feeRow.style.display = 'none';
+			}
+		}
+
+		// Update Grand Total
+		const grandTotal = subtotal + shippingCost + paymentFee;
+		const totalEl = document.getElementById('summaryTotal');
+		if (totalEl) {
+			totalEl.textContent = formatRupiah(grandTotal);
+		}
+
+		// Bank transfer accounts visibility
+		const bankSection = document.getElementById('bankAccountsSection');
+		if (bankSection) {
+			if (paymentType === 'bank_transfer') {
+				bankSection.style.display = 'block';
+			} else {
+				bankSection.style.display = 'none';
+			}
+		}
+
+		// Payment instructions toggle
+		document.querySelectorAll('.payment-instruction-box').forEach(function (el) {
+			el.style.display = 'none';
+		});
+		if (selectedPayment) {
+			const activeInstruction = document.getElementById('instruction_' + selectedPayment.value);
+			if (activeInstruction) {
+				activeInstruction.style.display = 'block';
+			}
+		}
+	}
+
+	// Shipping radio listener
+	document.querySelectorAll('input[name="shipping_method_id"]').forEach(function (radio) {
+		radio.addEventListener('change', function () {
+			document.querySelectorAll('.shipping-method-card').forEach(function (card) {
+				card.classList.remove('border-primary', 'shadow-sm', 'bg-light');
+			});
+			const card = this.closest('.shipping-method-card');
+			if (card) {
+				card.classList.add('border-primary', 'shadow-sm', 'bg-light');
+			}
+			updateTotalSummary();
+		});
+	});
+
+	// Payment radio listener
+	document.querySelectorAll('input[name="payment_method_id"]').forEach(function (radio) {
+		radio.addEventListener('change', function () {
+			document.querySelectorAll('.payment-method-card').forEach(function (card) {
+				card.classList.remove('border-primary', 'shadow-sm', 'bg-light');
+			});
+			const card = this.closest('.payment-method-card');
+			if (card) {
+				card.classList.add('border-primary', 'shadow-sm', 'bg-light');
+			}
+			updateTotalSummary();
+		});
+	});
+
+	// Bank radio listener
+	document.querySelectorAll('input[name="payment_bank_id"]').forEach(function (radio) {
+		radio.addEventListener('change', function () {
+			document.querySelectorAll('.bank-option-card').forEach(function (card) {
+				card.classList.remove('border-primary');
+			});
+			const card = this.closest('.bank-option-card');
+			if (card) {
+				card.classList.add('border-primary');
+			}
+		});
+	});
+
+	// Copy account button listener
+	document.querySelectorAll('.btn-copy-acc').forEach(function (btn) {
+		btn.addEventListener('click', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			const account = this.dataset.account;
+			if (navigator.clipboard && window.isSecureContext) {
+				navigator.clipboard.writeText(account);
+			} else {
+				const tempInput = document.createElement('input');
+				tempInput.value = account;
+				document.body.appendChild(tempInput);
+				tempInput.select();
+				document.execCommand('copy');
+				document.body.removeChild(tempInput);
+			}
+
+			const originalHtml = this.innerHTML;
+			this.innerHTML = '<i class="ri-check-line text-success"></i> Tersalin!';
+			this.classList.add('btn-success', 'text-white');
+			this.classList.remove('btn-outline-secondary');
+			const self = this;
+			setTimeout(function () {
+				self.innerHTML = originalHtml;
+				self.classList.remove('btn-success', 'text-white');
+				self.classList.add('btn-outline-secondary');
+			}, 1800);
+		});
+	});
+
+	// Initial run
+	updateTotalSummary();
+});
+
+function handlePlaceOrder() {
+	const terms = document.getElementById('termsAgree');
+	if (terms && !terms.checked) {
+		alert('Silakan setujui Syarat & Ketentuan terlebih dahulu.');
+		return;
+	}
+
+	const selectedShipping = document.querySelector('input[name="shipping_method_id"]:checked');
+	const selectedPayment = document.querySelector('input[name="payment_method_id"]:checked');
+
+	if (!selectedShipping) {
+		alert('Silakan pilih metode pengiriman terlebih dahulu.');
+		return;
+	}
+
+	if (!selectedPayment) {
+		alert('Silakan pilih metode pembayaran terlebih dahulu.');
+		return;
+	}
+
+	const shipName = selectedShipping.dataset.name || 'Pengiriman';
+	const payName = selectedPayment.dataset.name || 'Pembayaran';
+
+	alert('Terima kasih! Pesanan Anda berhasil diproses dengan metode:\n- ' + shipName + '\n- ' + payName);
+}
+</script>
 @endsection

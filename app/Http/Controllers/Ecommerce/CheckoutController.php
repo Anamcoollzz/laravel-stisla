@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentBank;
+use App\Models\PaymentMethod;
 use App\Models\ProductCart;
+use App\Models\ShippingMethod;
 use App\Models\UserAddress;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -42,6 +45,24 @@ class CheckoutController extends Controller
             ->get();
         $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
 
+        $shippingMethods = ShippingMethod::query()
+            ->active()
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        $paymentMethods = PaymentMethod::query()
+            ->active()
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        $paymentBanks = PaymentBank::query()
+            ->active()
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
         return view('ecommerce.pages.checkout', [
             'cartItems' => $cart,
             'subtotal' => $subtotal,
@@ -49,6 +70,9 @@ class CheckoutController extends Controller
             'user' => Auth::user(),
             'addresses' => $addresses,
             'defaultAddress' => $defaultAddress,
+            'shippingMethods' => $shippingMethods,
+            'paymentMethods' => $paymentMethods,
+            'paymentBanks' => $paymentBanks,
         ]);
     }
 
