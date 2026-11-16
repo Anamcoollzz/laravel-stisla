@@ -208,6 +208,20 @@ return [
                 ],
             ],
         ],
+        'terms' => [
+            'label' => 'Terms & Conditions',
+            'icon' => 'fas fa-file-contract',
+            'description' => 'Customize the ecommerce Terms & Conditions page content using Summernote.',
+            'fields' => [
+                'terms_content' => [
+                    'label' => 'Terms & Conditions Content',
+                    'type' => 'summernote',
+                    'default' => '<h5>Welcome to Mantu Store.</h5><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. <b>Lorem Ipsum is simply dummy text</b> ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p><h5>Mantu Websites</h5><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. <b>Lorem Ipsum is simply dummy text</b> ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p><h5>How browsing and vendor works?</h5><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p><h5>Becoming a vendor</h5><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. <b>Lorem Ipsum is simply dummy text</b> ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>',
+                    'help' => 'Rich HTML content displayed on the /ecommerce/terms page.',
+                    'rules' => ['nullable', 'string', 'max:100000'],
+                ],
+            ],
+        ],
         'seo' => [
             'label' => 'SEO',
             'icon' => 'fas fa-search',

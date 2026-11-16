@@ -747,7 +747,7 @@
 								<div class="footer-copy">
 									<div class="footer-bottom-copy ">
 										<div class="mn-copy">Copyright © <span id="copyright_year"></span>
-											<a class="site-name" href="{{ route('ecommerce.index.html') }}">The Mantu</a> all rights reserved.
+											<a class="site-name" href="{{ route('ecommerce.index.html') }}">{{ \App\Models\Setting::getValue('site_title') ?: config('app.name', 'Stisla') }}</a> all rights reserved.
 										</div>
 									</div>
 								</div>

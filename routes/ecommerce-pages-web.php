@@ -216,6 +216,16 @@ Route::patch('/ecommerce/ticket-list/{ticket}/close', [EcommerceTicketController
 Route::get('/ecommerce-pages/contact-us.html', $contactUsHandler)->name('ecommerce.contact-us.html');
 Route::get('/ecommerce-pages/contact-us', $contactUsHandler);
 
+$termsHandler = function () {
+    $termsContent = Setting::getValue('terms_content') ?: config('settings.groups.terms.fields.terms_content.default');
+
+    return view('ecommerce.pages.terms', compact('termsContent'));
+};
+
+Route::get('/ecommerce/terms', $termsHandler)->name('ecommerce.terms');
+Route::get('/ecommerce-pages/terms.html', $termsHandler)->name('ecommerce.terms.html');
+Route::get('/ecommerce-pages/terms', $termsHandler);
+
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [
     'blog-detail-full-width',
@@ -237,7 +247,6 @@ $ecommercePages = [
     'shop-list-left-sidebar',
     'shop-list-right-sidebar',
     'shop-right-sidebar',
-    'terms',
     'track-order',
 ];
 
