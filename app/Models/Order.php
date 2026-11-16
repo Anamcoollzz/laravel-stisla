@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Order extends Model
 {
@@ -41,6 +42,8 @@ class Order extends Model
         'grand_total',
         'status',
         'payment_status',
+        'payment_proof',
+        'payment_proof_uploaded_at',
         'notes',
     ];
 
@@ -55,6 +58,7 @@ class Order extends Model
             'subtotal' => 'float',
             'discount_amount' => 'float',
             'grand_total' => 'float',
+            'payment_proof_uploaded_at' => 'datetime',
         ];
     }
 
@@ -147,6 +151,26 @@ class Order extends Model
     }
 
     /**
+     * Public URL for uploaded payment proof.
+     */
+    protected function paymentProofUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                if (! $this->payment_proof) {
+                    return null;
+                }
+
+                if (Storage::disk('public')->exists($this->payment_proof)) {
+                    return Storage::disk('public')->url($this->payment_proof);
+                }
+
+                return asset($this->payment_proof);
+            }
+        );
+    }
+
+    /**
      * Generate unique order number.
      */
     public static function generateOrderNumber(): string
@@ -157,4 +181,3 @@ class Order extends Model
         return $prefix.$random;
     }
 }
-

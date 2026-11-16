@@ -64,6 +64,8 @@ Route::post('/ecommerce/checkout', [EcommerceCheckoutController::class, 'store']
     ->name('ecommerce.checkout.store');
 Route::get('/ecommerce/checkout/detail/{orderNumber}', [EcommerceCheckoutController::class, 'show'])
     ->name('ecommerce.checkout.detail');
+Route::post('/ecommerce/checkout/detail/{orderNumber}/payment-proof', [EcommerceOrderController::class, 'uploadPaymentProof'])
+    ->name('ecommerce.checkout.payment-proof');
 Route::get('/ecommerce/checkout/success/{orderNumber}', [EcommerceCheckoutController::class, 'show'])
     ->name('ecommerce.checkout.success');
 Route::get('/ecommerce/order-list', [EcommerceOrderController::class, 'index'])

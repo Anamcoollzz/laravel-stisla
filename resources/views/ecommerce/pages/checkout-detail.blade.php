@@ -305,6 +305,74 @@
 								@endif
 							</div>
 						</div>
+
+						<!-- Upload Bukti Pembayaran -->
+						<div class="mt-4 pt-4 border-top">
+							<div class="d-flex align-items-center justify-content-between mb-3">
+								<h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">
+									<i class="ri-upload-cloud-2-line me-1 text-primary"></i> Bukti Pembayaran
+								</h6>
+								@if ($order->payment_proof_url)
+									<span class="badge bg-success-subtle text-success border" style="font-size: 11px;">
+										<i class="ri-check-double-line me-1"></i> Sudah Diunggah
+									</span>
+								@else
+									<span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 11px;">
+										Belum Diunggah
+									</span>
+								@endif
+							</div>
+
+							@if ($order->payment_proof_url)
+								@php
+									$isPdfProof = str_ends_with(strtolower($order->payment_proof ?? ''), '.pdf');
+								@endphp
+								<div class="p-3 border rounded-3 bg-light mb-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+									<div class="d-flex align-items-center gap-3">
+										@if ($isPdfProof)
+											<div class="bg-white border rounded d-flex align-items-center justify-content-center text-danger" style="width: 64px; height: 64px; font-size: 28px;">
+												<i class="ri-file-pdf-2-line"></i>
+											</div>
+										@else
+											<a href="{{ $order->payment_proof_url }}" target="_blank" rel="noopener">
+												<img src="{{ $order->payment_proof_url }}" alt="Bukti Pembayaran" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6;">
+											</a>
+										@endif
+										<div>
+											<p class="fw-semibold text-dark mb-1 small">Bukti Transfer / Pembayaran</p>
+											<p class="text-muted mb-0" style="font-size: 12px;">
+												Diunggah pada: {{ $order->payment_proof_uploaded_at?->format('d M Y, H:i') ?? '-' }} WIB
+											</p>
+										</div>
+									</div>
+									<a href="{{ $order->payment_proof_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+										<i class="ri-external-link-line me-1"></i> Lihat File
+									</a>
+								</div>
+							@endif
+
+							@if (!in_array($order->status, ['completed', 'cancelled'], true) && $order->payment_status !== 'paid')
+								<form action="{{ route('ecommerce.checkout.payment-proof', $order->order_number) }}" method="POST" enctype="multipart/form-data">
+									@csrf
+									<div class="row g-2 align-items-end">
+										<div class="col-md-8">
+											<label for="payment_proof" class="form-label small fw-semibold text-dark mb-1">
+												{{ $order->payment_proof_url ? 'Ganti Bukti Pembayaran' : 'Unggah Bukti Pembayaran' }} (JPG, PNG, WebP, PDF &bull; Maks. 4MB)
+											</label>
+											<input type="file" name="payment_proof" id="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="form-control form-control-sm @error('payment_proof') is-invalid @enderror" required>
+											@error('payment_proof')
+												<div class="invalid-feedback">{{ $message }}</div>
+											@enderror
+										</div>
+										<div class="col-md-4">
+											<button type="submit" class="btn btn-primary btn-sm w-100 py-2 text-white fw-semibold">
+												<i class="ri-upload-2-line me-1"></i> Upload Bukti
+											</button>
+										</div>
+									</div>
+								</form>
+							@endif
+						</div>
 					</div>
 				</div>
 			</div>
