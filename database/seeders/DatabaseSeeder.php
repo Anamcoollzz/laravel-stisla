@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             EcommercePaymentShippingSeeder::class,
             EcommerceFaqSeeder::class,
+            StoreServiceSeeder::class,
         ]);
     }
 }
