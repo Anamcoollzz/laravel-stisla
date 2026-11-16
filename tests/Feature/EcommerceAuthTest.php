@@ -61,3 +61,33 @@ test('authenticated user can logout from ecommerce', function () {
     $response->assertRedirect(route('ecommerce.login'));
     $this->assertGuest();
 });
+
+test('guest accessing cart is redirected to login with single warning alert message', function () {
+    $response = $this->get(route('ecommerce.cart'));
+
+    $response->assertRedirect(route('ecommerce.login'));
+    $response->assertSessionHas('warning', 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!');
+
+    $followUp = $this->followRedirects($response);
+    $followUp->assertOk();
+    $followUp->assertSee('Silakan login terlebih dahulu untuk mengakses keranjang belanja!');
+
+    $content = $followUp->getContent();
+    $count = substr_count($content, 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!');
+    expect($count)->toBe(1);
+});
+
+test('guest accessing wishlist is redirected to login with single warning alert message', function () {
+    $response = $this->get(route('ecommerce.wishlist'));
+
+    $response->assertRedirect(route('ecommerce.login'));
+    $response->assertSessionHas('warning', 'Silakan login terlebih dahulu untuk mengakses wishlist!');
+
+    $followUp = $this->followRedirects($response);
+    $followUp->assertOk();
+    $followUp->assertSee('Silakan login terlebih dahulu untuk mengakses wishlist!');
+
+    $content = $followUp->getContent();
+    $count = substr_count($content, 'Silakan login terlebih dahulu untuk mengakses wishlist!');
+    expect($count)->toBe(1);
+});
