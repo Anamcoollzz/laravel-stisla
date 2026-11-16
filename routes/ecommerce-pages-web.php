@@ -6,6 +6,7 @@ use App\Http\Controllers\Ecommerce\BlogController as EcommerceBlogController;
 use App\Http\Controllers\Ecommerce\CartController as EcommerceCartController;
 use App\Http\Controllers\Ecommerce\CheckoutController as EcommerceCheckoutController;
 use App\Http\Controllers\Ecommerce\CompareController as EcommerceCompareController;
+use App\Http\Controllers\Ecommerce\OrderController as EcommerceOrderController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use App\Models\Blog;
@@ -65,6 +66,8 @@ Route::get('/ecommerce/checkout/detail/{orderNumber}', [EcommerceCheckoutControl
     ->name('ecommerce.checkout.detail');
 Route::get('/ecommerce/checkout/success/{orderNumber}', [EcommerceCheckoutController::class, 'show'])
     ->name('ecommerce.checkout.success');
+Route::get('/ecommerce/order-list', [EcommerceOrderController::class, 'index'])
+    ->name('ecommerce.order-list');
 Route::get('/ecommerce-pages/checkout.html', [EcommerceCheckoutController::class, 'index'])
     ->name('ecommerce.checkout.html');
 Route::get('/ecommerce-pages/checkout', [EcommerceCheckoutController::class, 'index']);
