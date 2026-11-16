@@ -8,6 +8,83 @@
   <link href="{{ asset('mantu/assets/css/vendor/owl.carousel.min.css') }}" rel="stylesheet">
   <link href="{{ asset('mantu/assets/css/vendor/slick.min.css') }}" rel="stylesheet">
   <link href="{{ asset('mantu/assets/css/vendor/swiper-bundle.min.css') }}" rel="stylesheet">
+  <style>
+    @media print {
+      @page {
+        size: A4;
+        margin: 12mm;
+      }
+
+      html,
+      body,
+      main.wrapper,
+      .mn-main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      header,
+      footer,
+      .mn-header,
+      .mn-sidebar,
+      .mn-sidebar-overlay,
+      .mn-breadcrumb,
+      .mn-footer-nav,
+      .mn-tools-sidebar,
+      .mn-tools-sidebar-overlay,
+      .mn-side-cart,
+      .mn-side-cart-overlay,
+      .mn-side-wishlist,
+      .mn-side-wishlist-overlay,
+      .mn-side-search,
+      .mn-side-search-overlay,
+      #mn-overlay,
+      .no-print,
+      .alert,
+      .modal,
+      .btn {
+        display: none !important;
+      }
+
+      .mn-checkout-detail-section {
+        padding: 0 !important;
+      }
+
+      .mn-checkout-detail-section .row {
+        --bs-gutter-x: 12px;
+        --bs-gutter-y: 12px;
+      }
+
+      .mn-checkout-detail-section .col-lg-8,
+      .mn-checkout-detail-section .col-lg-4 {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+      }
+
+      .mn-checkout-detail-section .col-md-6 {
+        width: 50% !important;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+      }
+
+      .sticky-top {
+        position: static !important;
+      }
+
+      .card {
+        box-shadow: none !important;
+        border: 1px solid #d1d5db !important;
+        break-inside: avoid;
+        margin-bottom: 12px !important;
+      }
+    }
+  </style>
 @endsection
 
 @section('vendor-js')
@@ -367,7 +444,7 @@
 							@endif
 
 							@if (!in_array($order->status, ['completed', 'cancelled'], true) && $order->payment_status !== 'paid')
-								<form action="{{ route('ecommerce.checkout.payment-proof', $order->order_number) }}" method="POST" enctype="multipart/form-data">
+								<form action="{{ route('ecommerce.checkout.payment-proof', $order->order_number) }}" method="POST" enctype="multipart/form-data" class="no-print">
 									@csrf
 									<div class="row g-2 align-items-end">
 										<div class="col-md-8">
@@ -430,7 +507,7 @@
 						</div>
 
 						<!-- Action Buttons -->
-						<div class="d-flex flex-column gap-2">
+						<div class="d-flex flex-column gap-2 no-print">
 							<button type="button" class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-1" onclick="window.print()" style="border-radius: 8px; font-weight: 600;">
 								<i class="ri-printer-line"></i> Cetak / Simpan Bukti
 							</button>
@@ -444,7 +521,7 @@
 					</div>
 
 					<!-- Trust badge -->
-					<div class="card border p-3 text-center bg-light" style="border-radius: 10px;">
+					<div class="card border p-3 text-center bg-light no-print" style="border-radius: 10px;">
 						<p class="small text-muted mb-0">
 							<i class="ri-customer-service-2-line text-primary me-1"></i> Butuh bantuan dengan pesanan Anda? Hubungi Layanan Pelanggan kami 24/7.
 						</p>

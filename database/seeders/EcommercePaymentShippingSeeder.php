@@ -68,6 +68,7 @@ class EcommercePaymentShippingSeeder extends Seeder
                 'name' => 'Cash On Delivery (COD)',
                 'type' => 'cod',
                 'fee' => 0,
+                'logo' => null,
                 'description' => 'Bayar langsung secara tunai saat kurir tiba di alamat Anda.',
                 'instructions' => 'Pastikan Anda menyiapkan uang pas sesuai total tagihan saat kurir mengantarkan pesanan.',
                 'order' => 1,
@@ -78,6 +79,7 @@ class EcommercePaymentShippingSeeder extends Seeder
                 'name' => 'Transfer Bank Manual',
                 'type' => 'bank_transfer',
                 'fee' => 0,
+                'logo' => null,
                 'description' => 'Transfer manual ke rekening resmi bank kami (BCA, Mandiri, BRI).',
                 'instructions' => 'Silakan lakukan transfer ke salah satu nomor rekening resmi yang tertera. Cantumkan nomor pesanan pada berita transfer.',
                 'order' => 2,
@@ -88,6 +90,7 @@ class EcommercePaymentShippingSeeder extends Seeder
                 'name' => 'QRIS & E-Wallet (GoPay, OVO, Dana)',
                 'type' => 'e_wallet',
                 'fee' => 1000,
+                'logo' => 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg',
                 'description' => 'Bayar instan dengan memindai kode QRIS menggunakan e-wallet atau mobile banking favorit.',
                 'instructions' => 'Pindai kode QRIS yang tampil setelah melakukan pemesanan dan selesaikan pembayaran sebelum batas waktu habis.',
                 'order' => 3,
@@ -110,6 +113,7 @@ class EcommercePaymentShippingSeeder extends Seeder
                 'account_name' => 'PT LARAVEL STISLA STORE',
                 'account_number' => '8801234567',
                 'branch' => 'KCU Thamrin Jakarta',
+                'logo' => 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg',
                 'order' => 1,
                 'is_active' => true,
             ],
@@ -119,6 +123,7 @@ class EcommercePaymentShippingSeeder extends Seeder
                 'account_name' => 'PT LARAVEL STISLA STORE',
                 'account_number' => '1370019876543',
                 'branch' => 'KCP Sudirman Jakarta',
+                'logo' => 'https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg',
                 'order' => 2,
                 'is_active' => true,
             ],
@@ -128,6 +133,7 @@ class EcommercePaymentShippingSeeder extends Seeder
                 'account_name' => 'PT LARAVEL STISLA STORE',
                 'account_number' => '034101000998877',
                 'branch' => 'KC Gatot Subroto',
+                'logo' => 'https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg',
                 'order' => 3,
                 'is_active' => true,
             ],
@@ -141,4 +147,3 @@ class EcommercePaymentShippingSeeder extends Seeder
         }
     }
 }
-
