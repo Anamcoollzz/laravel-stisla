@@ -59,6 +59,12 @@ Route::delete('/ecommerce/cart/{product}', [EcommerceCartController::class, 'rem
 
 Route::get('/ecommerce/checkout', [EcommerceCheckoutController::class, 'index'])
     ->name('ecommerce.checkout');
+Route::post('/ecommerce/checkout', [EcommerceCheckoutController::class, 'store'])
+    ->name('ecommerce.checkout.store');
+Route::get('/ecommerce/checkout/detail/{orderNumber}', [EcommerceCheckoutController::class, 'show'])
+    ->name('ecommerce.checkout.detail');
+Route::get('/ecommerce/checkout/success/{orderNumber}', [EcommerceCheckoutController::class, 'show'])
+    ->name('ecommerce.checkout.success');
 Route::get('/ecommerce-pages/checkout.html', [EcommerceCheckoutController::class, 'index'])
     ->name('ecommerce.checkout.html');
 Route::get('/ecommerce-pages/checkout', [EcommerceCheckoutController::class, 'index']);

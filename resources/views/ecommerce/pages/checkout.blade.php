@@ -64,8 +64,9 @@
 			</div>
 		@endif
 
-		<form action="#" method="POST" id="checkoutForm">
+		<form action="{{ route('ecommerce.checkout.store') }}" method="POST" id="checkoutForm">
 			@csrf
+			<input type="hidden" name="address_id" value="{{ $defaultAddress->id ?? '' }}" id="selectedAddressId">
 			<div class="row g-4">
 				<!-- Left Column: Checkout Details -->
 				<div class="mn-checkout-leftside col-lg-8 col-md-12">
@@ -391,7 +392,7 @@
 
 							<!-- PLACE ORDER BUTTON (PALING BAWAH KANAN) -->
 							<div class="mn-checkout-order-btn">
-								<button type="button" class="mn-btn-1 btn w-100 py-3 text-center shadow" style="border-radius: 8px; font-size: 16px; font-weight: bold;" onclick="handlePlaceOrder()">
+								<button type="button" id="btnPlaceOrder" class="mn-btn-1 btn w-100 py-3 text-center shadow" style="border-radius: 8px; font-size: 16px; font-weight: bold;" onclick="handlePlaceOrder()">
 									<span><i class="ri-shopping-cart-2-line me-1"></i> Place Order</span>
 								</button>
 							</div>
@@ -581,6 +582,13 @@ function handlePlaceOrder() {
 		return;
 	}
 
+	const addressId = document.getElementById('selectedAddressId');
+	if (!addressId || !addressId.value) {
+		alert('Alamat pengiriman belum tersedia. Silakan tambahkan alamat pengiriman terlebih dahulu.');
+		window.location.href = "{{ route('ecommerce.address-list') }}";
+		return;
+	}
+
 	const selectedShipping = document.querySelector('input[name="shipping_method_id"]:checked');
 	const selectedPayment = document.querySelector('input[name="payment_method_id"]:checked');
 
@@ -594,10 +602,13 @@ function handlePlaceOrder() {
 		return;
 	}
 
-	const shipName = selectedShipping.dataset.name || 'Pengiriman';
-	const payName = selectedPayment.dataset.name || 'Pembayaran';
+	const submitBtn = document.getElementById('btnPlaceOrder');
+	if (submitBtn) {
+		submitBtn.disabled = true;
+		submitBtn.innerHTML = '<span><i class="ri-loader-4-line ri-spin me-1"></i> Memproses Pesanan...</span>';
+	}
 
-	alert('Terima kasih! Pesanan Anda berhasil diproses dengan metode:\n- ' + shipName + '\n- ' + payName);
+	document.getElementById('checkoutForm').submit();
 }
 </script>
 @endsection

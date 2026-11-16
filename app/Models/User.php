@@ -110,6 +110,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return HasMany<Order, $this>
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
      * Check if user was recently active.
      */
     public function isOnline(): bool
