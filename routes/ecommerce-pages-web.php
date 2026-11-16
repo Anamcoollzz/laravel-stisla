@@ -8,6 +8,7 @@ use App\Http\Controllers\Ecommerce\CheckoutController as EcommerceCheckoutContro
 use App\Http\Controllers\Ecommerce\CompareController as EcommerceCompareController;
 use App\Http\Controllers\Ecommerce\OrderController as EcommerceOrderController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
+use App\Http\Controllers\Ecommerce\TicketController as EcommerceTicketController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
 use App\Models\Blog;
 use App\Models\EcommerceFaq;
@@ -188,11 +189,26 @@ Route::post('/ecommerce/compare/remove/{product}', [EcommerceCompareController::
 Route::delete('/ecommerce/compare/{product}', [EcommerceCompareController::class, 'remove'])
     ->name('ecommerce.compare.destroy');
 
+$contactUsHandler = function () {
+    $siteContact = Setting::getContactData();
+
+    return view('ecommerce.pages.contact-us', compact('siteContact'));
+};
+
+Route::get('/ecommerce/contact-us', $contactUsHandler)->name('ecommerce.contact-us');
+Route::post('/ecommerce/contact-us', [EcommerceTicketController::class, 'storeFromContact'])
+    ->name('ecommerce.contact-us.submit');
+Route::get('/ecommerce/ticket-list', [EcommerceTicketController::class, 'index'])
+    ->name('ecommerce.ticket-list');
+Route::post('/ecommerce/ticket-list/{ticket}/reply', [EcommerceTicketController::class, 'reply'])
+    ->name('ecommerce.ticket-list.reply');
+Route::get('/ecommerce-pages/contact-us.html', $contactUsHandler)->name('ecommerce.contact-us.html');
+Route::get('/ecommerce-pages/contact-us', $contactUsHandler);
+
 // Ecommerce Demo Pages (Mantu HTML Template)
 $ecommercePages = [
     'blog-detail-full-width',
     'blog-right-sidebar',
-    'contact-us',
     'index',
     'product-accordion-full-width',
     'product-accordion',

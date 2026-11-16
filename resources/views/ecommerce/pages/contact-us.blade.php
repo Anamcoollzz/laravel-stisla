@@ -47,6 +47,10 @@
 				</div>
 			</div>
 
+			@php
+				$siteContact = $siteContact ?? \App\Models\Setting::getContactData();
+			@endphp
+
 			<!-- Contact us section -->
 			<section class="mn-contact p-b-15">
 				<div class="mn-title d-none">
@@ -62,7 +66,7 @@
 								<div class="icon"><i class="ri-mail-send-line"></i></div>
 								<div class="info">
 									<h3 class="title">Contact Mail</h3>
-									<p>mail.example@gmail.com</p>
+									<p>{{ $siteContact['email'] ?? 'hairulanam21@gmail.com' }}</p>
 								</div>
 							</div>
 						</div>
@@ -71,7 +75,7 @@
 								<div class="icon"><i class="ri-customer-service-2-line"></i></div>
 								<div class="info">
 									<h3 class="title">Contact Phone</h3>
-									<p>(+91)-9876XXXXX</p>
+									<p>{{ $siteContact['phone'] ?? '6285322778935' }}</p>
 								</div>
 							</div>
 						</div>
@@ -80,25 +84,38 @@
 								<div class="icon"><i class="ri-map-pin-line"></i></div>
 								<div class="info">
 									<h3 class="title">Address</h3>
-									<p>Ruami Moraes Filho, Salvador - MA, 40352, Brazil.</p>
+									<p>{{ $siteContact['address'] ?? 'Jl PB Sudirman Dusun Krajan Tanggul, Jember' }}</p>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-6 m-t-767">
-						<form>
+						@if (session('success'))
+							<div class="alert alert-success mb-3">{{ session('success') }}</div>
+						@endif
+						@if ($errors->any())
+							<div class="alert alert-danger mb-3">{{ $errors->first() }}</div>
+						@endif
+						@if (!auth()->check())
+							<div class="alert alert-warning mb-3 d-flex align-items-center justify-content-between gap-2">
+								<span>Silakan login terlebih dahulu untuk mengirim pesan / membuat tiket.</span>
+								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white text-nowrap">Login</a>
+							</div>
+						@endif
+						<form action="{{ route('ecommerce.contact-us.submit') }}" method="POST">
+							@csrf
 							<div class="form-group">
-								<input type="text" class="form-control" id="fname" placeholder="Full Name">
+								<input type="text" class="form-control" id="fname" placeholder="Full Name" value="{{ auth()->user()?->name }}" style="background-color: #f8f9fa; cursor: not-allowed;" disabled>
 							</div>
 							<div class="form-group">
-								<input type="email" class="form-control" id="umail" placeholder="Email">
+								<input type="email" class="form-control" id="umail" placeholder="Email" value="{{ auth()->user()?->email }}" style="background-color: #f8f9fa; cursor: not-allowed;" disabled>
 							</div>
 							<div class="form-group">
-								<input type="text" class="form-control" id="phone" placeholder="Phone">
+								<input type="text" class="form-control" id="phone" placeholder="Phone" value="{{ auth()->user()?->phone }}" style="background-color: #f8f9fa; cursor: not-allowed;" disabled>
 							</div>
 							<div class="form-group">
-								<textarea class="form-control" id="message" rows="5"
-									placeholder="Message"></textarea>
+								<textarea name="message" class="form-control" id="message" rows="5"
+									placeholder="Message" {{ auth()->check() ? 'required' : '' }}>{{ old('message') }}</textarea>
 							</div>
 							<button type="submit" class="mn-btn-2"><span>Submit</span></button>
 						</form>
