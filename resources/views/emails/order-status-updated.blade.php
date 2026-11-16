@@ -8,7 +8,13 @@
   <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #e5e7eb;">
     <div style="background: #3a4ee5; color: #ffffff; padding: 20px 24px;">
       <h2 style="margin: 0; font-size: 20px;">
-        {{ $updateType === 'payment' ? 'Pembaruan Status Pembayaran' : 'Pembaruan Status Pesanan' }}
+        @if ($updateType === 'payment')
+          Pembaruan Status Pembayaran
+        @elseif ($updateType === 'tracking')
+          Pembaruan Resi Pengiriman
+        @else
+          Pembaruan Status Pesanan
+        @endif
       </h2>
       <p style="margin: 6px 0 0; font-size: 13px; opacity: 0.9;">
         No. Pesanan: <strong>#{{ $order->order_number }}</strong>
@@ -20,6 +26,8 @@
       <p style="line-height: 1.6;">
         @if ($updateType === 'payment')
           Status pembayaran untuk pesanan Anda telah diperbarui oleh admin.
+        @elseif ($updateType === 'tracking')
+          Nomor resi / bukti pengiriman untuk pesanan Anda telah diperbarui oleh admin.
         @else
           Status pesanan Anda telah diperbarui oleh admin.
         @endif

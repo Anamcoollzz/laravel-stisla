@@ -155,6 +155,7 @@ class OrderController extends Controller
             'tracking_number' => ['nullable', 'string', 'max:100'],
             'tracking_proof' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:4096'],
             'remove_tracking_proof' => ['nullable', 'boolean'],
+            'send_email' => ['nullable', 'boolean'],
         ]);
 
         $data = [
@@ -174,6 +175,10 @@ class OrderController extends Controller
         }
 
         $order->update($data);
+
+        if ($request->boolean('send_email')) {
+            $this->notifyCustomer($order, 'tracking');
+        }
 
         return redirect()->route('orders.show', $order)->with('success', __('Shipping receipt updated successfully.'));
     }

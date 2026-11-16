@@ -304,6 +304,13 @@
                   </div>
                 @endif
 
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="send_email" value="1" class="custom-control-input" id="send_email_tracking" checked>
+                    <label class="custom-control-label" for="send_email_tracking">{{ __('Kirim email ke customer') }}</label>
+                  </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary btn-block">
                   <i class="fas fa-save mr-1"></i> {{ __('Save Receipt / Resi') }}
                 </button>

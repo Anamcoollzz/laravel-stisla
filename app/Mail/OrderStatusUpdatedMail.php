@@ -26,9 +26,11 @@ class OrderStatusUpdatedMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        $subject = $this->updateType === 'payment'
-            ? 'Pembaruan Status Pembayaran Pesanan #'.$this->order->order_number
-            : 'Pembaruan Status Pesanan #'.$this->order->order_number;
+        $subject = match ($this->updateType) {
+            'payment' => 'Pembaruan Status Pembayaran Pesanan #'.$this->order->order_number,
+            'tracking' => 'Pembaruan Resi Pengiriman Pesanan #'.$this->order->order_number,
+            default => 'Pembaruan Status Pesanan #'.$this->order->order_number,
+        };
 
         return new Envelope(
             subject: $subject,
