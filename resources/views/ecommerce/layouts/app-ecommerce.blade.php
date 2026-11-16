@@ -506,9 +506,6 @@
 								<ul class="sub-menu">
 									@auth
 										<li>
-											<a href="{{ route('dashboard') }}">Dashboard ({{ Auth::user()->name }})</a>
-										</li>
-										<li>
 											<a href="{{ route('ecommerce.address-list') }}">Daftar Alamat</a>
 										</li>
 										<li>
@@ -531,9 +528,6 @@
 											<a href="{{ route('ecommerce.register') }}">Register</a>
 										</li>
 									@endauth
-									<li>
-										<a href="{{ route('ecommerce.checkout') }}">Checkout</a>
-									</li>
 								</ul>
 							</div>
 							<div class="mn-tool-wish">
