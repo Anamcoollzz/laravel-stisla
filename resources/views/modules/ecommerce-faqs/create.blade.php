@@ -32,7 +32,7 @@
             <div class="card-body">
               <div class="form-group">
                 <label for="question">{{ __('Question') }} <span class="text-danger">*</span></label>
-                <input type="text" name="question" id="question" class="form-control @error('question') is-invalid @enderror" value="{{ old('question') }}" placeholder="e.g. What is the multi vendor services?" required>
+                <input type="text" name="question" id="question" class="form-control @error('question') is-invalid @enderror" value="{{ old('question') }}" placeholder="{{ __('e.g. What is the multi vendor services?') }}" required>
                 @error('question')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -64,7 +64,7 @@
 
               <div class="form-group">
                 <label for="answer">{{ __('Answer') }} <span class="text-danger">*</span></label>
-                <textarea name="answer" id="answer" rows="5" class="form-control @error('answer') is-invalid @enderror" required style="height: 150px;" placeholder="Enter detailed answer...">{{ old('answer') }}</textarea>
+                <textarea name="answer" id="answer" rows="5" class="form-control @error('answer') is-invalid @enderror" required style="height: 150px;" placeholder="{{ __('Enter detailed answer...') }}">{{ old('answer') }}</textarea>
                 @error('answer')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror

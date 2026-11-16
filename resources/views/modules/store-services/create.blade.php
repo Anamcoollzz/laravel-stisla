@@ -56,7 +56,7 @@
                 <div class="col-md-9">
                   <div class="form-group">
                     <label for="title">{{ __('Title') }} <span class="text-danger">*</span></label>
-                    <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="e.g. Free Shipping" required>
+                    <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="{{ __('e.g. Free Shipping') }}" required>
                     @error('title')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -75,7 +75,7 @@
 
               <div class="form-group">
                 <label for="description">{{ __('Description') }} <span class="text-danger">*</span></label>
-                <textarea name="description" id="description" rows="3" class="form-control @error('description') is-invalid @enderror" required style="height: 100px;" placeholder="e.g. Free shipping on all US order or order above $200">{{ old('description') }}</textarea>
+                <textarea name="description" id="description" rows="3" class="form-control @error('description') is-invalid @enderror" required style="height: 100px;" placeholder="{{ __('e.g. Free shipping on all US order or order above $200') }}">{{ old('description') }}</textarea>
                 @error('description')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror

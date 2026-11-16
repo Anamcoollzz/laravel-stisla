@@ -87,7 +87,7 @@
               backgroundColor: ['#ffa426', '#3abaf4', '#47c363', '#fc544b'],
               label: 'Order Status'
             }],
-            labels: ['Pending', 'Processing / Shipped', 'Completed', 'Cancelled']
+            labels: {!! json_encode([__('Pending'), __('Processing / Shipped'), __('Completed'), __('Cancelled')]) !!}
           },
           options: {
             responsive: true,

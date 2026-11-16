@@ -280,7 +280,7 @@
                 @method('PATCH')
                 <div class="form-group">
                   <label for="tracking_number">{{ __('Tracking Number (No. Resi)') }}</label>
-                  <input type="text" name="tracking_number" id="tracking_number" class="form-control @error('tracking_number') is-invalid @enderror" value="{{ old('tracking_number', $order->tracking_number) }}" placeholder="e.g. JNE1234567890">
+                  <input type="text" name="tracking_number" id="tracking_number" class="form-control @error('tracking_number') is-invalid @enderror" value="{{ old('tracking_number', $order->tracking_number) }}" placeholder="{{ __('e.g. JNE1234567890') }}">
                   @error('tracking_number')
                     <div class="invalid-feedback">{{ $message }}</div>
                   @enderror

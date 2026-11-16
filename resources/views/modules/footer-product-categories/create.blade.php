@@ -49,7 +49,7 @@
                 <div class="col-md-8">
                   <div class="form-group">
                     <label for="custom_name">{{ __('Custom Display Label (Optional)') }}</label>
-                    <input type="text" name="custom_name" id="custom_name" class="form-control @error('custom_name') is-invalid @enderror" value="{{ old('custom_name') }}" placeholder="e.g. Bags & Purse (leave empty to use category name)">
+                    <input type="text" name="custom_name" id="custom_name" class="form-control @error('custom_name') is-invalid @enderror" value="{{ old('custom_name') }}" placeholder="{{ __('e.g. Bags & Purse (leave empty to use category name)') }}">
                     @error('custom_name')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
