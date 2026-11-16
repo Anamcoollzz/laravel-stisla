@@ -240,6 +240,7 @@ Route::prefix('app')->group(function () {
         ]);
 
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::patch('orders/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('orders.updatePaymentStatus');
         Route::patch('orders/{order}/tracking', [OrderController::class, 'updateTracking'])->name('orders.updateTracking');
         Route::resource('orders', OrderController::class)->only(['index', 'show', 'destroy']);
 

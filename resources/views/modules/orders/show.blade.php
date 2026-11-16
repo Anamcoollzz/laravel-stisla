@@ -138,10 +138,10 @@
       </div>
 
       <div class="col-12 col-lg-4">
-        <!-- Update Status -->
+        <!-- Update Order Status -->
         <div class="card">
           <div class="card-header">
-            <h4><i class="fas fa-edit mr-2 text-primary"></i> {{ __('Order Status') }}</h4>
+            <h4><i class="fas fa-box mr-2 text-primary"></i> {{ __('Order Status') }}</h4>
           </div>
           <div class="card-body">
             @can('orders.edit')
@@ -150,26 +150,63 @@
                 @method('PATCH')
                 <div class="form-group">
                   <label for="status">{{ __('Order Status') }}</label>
-                  <select name="status" id="status" class="form-control">
+                  <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
                     @foreach (['pending' => 'Pending', 'processing' => 'Processing', 'shipped' => 'Shipped', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $val => $label)
                       <option value="{{ $val }}" @selected($order->status === $val)>{{ __($label) }}</option>
                     @endforeach
                   </select>
+                  @error('status')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
                 </div>
                 <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="send_email" value="1" class="custom-control-input" id="send_email_order" checked>
+                    <label class="custom-control-label" for="send_email_order">{{ __('Kirim email ke customer') }}</label>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                  <i class="fas fa-save mr-1"></i> {{ __('Update Order Status') }}
+                </button>
+              </form>
+            @else
+              <p class="mb-0">{{ __('Order Status:') }} <span class="badge badge-info">{{ ucfirst($order->status) }}</span></p>
+            @endcan
+          </div>
+        </div>
+
+        <!-- Update Payment Status -->
+        <div class="card">
+          <div class="card-header">
+            <h4><i class="fas fa-credit-card mr-2 text-primary"></i> {{ __('Payment Status') }}</h4>
+          </div>
+          <div class="card-body">
+            @can('orders.edit')
+              <form action="{{ route('orders.updatePaymentStatus', $order) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="form-group">
                   <label for="payment_status">{{ __('Payment Status') }}</label>
-                  <select name="payment_status" id="payment_status" class="form-control">
+                  <select name="payment_status" id="payment_status" class="form-control @error('payment_status') is-invalid @enderror">
                     @foreach (['unpaid' => 'Unpaid', 'waiting_verification' => 'Waiting Verification', 'paid' => 'Paid', 'failed' => 'Failed', 'expired' => 'Expired'] as $val => $label)
                       <option value="{{ $val }}" @selected($order->payment_status === $val)>{{ __($label) }}</option>
                     @endforeach
                   </select>
+                  @error('payment_status')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">
-                  <i class="fas fa-save mr-1"></i> {{ __('Update Status') }}
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="send_email" value="1" class="custom-control-input" id="send_email_payment" checked>
+                    <label class="custom-control-label" for="send_email_payment">{{ __('Kirim email ke customer') }}</label>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">
+                  <i class="fas fa-check-circle mr-1"></i> {{ __('Update Payment Status') }}
                 </button>
               </form>
             @else
-              <p class="mb-1">{{ __('Order Status:') }} <span class="badge badge-info">{{ ucfirst($order->status) }}</span></p>
               <p class="mb-0">{{ __('Payment Status:') }} <span class="badge badge-warning">{{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}</span></p>
             @endcan
           </div>

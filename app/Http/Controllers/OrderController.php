@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderStatusUpdatedMail;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Throwable;
 
 class OrderController extends Controller
 {
@@ -76,7 +80,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Update order status and payment status.
+     * Update order status.
      */
     public function updateStatus(Request $request, Order $order): RedirectResponse
     {
@@ -84,12 +88,60 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'status' => ['required', 'in:pending,processing,shipped,completed,cancelled'],
-            'payment_status' => ['required', 'in:unpaid,waiting_verification,paid,failed,expired'],
+            'send_email' => ['nullable', 'boolean'],
         ]);
 
-        $order->update($validated);
+        $order->update(['status' => $validated['status']]);
+
+        if ($request->boolean('send_email')) {
+            $this->notifyCustomer($order, 'order');
+        }
 
         return redirect()->route('orders.show', $order)->with('success', __('Order status updated successfully.'));
+    }
+
+    /**
+     * Update payment status.
+     */
+    public function updatePaymentStatus(Request $request, Order $order): RedirectResponse
+    {
+        Gate::authorize('orders.edit');
+
+        $validated = $request->validate([
+            'payment_status' => ['required', 'in:unpaid,waiting_verification,paid,failed,expired'],
+            'send_email' => ['nullable', 'boolean'],
+        ]);
+
+        $order->update(['payment_status' => $validated['payment_status']]);
+
+        if ($request->boolean('send_email')) {
+            $this->notifyCustomer($order, 'payment');
+        }
+
+        return redirect()->route('orders.show', $order)->with('success', __('Payment status updated successfully.'));
+    }
+
+    /**
+     * Send order or payment status update notification email to the customer.
+     */
+    protected function notifyCustomer(Order $order, string $updateType): void
+    {
+        $order->loadMissing('user');
+        $email = $order->user?->email;
+
+        if (! $email) {
+            return;
+        }
+
+        try {
+            Mail::to($email)->send(new OrderStatusUpdatedMail($order, $updateType));
+        } catch (Throwable $e) {
+            Log::warning('Failed to send order status notification email.', [
+                'order_id' => $order->id,
+                'email' => $email,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
