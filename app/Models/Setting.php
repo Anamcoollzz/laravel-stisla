@@ -181,6 +181,47 @@ class Setting extends Model
     }
 
     /**
+     * Get resolved Storefront & Branding settings with fallbacks.
+     *
+     * @return array<string, mixed>
+     */
+    public static function getStorefrontData(): array
+    {
+        $resolveImage = static function (string $key, string $fallbackAsset): string {
+            $path = static::getValue($key);
+
+            if ($path && Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->url($path);
+            }
+
+            return asset($fallbackAsset);
+        };
+
+        $footerLogoPath = static::getValue('ecommerce_footer_logo');
+        $footerLogo = ($footerLogoPath && Storage::disk('public')->exists($footerLogoPath))
+            ? Storage::disk('public')->url($footerLogoPath)
+            : asset('mantu/assets/img/logo/logo.png');
+
+        $footerDarkLogoPath = static::getValue('ecommerce_footer_dark_logo');
+        if ($footerDarkLogoPath && Storage::disk('public')->exists($footerDarkLogoPath)) {
+            $footerDarkLogo = Storage::disk('public')->url($footerDarkLogoPath);
+        } elseif ($footerLogoPath && Storage::disk('public')->exists($footerLogoPath)) {
+            $footerDarkLogo = $footerLogo;
+        } else {
+            $footerDarkLogo = asset('mantu/assets/img/logo/logo-dark.png');
+        }
+
+        return [
+            'header_logo' => $resolveImage('ecommerce_header_logo', 'mantu/assets/img/logo/logo.png'),
+            'footer_logo' => $footerLogo,
+            'footer_dark_logo' => $footerDarkLogo,
+            'footer_description' => static::getValue('ecommerce_footer_description') ?: 'The Mantu is the biggest market of grocery products. Get your daily needs from our store.',
+            'preloader_enabled' => (static::getValue('ecommerce_preloader_enabled') ?? '1') === '1',
+            'preloader_logo' => $resolveImage('ecommerce_preloader_logo', 'mantu/assets/img/logo/loader.png'),
+        ];
+    }
+
+    /**
      * Get all stored values of a group keyed by setting key.
      *
      * @return array<string, string|null>

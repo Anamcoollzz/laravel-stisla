@@ -157,13 +157,18 @@ class AppServiceProvider extends ServiceProvider
                 ? Setting::getContactData()
                 : [];
 
+            $storefrontBranding = Schema::hasTable('settings')
+                ? Setting::getStorefrontData()
+                : [];
+
             $view->with('layoutCart', $layoutCart)
                 ->with('layoutCartSubtotal', $layoutCartSubtotal)
                 ->with('cartCount', $cartCount)
                 ->with('layoutWishlistProducts', $layoutWishlistProducts)
                 ->with('userWishlistIds', $userWishlistIds)
                 ->with('wishlistCount', $wishlistCount)
-                ->with('siteContact', $siteContact);
+                ->with('siteContact', $siteContact)
+                ->with('storefrontBranding', $storefrontBranding);
         });
 
         View::composer('ecommerce.pages.index', function ($view) {

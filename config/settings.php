@@ -163,6 +163,51 @@ return [
                 ],
             ],
         ],
+        'storefront' => [
+            'label' => 'Storefront & Branding',
+            'icon' => 'fas fa-store',
+            'description' => 'Customize storefront header logo, footer logos, footer description, and preloader.',
+            'fields' => [
+                'ecommerce_header_logo' => [
+                    'label' => 'Header Logo',
+                    'type' => 'image',
+                    'help' => 'Logo displayed in the storefront header. Max size 2MB.',
+                    'rules' => ['nullable', 'image', 'max:2048'],
+                ],
+                'ecommerce_footer_logo' => [
+                    'label' => 'Footer Logo (Light)',
+                    'type' => 'image',
+                    'help' => 'Logo displayed in the storefront footer (light mode). Max size 2MB.',
+                    'rules' => ['nullable', 'image', 'max:2048'],
+                ],
+                'ecommerce_footer_dark_logo' => [
+                    'label' => 'Footer Logo (Dark)',
+                    'type' => 'image',
+                    'help' => 'Logo displayed in the storefront footer (dark mode). Falls back to Footer Logo (Light) if empty. Max size 2MB.',
+                    'rules' => ['nullable', 'image', 'max:2048'],
+                ],
+                'ecommerce_footer_description' => [
+                    'label' => 'Footer Description',
+                    'type' => 'textarea',
+                    'default' => 'The Mantu is the biggest market of grocery products. Get your daily needs from our store.',
+                    'height' => '90px',
+                    'help' => 'Short store description displayed under the footer logo.',
+                    'rules' => ['nullable', 'string', 'max:1000'],
+                ],
+                'ecommerce_preloader_enabled' => [
+                    'label' => 'Enable Preloader',
+                    'type' => 'switch',
+                    'default' => '1',
+                    'help' => 'Show loading overlay animation when opening storefront pages.',
+                ],
+                'ecommerce_preloader_logo' => [
+                    'label' => 'Preloader Logo / Icon',
+                    'type' => 'image',
+                    'help' => 'Image shown inside the preloader overlay. Max size 2MB.',
+                    'rules' => ['nullable', 'image', 'max:2048'],
+                ],
+            ],
+        ],
         'seo' => [
             'label' => 'SEO',
             'icon' => 'fas fa-search',

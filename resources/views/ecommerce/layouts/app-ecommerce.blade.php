@@ -28,15 +28,21 @@
 
 <body data-mn-mode="light">
 
+	@php
+		$storefrontBranding = $storefrontBranding ?? \App\Models\Setting::getStorefrontData();
+	@endphp
+
 	<main class="wrapper sb-default">
 
-		<!-- Loader -->
-		<div id="mn-overlay">
-			<div class="loader">
-				<img src="{{ asset('mantu/assets/img/logo/loader.png') }}" alt="loader">
-				<span class="shape"></span>
+		@if ($storefrontBranding['preloader_enabled'] ?? true)
+			<!-- Loader -->
+			<div id="mn-overlay">
+				<div class="loader">
+					<img src="{{ $storefrontBranding['preloader_logo'] ?? asset('mantu/assets/img/logo/loader.png') }}" alt="loader">
+					<span class="shape"></span>
+				</div>
 			</div>
-		</div>
+		@endif
 
 		<!-- Sidebar -->
 		<div class="mn-sidebar-overlay"></div>
@@ -294,7 +300,7 @@
 								<span class="inner-ring"></span>
 							</span>
 						</a>
-						<a href="{{ route('ecommerce.index.html') }}" class="logo"><img src="{{ asset('mantu/assets/img/logo/logo.png') }}" alt="logo"></a>
+						<a href="{{ route('ecommerce.index.html') }}" class="logo"><img src="{{ $storefrontBranding['header_logo'] ?? asset('mantu/assets/img/logo/logo.png') }}" alt="logo" style="max-height: 45px; object-fit: contain;"></a>
 						<a href="javascript:void(0)" class="mn-toggle-menu">
 							<div class="header-icon">
 								<i class="ri-menu-3-fill"></i>
@@ -590,11 +596,10 @@
 						<div class="row m-minus-991">
 							<div class="col-sm-12 col-lg-3 mn-footer-cat">
 								<div class="mn-footer-widget mn-footer-company">
-									<img src="{{ asset('mantu/assets/img/logo/logo.png') }}" class="mn-footer-logo" alt="footer logo">
-									<img src="{{ asset('mantu/assets/img/logo/logo-dark.png') }}" class="mn-footer-dark-logo"
-										alt="footer logo">
-									<p class="mn-footer-detail">The Mantu is the biggest market of grocery products. Get
-										your daily needs from our store.</p>
+									<img src="{{ $storefrontBranding['footer_logo'] ?? asset('mantu/assets/img/logo/logo.png') }}" class="mn-footer-logo" alt="footer logo" style="max-height: 45px; object-fit: contain;">
+									<img src="{{ $storefrontBranding['footer_dark_logo'] ?? asset('mantu/assets/img/logo/logo-dark.png') }}" class="mn-footer-dark-logo"
+										alt="footer logo" style="max-height: 45px; object-fit: contain;">
+									<p class="mn-footer-detail">{{ $storefrontBranding['footer_description'] ?? 'The Mantu is the biggest market of grocery products. Get your daily needs from our store.' }}</p>
 									@if (!empty($siteContact['play_store_url']) || !empty($siteContact['app_store_url']))
 										<div class="mn-app-store">
 											@if (!empty($siteContact['play_store_url']))
