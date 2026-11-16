@@ -747,8 +747,16 @@
 								</div>
 								<div class="footer-bottom-right">
 									<div class="footer-bottom-payment d-flex justify-content-center">
-										<div class="payment-link">
-											<img src="{{ asset('mantu/assets/img/footer/payment.png') }}" alt="payment">
+										<div class="payment-link d-flex flex-wrap align-items-center justify-content-center gap-2">
+											@if (($footerPaymentLogos ?? collect())->isNotEmpty())
+												@foreach ($footerPaymentLogos as $payLogo)
+													@if (!empty($payLogo['logo_url']))
+														<img src="{{ $payLogo['logo_url'] }}" alt="{{ $payLogo['name'] }}" title="{{ $payLogo['name'] }}" style="height: 28px; width: auto; max-width: 72px; object-fit: contain; background: #fff; border-radius: 4px; padding: 2px 6px;">
+													@endif
+												@endforeach
+											@else
+												<img src="{{ asset('mantu/assets/img/footer/payment.png') }}" alt="payment">
+											@endif
 										</div>
 									</div>
 								</div>

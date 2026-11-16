@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\ChatMessage;
 use App\Models\FooterProductCategory;
 use App\Models\Menu;
+use App\Models\PaymentBank;
+use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\ProductBanner;
 use App\Models\ProductCart;
@@ -187,6 +189,36 @@ class AppServiceProvider extends ServiceProvider
                 ? Setting::getStorefrontData()
                 : [];
 
+            $footerPaymentLogos = collect();
+            if (Schema::hasTable('payment_banks')) {
+                $footerPaymentLogos = $footerPaymentLogos->merge(
+                    PaymentBank::query()
+                        ->active()
+                        ->whereNotNull('logo')
+                        ->where('logo', '!=', '')
+                        ->orderBy('order')
+                        ->get()
+                        ->map(fn (PaymentBank $bank) => [
+                            'name' => $bank->bank_name,
+                            'logo_url' => $bank->logo_url,
+                        ])
+                );
+            }
+            if (Schema::hasTable('payment_methods')) {
+                $footerPaymentLogos = $footerPaymentLogos->merge(
+                    PaymentMethod::query()
+                        ->active()
+                        ->whereNotNull('logo')
+                        ->where('logo', '!=', '')
+                        ->orderBy('order')
+                        ->get()
+                        ->map(fn (PaymentMethod $method) => [
+                            'name' => $method->name,
+                            'logo_url' => $method->logo_url,
+                        ])
+                );
+            }
+
             $view->with('layoutCart', $layoutCart)
                 ->with('layoutCartSubtotal', $layoutCartSubtotal)
                 ->with('cartCount', $cartCount)
@@ -194,7 +226,8 @@ class AppServiceProvider extends ServiceProvider
                 ->with('userWishlistIds', $userWishlistIds)
                 ->with('wishlistCount', $wishlistCount)
                 ->with('siteContact', $siteContact)
-                ->with('storefrontBranding', $storefrontBranding);
+                ->with('storefrontBranding', $storefrontBranding)
+                ->with('footerPaymentLogos', $footerPaymentLogos);
         });
 
         View::composer('ecommerce.pages.index', function ($view) {
