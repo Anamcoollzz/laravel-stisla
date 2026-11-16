@@ -49,6 +49,9 @@
 
 			@php
 				$siteContact = $siteContact ?? \App\Models\Setting::getContactData();
+				$openTicket = $openTicket ?? (auth()->check()
+					? \App\Models\Ticket::query()->where('user_id', auth()->id())->where('status', '!=', 'closed')->latest('id')->first()
+					: null);
 			@endphp
 
 			<!-- Contact us section -->
@@ -101,6 +104,11 @@
 								<span>Silakan login terlebih dahulu untuk mengirim pesan / membuat tiket.</span>
 								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white text-nowrap">Login</a>
 							</div>
+						@elseif ($openTicket)
+							<div class="alert alert-info mb-3 d-flex align-items-center justify-content-between gap-2">
+								<span>Anda masih memiliki tiket aktif <strong>#{{ $openTicket->id }}</strong>. Tutup tiket tersebut terlebih dahulu sebelum membuat tiket baru.</span>
+								<a href="{{ route('ecommerce.ticket-list', ['ticket' => $openTicket->id]) }}" class="btn btn-sm btn-primary text-white text-nowrap">Lihat Tiket</a>
+							</div>
 						@endif
 						<form action="{{ route('ecommerce.contact-us.submit') }}" method="POST">
 							@csrf
@@ -115,9 +123,9 @@
 							</div>
 							<div class="form-group">
 								<textarea name="message" class="form-control" id="message" rows="5"
-									placeholder="Message" {{ auth()->check() ? 'required' : '' }}>{{ old('message') }}</textarea>
+									placeholder="Message" {{ $openTicket ? 'disabled style=background-color:#f8f9fa;cursor:not-allowed;' : (auth()->check() ? 'required' : '') }}>{{ old('message') }}</textarea>
 							</div>
-							<button type="submit" class="mn-btn-2"><span>Submit</span></button>
+							<button type="submit" class="mn-btn-2" {{ $openTicket ? 'disabled style=opacity:0.6;cursor:not-allowed;' : '' }}><span>Submit</span></button>
 						</form>
 					</div>
 				</div>

@@ -17,6 +17,8 @@ use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductVendor;
 use App\Models\Setting;
+use App\Models\Ticket;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/ecommerce', '/ecommerce-pages/index.html');
@@ -191,8 +193,15 @@ Route::delete('/ecommerce/compare/{product}', [EcommerceCompareController::class
 
 $contactUsHandler = function () {
     $siteContact = Setting::getContactData();
+    $openTicket = Auth::check()
+        ? Ticket::query()
+            ->where('user_id', (int) Auth::id())
+            ->where('status', '!=', 'closed')
+            ->latest('id')
+            ->first()
+        : null;
 
-    return view('ecommerce.pages.contact-us', compact('siteContact'));
+    return view('ecommerce.pages.contact-us', compact('siteContact', 'openTicket'));
 };
 
 Route::get('/ecommerce/contact-us', $contactUsHandler)->name('ecommerce.contact-us');
@@ -202,6 +211,8 @@ Route::get('/ecommerce/ticket-list', [EcommerceTicketController::class, 'index']
     ->name('ecommerce.ticket-list');
 Route::post('/ecommerce/ticket-list/{ticket}/reply', [EcommerceTicketController::class, 'reply'])
     ->name('ecommerce.ticket-list.reply');
+Route::patch('/ecommerce/ticket-list/{ticket}/close', [EcommerceTicketController::class, 'close'])
+    ->name('ecommerce.ticket-list.close');
 Route::get('/ecommerce-pages/contact-us.html', $contactUsHandler)->name('ecommerce.contact-us.html');
 Route::get('/ecommerce-pages/contact-us', $contactUsHandler);
 

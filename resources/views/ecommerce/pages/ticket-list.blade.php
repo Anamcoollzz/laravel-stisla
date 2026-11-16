@@ -65,11 +65,21 @@
 					<div class="alert alert-danger mb-4">{{ $errors->first() }}</div>
 				@endif
 
+				@php
+					$hasOpenTicket = $tickets->contains(fn ($t) => $t->status !== 'closed');
+				@endphp
+
 				<div class="d-flex align-items-center justify-content-between mb-3">
 					<h4 class="mb-0 fw-bold">Tiket &amp; Pesan Saya</h4>
-					<a href="{{ route('ecommerce.contact-us') }}" class="mn-btn-2">
-						<span><i class="ri-add-line me-1"></i> Kirim Pesan Baru</span>
-					</a>
+					@if ($hasOpenTicket)
+						<span class="badge bg-info-subtle text-info-emphasis border px-3 py-2" style="font-size: 12px;">
+							<i class="ri-information-line me-1"></i> Tutup tiket aktif untuk membuat pesan baru
+						</span>
+					@else
+						<a href="{{ route('ecommerce.contact-us') }}" class="mn-btn-2">
+							<span><i class="ri-add-line me-1"></i> Kirim Pesan Baru</span>
+						</a>
+					@endif
 				</div>
 
 				@if ($tickets->isEmpty())
@@ -144,9 +154,20 @@
 											<h5 class="mb-1 fw-bold text-dark">#{{ $activeTicket->id }} &mdash; {{ $activeTicket->title }}</h5>
 											<small class="text-muted">Dibuat pada {{ $activeTicket->created_at?->format('d F Y, H:i') }} WIB</small>
 										</div>
-										<span class="badge {{ $activeStatusBadge }} px-3 py-2">
-											{{ ucfirst(str_replace('_', ' ', $activeTicket->status)) }}
-										</span>
+										<div class="d-flex align-items-center gap-2">
+											<span class="badge {{ $activeStatusBadge }} px-3 py-2">
+												{{ ucfirst(str_replace('_', ' ', $activeTicket->status)) }}
+											</span>
+											@if ($activeTicket->status !== 'closed')
+												<form action="{{ route('ecommerce.ticket-list.close', $activeTicket) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menutup tiket ini?');">
+													@csrf
+													@method('PATCH')
+													<button type="submit" class="btn btn-sm btn-outline-danger">
+														<i class="ri-close-circle-line me-1"></i> Tutup Tiket
+													</button>
+												</form>
+											@endif
+										</div>
 									</div>
 									<div class="card-body p-4" style="max-height: 480px; overflow-y: auto; background: #f8f9fa;">
 										<!-- Initial Customer Message -->

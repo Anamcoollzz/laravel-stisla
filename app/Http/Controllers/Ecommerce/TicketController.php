@@ -54,6 +54,18 @@ class TicketController extends Controller
             'message.required' => 'Pesan wajib diisi.',
         ]);
 
+        $openTicket = Ticket::query()
+            ->where('user_id', (int) Auth::id())
+            ->where('status', '!=', 'closed')
+            ->latest('id')
+            ->first();
+
+        if ($openTicket) {
+            return redirect()
+                ->route('ecommerce.ticket-list', ['ticket' => $openTicket->id])
+                ->with('warning', 'Anda masih memiliki tiket aktif (#'.$openTicket->id.'). Tutup tiket tersebut terlebih dahulu sebelum membuat tiket baru.');
+        }
+
         $ticket = Ticket::query()->create([
             'user_id' => (int) Auth::id(),
             'title' => Str::limit(trim($validated['message']), 60),
@@ -100,5 +112,27 @@ class TicketController extends Controller
         return redirect()
             ->route('ecommerce.ticket-list', ['ticket' => $ticket->id])
             ->with('success', 'Balasan berhasil dikirim.');
+    }
+
+    /**
+     * Close an open ticket owned by the authenticated customer.
+     */
+    public function close(Ticket $ticket): RedirectResponse
+    {
+        if (! Auth::check()) {
+            session()->flash('warning', 'Silakan login terlebih dahulu!');
+
+            return redirect()->guest(route('ecommerce.login'));
+        }
+
+        abort_if((int) $ticket->user_id !== (int) Auth::id(), 403);
+
+        if ($ticket->status !== 'closed') {
+            $ticket->update(['status' => 'closed']);
+        }
+
+        return redirect()
+            ->route('ecommerce.ticket-list', ['ticket' => $ticket->id])
+            ->with('success', 'Tiket #'.$ticket->id.' berhasil ditutup.');
     }
 }
