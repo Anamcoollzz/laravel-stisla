@@ -106,7 +106,9 @@
 											<div class="col-lg-12">
 												<div class="mn-cart-update-bottom">
 													<a href="{{ route('ecommerce.shop') }}">Continue Shopping</a>
-													<button type="button" class="mn-btn-2" onclick="window.location.href='{{ route('ecommerce.checkout') }}'"><span>Check Out</span></button>
+													@if (!empty($cartItems) && count($cartItems) > 0)
+														<button type="button" class="mn-btn-2 btn-cart-checkout" onclick="window.location.href='{{ route('ecommerce.checkout') }}'"><span>Check Out</span></button>
+													@endif
 												</div>
 											</div>
 									</form>
@@ -123,47 +125,6 @@
 								<div class="mn-sb-title">
 									<h3 class="mn-sidebar-title">Summary</h3>
 								</div>
-								<div class="mn-sb-block-content">
-									<div class="mn-cart-form">
-										<p>Enter your destination to get a shipping estimate</p>
-										<form action="#" method="post">
-											<span class="mn-cart-wrap">
-												<label>Country *</label>
-												<span class="mn-cart-select-inner">
-													<select name="gi_cart_country" id="mn-cart-select-country"
-														class="mn-cart-select">
-														<option selected="" disabled="">United States</option>
-														<option value="1">Country 1</option>
-														<option value="2">Country 2</option>
-														<option value="3">Country 3</option>
-														<option value="4">Country 4</option>
-														<option value="5">Country 5</option>
-													</select>
-												</span>
-											</span>
-											<span class="mn-cart-wrap">
-												<label>State/Province</label>
-												<span class="mn-cart-select-inner">
-													<select name="gi_cart_state" id="mn-cart-select-state"
-														class="mn-cart-select">
-														<option selected="" disabled="">Please Select a region,
-															state
-														</option>
-														<option value="1">Region/State 1</option>
-														<option value="2">Region/State 2</option>
-														<option value="3">Region/State 3</option>
-														<option value="4">Region/State 4</option>
-														<option value="5">Region/State 5</option>
-													</select>
-												</span>
-											</span>
-											<span class="mn-cart-wrap">
-												<label>Zip/Postal Code</label>
-												<input type="text" name="postalcode" placeholder="Zip/Postal Code">
-											</span>
-										</form>
-									</div>
-								</div>
 
 								<div class="mn-sb-block-content">
 									<div class="mn-cart-summary-bottom">
@@ -172,24 +133,7 @@
 												<span class="text-left">Sub-Total</span>
 												<span class="text-right cart-subtotal-val">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 											</div>
-											<div>
-												<span class="text-left">Delivery Charges</span>
-												<span class="text-right">Free</span>
-											</div>
-											<div>
-												<span class="text-left">Coupan Discount</span>
-												<span class="text-right"><a class="mn-cart-coupan">Apply
-														Coupan</a></span>
-											</div>
-											<div class="mn-cart-coupan-content">
-												<form class="mn-cart-coupan-form" name="mn-cart-coupan-form"
-													method="post" action="#">
-													<input class="mn-coupan" type="text" required=""
-														placeholder="Enter Your Coupan Code" name="mn-coupan" value="">
-													<button class="mn-btn-2" type="submit" name="subscribe"
-														value=""><span>Apply</span></button>
-												</form>
-											</div>
+											
 											<div class="mn-cart-summary-total">
 												<span class="text-left">Total Amount</span>
 												<span class="text-right cart-total-val">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>

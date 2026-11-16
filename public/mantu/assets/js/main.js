@@ -186,6 +186,7 @@
                     $('.mn-cart-product[data-product-id="' + productId + '"]').remove();
                     if ($(".mn-cart-product").length === 0) {
                         $('.cart-table-content tbody').html('<tr><td colspan="5" class="text-center p-4"><p class="mn-cart-page-msg m-0">Your Cart is empty!</p></td></tr>');
+                        $('.btn-cart-checkout').hide();
                     }
 
                     // Notification
