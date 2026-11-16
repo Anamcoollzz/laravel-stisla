@@ -7796,10 +7796,12 @@ button.btn-close.qty_close {
   min-width: 140px;
   height: 40px;
   margin: 0 10px;
+  padding: 0 18px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  line-height: 50px;
+  line-height: 1.2;
+  white-space: nowrap;
   text-align: center;
   font-size: 14px;
   font-weight: 500;
