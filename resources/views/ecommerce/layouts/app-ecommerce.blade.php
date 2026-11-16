@@ -397,65 +397,52 @@
 										<li>
 											<a href="javascript:void(0)">Categories</a>
 											<ul class="sub-menu">
-												<li>
-													<a href="javascript:void(0)">Classic</a>
-													<ul class="sub-menu">
-														<li><a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Shop Right
-																sidebar</a></li>
-														<li><a href="{{ route('ecommerce.shop-banner-right-sidebar.html') }}">Banner
-																Right sidebar</a></li>
-														<li><a href="{{ route('ecommerce.shop-full-width.html') }}">Shop Full
-																Width</a></li>
-														<li><a href="{{ route('ecommerce.shop-banner-full-width.html') }}">Banner Full
-																Width</a></li>
-													</ul>
-												</li>
-												<li>
-													<a href="javascript:void(0)">List</a>
-													<ul class="sub-menu">
-														<li><a href="{{ route('ecommerce.shop-list-right-sidebar.html') }}">Shop Right
-																sidebar</a></li>
-														<li><a href="{{ route('ecommerce.shop-list-banner-right-sidebar.html') }}">Banner
-																Right sidebar</a></li>
-														<li><a href="{{ route('ecommerce.shop-list-full-width.html') }}">Shop
-																Full Width</a></li>
-														<li><a href="{{ route('ecommerce.shop-list-banner-full-width.html') }}">Banner
-																Full Width</a></li>
-													</ul>
-												</li>
+												@forelse (($ecommerceCategories ?? collect())->take(4) as $topCategory)
+													<li>
+														<a href="{{ route('ecommerce.products.index', ['category' => $topCategory->slug]) }}">{{ $topCategory->name }}</a>
+														@if ($topCategory->children->isNotEmpty())
+															<ul class="sub-menu">
+																@foreach ($topCategory->children->take(7) as $childCategory)
+																	<li>
+																		<a href="{{ route('ecommerce.products.index', ['category' => $childCategory->slug]) }}">{{ $childCategory->name }}</a>
+																	</li>
+																@endforeach
+															</ul>
+														@endif
+													</li>
+												@empty
+													<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+												@endforelse
 											</ul>
 										</li>
 										<li>
-											<a href="javascript:void(0)">Products</a>
+											<a href="javascript:void(0)">Best Sellers</a>
 											<ul class="sub-menu">
-												<li><a href="{{ route('ecommerce.product-detail.html') }}">product detail</a></li>
-												<li><a href="{{ route('ecommerce.product-accordion.html') }}">Product accordion</a></li>
-												<li><a href="{{ route('ecommerce.product-full-width.html') }}">Product full width</a></li>
-												<li><a href="{{ route('ecommerce.product-accordion-full-width.html') }}">accordion full width</a>
+												@forelse (($bestSellerProducts ?? collect()) as $bestProduct)
+													<li>
+														<a href="{{ route('ecommerce.products.detail', $bestProduct->slug) }}" title="{{ $bestProduct->title }}">
+															{{ \Illuminate\Support\Str::limit($bestProduct->title, 28) }}
+														</a>
+													</li>
+												@empty
+													<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+												@endforelse
+												<li>
+													<a href="{{ route('ecommerce.products.index') }}">View All Products &rarr;</a>
 												</li>
 											</ul>
 										</li>
 										<li>
 											<a href="javascript:void(0)">Pages</a>
 											<ul class="sub-menu">
+												<li><a href="{{ route('ecommerce.blogs.index') }}">Blog</a></li>
 												<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
 												<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
 												<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
 												<li><a href="{{ route('ecommerce.checkout') }}">Checkout</a></li>
 												<li><a href="{{ route('ecommerce.compare.html') }}">Compare</a></li>
-												<li><a href="{{ route('ecommerce.faq.html') }}">Faq</a></li>
+												<li><a href="{{ route('ecommerce.faq.html') }}">FAQ</a></li>
 												<li><a href="{{ route('ecommerce.login.html') }}">Login</a></li>
-												<li><a href="{{ route('ecommerce.register.html') }}">Register</a></li>
-											</ul>
-										</li>
-										<li>
-											<a href="javascript:void(0)">Blog</a>
-											<ul class="sub-menu">
-												<li><a href="{{ route('ecommerce.blog-right-sidebar.html') }}">Right Sidebar</a></li>
-												<li><a href="{{ route('ecommerce.blog-full-width.html') }}">Full Width</a></li>
-												<li><a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Detail Right Sidebar</a>
-												</li>
-												<li><a href="{{ route('ecommerce.blog-detail-full-width.html') }}">Detail Full Width</a></li>
 											</ul>
 										</li>
 									</ul>
@@ -465,18 +452,26 @@
 									<div class="header-res-social">
 										<div class="header-top-social">
 											<ul class="mb-0">
-												<li class="list-inline-item">
-													<a href="#"><i class="ri-facebook-fill"></i></a>
-												</li>
-												<li class="list-inline-item">
-													<a href="#"><i class="ri-twitter-fill"></i></a>
-												</li>
-												<li class="list-inline-item">
-													<a href="#"><i class="ri-instagram-line"></i></a>
-												</li>
-												<li class="list-inline-item">
-													<a href="#"><i class="ri-linkedin-fill"></i></a>
-												</li>
+												@if (!empty($siteContact['facebook']))
+													<li class="list-inline-item">
+														<a href="{{ $siteContact['facebook'] }}" target="_blank" rel="noopener"><i class="ri-facebook-fill"></i></a>
+													</li>
+												@endif
+												@if (!empty($siteContact['twitter']))
+													<li class="list-inline-item">
+														<a href="{{ $siteContact['twitter'] }}" target="_blank" rel="noopener"><i class="ri-twitter-fill"></i></a>
+													</li>
+												@endif
+												@if (!empty($siteContact['instagram']))
+													<li class="list-inline-item">
+														<a href="{{ $siteContact['instagram'] }}" target="_blank" rel="noopener"><i class="ri-instagram-line"></i></a>
+													</li>
+												@endif
+												@if (!empty($siteContact['linkedin']))
+													<li class="list-inline-item">
+														<a href="{{ $siteContact['linkedin'] }}" target="_blank" rel="noopener"><i class="ri-linkedin-fill"></i></a>
+													</li>
+												@endif
 											</ul>
 										</div>
 									</div>
