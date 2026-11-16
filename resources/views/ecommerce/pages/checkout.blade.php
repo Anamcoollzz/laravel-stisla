@@ -26,349 +26,287 @@
 
 @section('content')
 <!-- Main Content -->
-		<div class="mn-main-content">
-			<div class="mn-breadcrumb m-b-30">
-				<div class="row">
-					<div class="col-12">
-						<div class="row gi_breadcrumb_inner">
-							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">Checkout Page</h2>
+<div class="mn-main-content">
+	<!-- Breadcrumb -->
+	<div class="mn-breadcrumb m-b-30">
+		<div class="row">
+			<div class="col-12">
+				<div class="row gi_breadcrumb_inner">
+					<div class="col-md-6 col-sm-12">
+						<h2 class="mn-breadcrumb-title">Checkout</h2>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<ul class="mn-breadcrumb-list">
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.cart') }}">Keranjang</a></li>
+							<li class="mn-breadcrumb-item active">Checkout</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Checkout section -->
+	<section class="mn-checkout-section p-b-40">
+		<h2 class="d-none">Checkout</h2>
+
+		@if (session('warning'))
+			<div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+				<strong><i class="ri-alert-line me-1"></i> {{ session('warning') }}</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		@endif
+		@if (session('success'))
+			<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+				<strong><i class="ri-checkbox-circle-line me-1"></i> {{ session('success') }}</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		@endif
+
+		<form action="#" method="POST" id="checkoutForm">
+			@csrf
+			<div class="row g-4">
+				<!-- Left Column: Checkout Details -->
+				<div class="mn-checkout-leftside col-lg-8 col-md-12">
+					<div class="mn-checkout-content">
+						<div class="mn-checkout-inner">
+							@guest
+							<div class="mn-checkout-wrap m-b-30">
+								<div class="mn-checkout-block mn-check-new">
+									<h3 class="mn-checkout-title">Pelanggan Baru</h3>
+									<div class="mn-check-block-content">
+										<p class="text-muted small">Buat akun untuk mempermudah melacak pesanan dan belanja lebih cepat.</p>
+										<div class="mn-new-btn">
+											<a href="{{ route('ecommerce.register') }}" class="mn-btn-2"><span>Daftar Akun</span></a>
+										</div>
+									</div>
+								</div>
+								<div class="mn-checkout-block mn-check-login mt-3">
+									<h3 class="mn-checkout-title">Sudah Punya Akun?</h3>
+									<div class="mn-check-login-form">
+										<div class="mn-check-login-wrap mn-check-login-btn">
+											<a href="{{ route('ecommerce.login') }}" class="mn-btn-2"><span>Login Sekarang</span></a>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div class="col-md-6 col-sm-12">
-								<!-- mn-breadcrumb-list start -->
-								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">Checkout Page</li>
-								</ul>
-								<!-- mn-breadcrumb-list end -->
+							@endguest
+
+							<!-- 1. Shipping Address Section -->
+							<div class="mn-checkout-wrap m-b-30">
+								<div class="mn-checkout-block mn-check-bill">
+									<div class="d-flex justify-content-between align-items-center mb-3">
+										<h3 class="mn-checkout-title mb-0" style="font-size: 18px;">
+											<i class="ri-map-pin-user-line me-1 text-primary"></i> 1. Alamat Pengiriman
+										</h3>
+										<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px; font-size: 13px;">
+											<i class="ri-map-pin-line me-1"></i> Kelola Alamat
+										</a>
+									</div>
+									<div class="mn-bl-block-content">
+										@if (isset($defaultAddress) && $defaultAddress)
+											<div class="card border p-3" style="border-radius: 10px; background-color: #f8f9fa;">
+												<div class="d-flex justify-content-between align-items-center mb-2">
+													<div class="d-flex align-items-center gap-2">
+														<span class="badge bg-light text-dark border px-2 py-1 fw-bold" style="font-size: 11px;">{{ $defaultAddress->label }}</span>
+														<span class="badge bg-success px-2 py-1" style="font-size: 11px;">
+															<i class="ri-check-line me-1"></i> Alamat Utama
+														</span>
+													</div>
+													<a href="{{ route('ecommerce.address-list') }}" class="text-primary small fw-semibold">
+														<i class="ri-arrow-left-right-line me-1"></i> Ganti Alamat Lain
+													</a>
+												</div>
+												<h5 class="fw-bold mb-1" style="font-size: 15px;">{{ $defaultAddress->recipient_name }}</h5>
+												<p class="text-secondary small mb-2"><i class="ri-phone-line me-1"></i> {{ $defaultAddress->phone_number }}</p>
+												<p class="text-muted mb-1" style="font-size: 14px; line-height: 1.5;">
+													{{ $defaultAddress->address_line }}
+												</p>
+												@if ($defaultAddress->city || $defaultAddress->state || $defaultAddress->postal_code)
+													<p class="text-muted small mb-1">
+														<i class="ri-map-pin-2-line me-1"></i>
+														{{ collect([$defaultAddress->city, $defaultAddress->state, $defaultAddress->postal_code])->filter()->join(', ') }}
+													</p>
+												@endif
+												@if ($defaultAddress->notes)
+													<p class="text-secondary small mb-0 fst-italic">
+														<strong>Catatan:</strong> {{ $defaultAddress->notes }}
+													</p>
+												@endif
+											</div>
+										@elseif (isset($addresses) && $addresses->isNotEmpty())
+											<div class="alert alert-warning p-3 mb-0" style="border-radius: 8px;">
+												<p class="mb-2">Anda belum memilih alamat pengiriman utama.</p>
+												<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-primary">Pilih Alamat Utama</a>
+											</div>
+										@else
+											<div class="alert alert-warning p-3 mb-0" style="border-radius: 8px;">
+												<p class="mb-2">Anda belum memiliki alamat pengiriman tersimpan.</p>
+												<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-primary">
+													<i class="ri-add-line me-1"></i> Tambah Alamat Sekarang
+												</a>
+											</div>
+										@endif
+									</div>
+								</div>
+							</div>
+
+							<!-- 2. Delivery Method Section -->
+							<div class="mn-checkout-wrap m-b-30">
+								<div class="mn-checkout-block">
+									<h3 class="mn-checkout-title mb-3" style="font-size: 18px;">
+										<i class="ri-truck-line me-1 text-primary"></i> 2. Metode Pengiriman
+									</h3>
+									<div class="mn-check-block-content">
+										<p class="text-muted small mb-3">Pilih opsi pengiriman yang diinginkan untuk pesanan Anda:</p>
+										<div class="row g-3">
+											<div class="col-md-6">
+												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="del1" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
+													<input type="radio" id="del1" name="delivery_method" value="free" checked class="form-check-input mt-0" style="width: 20px; height: 20px;">
+													<div>
+														<strong class="d-block text-dark" style="font-size: 15px;">Reguler / Standard Shipping</strong>
+														<span class="text-success small fw-semibold">Gratis Ongkir</span>
+														<div class="text-muted small">Estimasi tiba 3 - 5 hari kerja</div>
+													</div>
+												</label>
+											</div>
+											<div class="col-md-6">
+												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="del2" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
+													<input type="radio" id="del2" name="delivery_method" value="express" class="form-check-input mt-0" style="width: 20px; height: 20px;">
+													<div>
+														<strong class="d-block text-dark" style="font-size: 15px;">Express / Kilat</strong>
+														<span class="text-dark small fw-semibold">Rp 25.000</span>
+														<div class="text-muted small">Estimasi tiba 1 - 2 hari kerja</div>
+													</div>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- 3. Payment Method Section -->
+							<div class="mn-checkout-wrap m-b-30">
+								<div class="mn-checkout-block">
+									<h3 class="mn-checkout-title mb-3" style="font-size: 18px;">
+										<i class="ri-bank-card-line me-1 text-primary"></i> 3. Metode Pembayaran
+									</h3>
+									<div class="mn-check-block-content">
+										<p class="text-muted small mb-3">Pilih metode pembayaran yang paling nyaman untuk Anda:</p>
+										<div class="row g-3 mb-4">
+											<div class="col-md-6">
+												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="pay1" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
+													<input type="radio" id="pay1" name="payment_method" value="cod" checked class="form-check-input mt-0" style="width: 20px; height: 20px;">
+													<div>
+														<strong class="d-block text-dark" style="font-size: 15px;">Cash On Delivery (COD)</strong>
+														<span class="text-muted small">Bayar langsung secara tunai saat kurir tiba</span>
+													</div>
+												</label>
+											</div>
+											<div class="col-md-6">
+												<label class="card p-3 border h-100 d-flex flex-row align-items-center gap-3" for="pay2" style="cursor: pointer; border-radius: 8px; transition: all 0.2s;">
+													<input type="radio" id="pay2" name="payment_method" value="transfer" class="form-check-input mt-0" style="width: 20px; height: 20px;">
+													<div>
+														<strong class="d-block text-dark" style="font-size: 15px;">Transfer Bank / VA</strong>
+														<span class="text-muted small">BCA, Mandiri, BNI, BRI, Permata</span>
+													</div>
+												</label>
+											</div>
+										</div>
+
+										<div class="mb-2">
+											<label class="form-label fw-bold small text-muted">Catatan untuk Penjual / Kurir (Opsional)</label>
+											<textarea name="notes" class="form-control" rows="2" placeholder="Contoh: Titipkan di pos satpam atau hubungi sebelum antar..." style="border-radius: 8px; font-size: 14px;"></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Right Column: Order Summary & Place Order Button -->
+				<div class="mn-checkout-rightside col-lg-4 col-md-12">
+					<div class="mn-sidebar-wrap sticky-top" style="top: 24px; z-index: 10;">
+						<div class="card border shadow-sm p-4" style="border-radius: 12px; background: #fff;">
+							<div class="border-bottom pb-2 mb-3">
+								<h4 class="fw-bold m-0" style="font-size: 18px;">Ringkasan Pesanan</h4>
+							</div>
+
+							<!-- Products List in Cart -->
+							<div class="mb-3" style="max-height: 270px; overflow-y: auto; padding-right: 4px;">
+								@forelse ($cartItems as $item)
+									<div class="d-flex align-items-center gap-3 py-2 border-bottom">
+										<img src="{{ $item['thumbnail'] }}" alt="{{ $item['title'] }}" style="width: 52px; height: 52px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+										<div class="flex-grow-1" style="min-width: 0;">
+											<h6 class="mb-0 text-truncate fw-bold" style="font-size: 13px;">
+												<a href="{{ route('ecommerce.products.detail', $item['slug']) }}" class="text-dark">{{ $item['title'] }}</a>
+											</h6>
+											<small class="text-muted">{{ $item['quantity'] }} &times; Rp {{ number_format($item['price'], 0, ',', '.') }}</small>
+										</div>
+										<div class="text-end fw-bold text-nowrap" style="font-size: 13px;">
+											Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+										</div>
+									</div>
+								@empty
+									<p class="text-muted small py-2 mb-0">Tidak ada produk di keranjang belanja.</p>
+								@endforelse
+							</div>
+
+							<!-- Summary Breakdown -->
+							<div class="py-2 border-bottom mb-3">
+								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
+									<span class="text-muted">Subtotal Produk</span>
+									<span class="fw-semibold">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+								</div>
+								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
+									<span class="text-muted">Biaya Pengiriman</span>
+									<span class="text-success fw-semibold">Gratis</span>
+								</div>
+								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
+									<span class="text-muted">Kupon Diskon</span>
+									<a href="javascript:void(0)" class="text-primary small" onclick="$('#couponCollapse').slideToggle();">Gunakan Kupon</a>
+								</div>
+								<div id="couponCollapse" style="display: none;" class="mb-2">
+									<div class="input-group input-group-sm">
+										<input type="text" class="form-control" placeholder="Kode Kupon" name="coupon_code">
+										<button class="btn btn-outline-dark" type="button">Terapkan</button>
+									</div>
+								</div>
+								<div class="d-flex justify-content-between pt-2 border-top mt-2">
+									<span class="fw-bold text-dark" style="font-size: 15px;">Total Pembayaran</span>
+									<span class="fw-bold text-primary" style="font-size: 18px;">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+								</div>
+							</div>
+
+							<!-- Terms Agreement -->
+							<div class="form-check mb-3">
+								<input class="form-check-input" type="checkbox" id="termsAgree" required checked>
+								<label class="form-check-label text-muted small" for="termsAgree" style="font-size: 12px; line-height: 1.4;">
+									Saya telah membaca dan menyetujui <a href="{{ route('ecommerce.terms.html') }}" target="_blank" class="text-primary">Syarat & Ketentuan</a> yang berlaku.
+								</label>
+							</div>
+
+							<!-- PLACE ORDER BUTTON (PALING BAWAH KANAN) -->
+							<div class="mn-checkout-order-btn">
+								<button type="button" class="mn-btn-1 btn w-100 py-3 text-center shadow" style="border-radius: 8px; font-size: 16px; font-weight: bold;" onclick="alert('Terima kasih! Pesanan Anda berhasil diproses.');">
+									<span><i class="ri-shopping-cart-2-line me-1"></i> Place Order</span>
+								</button>
+							</div>
+
+							<!-- Trust & Security Badges -->
+							<div class="text-center pt-3 mt-3 border-top">
+								<small class="text-muted d-block mb-2" style="font-size: 11px;">
+									<i class="ri-shield-check-line text-success me-1"></i> Pembayaran Aman & Terenkripsi
+								</small>
+								<img src="{{ asset('mantu/assets/img/footer/payment.png') }}" alt="Pembayaran Aman" style="max-height: 22px; filter: grayscale(15%);">
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
-			<!-- Checkout section -->
-			<section class="mn-checkout-section p-b-15">
-				<h2 class="d-none">Checkout Page</h2>
-
-				@if (session('warning'))
-					<div class="alert alert-warning py-2 px-3 mb-3" style="font-size: 14px;">
-						{{ session('warning') }}
-					</div>
-				@endif
-				@if (session('success'))
-					<div class="alert alert-success py-2 px-3 mb-3" style="font-size: 14px;">
-						{{ session('success') }}
-					</div>
-				@endif
-
-				<div class="row">
-					<div class="mn-checkout-leftside col-lg-8 col-md-12">
-						<!-- checkout content Start -->
-						<div class="mn-checkout-content">
-							<div class="mn-checkout-inner">
-								@guest
-								<div class="mn-checkout-wrap m-b-30">
-									<div class="mn-checkout-block mn-check-new">
-										<h3 class="mn-checkout-title">New Customer</h3>
-										<div class="mn-check-block-content">
-											<div class="mn-check-subtitle">Checkout Options</div>
-											<form action="#">
-												<span class="mn-new-option">
-													<span class="m-b-15">
-														<input type="radio" id="account1" name="radio-group" checked>
-														<label for="account1">Register Account</label>
-													</span>
-													<span class="m-b-15">
-														<input type="radio" id="account2" name="radio-group">
-														<label for="account2">Guest Account</label>
-													</span>
-												</span>
-											</form>
-											<div class="mn-new-desc">By creating an account you will be able to shop
-												faster,
-												be up to date on an order's status, and keep track of the orders you
-												have
-												previously made.
-											</div>
-											<div class="mn-new-btn"><a href="{{ route('ecommerce.register') }}"
-													class="mn-btn-2"><span>Continue</span></a></div>
-
-										</div>
-									</div>
-									<div class="mn-checkout-block mn-check-login">
-										<h3 class="mn-checkout-title">Returning Customer</h3>
-										<div class="mn-check-login-form">
-											<form action="{{ route('ecommerce.login.submit') }}" method="post">
-												@csrf
-												<span class="mn-check-login-wrap">
-													<label>Email Address</label>
-													<input type="email" name="email"
-														placeholder="Enter your email address" required>
-												</span>
-												<span class="mn-check-login-wrap">
-													<label>Password</label>
-													<input type="password" name="password"
-														placeholder="Enter your password" required>
-												</span>
-
-												<span class="mn-check-login-wrap mn-check-login-btn">
-													<button class="mn-btn-2" type="submit"><span>Login</span></button>
-													<a class="mn-check-login-fp" href="{{ route('password.request') }}">Forgot Password?</a>
-												</span>
-											</form>
-										</div>
-									</div>
-
-								</div>
-								@endguest
-								<div class="mn-checkout-wrap m-b-30 padding-bottom-3">
-									<div class="mn-checkout-block mn-check-bill">
-										<div class="d-flex justify-content-between align-items-center mb-3">
-											<h3 class="mn-checkout-title mb-0">Billing Details</h3>
-											<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px; font-size: 13px;">
-												<i class="ri-map-pin-line me-1"></i> Kelola Daftar Alamat
-											</a>
-										</div>
-										<div class="mn-bl-block-content">
-											@if (isset($defaultAddress) && $defaultAddress)
-												<div class="alert alert-light border p-3 mb-3" style="border-radius: 8px;">
-													<div class="d-flex justify-content-between align-items-center mb-1">
-														<span class="badge bg-success" style="font-size: 11px;"><i class="ri-check-line me-1"></i> Alamat Utama ({{ $defaultAddress->label }})</span>
-														<a href="{{ route('ecommerce.address-list') }}" class="text-primary small fw-semibold">Pilih Alamat Lain</a>
-													</div>
-													<strong>{{ $defaultAddress->recipient_name }}</strong> ({{ $defaultAddress->phone_number }})<br>
-													<span class="text-muted small">{{ $defaultAddress->address_line }}{{ $defaultAddress->city ? ', '.$defaultAddress->city : '' }}{{ $defaultAddress->state ? ', '.$defaultAddress->state : '' }}{{ $defaultAddress->postal_code ? ' '.$defaultAddress->postal_code : '' }}</span>
-												</div>
-											@endif
-
-											<div class="mn-check-bill-form">
-												<form action="#" method="post">
-													<span class="mn-bill-wrap mn-bill-half">
-														<label>First Name*</label>
-														<input type="text" name="firstname" value="{{ old('firstname', isset($defaultAddress) && $defaultAddress ? (explode(' ', $defaultAddress->recipient_name)[0] ?? '') : ($user->first_name ?? (explode(' ', $user->name ?? '')[0] ?? ''))) }}"
-															placeholder="Enter your first name" required>
-													</span>
-													<span class="mn-bill-wrap mn-bill-half">
-														<label>Last Name*</label>
-														<input type="text" name="lastname" value="{{ old('lastname', isset($defaultAddress) && $defaultAddress ? (explode(' ', $defaultAddress->recipient_name, 2)[1] ?? '') : ($user->last_name ?? (explode(' ', $user->name ?? '', 2)[1] ?? ''))) }}"
-															placeholder="Enter your last name">
-													</span>
-													<span class="mn-bill-wrap">
-														<label>Address</label>
-														<input type="text" name="address" value="{{ old('address', $defaultAddress->address_line ?? ($user->address ?? '')) }}" placeholder="Address Line 1">
-													</span>
-													<span class="mn-bill-wrap mn-bill-half">
-														<label>City *</label>
-														<span class="mn-bl-select-inner">
-															<select name="gi_select_city" id="mn-select-city"
-																class="mn-bill-select">
-																<option selected disabled>City</option>
-																<option value="1">City 1</option>
-																<option value="2">City 2</option>
-																<option value="3">City 3</option>
-																<option value="4">City 4</option>
-																<option value="5">City 5</option>
-															</select>
-														</span>
-													</span>
-													<span class="mn-bill-wrap mn-bill-half">
-														<label>Post Code</label>
-														<input type="text" name="postalcode" placeholder="Post Code">
-													</span>
-													<span class="mn-bill-wrap mn-bill-half">
-														<label>Country *</label>
-														<span class="mn-bl-select-inner">
-															<select name="gi_select_country" id="mn-select-country"
-																class="mn-bill-select">
-																<option selected disabled>Country</option>
-																<option value="1">Country 1</option>
-																<option value="2">Country 2</option>
-																<option value="3">Country 3</option>
-																<option value="4">Country 4</option>
-																<option value="5">Country 5</option>
-															</select>
-														</span>
-													</span>
-													<span class="mn-bill-wrap mn-bill-half">
-														<label>Region State</label>
-														<span class="mn-bl-select-inner">
-															<select name="gi_select_state" id="mn-select-state"
-																class="mn-bill-select">
-																<option selected disabled>Region/State</option>
-																<option value="1">Region/State 1</option>
-																<option value="2">Region/State 2</option>
-																<option value="3">Region/State 3</option>
-																<option value="4">Region/State 4</option>
-																<option value="5">Region/State 5</option>
-															</select>
-														</span>
-													</span>
-												</form>
-											</div>
-
-										</div>
-									</div>
-
-								</div>
-								<span class="mn-check-order-btn m-t-30">
-									<a class="mn-btn-2" href="#"><span>Place Order</span></a>
-								</span>
-							</div>
-						</div>
-						<!--cart content End -->
-					</div>
-					<!-- Sidebar Area Start -->
-					<div class="mn-checkout-rightside col-lg-4 col-md-12 m-t-991">
-						<div class="mn-sidebar-wrap">
-							<!-- Sidebar Summary Block -->
-							<div class="mn-sidebar-block">
-								<div class="mn-sb-title">
-									<h3 class="mn-sidebar-title">Summary</h3>
-								</div>
-								<div class="mn-sb-block-content">
-									<div class="mn-checkout-summary">
-										<div>
-											<span class="text-left">Sub-Total</span>
-											<span class="text-right">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
-										</div>
-										<div>
-											<span class="text-left">Delivery Charges</span>
-											<span class="text-right">Gratis</span>
-										</div>
-										<div>
-											<span class="text-left">Coupon Discount</span>
-											<span class="text-right"><a class="mn-checkout-coupan">Apply
-													Coupon</a></span>
-										</div>
-										<div class="mn-checkout-coupan-content">
-											<form class="mn-checkout-coupan-form" name="mn-checkout-coupan-form"
-												method="post" action="#">
-												<input class="mn-coupan" type="text" required=""
-													placeholder="Enter Your Coupon Code" name="mn-coupan" value="">
-												<button class="mn-coupan-btn mn-btn-2" type="submit" name="subscribe"
-													value=""><span>Apply</span></button>
-											</form>
-										</div>
-										<div class="mn-checkout-summary-total">
-											<span class="text-left">Total Amount</span>
-											<span class="text-right">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
-										</div>
-									</div>
-									<div class="mn-checkout-pro">
-										@forelse ($cartItems as $item)
-											<div class="col-sm-12 mb-3">
-												<div class="mn-product-inner">
-													<div class="mn-pro-image-outer">
-														<div class="mn-pro-image">
-															<a href="{{ route('ecommerce.products.detail', $item['slug']) }}" class="image">
-																<img class="main-image" src="{{ $item['thumbnail'] }}"
-																	alt="{{ $item['title'] }}">
-															</a>
-														</div>
-													</div>
-													<div class="mn-pro-content">
-														<h5 class="mn-pro-title"><a href="{{ route('ecommerce.products.detail', $item['slug']) }}">{{ $item['title'] }}</a></h5>
-														<span class="mn-price">
-															<span class="new-price">Rp {{ number_format($item['price'], 0, ',', '.') }} &times; {{ $item['quantity'] }}</span>
-														</span>
-														<span class="text-muted small d-block">
-															Total: Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
-														</span>
-													</div>
-												</div>
-											</div>
-										@empty
-											<div class="col-sm-12 mb-0">
-												<p class="text-muted">Tidak ada produk di keranjang belanja.</p>
-											</div>
-										@endforelse
-									</div>
-								</div>
-							</div>
-							<!-- Sidebar Summary Block -->
-						</div>
-						<div class="mn-sidebar-wrap mn-checkout-del-wrap">
-							<!-- Sidebar Summary Block -->
-							<div class="mn-sidebar-block">
-								<div class="mn-sb-title">
-									<h3 class="mn-sidebar-title">Delivery Method</h3>
-								</div>
-								<div class="mn-sb-block-content">
-									<div class="mn-checkout-del">
-										<div class="mn-del-desc">Please select the preferred shipping method to use
-											on this
-											order.</div>
-										<form action="#">
-											<span class="mn-del-option">
-												<span>
-													<span class="mn-del-opt-head">Free Shipping</span>
-													<input type="radio" id="del1" name="radio-group" checked>
-													<label for="del1">Rate - $0 .00</label>
-												</span>
-												<span>
-													<span class="mn-del-opt-head">Flat Rate</span>
-													<input type="radio" id="del2" name="radio-group">
-													<label for="del2">Rate - $5.00</label>
-												</span>
-											</span>
-										</form>
-									</div>
-								</div>
-							</div>
-							<!-- Sidebar Summary Block -->
-						</div>
-						<div class="mn-sidebar-wrap mn-checkout-del-wrap">
-							<!-- Sidebar Payment Block -->
-							<div class="mn-sidebar-block">
-								<div class="mn-sb-title">
-									<h3 class="mn-sidebar-title">Payment Method</h3>
-								</div>
-								<div class="mn-sb-block-content">
-									<div class="mn-checkout-pay">
-										<div class="mn-pay-desc">Please select the preferred payment method to use
-											on this
-											order.</div>
-										<form action="#">
-											<span class="mn-pay-option m-b-15">
-												<span>
-													<input type="radio" id="pay1" name="radio-group" checked>
-													<label for="pay1">Cash On Delivery</label>
-												</span>
-											</span>
-											<span class="mn-pay-commemt">
-												<span class="mn-pay-opt-head">Add extra note</span>
-												<textarea name="your-commemt" placeholder="Comments"></textarea>
-											</span>
-											<span class="mn-pay-agree">
-												<input type="checkbox" value="">
-												I have agree with <a href="#">Terms & Conditions.</a>
-												<span class="checked"></span>
-											</span>
-										</form>
-									</div>
-								</div>
-							</div>
-							<!-- Sidebar Payment Block -->
-						</div>
-						<div class="mn-sidebar-wrap mn-checkout-del-wrap">
-							<!-- Sidebar Payment Block -->
-							<div class="mn-sidebar-block">
-								<div class="mn-sb-title">
-									<h3 class="mn-sidebar-title">Payment Method</h3>
-								</div>
-								<div class="mn-sb-block-content">
-									<div class="mn-check-pay-img-inner">
-										<div class="mn-check-pay-img">
-											<img src="{{ asset('mantu/assets/img/footer/payment.png') }}" alt="payment">
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Sidebar Payment Block -->
-						</div>
-					</div>
-				</div>
-			</section>
-		</div>
+		</form>
+	</section>
+</div>
 @endsection
