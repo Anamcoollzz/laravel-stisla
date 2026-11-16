@@ -366,19 +366,7 @@
 													<a href="javascript:void(0)" class="dropdown-arrow">Pages<i
 															class="ri-arrow-down-s-line"></i></a>
 													<ul class="sub-menu">
-														<li class="dropdown position-static">
-															<a href="javascript:void(0)" class="mn-sub-drop">Blog
-																<i class="ri-arrow-down-s-line"></i></a>
-															<ul class="sub-menu sub-menu-child">
-																<li><a href="{{ route('ecommerce.blog-right-sidebar.html') }}">right sidebar</a>
-																</li>
-																<li><a href="{{ route('ecommerce.blog-full-width.html') }}">Full Width</a></li>
-																<li><a href="{{ route('ecommerce.blog-detail-right-sidebar.html') }}">Detail
-																		right sidebar</a></li>
-																<li><a href="{{ route('ecommerce.blog-detail-full-width.html') }}">Detail Full
-																		Width</a></li>
-															</ul>
-														</li>
+														<li><a href="{{ route('ecommerce.blogs.index') }}">Blog</a></li>
 														<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
 														<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
 														<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
@@ -620,24 +608,17 @@
 									<h4 class="mn-footer-heading">Category</h4>
 									<div class="mn-footer-links mn-footer-dropdown">
 										<ul class="align-items-center">
-											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.products.index', ['category' => 'fashion']) }}">Fashion</a>
-											</li>
-											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.products.index', ['category' => 'cosmetics']) }}">Cosmetics</a>
-											</li>
-											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.products.index', ['category' => 'bags']) }}">Bags & Purse</a>
-											</li>
-											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.products.index', ['category' => 'shoes']) }}">Shoes</a>
-											</li>
-											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.products.index', ['category' => 'hat']) }}">Hat & Accessories</a>
-											</li>
-											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.products.index', ['category' => 'makeup']) }}">Makeup</a>
-											</li>
+											@forelse (($footerCategories ?? collect()) as $footerCategory)
+												@if ($footerCategory->category)
+													<li class="mn-footer-link">
+														<a href="{{ route('ecommerce.products.index', ['category' => $footerCategory->category->slug]) }}">{{ $footerCategory->display_name }}</a>
+													</li>
+												@endif
+											@empty
+												<li class="mn-footer-link">
+													<a href="{{ route('ecommerce.products.index') }}">All Products</a>
+												</li>
+											@endforelse
 										</ul>
 									</div>
 								</div>

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\ChatMessage;
+use App\Models\FooterProductCategory;
 use App\Models\Menu;
 use App\Models\Product;
 use App\Models\ProductBanner;
@@ -92,6 +93,20 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('ecommerceCategories', $ecommerceCategories);
             } else {
                 $view->with('ecommerceCategories', collect());
+            }
+
+            if (Schema::hasTable('footer_product_categories')) {
+                $footerCategories = FooterProductCategory::query()
+                    ->active()
+                    ->whereHas('category', fn ($q) => $q->where('is_active', true))
+                    ->with('category')
+                    ->orderBy('order')
+                    ->latest('id')
+                    ->get();
+
+                $view->with('footerCategories', $footerCategories);
+            } else {
+                $view->with('footerCategories', collect());
             }
 
             if (Schema::hasTable('products')) {

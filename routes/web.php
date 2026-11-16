@@ -11,6 +11,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EcommerceFaqController;
 use App\Http\Controllers\FieldController;
+use App\Http\Controllers\FooterProductCategoryController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
@@ -241,6 +242,10 @@ Route::prefix('app')->group(function () {
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
         Route::patch('orders/{order}/tracking', [OrderController::class, 'updateTracking'])->name('orders.updateTracking');
         Route::resource('orders', OrderController::class)->only(['index', 'show', 'destroy']);
+
+        Route::resource('footer-product-categories', FooterProductCategoryController::class)->parameters([
+            'footer-product-categories' => 'footerProductCategory',
+        ]);
 
         Route::patch('shipping-methods/{shippingMethod}/toggle', [ShippingMethodController::class, 'toggle'])->name('shipping-methods.toggle');
         Route::resource('shipping-methods', ShippingMethodController::class)->parameters([
