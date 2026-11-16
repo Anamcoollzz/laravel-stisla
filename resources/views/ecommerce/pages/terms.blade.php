@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Terms - Ecommerce')
+@section('title', __('Terms - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,13 +32,13 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">Terms Page</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('Terms Page') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">Terms Page</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('Terms Page') }}</li>
 								</ul>
 								<!-- mn-breadcrumb-list end -->
 							</div>
@@ -54,8 +54,8 @@
 			<!-- Terms section -->
 			<section class="mn-terms-conditions p-b-15">
 				<div class="mn-title d-none">
-					<h2><span>Terms</span> &amp; Condition</h2>
-					<p>Browse The Collection of Top Products</p>
+					<h2><span>{{ __('Terms') }}</span> &amp; {{ __('Condition') }}</h2>
+					<p>{{ __('Browse The Collection of Top Products') }}</p>
 				</div>
 				<div class="row">
 					<div class="col-12">

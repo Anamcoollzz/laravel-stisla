@@ -22,7 +22,7 @@ class WishlistController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'unauthenticated',
-                    'message' => 'Silakan login terlebih dahulu untuk mengakses wishlist!',
+                    'message' => __('Please login first to access your wishlist!'),
                     'redirect' => route('ecommerce.login'),
                 ], 401);
             }
@@ -65,7 +65,7 @@ class WishlistController extends Controller
         if (! Auth::check()) {
             return response()->json([
                 'status' => 'unauthenticated',
-                'message' => 'Silakan login terlebih dahulu untuk menambahkan produk ke wishlist!',
+                'message' => __('Please login first to add products to your wishlist!'),
                 'redirect' => route('ecommerce.login'),
             ], 401);
         }
@@ -88,7 +88,7 @@ class WishlistController extends Controller
                 'product_id' => $productId,
             ]);
             $isWishlisted = true;
-            $message = 'Added to Wishlist successfully!';
+            $message = __('Added to Wishlist successfully!');
         }
 
         $wishlistProducts = ProductWishlist::query()
@@ -121,7 +121,7 @@ class WishlistController extends Controller
         if (! Auth::check()) {
             return response()->json([
                 'status' => 'unauthenticated',
-                'message' => 'Silakan login terlebih dahulu!',
+                'message' => __('Please login first!'),
                 'redirect' => route('ecommerce.login'),
             ], 401);
         }
@@ -147,7 +147,7 @@ class WishlistController extends Controller
             'status' => 'success',
             'action' => 'removed',
             'is_wishlisted' => false,
-            'message' => 'Removed from Wishlist successfully!',
+            'message' => __('Removed from Wishlist successfully!'),
             'count' => $wishlistProducts->count(),
             'product_id' => $productId,
             'html' => view('ecommerce.partials.wishlist-sidebar-items', [

@@ -76,7 +76,7 @@ class TicketController extends Controller
 
         return redirect()
             ->route('ecommerce.ticket-list', ['ticket' => $ticket->id])
-            ->with('success', 'Pesan Anda berhasil dikirim sebagai tiket baru! Tim kami akan segera merespons.');
+            ->with('success', __('Your message has been sent as a new ticket! Our team will respond shortly.'));
     }
 
     /**
@@ -111,7 +111,7 @@ class TicketController extends Controller
 
         return redirect()
             ->route('ecommerce.ticket-list', ['ticket' => $ticket->id])
-            ->with('success', 'Balasan berhasil dikirim.');
+            ->with('success', __('Reply sent successfully.'));
     }
 
     /**
@@ -133,6 +133,6 @@ class TicketController extends Controller
 
         return redirect()
             ->route('ecommerce.ticket-list', ['ticket' => $ticket->id])
-            ->with('success', 'Tiket #'.$ticket->id.' berhasil ditutup.');
+            ->with('success', __('Ticket #:id closed successfully.', ['id' => $ticket->id]));
     }
 }

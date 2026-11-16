@@ -49,20 +49,20 @@
             <div class="col-12">
               <div class="row gi_breadcrumb_inner">
                 <div class="col-md-6 col-sm-12">
-                  <h2 class="mn-breadcrumb-title">{{ $product?->title ?? 'Product Detail' }}</h2>
+                  <h2 class="mn-breadcrumb-title">{{ $product?->title ?? __('Product Detail') }}</h2>
                 </div>
                 <div class="col-md-6 col-sm-12">
                   <!-- mn-breadcrumb-list start -->
                   <ul class="mn-breadcrumb-list">
                     <li class="mn-breadcrumb-item">
-                      <a href="{{ route('ecommerce.index.html') }}">Home</a>
+                      <a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a>
                     </li>
                     @if ($product?->category)
                       <li class="mn-breadcrumb-item">
                         <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $product->category->name }}</a>
                       </li>
                     @endif
-                    <li class="mn-breadcrumb-item active">{{ $product?->title ?? 'Product Detail' }}</li>
+                    <li class="mn-breadcrumb-item active">{{ $product?->title ?? __('Product Detail') }}</li>
                   </ul>
                   <!-- mn-breadcrumb-list end -->
                 </div>
@@ -146,7 +146,7 @@
                               </div>
                               <span class="mn-read-review">
                                 |&nbsp;&nbsp;<a href="#mn-spt-nav-review" onclick="$('#review-tab').tab('show');">
-                                  {{ $avgRating > 0 ? number_format($avgRating, 1) . ' / 5.0 Rating' : __('No ratings yet') }}
+                                  {{ $avgRating > 0 ? number_format($avgRating, 1) . ' / 5.0 ' . __('Rating') : __('No ratings yet') }}
                                   ({{ $reviewCount }} {{ __('reviews') }})
                                 </a>
                               </span>
@@ -162,21 +162,21 @@
                                 </div>
                                 @if (($product?->discount_percent ?? 0) > 0)
                                   <div class="mrp">
-                                    M.R.P. : <span>Rp {{ number_format($product?->price ?? 0, 0, ',', '.') }}</span>
+                                    {{ __('M.R.P.') }} : <span>Rp {{ number_format($product?->price ?? 0, 0, ',', '.') }}</span>
                                   </div>
                                 @endif
                               </div>
                               <div class="mn-single-stoke">
-                                <span class="mn-single-sku">SKU#: {{ $product?->sku ?? 'N/A' }}</span>
+                                <span class="mn-single-sku">{{ __('SKU#') }}: {{ $product?->sku ?? 'N/A' }}</span>
                                 <span class="mn-single-ps-title {{ ($product?->stock ?? 0) > 0 ? '' : 'text-danger' }}">
-                                  {{ ($product?->stock ?? 0) > 0 ? 'IN STOCK (' . $product->stock . ')' : 'OUT OF STOCK' }}
+                                  {{ ($product?->stock ?? 0) > 0 ? __('IN STOCK') . ' (' . $product->stock . ')' : __('OUT OF STOCK') }}
                                 </span>
                               </div>
                             </div>
                             <div class="mn-single-sales">
                               <div class="mn-single-sales-inner">
                                 <div class="mn-single-sales-visitor">
-                                  Real time <span>28</span> visitor right now!
+                                  {{ __('Real time') }} <span>28</span> {{ __('visitor right now!') }}
                                 </div>
                                 <div class="mn-single-sales-countdown">
                                   <div class="mn-single-countdown">
@@ -185,32 +185,32 @@
                                       data-date="September 30, 2026 19:15:10 PDT"
                                     ></div>
                                     <div class="mn-single-count-desc">
-                                      Special Promo Offer!
+                                      {{ __('Special Promo Offer!') }}
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div class="mn-single-desc">
-                              {!! $product?->short_description ?? 'No short description available.' !!}
+                              {!! $product?->short_description ?? __('No short description available.') !!}
                             </div>
 
                             <div class="mn-single-list">
                               <ul>
                                 @if ($product?->brand)
-                                  <li><strong>Brand :</strong> {{ $product->brand->name }}</li>
+                                  <li><strong>{{ __('Brand') }} :</strong> {{ $product->brand->name }}</li>
                                 @endif
                                 @if ($product?->category)
-                                  <li><strong>Category :</strong> {{ $product->category->name }}</li>
+                                  <li><strong>{{ __('Category') }} :</strong> {{ $product->category->name }}</li>
                                 @endif
                                 @if ($product?->vendor)
-                                  <li><strong>Vendor :</strong> {{ $product->vendor->name }}</li>
+                                  <li><strong>{{ __('Vendor') }} :</strong> {{ $product->vendor->name }}</li>
                                 @endif
                                 @if ($product?->size)
-                                  <li><strong>Size :</strong> {{ $product->size->name }} ({{ $product->size->code }})</li>
+                                  <li><strong>{{ __('Size') }} :</strong> {{ $product->size->name }} ({{ $product->size->code }})</li>
                                 @endif
                                 @if ($product?->color)
-                                  <li><strong>Color :</strong> {{ $product->color->name }}</li>
+                                  <li><strong>{{ __('Color') }} :</strong> {{ $product->color->name }}</li>
                                 @endif
                               </ul>
                             </div>
@@ -220,7 +220,7 @@
                                 <div
                                   class="mn-pro-variation-inner mn-pro-variation-size m-b-24"
                                 >
-                                  <span>Size</span>
+                                  <span>{{ __('Size') }}</span>
                                   <div class="mn-pro-variation-content">
                                     <ul>
                                       <li class="active"><span>{{ $product->size->name }}</span></li>
@@ -232,7 +232,7 @@
                                 <div
                                   class="mn-pro-variation-inner mn-pro-variation-color"
                                 >
-                                  <span>Colors</span>
+                                  <span>{{ __('Colors') }}</span>
                                   <div class="mn-pro-variation-content">
                                     <ul>
                                       <li class="active" title="{{ $product->color->name }}">
@@ -261,7 +261,7 @@
                                     class="btn btn-primary mn-btn-2 mn-add-cart"
                                     data-product-id="{{ $product->id }}"
                                   >
-                                    <span>Add To Cart</span>
+                                    <span>{{ __('Add To Cart') }}</span>
                                   </button>
                                 </div>
                                 <div class="mn-single-wishlist">
@@ -269,7 +269,7 @@
                                     href="javascript:void(0)"
                                     class="mn-btn-group wishlist mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}"
                                     data-product-id="{{ $product->id }}"
-                                    title="Wishlist"
+                                    title="{{ __('Wishlist') }}"
                                   >
                                     <i class="ri-heart-line"></i>
                                   </a>
@@ -279,7 +279,7 @@
                                     href="javascript:void(0)"
                                     class="mn-btn-group mn-compare"
                                     data-product-id="{{ $product->id }}"
-                                    title="Compare"
+                                    title="{{ __('Compare') }}"
                                   >
                                     <i class="ri-repeat-line"></i>
                                   </a>
@@ -300,7 +300,7 @@
                           $rndRating = round((float) ($rndProduct->approved_reviews_avg_rating ?? 0));
                         @endphp
                         <div class="add-more-item">
-                          <a href="javascript:void(0)" class="mn-btn-2 mn-add-cart" data-product-id="{{ $rndProduct->id }}" title="Add To Cart">
+                          <a href="javascript:void(0)" class="mn-btn-2 mn-add-cart" data-product-id="{{ $rndProduct->id }}" title="{{ __('Add To Cart') }}">
                             <span>+</span>
                           </a>
                           <div class="add-more-img">
@@ -346,7 +346,7 @@
                               aria-controls="mn-spt-nav-details"
                               aria-selected="true"
                             >
-                              Detail
+                              {{ __('Detail') }}
                             </button>
                           </li>
                           <li class="nav-item" role="presentation">
@@ -360,7 +360,7 @@
                               aria-controls="mn-spt-nav-info"
                               aria-selected="false"
                             >
-                              Specifications
+                              {{ __('Specifications') }}
                             </button>
                           </li>
                           <li class="nav-item" role="presentation">
@@ -374,7 +374,7 @@
                               aria-controls="mn-spt-nav-vendor"
                               aria-selected="false"
                             >
-                              Vendor
+                              {{ __('Vendor') }}
                             </button>
                           </li>
                           <li class="nav-item" role="presentation">
@@ -388,7 +388,7 @@
                               aria-controls="mn-spt-nav-review"
                               aria-selected="false"
                             >
-                              Reviews ({{ $reviewCount }})
+                              {{ __('Reviews') }} ({{ $reviewCount }})
                             </button>
                           </li>
                         </ul>
@@ -399,24 +399,24 @@
                           class="tab-pane fade show active"
                         >
                           <div class="mn-single-pro-tab-desc">
-                            {!! $product?->description_detail ?? $product?->short_description ?? '<p>No detail description available.</p>' !!}
+                            {!! $product?->description_detail ?? $product?->short_description ?? '<p>' . __('No detail description available.') . '</p>' !!}
                           </div>
                         </div>
                         <div id="mn-spt-nav-info" class="tab-pane fade">
                           <div class="mn-single-pro-tab-moreinfo">
                             <ul>
-                              <li><span>SKU</span> {{ $product?->sku ?? '-' }}</li>
+                              <li><span>{{ __('SKU') }}</span> {{ $product?->sku ?? '-' }}</li>
                               @if ($product?->brand)
-                                <li><span>Brand</span> {{ $product->brand->name }}</li>
+                                <li><span>{{ __('Brand') }}</span> {{ $product->brand->name }}</li>
                               @endif
                               @if ($product?->category)
-                                <li><span>Category</span> {{ $product->category->name }}</li>
+                                <li><span>{{ __('Category') }}</span> {{ $product->category->name }}</li>
                               @endif
                               @if ($product?->size)
-                                <li><span>Size</span> {{ $product->size->name }} ({{ $product->size->code }})</li>
+                                <li><span>{{ __('Size') }}</span> {{ $product->size->name }} ({{ $product->size->code }})</li>
                               @endif
                               @if ($product?->color)
-                                <li><span>Color</span> {{ $product->color->name }}</li>
+                                <li><span>{{ __('Color') }}</span> {{ $product->color->name }}</li>
                               @endif
                               @if (is_array($product?->spesifications))
                                 @foreach ($product->spesifications as $k => $spec)
@@ -453,13 +453,13 @@
                                 <div class="mn-detail">
                                   <ul>
                                     <li>
-                                      <span>Phone No. :</span> {{ $product->vendor->phone ?: '-' }}
+                                      <span>{{ __('Phone No.') }} :</span> {{ $product->vendor->phone ?: '-' }}
                                     </li>
                                     <li>
-                                      <span>Email. :</span> {{ $product->vendor->email ?: '-' }}
+                                      <span>{{ __('Email.') }} :</span> {{ $product->vendor->email ?: '-' }}
                                     </li>
                                     <li>
-                                      <span>Address. :</span> {{ $product->vendor->address ?: '-' }}
+                                      <span>{{ __('Address.') }} :</span> {{ $product->vendor->address ?: '-' }}
                                     </li>
                                   </ul>
                                   @if ($product->vendor->description)
@@ -470,7 +470,7 @@
                                 </div>
                               </div>
                             @else
-                              <p class="text-muted">Vendor information not available.</p>
+                              <p class="text-muted">{{ __('Vendor information not available.') }}</p>
                             @endif
                           </div>
                         </div>
@@ -527,13 +527,13 @@
                             </div>
 
                             <div class="mn-ratting-content mt-4">
-                              <h3>Add a Review</h3>
+                              <h3>{{ __('Add a Review') }}</h3>
                               <div class="mn-ratting-form">
                                 <form action="{{ $product ? route('ecommerce.products.review.store', $product->slug) : '#' }}" method="POST">
                                   @csrf
                                   <input type="hidden" name="rating" id="review-rating-input" value="{{ old('rating', 5) }}">
                                   <div class="mn-ratting-star">
-                                    <span>Your rating:</span>
+                                    <span>{{ __('Your rating:') }}</span>
                                     <div class="mn-t-review-rating mn-pro-rating" id="interactive-rating-stars" style="cursor: pointer;">
                                       @for ($i = 1; $i <= 5; $i++)
                                         <i class="ri-star-fill rating-star-item {{ $i <= old('rating', 5) ? '' : 'grey' }}" data-value="{{ $i }}"></i>
@@ -543,7 +543,7 @@
                                   <div class="mn-ratting-input">
                                     <input
                                       name="name"
-                                      placeholder="Name*"
+                                      placeholder="{{ __('Name*') }}"
                                       type="text"
                                       value="{{ old('name', auth()->check() ? auth()->user()->name : '') }}"
                                       required
@@ -552,7 +552,7 @@
                                   <div class="mn-ratting-input">
                                     <input
                                       name="email"
-                                      placeholder="Email*"
+                                      placeholder="{{ __('Email*') }}"
                                       type="email"
                                       value="{{ old('email', auth()->check() ? auth()->user()->email : '') }}"
                                       required
@@ -561,7 +561,7 @@
                                   <div class="mn-ratting-input form-submit">
                                     <textarea
                                       name="comment"
-                                      placeholder="Enter Your Comment*"
+                                      placeholder="{{ __('Enter Your Comment*') }}"
                                       required
                                     >{{ old('comment') }}</textarea>
                                     <button
@@ -569,7 +569,7 @@
                                       type="submit"
                                       value="Submit"
                                     >
-                                      <span>Submit</span>
+                                      <span>{{ __('Submit') }}</span>
                                     </button>
                                   </div>
                                 </form>
@@ -583,7 +583,7 @@
                   <!-- Related Section -->
                   <section class="mn-related-product m-t-30">
                     <div class="mn-title">
-                      <h2>Related <span>Products</span></h2>
+                      <h2>{{ __('Related') }} <span>{{ __('Products') }}</span></h2>
                     </div>
                     <div class="mn-related owl-carousel">
                       @forelse ($relatedProducts as $relProduct)
@@ -591,19 +591,19 @@
                           <div class="mn-product-img">
                             @if ($relProduct->is_trending)
                               <div class="lbl">
-                                <span class="trending">trending</span>
+                                <span class="trending">{{ __('trending') }}</span>
                               </div>
                             @elseif ($relProduct->is_new)
                               <div class="lbl">
-                                <span class="new">new</span>
+                                <span class="new">{{ __('new') }}</span>
                               </div>
                             @elseif ($relProduct->is_sale)
                               <div class="lbl">
-                                <span class="sale">sale</span>
+                                <span class="sale">{{ __('sale') }}</span>
                               </div>
                             @elseif ($relProduct->discount_percent > 0)
                               <div class="lbl">
-                                <span class="discount">{{ (int) $relProduct->discount_percent }}% off</span>
+                                <span class="discount">{{ (int) $relProduct->discount_percent }}% {{ __('off') }}</span>
                               </div>
                             @endif
                             <div class="mn-img">
@@ -626,7 +626,7 @@
                                     <a
                                       href="{{ route('ecommerce.products.detail', $relProduct->slug) }}"
                                       data-tooltip
-                                      title="Quick View"
+                                      title="{{ __('Quick View') }}"
                                     ><i class="ri-eye-line"></i
                                     ></a>
                                   </li>
@@ -634,7 +634,7 @@
                                     <a
                                       href="javascript:void(0)"
                                       data-tooltip
-                                      title="Add To Cart"
+                                      title="{{ __('Add To Cart') }}"
                                       class="mn-add-cart"
                                       data-product-id="{{ $relProduct->id }}"
                                     ><i class="ri-shopping-cart-line"></i
@@ -646,7 +646,7 @@
                           </div>
                           <div class="mn-product-detail">
                             <div class="cat">
-                              <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $relProduct->category?->name ?? 'Product' }}</a>
+                              <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $relProduct->category?->name ?? __('Product') }}</a>
                               @if ($relProduct->size)
                                 <ul>
                                   <li>{{ strtolower($relProduct->size->code ?: $relProduct->size->name) }}</li>
@@ -679,7 +679,7 @@
                                   href="javascript:void(0);"
                                   class="mn-wishlist"
                                   data-tooltip
-                                  title="Wishlist"
+                                  title="{{ __('Wishlist') }}"
                                 >
                                   <i class="ri-heart-line"></i>
                                 </a>
@@ -688,7 +688,7 @@
                           </div>
                         </div>
                       @empty
-                        <p class="text-muted p-3">No related products found.</p>
+                        <p class="text-muted p-3">{{ __('No related products found.') }}</p>
                       @endforelse
                     </div>
                   </section>
@@ -700,7 +700,7 @@
                       <!-- Sidebar Filters Block -->
                       <div class="mn-sidebar-block drop">
                         <div class="mn-sb-title">
-                          <h3 class="mn-sidebar-title">Categories</h3>
+                          <h3 class="mn-sidebar-title">{{ __('Categories') }}</h3>
                         </div>
                         <div class="mn-sb-block-content p-t-15">
                           <ul>
@@ -718,7 +718,7 @@
                       <!-- Sidebar Brand Block -->
                       <div class="mn-sidebar-block">
                         <div class="mn-sb-title">
-                          <h3 class="mn-sidebar-title">Brand</h3>
+                          <h3 class="mn-sidebar-title">{{ __('Brand') }}</h3>
                         </div>
                         <div class="mn-sb-block-content">
                           <ul>
@@ -739,7 +739,7 @@
                       <!-- Sidebar Size Block -->
                       <div class="mn-sidebar-block">
                         <div class="mn-sb-title">
-                          <h3 class="mn-sidebar-title">Size</h3>
+                          <h3 class="mn-sidebar-title">{{ __('Size') }}</h3>
                         </div>
                         <div class="mn-sb-block-content">
                           <ul>
@@ -760,7 +760,7 @@
                         class="mn-sidebar-block color-block mn-sidebar-block-clr"
                       >
                         <div class="mn-sb-title">
-                          <h3 class="mn-sidebar-title">Color</h3>
+                          <h3 class="mn-sidebar-title">{{ __('Color') }}</h3>
                         </div>
                         <div class="mn-sb-block-content">
                           <ul>
@@ -782,7 +782,7 @@
                       <!-- Sidebar Price Block -->
                       <div class="mn-sidebar-block">
                         <div class="mn-sb-title">
-                          <h3 class="mn-sidebar-title">Price</h3>
+                          <h3 class="mn-sidebar-title">{{ __('Price') }}</h3>
                         </div>
                         <div
                           class="mn-sb-block-content mn-price-range-slider es-price-slider"
@@ -790,11 +790,11 @@
                           <div class="mn-price-filter">
                             <div class="mn-price-input">
                               <label class="filter__label">
-                                From<input type="text" class="filter__input" />
+                                {{ __('From') }}<input type="text" class="filter__input" />
                               </label>
                               <span class="mn-price-divider"></span>
                               <label class="filter__label">
-                                To<input type="text" class="filter__input" />
+                                {{ __('To') }}<input type="text" class="filter__input" />
                               </label>
                             </div>
                             <div
@@ -813,7 +813,7 @@
                       <!-- Sidebar tags -->
                       <div class="mn-sidebar-block">
                         <div class="mn-sb-title">
-                          <h3 class="mn-sidebar-title">Tags</h3>
+                          <h3 class="mn-sidebar-title">{{ __('Tags') }}</h3>
                         </div>
                         <div class="mn-tag-block mn-sb-block-content">
                           @if (! empty($product?->tags) && is_array($product->tags))

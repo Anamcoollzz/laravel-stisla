@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr">
 
 <head>
 	<meta charset="utf-8">
@@ -48,7 +48,7 @@
 		<div class="mn-sidebar-overlay"></div>
 		<div class="mn-sidebar">
 			<div class="mn-sidebar-body">
-				<button type="button" class="side-close" title="Close"></button>
+				<button type="button" class="side-close" title="{{ __('Close') }}"></button>
 				<ul class="mn-sb-list">
 					@if (isset($ecommerceCategories) && $ecommerceCategories->isNotEmpty())
 						@foreach ($ecommerceCategories as $level1)
@@ -316,10 +316,10 @@
 										<div class="mn-main-menu">
 											<ul>
 												<li class="non-drop">
-													<a href="{{ route('ecommerce.index.html') }}">Home</a>
+													<a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a>
 												</li>
 												<li class="dropdown drop-list">
-													<a href="{{ route('ecommerce.products.index') }}" class="dropdown-arrow">Categories<i
+													<a href="{{ route('ecommerce.products.index') }}" class="dropdown-arrow">{{ __('Categories') }}<i
 															class="ri-arrow-down-s-line"></i></a>
 													<ul class="mega-menu d-block">
 														<li class="d-flex">
@@ -337,15 +337,15 @@
 																</ul>
 															@empty
 																<ul class="d-block mega-block">
-																	<li class="menu_title"><a href="{{ route('ecommerce.products.index') }}">Shop</a></li>
-																	<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+																	<li class="menu_title"><a href="{{ route('ecommerce.products.index') }}">{{ __('Shop') }}</a></li>
+																	<li><a href="{{ route('ecommerce.products.index') }}">{{ __('All Products') }}</a></li>
 																</ul>
 															@endforelse
 														</li>
 													</ul>
 												</li>
 												<li class="dropdown drop-list">
-													<a href="{{ route('ecommerce.products.index') }}" class="dropdown-arrow">Best Sellers<i
+													<a href="{{ route('ecommerce.products.index') }}" class="dropdown-arrow">{{ __('Best Sellers') }}<i
 															class="ri-arrow-down-s-line"></i></a>
 													<ul class="sub-menu">
 														@forelse (($bestSellerProducts ?? collect()) as $bestProduct)
@@ -355,25 +355,25 @@
 																</a>
 															</li>
 														@empty
-															<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+															<li><a href="{{ route('ecommerce.products.index') }}">{{ __('All Products') }}</a></li>
 														@endforelse
 														<li class="border-top mt-1 pt-1">
-															<a href="{{ route('ecommerce.products.index') }}" class="fw-semibold text-primary">View All Products &rarr;</a>
+															<a href="{{ route('ecommerce.products.index') }}" class="fw-semibold text-primary">{{ __('View All Products') }} &rarr;</a>
 														</li>
 													</ul>
 												</li>
 												<li class="dropdown drop-list">
-													<a href="javascript:void(0)" class="dropdown-arrow">Pages<i
+													<a href="javascript:void(0)" class="dropdown-arrow">{{ __('Pages') }}<i
 															class="ri-arrow-down-s-line"></i></a>
 													<ul class="sub-menu">
-														<li><a href="{{ route('ecommerce.blogs.index') }}">Blog</a></li>
-														<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
-														<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
-														<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
-														<li><a href="{{ route('ecommerce.checkout') }}">Checkout</a></li>
-														<li><a href="{{ route('ecommerce.compare.html') }}">Compare</a></li>
-														<li><a href="{{ route('ecommerce.faq.html') }}">FAQ</a></li>
-														<li><a href="{{ route('ecommerce.login.html') }}">Login</a></li>
+														<li><a href="{{ route('ecommerce.blogs.index') }}">{{ __('Blog') }}</a></li>
+														<li><a href="{{ route('ecommerce.about-us') }}">{{ __('About Us') }}</a></li>
+														<li><a href="{{ route('ecommerce.contact-us.html') }}">{{ __('Contact Us') }}</a></li>
+														<li><a href="{{ route('ecommerce.cart.html') }}">{{ __('Cart') }}</a></li>
+														<li><a href="{{ route('ecommerce.checkout') }}">{{ __('Checkout') }}</a></li>
+														<li><a href="{{ route('ecommerce.compare.html') }}">{{ __('Compare') }}</a></li>
+														<li><a href="{{ route('ecommerce.faq.html') }}">{{ __('FAQ') }}</a></li>
+														<li><a href="{{ route('ecommerce.login.html') }}">{{ __('Login') }}</a></li>
 													</ul>
 												</li>
 											</ul>
@@ -385,17 +385,17 @@
 						<div class="mn-mobile-menu-overlay"></div>
 						<div id="mn-mobile-menu" class="mn-mobile-menu">
 							<div class="mn-menu-title">
-								<span class="menu_title">My Menu</span>
+								<span class="menu_title">{{ __('My Menu') }}</span>
 								<button type="button" class="mn-close-menu">×</button>
 							</div>
 							<div class="mn-menu-inner">
 								<div class="mn-menu-content">
 									<ul>
 										<li>
-											<a href="{{ route('ecommerce.index.html') }}">Home</a>
+											<a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a>
 										</li>
 										<li>
-											<a href="javascript:void(0)">Categories</a>
+											<a href="javascript:void(0)">{{ __('Categories') }}</a>
 											<ul class="sub-menu">
 												@forelse (($ecommerceCategories ?? collect())->take(4) as $topCategory)
 													<li>
@@ -411,12 +411,12 @@
 														@endif
 													</li>
 												@empty
-													<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+													<li><a href="{{ route('ecommerce.products.index') }}">{{ __('All Products') }}</a></li>
 												@endforelse
 											</ul>
 										</li>
 										<li>
-											<a href="javascript:void(0)">Best Sellers</a>
+											<a href="javascript:void(0)">{{ __('Best Sellers') }}</a>
 											<ul class="sub-menu">
 												@forelse (($bestSellerProducts ?? collect()) as $bestProduct)
 													<li>
@@ -425,24 +425,24 @@
 														</a>
 													</li>
 												@empty
-													<li><a href="{{ route('ecommerce.products.index') }}">All Products</a></li>
+													<li><a href="{{ route('ecommerce.products.index') }}">{{ __('All Products') }}</a></li>
 												@endforelse
 												<li>
-													<a href="{{ route('ecommerce.products.index') }}">View All Products &rarr;</a>
+													<a href="{{ route('ecommerce.products.index') }}">{{ __('View All Products') }} &rarr;</a>
 												</li>
 											</ul>
 										</li>
 										<li>
-											<a href="javascript:void(0)">Pages</a>
+											<a href="javascript:void(0)">{{ __('Pages') }}</a>
 											<ul class="sub-menu">
-												<li><a href="{{ route('ecommerce.blogs.index') }}">Blog</a></li>
-												<li><a href="{{ route('ecommerce.about-us') }}">About Us</a></li>
-												<li><a href="{{ route('ecommerce.contact-us.html') }}">Contact Us</a></li>
-												<li><a href="{{ route('ecommerce.cart.html') }}">Cart</a></li>
-												<li><a href="{{ route('ecommerce.checkout') }}">Checkout</a></li>
-												<li><a href="{{ route('ecommerce.compare.html') }}">Compare</a></li>
-												<li><a href="{{ route('ecommerce.faq.html') }}">FAQ</a></li>
-												<li><a href="{{ route('ecommerce.login.html') }}">Login</a></li>
+												<li><a href="{{ route('ecommerce.blogs.index') }}">{{ __('Blog') }}</a></li>
+												<li><a href="{{ route('ecommerce.about-us') }}">{{ __('About Us') }}</a></li>
+												<li><a href="{{ route('ecommerce.contact-us.html') }}">{{ __('Contact Us') }}</a></li>
+												<li><a href="{{ route('ecommerce.cart.html') }}">{{ __('Cart') }}</a></li>
+												<li><a href="{{ route('ecommerce.checkout') }}">{{ __('Checkout') }}</a></li>
+												<li><a href="{{ route('ecommerce.compare.html') }}">{{ __('Compare') }}</a></li>
+												<li><a href="{{ route('ecommerce.faq.html') }}">{{ __('FAQ') }}</a></li>
+												<li><a href="{{ route('ecommerce.login.html') }}">{{ __('Login') }}</a></li>
 											</ul>
 										</li>
 									</ul>
@@ -506,26 +506,26 @@
 								<ul class="sub-menu">
 									@auth
 										<li>
-											<a href="{{ route('ecommerce.address-list') }}">Daftar Alamat</a>
+											<a href="{{ route('ecommerce.address-list') }}">{{ __('Address List') }}</a>
 										</li>
 										<li>
-											<a href="{{ route('ecommerce.order-list') }}">Daftar Pesanan</a>
+											<a href="{{ route('ecommerce.order-list') }}">{{ __('Order List') }}</a>
 										</li>
 										<li>
-											<a href="{{ route('ecommerce.ticket-list') }}">Ticket List</a>
+											<a href="{{ route('ecommerce.ticket-list') }}">{{ __('Ticket List') }}</a>
 										</li>
 										<li>
 											<form method="POST" action="{{ route('ecommerce.logout') }}" class="d-inline">
 												@csrf
-												<a href="javascript:void(0)" onclick="this.closest('form').submit()">Logout</a>
+												<a href="javascript:void(0)" onclick="this.closest('form').submit()">{{ __('Logout') }}</a>
 											</form>
 										</li>
 									@else
 										<li>
-											<a href="{{ route('ecommerce.login') }}">Login</a>
+											<a href="{{ route('ecommerce.login') }}">{{ __('Login') }}</a>
 										</li>
 										<li>
-											<a href="{{ route('ecommerce.register') }}">Register</a>
+											<a href="{{ route('ecommerce.register') }}">{{ __('Register') }}</a>
 										</li>
 									@endauth
 								</ul>
@@ -594,7 +594,7 @@
 							</div>
 							<div class="col-sm-12 col-lg-2 mn-footer-info">
 								<div class="mn-footer-widget">
-									<h4 class="mn-footer-heading">Category</h4>
+									<h4 class="mn-footer-heading">{{ __('Category') }}</h4>
 									<div class="mn-footer-links mn-footer-dropdown">
 										<ul class="align-items-center">
 											@forelse (($footerCategories ?? collect()) as $footerCategory)
@@ -605,7 +605,7 @@
 												@endif
 											@empty
 												<li class="mn-footer-link">
-													<a href="{{ route('ecommerce.products.index') }}">All Products</a>
+													<a href="{{ route('ecommerce.products.index') }}">{{ __('All Products') }}</a>
 												</li>
 											@endforelse
 										</ul>
@@ -614,26 +614,26 @@
 							</div>
 							<div class="col-sm-12 col-lg-2 mn-footer-account">
 								<div class="mn-footer-widget">
-									<h4 class="mn-footer-heading">Company</h4>
+									<h4 class="mn-footer-heading">{{ __('Company') }}</h4>
 									<div class="mn-footer-links mn-footer-dropdown">
 										<ul class="align-items-center">
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.about-us') }}">About us</a>
+												<a href="{{ route('ecommerce.about-us') }}">{{ __('About us') }}</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.track-order.html') }}">Delivery</a>
+												<a href="{{ route('ecommerce.track-order.html') }}">{{ __('Delivery') }}</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.faq.html') }}">Legal Notice</a>
+												<a href="{{ route('ecommerce.faq.html') }}">{{ __('Legal Notice') }}</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.terms.html') }}">Terms of use</a>
+												<a href="{{ route('ecommerce.terms.html') }}">{{ __('Terms of use') }}</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.checkout.html') }}">Secure payment</a>
+												<a href="{{ route('ecommerce.checkout.html') }}">{{ __('Secure payment') }}</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.contact-us.html') }}">Contact us</a>
+												<a href="{{ route('ecommerce.contact-us.html') }}">{{ __('Contact us') }}</a>
 											</li>
 										</ul>
 									</div>
@@ -641,17 +641,17 @@
 							</div>
 							<div class="col-sm-12 col-lg-2 mn-footer-service">
 								<div class="mn-footer-widget">
-									<h4 class="mn-footer-heading">Account</h4>
+									<h4 class="mn-footer-heading">{{ __('Account') }}</h4>
 									<div class="mn-footer-links mn-footer-dropdown">
 										<ul class="align-items-center">
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.login.html') }}">Sign In</a>
+												<a href="{{ route('ecommerce.login.html') }}">{{ __('Sign In') }}</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.cart.html') }}">View Cart</a>
+												<a href="{{ route('ecommerce.cart.html') }}">{{ __('View Cart') }}</a>
 											</li>
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.faq.html') }}">Return Policy</a>
+												<a href="{{ route('ecommerce.faq.html') }}">{{ __('Return Policy') }}</a>
 											</li>
 											{{-- <li class="mn-footer-link">
 												<a href="{{ route('ecommerce.shop-right-sidebar.html') }}">Become a Vendor</a>
@@ -660,7 +660,7 @@
 												<a href="{{ route('ecommerce.product-detail.html') }}">Affiliate Program</a>
 											</li> --}}
 											<li class="mn-footer-link">
-												<a href="{{ route('ecommerce.checkout.html') }}">Payments</a>
+												<a href="{{ route('ecommerce.checkout.html') }}">{{ __('Payments') }}</a>
 											</li>
 										</ul>
 									</div>
@@ -673,7 +673,7 @@
 							<div class="col-sm-12 col-lg-3 mn-footer-cont-social">
 								<div class="mn-footer-contact">
 									<div class="mn-footer-widget">
-										<h4 class="mn-footer-heading">Contact</h4>
+										<h4 class="mn-footer-heading">{{ __('Contact') }}</h4>
 										<div class="mn-footer-links mn-footer-dropdown">
 											<ul class="align-items-center">
 												@if (!empty($siteContact['address']))
@@ -740,8 +740,8 @@
 							<div class="mn-bottom-info">
 								<div class="footer-copy">
 									<div class="footer-bottom-copy ">
-										<div class="mn-copy">Copyright © <span id="copyright_year"></span>
-											<a class="site-name" href="{{ route('ecommerce.index.html') }}">{{ \App\Models\Setting::getValue('site_title') ?: config('app.name', 'Stisla') }}</a> all rights reserved.
+										<div class="mn-copy">{{ __('Copyright') }} © <span id="copyright_year"></span>
+											<a class="site-name" href="{{ route('ecommerce.index.html') }}">{{ \App\Models\Setting::getValue('site_title') ?: config('app.name', 'Stisla') }}</a> {{ __('all rights reserved.') }}
 										</div>
 									</div>
 								</div>
@@ -838,8 +838,8 @@
 		<div class="modal fade quickview-modal" id="quickview_modal" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
-					<button type="button" class="qty-close" data-bs-dismiss="modal" aria-label="Close"
-						title="Close"></button>
+					<button type="button" class="qty-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"
+						title="{{ __('Close') }}"></button>
 					<div class="modal-body">
 						<div class="row mb-minus-24">
 							<div class="col-md-5 col-sm-12 col-xs-12 mb-24">
@@ -881,19 +881,19 @@
 										<ul>
 											<li class="active">
 												<a href="javascript:void(0)" class="mn-opt-sz"
-													data-tooltip="Small">s</a>
+													data-tooltip="{{ __('Small') }}">s</a>
 											</li>
 											<li>
 												<a href="javascript:void(0)" class="mn-opt-sz"
-													data-tooltip="Medium">m</a>
+													data-tooltip="{{ __('Medium') }}">m</a>
 											</li>
 											<li>
 												<a href="javascript:void(0)" class="mn-opt-sz"
-													data-tooltip="Large">l</a>
+													data-tooltip="{{ __('Large') }}">l</a>
 											</li>
 											<li>
 												<a href="javascript:void(0)" class="mn-opt-sz"
-													data-tooltip="Extra Large">xl</a>
+													data-tooltip="{{ __('Extra Large') }}">xl</a>
 											</li>
 										</ul>
 									</div>
@@ -903,7 +903,7 @@
 										</div>
 										<div class="mn-quickview-cart">
 											<a href="{{ route('ecommerce.cart.html') }}" class="mn-btn-1">
-												<span><i class="ri-shopping-bag-line"></i>Add To Cart</span>
+												<span><i class="ri-shopping-bag-line"></i>{{ __('Add To Cart') }}</span>
 											</a>
 										</div>
 									</div>
@@ -920,14 +920,14 @@
 		<div class="mn-side-search">
 			<div class="mn-search-inner">
 				<div class="mn-search-title">
-					<span class="search_title">Search</span>
+					<span class="search_title">{{ __('Search') }}</span>
 					<a href="javascript:void(0)" class="mn-search-close">
 						<i class="ri-close-line"></i>
 					</a>
 				</div>
 				<div class="mn-search">
 					<form action="{{ route('ecommerce.products.index') }}" method="GET">
-						<input type="text" name="q" placeholder="Search here..." value="{{ request('q') }}">
+						<input type="text" name="q" placeholder="{{ __('Search here...') }}" value="{{ request('q') }}">
 						<a href="javascript:void(0)" onclick="$(this).closest('form').submit();"><i class="ri-search-line"></i></a>
 					</form>
 				</div>
@@ -955,31 +955,31 @@
 									</ul>
 									<span class="search-price">
 										<span>Rp {{ number_format($randProd->final_price, 0, ',', '.') }}</span>
-										<span class="stock">- {{ $randProd->stock > 0 ? $randProd->stock . ' in Stock' : 'Out of Stock' }}</span>
+										<span class="stock">- {{ $randProd->stock > 0 ? $randProd->stock . ' ' . __('in Stock') : __('Out of Stock') }}</span>
 									</span>
 									<a href="javascript:void(0)" class="search-remove-item">×</a>
 								</div>
 							</li>
 						@empty
-							<li class="p-3 text-muted text-center">No products available.</li>
+							<li class="p-3 text-muted text-center">{{ __('No products available.') }}</li>
 						@endforelse
 					</ul>
 				</div>
 				<div class="mn-search-also m-t-15">
 					<div class="mn-search-title d-flex justify-content-between align-items-center">
-						<span class="search_title">Recently searches</span>
+						<span class="search_title">{{ __('Recently searches') }}</span>
 						@php
 							$recentSearches = array_filter((array) session('recent_searches', []));
 						@endphp
 						@if (! empty($recentSearches))
-							<a href="javascript:void(0)" onclick="clearSearchHistory()" id="clear-recent-searches-btn" class="small text-muted" style="font-size: 11px; text-decoration: underline;">Clear</a>
+							<a href="javascript:void(0)" onclick="clearSearchHistory()" id="clear-recent-searches-btn" class="small text-muted" style="font-size: 11px; text-decoration: underline;">{{ __('Clear') }}</a>
 						@endif
 					</div>
 					<ul id="recent-searches-list">
 						@forelse ($recentSearches as $recentTerm)
 							<li><a href="{{ route('ecommerce.products.index', ['q' => $recentTerm]) }}">{{ $recentTerm }}</a></li>
 						@empty
-							<li class="text-muted small">No recent searches</li>
+							<li class="text-muted small">{{ __('No recent searches') }}</li>
 						@endforelse
 					</ul>
 				</div>
@@ -992,7 +992,7 @@
 			<div class="mn-cart-inner">
 				<div class="mn-cart-top">
 					<div class="mn-cart-title">
-						<span class="cart_title">My Cart</span>
+						<span class="cart_title">{{ __('My Cart') }}</span>
 						<a href="javascript:void(0)" class="mn-cart-close">
 							<i class="ri-close-line"></i>
 						</a>
@@ -1000,8 +1000,8 @@
 					<ul class="mn-cart-pro-items">
 						@if (!auth()->check())
 							<li class="p-4 text-center text-muted">
-								<p class="mb-2">Silakan login untuk mengakses keranjang Anda.</p>
-								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white">Login Sekarang</a>
+								<p class="mb-2">{{ __('Please login to access your cart.') }}</p>
+								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white">{{ __('Login Now') }}</a>
 							</li>
 						@else
 							@include('ecommerce.partials.cart-sidebar-items', ['cartItems' => $layoutCart ?? []])
@@ -1013,19 +1013,19 @@
 						<table class="table cart-table">
 							<tbody>
 								<tr>
-									<td class="text-left">Sub-Total :</td>
+									<td class="text-left">{{ __('Sub-Total') }} :</td>
 									<td class="text-right cart-subtotal-val">Rp {{ number_format($layoutCartSubtotal ?? 0, 0, ',', '.') }}</td>
 								</tr>
 								<tr>
-									<td class="text-left">Total :</td>
+									<td class="text-left">{{ __('Total') }} :</td>
 									<td class="text-right primary-color cart-total-val">Rp {{ number_format($layoutCartSubtotal ?? 0, 0, ',', '.') }}</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					<div class="cart_btn">
-						<a href="{{ route('ecommerce.cart') }}" class="mn-btn-1"><span>Cart<i class="ri-arrow-right-s-line"></i></span></a>
-						<a href="{{ route('ecommerce.checkout') }}" class="mn-btn-2"><span>Checkout<i
+						<a href="{{ route('ecommerce.cart') }}" class="mn-btn-1"><span>{{ __('Cart') }}<i class="ri-arrow-right-s-line"></i></span></a>
+						<a href="{{ route('ecommerce.checkout') }}" class="mn-btn-2"><span>{{ __('Checkout') }}<i
 									class="ri-arrow-right-s-line"></i></span></a>
 					</div>
 				</div>
@@ -1038,7 +1038,7 @@
 			<div class="mn-wishlist-inner">
 				<div class="mn-wishlist-top">
 					<div class="mn-wishlist-title">
-						<span class="wishlist_title">My Wishlist</span>
+						<span class="wishlist_title">{{ __('My Wishlist') }}</span>
 						<a href="javascript:void(0)" class="mn-wishlist-close">
 							<i class="ri-close-line"></i>
 						</a>
@@ -1046,8 +1046,8 @@
 					<ul class="mn-wishlist-pro-items">
 						@if (!auth()->check())
 							<li class="p-4 text-center text-muted">
-								<p class="mb-2">Silakan login untuk mengakses wishlist Anda.</p>
-								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white">Login Sekarang</a>
+								<p class="mb-2">{{ __('Please login to access your wishlist.') }}</p>
+								<a href="{{ route('ecommerce.login') }}" class="btn btn-sm btn-primary text-white">{{ __('Login Now') }}</a>
 							</li>
 						@else
 							@include('ecommerce.partials.wishlist-sidebar-items', ['wishlistProducts' => $layoutWishlistProducts ?? collect()])
@@ -1056,7 +1056,7 @@
 				</div>
 				<div class="mn-wishlist-bottom">
 					<div class="wishlist_btn">
-						<a href="{{ route('ecommerce.wishlist') }}" class="mn-btn-1"><span>View Wishlist<i
+						<a href="{{ route('ecommerce.wishlist') }}" class="mn-btn-1"><span>{{ __('View Wishlist') }}<i
 									class="ri-arrow-right-s-line"></i></span></a>
 					</div>
 				</div>
@@ -1081,7 +1081,7 @@
 			}).then(function() {
 				var list = document.getElementById('recent-searches-list');
 				if (list) {
-					list.innerHTML = '<li class="text-muted small">No recent searches</li>';
+					list.innerHTML = '<li class="text-muted small">{{ __("No recent searches") }}</li>';
 				}
 				var btn = document.getElementById('clear-recent-searches-btn');
 				if (btn) {

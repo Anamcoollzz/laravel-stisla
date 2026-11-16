@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Checkout - Ecommerce')
+@section('title', __('Checkout - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -33,13 +33,13 @@
 			<div class="col-12">
 				<div class="row gi_breadcrumb_inner">
 					<div class="col-md-6 col-sm-12">
-						<h2 class="mn-breadcrumb-title">Checkout</h2>
+						<h2 class="mn-breadcrumb-title">{{ __('Checkout') }}</h2>
 					</div>
 					<div class="col-md-6 col-sm-12">
 						<ul class="mn-breadcrumb-list">
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.cart') }}">Keranjang</a></li>
-							<li class="mn-breadcrumb-item active">Checkout</li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.cart') }}">{{ __('Cart') }}</a></li>
+							<li class="mn-breadcrumb-item active">{{ __('Checkout') }}</li>
 						</ul>
 					</div>
 				</div>
@@ -75,19 +75,19 @@
 							@guest
 							<div class="mn-checkout-wrap m-b-30">
 								<div class="mn-checkout-block mn-check-new">
-									<h3 class="mn-checkout-title">Pelanggan Baru</h3>
+									<h3 class="mn-checkout-title">{{ __('New Customer') }}</h3>
 									<div class="mn-check-block-content">
-										<p class="text-muted small">Buat akun untuk mempermudah melacak pesanan dan belanja lebih cepat.</p>
+										<p class="text-muted small">{{ __('Create an account to easily track orders and shop faster.') }}</p>
 										<div class="mn-new-btn">
-											<a href="{{ route('ecommerce.register') }}" class="mn-btn-2"><span>Daftar Akun</span></a>
+											<a href="{{ route('ecommerce.register') }}" class="mn-btn-2"><span>{{ __('Register Account') }}</span></a>
 										</div>
 									</div>
 								</div>
 								<div class="mn-checkout-block mn-check-login mt-3">
-									<h3 class="mn-checkout-title">Sudah Punya Akun?</h3>
+									<h3 class="mn-checkout-title">{{ __('Already Have an Account?') }}</h3>
 									<div class="mn-check-login-form">
 										<div class="mn-check-login-wrap mn-check-login-btn">
-											<a href="{{ route('ecommerce.login') }}" class="mn-btn-2"><span>Login Sekarang</span></a>
+											<a href="{{ route('ecommerce.login') }}" class="mn-btn-2"><span>{{ __('Login Now') }}</span></a>
 										</div>
 									</div>
 								</div>
@@ -99,10 +99,10 @@
 								<div class="mn-checkout-block mn-check-bill">
 									<div class="d-flex justify-content-between align-items-center mb-3">
 										<h3 class="mn-checkout-title mb-0" style="font-size: 18px;">
-											<i class="ri-map-pin-user-line me-1 text-primary"></i> 1. Alamat Pengiriman
+											<i class="ri-map-pin-user-line me-1 text-primary"></i> 1. {{ __('Shipping Address') }}
 										</h3>
 										<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-outline-primary" style="border-radius: 6px; font-size: 13px;">
-											<i class="ri-map-pin-line me-1"></i> Kelola Alamat
+											<i class="ri-map-pin-line me-1"></i> {{ __('Manage Addresses') }}
 										</a>
 									</div>
 									<div class="mn-bl-block-content">
@@ -112,11 +112,11 @@
 													<div class="d-flex align-items-center gap-2">
 														<span class="badge bg-light text-dark border px-2 py-1 fw-bold" style="font-size: 11px;">{{ $defaultAddress->label }}</span>
 														<span class="badge bg-success px-2 py-1" style="font-size: 11px;">
-															<i class="ri-check-line me-1"></i> Alamat Utama
+															<i class="ri-check-line me-1"></i> {{ __('Primary Address') }}
 														</span>
 													</div>
 													<a href="{{ route('ecommerce.address-list') }}" class="text-primary small fw-semibold">
-														<i class="ri-arrow-left-right-line me-1"></i> Ganti Alamat Lain
+														<i class="ri-arrow-left-right-line me-1"></i> {{ __('Change Another Address') }}
 													</a>
 												</div>
 												<h5 class="fw-bold mb-1" style="font-size: 15px;">{{ $defaultAddress->recipient_name }}</h5>
@@ -132,20 +132,20 @@
 												@endif
 												@if ($defaultAddress->notes)
 													<p class="text-secondary small mb-0 fst-italic">
-														<strong>Catatan:</strong> {{ $defaultAddress->notes }}
+														<strong>{{ __('Notes:') }}</strong> {{ $defaultAddress->notes }}
 													</p>
 												@endif
 											</div>
 										@elseif (isset($addresses) && $addresses->isNotEmpty())
 											<div class="alert alert-warning p-3 mb-0" style="border-radius: 8px;">
-												<p class="mb-2">Anda belum memilih alamat pengiriman utama.</p>
-												<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-primary">Pilih Alamat Utama</a>
+												<p class="mb-2">{{ __('You have not selected a primary shipping address yet.') }}</p>
+												<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-primary">{{ __('Select Primary Address') }}</a>
 											</div>
 										@else
 											<div class="alert alert-warning p-3 mb-0" style="border-radius: 8px;">
-												<p class="mb-2">Anda belum memiliki alamat pengiriman tersimpan.</p>
+												<p class="mb-2">{{ __('You do not have any saved shipping addresses yet.') }}</p>
 												<a href="{{ route('ecommerce.address-list') }}" class="btn btn-sm btn-primary">
-													<i class="ri-add-line me-1"></i> Tambah Alamat Sekarang
+													<i class="ri-add-line me-1"></i> {{ __('Add Address Now') }}
 												</a>
 											</div>
 										@endif
@@ -158,12 +158,12 @@
 								<div class="mn-checkout-block">
 									<div class="d-flex justify-content-between align-items-center mb-3">
 										<h3 class="mn-checkout-title mb-0" style="font-size: 18px;">
-											<i class="ri-truck-line me-1 text-primary"></i> 2. Metode Pengiriman
+											<i class="ri-truck-line me-1 text-primary"></i> 2. {{ __('Shipping Method') }}
 										</h3>
-										<span class="text-muted small">Pilih kurir / ekspedisi</span>
+										<span class="text-muted small">{{ __('Select courier / expedition') }}</span>
 									</div>
 									<div class="mn-check-block-content">
-										<p class="text-muted small mb-3">Pilih opsi pengiriman yang diinginkan untuk pesanan Anda:</p>
+										<p class="text-muted small mb-3">{{ __('Choose your preferred shipping option for your order:') }}</p>
 										<div class="row g-3">
 											@forelse ($shippingMethods as $shipMethod)
 												<div class="col-md-6">
@@ -179,14 +179,14 @@
 																</div>
 																<div class="mb-1">
 																	@if ($shipMethod->cost <= 0)
-																		<span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" style="font-size: 12px;">Gratis Ongkir</span>
+																		<span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" style="font-size: 12px;">{{ __('Free Shipping') }}</span>
 																	@else
 																		<span class="text-primary fw-bold" style="font-size: 14px;">Rp {{ number_format($shipMethod->cost, 0, ',', '.') }}</span>
 																	@endif
 																</div>
 																@if ($shipMethod->estimated_delivery)
 																	<div class="text-muted small">
-																		<i class="ri-time-line me-1"></i>Estimasi: {{ $shipMethod->estimated_delivery }}
+																		<i class="ri-time-line me-1"></i>{{ __('Estimate') }}: {{ $shipMethod->estimated_delivery }}
 																	</div>
 																@endif
 																@if ($shipMethod->description)
@@ -199,7 +199,7 @@
 											@empty
 												<div class="col-12">
 													<div class="alert alert-warning py-3 mb-0" style="border-radius: 8px;">
-														<i class="ri-information-line me-1"></i> Belum ada metode pengiriman yang aktif saat ini.
+														<i class="ri-information-line me-1"></i> {{ __('No active shipping methods available at the moment.') }}
 													</div>
 												</div>
 											@endforelse
@@ -213,12 +213,12 @@
 								<div class="mn-checkout-block">
 									<div class="d-flex justify-content-between align-items-center mb-3">
 										<h3 class="mn-checkout-title mb-0" style="font-size: 18px;">
-											<i class="ri-bank-card-line me-1 text-primary"></i> 3. Metode Pembayaran
+											<i class="ri-bank-card-line me-1 text-primary"></i> 3. {{ __('Payment Method') }}
 										</h3>
-										<span class="text-muted small">Pilih cara bayar</span>
+										<span class="text-muted small">{{ __('Select payment option') }}</span>
 									</div>
 									<div class="mn-check-block-content">
-										<p class="text-muted small mb-3">Pilih metode pembayaran yang paling nyaman untuk Anda:</p>
+										<p class="text-muted small mb-3">{{ __('Choose the most convenient payment method for you:') }}</p>
 										<div class="row g-3 mb-3">
 											@forelse ($paymentMethods as $payMethod)
 												<div class="col-md-6">
@@ -235,10 +235,10 @@
 																<div class="mb-1">
 																	@if ($payMethod->fee > 0)
 																		<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 11px;">
-																			+Biaya Rp {{ number_format($payMethod->fee, 0, ',', '.') }}
+																			+{{ __('Fee') }} Rp {{ number_format($payMethod->fee, 0, ',', '.') }}
 																		</span>
 																	@else
-																		<span class="badge bg-light text-muted border" style="font-size: 11px;">Bebas Biaya</span>
+																		<span class="badge bg-light text-muted border" style="font-size: 11px;">{{ __('No Fee') }}</span>
 																	@endif
 																</div>
 																@if ($payMethod->description)
@@ -257,7 +257,7 @@
 											@empty
 												<div class="col-12">
 													<div class="alert alert-warning py-3 mb-0" style="border-radius: 8px;">
-														<i class="ri-information-line me-1"></i> Belum ada metode pembayaran yang aktif saat ini.
+														<i class="ri-information-line me-1"></i> {{ __('No active payment methods available at the moment.') }}
 													</div>
 												</div>
 											@endforelse
@@ -267,11 +267,11 @@
 										<div id="bankAccountsSection" class="p-3 border rounded-3 mb-3 bg-light" style="display: none;">
 											<div class="d-flex align-items-center justify-content-between mb-2">
 												<h5 class="fw-bold mb-0 text-dark" style="font-size: 14px;">
-													<i class="ri-bank-line me-1 text-primary"></i> Rekening Tujuan Transfer
+													<i class="ri-bank-line me-1 text-primary"></i> {{ __('Transfer Destination Account') }}
 												</h5>
-												<span class="badge bg-primary text-white" style="font-size: 11px;">Transfer Manual</span>
+												<span class="badge bg-primary text-white" style="font-size: 11px;">{{ __('Manual Transfer') }}</span>
 											</div>
-											<p class="text-muted small mb-3" style="font-size: 12px;">Silakan pilih salah satu rekening tujuan transfer berikut:</p>
+											<p class="text-muted small mb-3" style="font-size: 12px;">{{ __('Please select one of the following destination bank accounts:') }}</p>
 											<div class="row g-2">
 												@forelse ($paymentBanks as $bank)
 													<div class="col-12">
@@ -287,12 +287,12 @@
 																	<div class="fw-bold text-dark" style="font-size: 14px;">{{ $bank->bank_name }}</div>
 																	<div class="d-flex align-items-center gap-2 mt-1">
 																		<span class="font-monospace fw-bold text-primary" style="font-size: 14px;" id="accNum_{{ $bank->id }}">{{ $bank->account_number }}</span>
-																		<button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 btn-copy-acc" data-account="{{ $bank->account_number }}" style="font-size: 11px; border-radius: 4px;" title="Salin Nomor Rekening">
-																			<i class="ri-file-copy-line"></i> Salin
+																		<button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 btn-copy-acc" data-account="{{ $bank->account_number }}" style="font-size: 11px; border-radius: 4px;" title="{{ __('Copy Account Number') }}">
+																			<i class="ri-file-copy-line"></i> {{ __('Copy') }}
 																		</button>
 																	</div>
 																	<div class="text-muted small" style="font-size: 12px;">
-																		a.n. <strong>{{ $bank->account_name }}</strong> {{ $bank->branch ? '('.$bank->branch.')' : '' }}
+																		{{ __('a.n.') }} <strong>{{ $bank->account_name }}</strong> {{ $bank->branch ? '('.$bank->branch.')' : '' }}
 																	</div>
 																</div>
 															</div>
@@ -307,15 +307,15 @@
 													</div>
 												@empty
 													<div class="col-12">
-														<p class="text-muted small mb-0">Belum ada daftar rekening bank yang aktif.</p>
+														<p class="text-muted small mb-0">{{ __('No active bank accounts available.') }}</p>
 													</div>
 												@endforelse
 											</div>
 										</div>
 
 										<div class="mb-2">
-											<label class="form-label fw-bold small text-muted">Catatan untuk Penjual / Kurir (Opsional)</label>
-											<textarea name="notes" class="form-control" rows="2" placeholder="Contoh: Titipkan di pos satpam atau hubungi sebelum antar..." style="border-radius: 8px; font-size: 14px;"></textarea>
+											<label class="form-label fw-bold small text-muted">{{ __('Notes for Seller / Courier (Optional)') }}</label>
+											<textarea name="notes" class="form-control" rows="2" placeholder="{{ __('e.g. Leave at security post or call before delivery...') }}" style="border-radius: 8px; font-size: 14px;"></textarea>
 										</div>
 									</div>
 								</div>
@@ -329,7 +329,7 @@
 					<div class="mn-sidebar-wrap sticky-top" style="top: 24px; z-index: 10;">
 						<div class="card border shadow-sm p-4" style="border-radius: 12px; background: #fff;">
 							<div class="border-bottom pb-2 mb-3">
-								<h4 class="fw-bold m-0" style="font-size: 18px;">Ringkasan Pesanan</h4>
+								<h4 class="fw-bold m-0" style="font-size: 18px;">{{ __('Order Summary') }}</h4>
 							</div>
 
 							<!-- Products List in Cart -->
@@ -348,36 +348,36 @@
 										</div>
 									</div>
 								@empty
-									<p class="text-muted small py-2 mb-0">Tidak ada produk di keranjang belanja.</p>
+									<p class="text-muted small py-2 mb-0">{{ __('No products in your shopping cart.') }}</p>
 								@endforelse
 							</div>
 
 							<!-- Summary Breakdown -->
 							<div class="py-2 border-bottom mb-3">
 								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
-									<span class="text-muted">Subtotal Produk</span>
+									<span class="text-muted">{{ __('Product Subtotal') }}</span>
 									<span class="fw-semibold">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 								</div>
 								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
-									<span class="text-muted">Biaya Pengiriman</span>
+									<span class="text-muted">{{ __('Shipping Cost') }}</span>
 									<span class="fw-semibold text-primary" id="summaryShippingCost">Rp 0</span>
 								</div>
 								<div class="d-flex justify-content-between mb-2" id="summaryFeeRow" style="font-size: 14px; display: none;">
-									<span class="text-muted">Biaya Layanan</span>
+									<span class="text-muted">{{ __('Service Fee') }}</span>
 									<span class="fw-semibold text-dark" id="summaryPaymentFee">Rp 0</span>
 								</div>
 								<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
-									<span class="text-muted">Kupon Diskon</span>
-									<a href="javascript:void(0)" class="text-primary small" onclick="$('#couponCollapse').slideToggle();">Gunakan Kupon</a>
+									<span class="text-muted">{{ __('Discount Coupon') }}</span>
+									<a href="javascript:void(0)" class="text-primary small" onclick="$('#couponCollapse').slideToggle();">{{ __('Use Coupon') }}</a>
 								</div>
 								<div id="couponCollapse" style="display: none;" class="mb-2">
 									<div class="input-group input-group-sm">
-										<input type="text" class="form-control" placeholder="Kode Kupon" name="coupon_code">
-										<button class="btn btn-outline-dark" type="button">Terapkan</button>
+										<input type="text" class="form-control" placeholder="{{ __('Coupon Code') }}" name="coupon_code">
+										<button class="btn btn-outline-dark" type="button">{{ __('Apply') }}</button>
 									</div>
 								</div>
 								<div class="d-flex justify-content-between pt-2 border-top mt-2">
-									<span class="fw-bold text-dark" style="font-size: 15px;">Total Pembayaran</span>
+									<span class="fw-bold text-dark" style="font-size: 15px;">{{ __('Total Payment') }}</span>
 									<span class="fw-bold text-primary" style="font-size: 18px;" id="summaryTotal">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
 								</div>
 							</div>
@@ -386,23 +386,23 @@
 							<div class="form-check mb-3">
 								<input class="form-check-input" type="checkbox" id="termsAgree" required checked>
 								<label class="form-check-label text-muted small" for="termsAgree" style="font-size: 12px; line-height: 1.4;">
-									Saya telah membaca dan menyetujui <a href="{{ route('ecommerce.terms.html') }}" target="_blank" class="text-primary">Syarat & Ketentuan</a> yang berlaku.
+									{!! __('I have read and agree to the applicable :terms.', ['terms' => '<a href="' . route('ecommerce.terms.html') . '" target="_blank" class="text-primary">' . __('Terms & Conditions') . '</a>']) !!}
 								</label>
 							</div>
 
 							<!-- PLACE ORDER BUTTON (PALING BAWAH KANAN) -->
 							<div class="mn-checkout-order-btn">
 								<button type="button" id="btnPlaceOrder" class="mn-btn-1 btn w-100 py-3 text-center shadow" style="border-radius: 8px; font-size: 16px; font-weight: bold;" onclick="handlePlaceOrder()">
-									<span><i class="ri-shopping-cart-2-line me-1"></i> Place Order</span>
+									<span><i class="ri-shopping-cart-2-line me-1"></i> {{ __('Place Order') }}</span>
 								</button>
 							</div>
 
 							<!-- Trust & Security Badges -->
 							<div class="text-center pt-3 mt-3 border-top">
 								<small class="text-muted d-block mb-2" style="font-size: 11px;">
-									<i class="ri-shield-check-line text-success me-1"></i> Pembayaran Aman & Terenkripsi
+									<i class="ri-shield-check-line text-success me-1"></i> {{ __('Secure & Encrypted Payment') }}
 								</small>
-								<img src="{{ asset('mantu/assets/img/footer/payment.png') }}" alt="Pembayaran Aman" style="max-height: 22px; filter: grayscale(15%);">
+								<img src="{{ asset('mantu/assets/img/footer/payment.png') }}" alt="{{ __('Secure Payment') }}" style="max-height: 22px; filter: grayscale(15%);">
 							</div>
 						</div>
 					</div>
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		const shippingCostEl = document.getElementById('summaryShippingCost');
 		if (shippingCostEl) {
 			if (shippingCost <= 0) {
-				shippingCostEl.innerHTML = '<span class="text-success fw-bold">Gratis</span>';
+				shippingCostEl.innerHTML = '<span class="text-success fw-bold">' + @json(__('Free')) + '</span>';
 			} else {
 				shippingCostEl.textContent = formatRupiah(shippingCost);
 			}
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 
 			const originalHtml = this.innerHTML;
-			this.innerHTML = '<i class="ri-check-line text-success"></i> Tersalin!';
+			this.innerHTML = '<i class="ri-check-line text-success"></i> ' + @json(__('Copied!'));
 			this.classList.add('btn-success', 'text-white');
 			this.classList.remove('btn-outline-secondary');
 			const self = this;
@@ -578,13 +578,13 @@ document.addEventListener('DOMContentLoaded', function () {
 function handlePlaceOrder() {
 	const terms = document.getElementById('termsAgree');
 	if (terms && !terms.checked) {
-		alert('Silakan setujui Syarat & Ketentuan terlebih dahulu.');
+		alert(@json(__('Please agree to the Terms & Conditions first.')));
 		return;
 	}
 
 	const addressId = document.getElementById('selectedAddressId');
 	if (!addressId || !addressId.value) {
-		alert('Alamat pengiriman belum tersedia. Silakan tambahkan alamat pengiriman terlebih dahulu.');
+		alert(@json(__('Shipping address is not available yet. Please add a shipping address first.')));
 		window.location.href = "{{ route('ecommerce.address-list') }}";
 		return;
 	}
@@ -593,19 +593,19 @@ function handlePlaceOrder() {
 	const selectedPayment = document.querySelector('input[name="payment_method_id"]:checked');
 
 	if (!selectedShipping) {
-		alert('Silakan pilih metode pengiriman terlebih dahulu.');
+		alert(@json(__('Please select a shipping method first.')));
 		return;
 	}
 
 	if (!selectedPayment) {
-		alert('Silakan pilih metode pembayaran terlebih dahulu.');
+		alert(@json(__('Please select a payment method first.')));
 		return;
 	}
 
 	const submitBtn = document.getElementById('btnPlaceOrder');
 	if (submitBtn) {
 		submitBtn.disabled = true;
-		submitBtn.innerHTML = '<span><i class="ri-loader-4-line ri-spin me-1"></i> Memproses Pesanan...</span>';
+		submitBtn.innerHTML = '<span><i class="ri-loader-4-line ri-spin me-1"></i> ' + @json(__('Processing Order...')) + '</span>';
 	}
 
 	document.getElementById('checkoutForm').submit();

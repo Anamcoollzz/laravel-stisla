@@ -39,17 +39,17 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">{{ $currentCategory ? $currentCategory->name : 'Shop Page' }}</h2>
+								<h2 class="mn-breadcrumb-title">{{ $currentCategory ? $currentCategory->name : __('Shop Page') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
 									@if ($currentCategory)
-										<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.products.index') }}">Shop Page</a></li>
+										<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.products.index') }}">{{ __('Shop Page') }}</a></li>
 										<li class="mn-breadcrumb-item active">{{ $currentCategory->name }}</li>
 									@else
-										<li class="mn-breadcrumb-item active">Shop Page</li>
+										<li class="mn-breadcrumb-item active">{{ __('Shop Page') }}</li>
 									@endif
 								</ul>
 								<!-- mn-breadcrumb-list end -->
@@ -79,11 +79,11 @@
 									<div class="col-md-6 mn-sort-select">
 										<div class="mn-select-inner">
 											<select name="mn-select" id="mn-select" onchange="const u = new URL(window.location.href); u.searchParams.set('sort', this.value); u.searchParams.delete('page'); window.location.href = u.toString();">
-												<option {{ empty($sort) || $sort === 'latest' ? 'selected' : '' }} value="latest">Sort by: Latest</option>
-												<option {{ $sort === 'name_asc' ? 'selected' : '' }} value="name_asc">Name, A to Z</option>
-												<option {{ $sort === 'name_desc' ? 'selected' : '' }} value="name_desc">Name, Z to A</option>
-												<option {{ $sort === 'price_low' ? 'selected' : '' }} value="price_low">Price, low to high</option>
-												<option {{ $sort === 'price_high' ? 'selected' : '' }} value="price_high">Price, high to low</option>
+												<option {{ empty($sort) || $sort === 'latest' ? 'selected' : '' }} value="latest">{{ __('Sort by: Latest') }}</option>
+												<option {{ $sort === 'name_asc' ? 'selected' : '' }} value="name_asc">{{ __('Name, A to Z') }}</option>
+												<option {{ $sort === 'name_desc' ? 'selected' : '' }} value="name_desc">{{ __('Name, Z to A') }}</option>
+												<option {{ $sort === 'price_low' ? 'selected' : '' }} value="price_low">{{ __('Price, low to high') }}</option>
+												<option {{ $sort === 'price_high' ? 'selected' : '' }} value="price_high">{{ __('Price, high to low') }}</option>
 											</select>
 										</div>
 									</div>
@@ -94,10 +94,10 @@
 								@if (request()->hasAny(['category', 'brand', 'size', 'color', 'q']))
 									<div class="mn-select-bar d-flex">
 										@if ($currentCategory)
-											<span class="mn-select-btn">Category: {{ $currentCategory->name }}<a class="mn-select-cancel"
+											<span class="mn-select-btn">{{ __('Category') }}: {{ $currentCategory->name }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['category', 'page']) }}">×</a></span>
 										@elseif (request('category'))
-											<span class="mn-select-btn">Category: {{ ucfirst(request('category')) }}<a class="mn-select-cancel"
+											<span class="mn-select-btn">{{ __('Category') }}: {{ ucfirst(request('category')) }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['category', 'page']) }}">×</a></span>
 										@endif
 
@@ -105,7 +105,7 @@
 											@php
 												$activeBrand = $brands->firstWhere('slug', request('brand')) ?? (is_numeric(request('brand')) ? $brands->firstWhere('id', (int) request('brand')) : null);
 											@endphp
-											<span class="mn-select-btn">Brand: {{ $activeBrand?->name ?? request('brand') }}<a class="mn-select-cancel"
+											<span class="mn-select-btn">{{ __('Brand') }}: {{ $activeBrand?->name ?? request('brand') }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['brand', 'page']) }}">×</a></span>
 										@endif
 
@@ -113,7 +113,7 @@
 											@php
 												$activeSize = (is_numeric(request('size')) ? $sizes->firstWhere('id', (int) request('size')) : null) ?? $sizes->firstWhere('code', request('size')) ?? $sizes->firstWhere('name', request('size'));
 											@endphp
-											<span class="mn-select-btn">Size: {{ strtoupper($activeSize?->code ?: $activeSize?->name ?: request('size')) }}<a class="mn-select-cancel"
+											<span class="mn-select-btn">{{ __('Size') }}: {{ strtoupper($activeSize?->code ?: $activeSize?->name ?: request('size')) }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['size', 'page']) }}">×</a></span>
 										@endif
 
@@ -121,17 +121,17 @@
 											@php
 												$activeColor = (is_numeric(request('color')) ? $colors->firstWhere('id', (int) request('color')) : null) ?? $colors->firstWhere('name', request('color'));
 											@endphp
-											<span class="mn-select-btn">Color: {{ $activeColor?->name ?? request('color') }}<a class="mn-select-cancel"
+											<span class="mn-select-btn">{{ __('Color') }}: {{ $activeColor?->name ?? request('color') }}<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['color', 'page']) }}">×</a></span>
 										@endif
 
 										@if (request('q'))
-											<span class="mn-select-btn">Keyword: "{{ request('q') }}"<a class="mn-select-cancel"
+											<span class="mn-select-btn">{{ __('Keyword') }}: "{{ request('q') }}"<a class="mn-select-cancel"
 													href="{{ request()->fullUrlWithoutQuery(['q', 'page']) }}">×</a></span>
 										@endif
 
 										<span class="mn-select-btn mn-select-btn-clear"><a class="mn-select-clear"
-												href="{{ route('ecommerce.products.index') }}">Clear All</a></span>
+												href="{{ route('ecommerce.products.index') }}">{{ __('Clear All') }}</a></span>
 									</div>
 								@endif
 								<!-- Select Bar End -->
@@ -147,19 +147,19 @@
 														<div class="mn-product-img">
 															@if ($product->is_trending)
 																<div class="lbl">
-																	<span class="trending">trending</span>
+																	<span class="trending">{{ __('trending') }}</span>
 																</div>
 															@elseif ($product->is_new)
 																<div class="lbl">
-																	<span class="new">new</span>
+																	<span class="new">{{ __('new') }}</span>
 																</div>
 															@elseif ($product->is_sale)
 																<div class="lbl">
-																	<span class="sale">sale</span>
+																	<span class="sale">{{ __('sale') }}</span>
 																</div>
 															@elseif ($product->discount_percent > 0)
 																<div class="lbl">
-																	<span class="discount">{{ (int) $product->discount_percent }}% off</span>
+																	<span class="discount">{{ (int) $product->discount_percent }}% {{ __('off') }}</span>
 																</div>
 															@endif
 															<div class="mn-img">
@@ -173,13 +173,13 @@
 																<div class="mn-options">
 																	<ul>
 																		<li><a href="{{ route('ecommerce.products.detail', $product->slug) }}" data-tooltip
-																				title="Quick View"><i
+																				title="{{ __('Quick View') }}"><i
 																					class="ri-eye-line"></i></a></li>
 																		<li><a href="javascript:void(0)" data-tooltip
-																				title="Compare" class="mn-compare" data-product-id="{{ $product->id }}"><i
+																				title="{{ __('Compare') }}" class="mn-compare" data-product-id="{{ $product->id }}"><i
 																					class="ri-repeat-line"></i></a></li>
 																		<li><a href="javascript:void(0)" data-tooltip
-																				title="Add To Cart" class="mn-add-cart" data-product-id="{{ $product->id }}"><i
+																				title="{{ __('Add To Cart') }}" class="mn-add-cart" data-product-id="{{ $product->id }}"><i
 																					class="ri-shopping-cart-line"></i></a>
 																		</li>
 																	</ul>
@@ -191,7 +191,7 @@
 																@if ($product->category)
 																	<a href="{{ route('ecommerce.products.index', ['category' => $product->category->slug]) }}">{{ $product->category->name }}</a>
 																@else
-																	<a href="{{ route('ecommerce.products.index') }}">Product</a>
+																	<a href="{{ route('ecommerce.products.index') }}">{{ __('Product') }}</a>
 																@endif
 																@if ($product->size)
 																	<ul>
@@ -228,7 +228,7 @@
 																	data-product-id="{{ $product->id }}"
 																	data-url="{{ route('ecommerce.wishlist.toggle', $product->id) }}"
 																	data-tooltip
-																	title="{{ $isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+																	title="{{ $isWishlisted ? __('Remove from Wishlist') : __('Add to Wishlist') }}">
 																	<i class="{{ $isWishlisted ? 'ri-heart-fill' : 'ri-heart-line' }}"></i>
 																</a>
 															</div>
@@ -240,10 +240,10 @@
 													<div class="m-b-15">
 														<i class="ri-shopping-bag-3-line" style="font-size: 54px; color: #adb5bd;"></i>
 													</div>
-													<h4>No products found</h4>
-													<p class="text-muted">No products match your selected category or filters.</p>
+													<h4>{{ __('No products found') }}</h4>
+													<p class="text-muted">{{ __('No products match your selected category or filters.') }}</p>
 													<div class="m-t-15">
-														<a href="{{ route('ecommerce.products.index') }}" class="btn btn-primary btn-sm">View All Products</a>
+														<a href="{{ route('ecommerce.products.index') }}" class="btn btn-primary btn-sm">{{ __('View All Products') }}</a>
 													</div>
 												</div>
 											@endforelse
@@ -251,7 +251,7 @@
 									</div>
 									<!-- Pagination Start -->
 									<div class="mn-pro-pagination m-b-15">
-										<span>Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }} item(s)</span>
+										<span>{{ __('Showing :from-:to of :total item(s)', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
 										@if ($products->hasPages())
 											<ul class="mn-pro-pagination-inner">
 												@if ($products->onFirstPage())
@@ -269,11 +269,11 @@
 												@endforeach
 
 												@if ($products->hasMorePages())
-													<li><a class="next" href="{{ $products->nextPageUrl() }}">Next <i
+													<li><a class="next" href="{{ $products->nextPageUrl() }}">{{ __('Next') }} <i
 																class="ri-arrow-right-double-line"></i></a>
 													</li>
 												@else
-													<li class="disabled"><span>Next <i class="ri-arrow-right-double-line"></i></span></li>
+													<li class="disabled"><span>{{ __('Next') }} <i class="ri-arrow-right-double-line"></i></span></li>
 												@endif
 											</ul>
 										@endif
@@ -290,13 +290,13 @@
 										<!-- Sidebar Filters Block -->
 										<div class="mn-sidebar-block drop">
 											<div class="mn-sb-title">
-												<h3 class="mn-sidebar-title">Filters</h3>
+												<h3 class="mn-sidebar-title">{{ __('Filters') }}</h3>
 											</div>
 											<div class="mn-sb-block-content p-t-15">
 												<ul>
 													<li>
 														<a href="{{ route('ecommerce.products.index') }}"
-															class="mn-sidebar-block-item main {{ !$currentCategory ? 'active' : '' }}">All Categories<span>-{{ \App\Models\Product::active()->count() }}</span></a>
+															class="mn-sidebar-block-item main {{ !$currentCategory ? 'active' : '' }}">{{ __('All Categories') }}<span>-{{ \App\Models\Product::active()->count() }}</span></a>
 													</li>
 												</ul>
 											</div>
@@ -314,7 +314,7 @@
 																	<li>
 																		<div class="mn-sidebar-sub-item">
 																			<a href="{{ route('ecommerce.products.index', ['category' => $cat->slug]) }}"
-																				class="{{ $currentCategory?->id === $cat->id ? 'active' : '' }}">All {{ $cat->name }}
+																				class="{{ $currentCategory?->id === $cat->id ? 'active' : '' }}">{{ __('All') }} {{ $cat->name }}
 																				<span>-{{ $cat->products_count }}</span>
 																			</a>
 																		</div>
@@ -343,7 +343,7 @@
 										@if ($brands->isNotEmpty())
 											<div class="mn-sidebar-block">
 												<div class="mn-sb-title">
-													<h3 class="mn-sidebar-title">Brand</h3>
+													<h3 class="mn-sidebar-title">{{ __('Brand') }}</h3>
 												</div>
 												<div class="mn-sb-block-content">
 													<ul>
@@ -370,7 +370,7 @@
 										@if ($sizes->isNotEmpty())
 											<div class="mn-sidebar-block">
 												<div class="mn-sb-title">
-													<h3 class="mn-sidebar-title">Size</h3>
+													<h3 class="mn-sidebar-title">{{ __('Size') }}</h3>
 												</div>
 												<div class="mn-sb-block-content">
 													<ul>
@@ -382,7 +382,7 @@
 															<li>
 																<div class="mn-sidebar-block-item">
 																	<input type="checkbox" value="{{ $size->id }}" {{ $isSizeActive ? 'checked' : '' }} onchange="window.location.href='{{ $sizeUrl }}'">
-																	<a href="{{ $sizeUrl }}">{{ strtoupper($size->code ?: $size->name) }} - Size</a>
+																	<a href="{{ $sizeUrl }}">{{ strtoupper($size->code ?: $size->name) }} - {{ __('Size') }}</a>
 																	<span class="checked"></span>
 																</div>
 															</li>
@@ -395,7 +395,7 @@
 										@if ($colors->isNotEmpty())
 											<div class="mn-sidebar-block color-block mn-sidebar-block-clr">
 												<div class="mn-sb-title">
-													<h3 class="mn-sidebar-title">Color</h3>
+													<h3 class="mn-sidebar-title">{{ __('Color') }}</h3>
 												</div>
 												<div class="mn-sb-block-content">
 													<ul>
@@ -420,17 +420,17 @@
 										<!-- Sidebar Price Block -->
 										<div class="mn-sidebar-block">
 											<div class="mn-sb-title">
-												<h3 class="mn-sidebar-title">Price</h3>
+												<h3 class="mn-sidebar-title">{{ __('Price') }}</h3>
 											</div>
 											<div class="mn-sb-block-content mn-price-range-slider es-price-slider">
 												<div class="mn-price-filter">
 													<div class="mn-price-input">
 														<label class="filter__label">
-															From<input type="text" class="filter__input">
+															{{ __('From') }}<input type="text" class="filter__input">
 														</label>
 														<span class="mn-price-divider"></span>
 														<label class="filter__label">
-															To<input type="text" class="filter__input">
+															{{ __('To') }}<input type="text" class="filter__input">
 														</label>
 													</div>
 													<div id="mn-sliderPrice" class="filter__slider-price"
@@ -445,7 +445,7 @@
 										<!-- Sidebar tags -->
 										<div class="mn-sidebar-block">
 											<div class="mn-sb-title">
-												<h3 class="mn-sidebar-title">Tags</h3>
+												<h3 class="mn-sidebar-title">{{ __('Tags') }}</h3>
 											</div>
 											<div class="mn-tag-block mn-sb-block-content">
 												@foreach ($categories as $cat)

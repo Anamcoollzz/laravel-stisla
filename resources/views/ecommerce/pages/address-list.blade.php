@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Daftar Alamat - Ecommerce')
+@section('title', __('Address List - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -29,12 +29,12 @@
 			<div class="col-12">
 				<div class="row gi_breadcrumb_inner">
 					<div class="col-md-6 col-sm-12">
-						<h2 class="mn-breadcrumb-title">Daftar Alamat</h2>
+						<h2 class="mn-breadcrumb-title">{{ __('Address List') }}</h2>
 					</div>
 					<div class="col-md-6 col-sm-12">
 						<ul class="mn-breadcrumb-list">
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-							<li class="mn-breadcrumb-item active">Daftar Alamat</li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+							<li class="mn-breadcrumb-item active">{{ __('Address List') }}</li>
 						</ul>
 					</div>
 				</div>
@@ -61,7 +61,7 @@
 
 			@if ($errors->any())
 				<div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-					<strong><i class="ri-error-warning-line me-1"></i> Terjadi kesalahan:</strong>
+					<strong><i class="ri-error-warning-line me-1"></i> {{ __('An error occurred:') }}</strong>
 					<ul class="mb-0 mt-1 ps-3">
 						@foreach ($errors->all() as $error)
 							<li>{{ $error }}</li>
@@ -74,12 +74,12 @@
 			<!-- Header section -->
 			<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
 				<div>
-					<h3 class="fw-bold mb-1" style="font-size: 22px;">Alamat Pengiriman</h3>
-					<p class="text-muted mb-0" style="font-size: 14px;">Kelola alamat tersimpan untuk kemudahan pengiriman pesanan Anda.</p>
+					<h3 class="fw-bold mb-1" style="font-size: 22px;">{{ __('Shipping Addresses') }}</h3>
+					<p class="text-muted mb-0" style="font-size: 14px;">{{ __('Manage your saved addresses for easier order delivery.') }}</p>
 				</div>
 				<div class="mt-2 mt-sm-0">
 					<button type="button" class="mn-btn-1 btn" data-bs-toggle="modal" data-bs-target="#modalAddAddress">
-						<span><i class="ri-add-line me-1"></i> Tambah Alamat Baru</span>
+						<span><i class="ri-add-line me-1"></i> {{ __('Add New Address') }}</span>
 					</button>
 				</div>
 			</div>
@@ -95,7 +95,7 @@
 										<span class="badge bg-light text-dark border px-2 py-1 fw-bold" style="font-size: 12px;">{{ $address->label }}</span>
 										@if ($address->is_default)
 											<span class="badge bg-success px-2 py-1" style="font-size: 12px;">
-												<i class="ri-check-line me-1"></i> Utama
+												<i class="ri-check-line me-1"></i> {{ __('Primary') }}
 											</span>
 										@endif
 									</div>
@@ -117,10 +117,10 @@
 											data-postal="{{ $address->postal_code }}"
 											data-notes="{{ $address->notes }}"
 											data-default="{{ $address->is_default ? '1' : '0' }}">
-											<i class="ri-edit-line"></i> Edit
+											<i class="ri-edit-line"></i> {{ __('Edit') }}
 										</button>
 
-										<form action="{{ route('ecommerce.address-list.destroy', $address->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus alamat ini?');">
+										<form action="{{ route('ecommerce.address-list.destroy', $address->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this address?') }}');">
 											@csrf
 											@method('DELETE')
 											<button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 6px; padding: 4px 10px;">
@@ -146,20 +146,20 @@
 
 								@if ($address->notes)
 									<p class="text-secondary small mb-3 fst-italic">
-										<strong>Catatan:</strong> {{ $address->notes }}
+										<strong>{{ __('Notes:') }}</strong> {{ $address->notes }}
 									</p>
 								@endif
 
 								<div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
 									@if ($address->is_default)
 										<span class="text-success fw-bold small">
-											<i class="ri-checkbox-circle-fill me-1"></i> Alamat Pengiriman Utama
+											<i class="ri-checkbox-circle-fill me-1"></i> {{ __('Primary Shipping Address') }}
 										</span>
 									@else
 										<form action="{{ route('ecommerce.address-list.default', $address->id) }}" method="POST">
 											@csrf
 											<button type="submit" class="btn btn-sm btn-outline-primary" style="border-radius: 6px;">
-												<i class="ri-checkbox-blank-circle-line me-1"></i> Jadikan Alamat Utama
+												<i class="ri-checkbox-blank-circle-line me-1"></i> {{ __('Set as Primary Address') }}
 											</button>
 										</form>
 									@endif
@@ -172,10 +172,10 @@
 						<div class="card border-0 shadow-sm py-5 text-center" style="border-radius: 12px;">
 							<div class="card-body">
 								<i class="ri-map-pin-line text-muted mb-3" style="font-size: 56px; display: inline-block;"></i>
-								<h4 class="fw-bold mb-2">Belum Ada Alamat Tersimpan</h4>
-								<p class="text-muted mb-4" style="max-width: 460px; margin: 0 auto;">Tambahkan alamat pengiriman Anda sekarang agar proses checkout menjadi lebih cepat dan mudah.</p>
+								<h4 class="fw-bold mb-2">{{ __('No Saved Addresses Yet') }}</h4>
+								<p class="text-muted mb-4" style="max-width: 460px; margin: 0 auto;">{{ __('Add your shipping address now to make checkout faster and easier.') }}</p>
 								<button type="button" class="mn-btn-1 btn" data-bs-toggle="modal" data-bs-target="#modalAddAddress">
-									<span><i class="ri-add-line me-1"></i> Tambah Alamat Sekarang</span>
+									<span><i class="ri-add-line me-1"></i> {{ __('Add Address Now') }}</span>
 								</button>
 							</div>
 						</div>
@@ -193,54 +193,54 @@
 			<form action="{{ route('ecommerce.address-list.store') }}" method="POST">
 				@csrf
 				<div class="modal-header border-bottom py-3 px-4">
-					<h5 class="modal-title fw-bold" id="modalAddAddressLabel"><i class="ri-map-pin-add-line me-1"></i> Tambah Alamat Baru</h5>
+					<h5 class="modal-title fw-bold" id="modalAddAddressLabel"><i class="ri-map-pin-add-line me-1"></i> {{ __('Add New Address') }}</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body p-4">
 					<div class="row g-3">
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Label Alamat <span class="text-danger">*</span></label>
-							<input type="text" name="label" class="form-control" placeholder="Contoh: Rumah, Kantor, Toko" value="{{ old('label', 'Rumah') }}" required>
+							<label class="form-label fw-bold">{{ __('Address Label') }} <span class="text-danger">*</span></label>
+							<input type="text" name="label" class="form-control" placeholder="{{ __('e.g. Home, Office, Store') }}" value="{{ old('label', __('Home')) }}" required>
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Nama Penerima <span class="text-danger">*</span></label>
-							<input type="text" name="recipient_name" class="form-control" placeholder="Nama lengkap penerima" value="{{ old('recipient_name', $user->name ?? '') }}" required>
+							<label class="form-label fw-bold">{{ __('Recipient Name') }} <span class="text-danger">*</span></label>
+							<input type="text" name="recipient_name" class="form-control" placeholder="{{ __('Recipient full name') }}" value="{{ old('recipient_name', $user->name ?? '') }}" required>
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Nomor Telepon / WhatsApp <span class="text-danger">*</span></label>
-							<input type="text" name="phone_number" class="form-control" placeholder="Contoh: 08123456789" value="{{ old('phone_number', $user->phone ?? '') }}" required>
+							<label class="form-label fw-bold">{{ __('Phone / WhatsApp Number') }} <span class="text-danger">*</span></label>
+							<input type="text" name="phone_number" class="form-control" placeholder="{{ __('e.g. 08123456789') }}" value="{{ old('phone_number', $user->phone ?? '') }}" required>
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Kota / Kabupaten</label>
-							<input type="text" name="city" class="form-control" placeholder="Nama kota/kabupaten" value="{{ old('city', $user->city ?? '') }}">
+							<label class="form-label fw-bold">{{ __('City / Regency') }}</label>
+							<input type="text" name="city" class="form-control" placeholder="{{ __('City or regency name') }}" value="{{ old('city', $user->city ?? '') }}">
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Provinsi / State</label>
-							<input type="text" name="state" class="form-control" placeholder="Nama provinsi" value="{{ old('state', $user->state ?? '') }}">
+							<label class="form-label fw-bold">{{ __('Province / State') }}</label>
+							<input type="text" name="state" class="form-control" placeholder="{{ __('Province name') }}" value="{{ old('state', $user->state ?? '') }}">
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Kode Pos</label>
-							<input type="text" name="postal_code" class="form-control" placeholder="Kode pos" value="{{ old('postal_code', $user->postal_code ?? '') }}">
+							<label class="form-label fw-bold">{{ __('Postal Code') }}</label>
+							<input type="text" name="postal_code" class="form-control" placeholder="{{ __('Postal code') }}" value="{{ old('postal_code', $user->postal_code ?? '') }}">
 						</div>
 						<div class="col-12">
-							<label class="form-label fw-bold">Alamat Lengkap <span class="text-danger">*</span></label>
-							<textarea name="address_line" class="form-control" rows="3" placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan" required>{{ old('address_line', $user->address ?? '') }}</textarea>
+							<label class="form-label fw-bold">{{ __('Full Address') }} <span class="text-danger">*</span></label>
+							<textarea name="address_line" class="form-control" rows="3" placeholder="{{ __('Street name, house number, district, sub-district') }}" required>{{ old('address_line', $user->address ?? '') }}</textarea>
 						</div>
 						<div class="col-12">
-							<label class="form-label fw-bold">Catatan / Patokan (Opsional)</label>
-							<input type="text" name="notes" class="form-control" placeholder="Contoh: Pagar hitam depan musholla" value="{{ old('notes') }}">
+							<label class="form-label fw-bold">{{ __('Notes / Landmark (Optional)') }}</label>
+							<input type="text" name="notes" class="form-control" placeholder="{{ __('e.g. Black gate across from mosque') }}" value="{{ old('notes') }}">
 						</div>
 						<div class="col-12 pt-2">
 							<div class="form-check form-switch">
 								<input class="form-check-input" type="checkbox" role="switch" id="addDefaultSwitch" name="is_default" value="1" {{ $addresses->isEmpty() ? 'checked' : '' }}>
-								<label class="form-check-label fw-semibold" for="addDefaultSwitch">Jadikan sebagai alamat pengiriman utama</label>
+								<label class="form-check-label fw-semibold" for="addDefaultSwitch">{{ __('Set as primary shipping address') }}</label>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer border-top py-3 px-4">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-					<button type="submit" class="mn-btn-1 btn"><span>Simpan Alamat</span></button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+					<button type="submit" class="mn-btn-1 btn"><span>{{ __('Save Address') }}</span></button>
 				</div>
 			</form>
 		</div>
@@ -255,54 +255,54 @@
 				@csrf
 				@method('PUT')
 				<div class="modal-header border-bottom py-3 px-4">
-					<h5 class="modal-title fw-bold" id="modalEditAddressLabel"><i class="ri-edit-line me-1"></i> Edit Alamat</h5>
+					<h5 class="modal-title fw-bold" id="modalEditAddressLabel"><i class="ri-edit-line me-1"></i> {{ __('Edit Address') }}</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body p-4">
 					<div class="row g-3">
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Label Alamat <span class="text-danger">*</span></label>
+							<label class="form-label fw-bold">{{ __('Address Label') }} <span class="text-danger">*</span></label>
 							<input type="text" id="editLabel" name="label" class="form-control" required>
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Nama Penerima <span class="text-danger">*</span></label>
+							<label class="form-label fw-bold">{{ __('Recipient Name') }} <span class="text-danger">*</span></label>
 							<input type="text" id="editRecipient" name="recipient_name" class="form-control" required>
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Nomor Telepon / WhatsApp <span class="text-danger">*</span></label>
+							<label class="form-label fw-bold">{{ __('Phone / WhatsApp Number') }} <span class="text-danger">*</span></label>
 							<input type="text" id="editPhone" name="phone_number" class="form-control" required>
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Kota / Kabupaten</label>
+							<label class="form-label fw-bold">{{ __('City / Regency') }}</label>
 							<input type="text" id="editCity" name="city" class="form-control">
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Provinsi / State</label>
+							<label class="form-label fw-bold">{{ __('Province / State') }}</label>
 							<input type="text" id="editState" name="state" class="form-control">
 						</div>
 						<div class="col-md-6">
-							<label class="form-label fw-bold">Kode Pos</label>
+							<label class="form-label fw-bold">{{ __('Postal Code') }}</label>
 							<input type="text" id="editPostal" name="postal_code" class="form-control">
 						</div>
 						<div class="col-12">
-							<label class="form-label fw-bold">Alamat Lengkap <span class="text-danger">*</span></label>
+							<label class="form-label fw-bold">{{ __('Full Address') }} <span class="text-danger">*</span></label>
 							<textarea id="editAddressLine" name="address_line" class="form-control" rows="3" required></textarea>
 						</div>
 						<div class="col-12">
-							<label class="form-label fw-bold">Catatan / Patokan (Opsional)</label>
+							<label class="form-label fw-bold">{{ __('Notes / Landmark (Optional)') }}</label>
 							<input type="text" id="editNotes" name="notes" class="form-control">
 						</div>
 						<div class="col-12 pt-2">
 							<div class="form-check form-switch">
 								<input class="form-check-input" type="checkbox" role="switch" id="editDefaultSwitch" name="is_default" value="1">
-								<label class="form-check-label fw-semibold" for="editDefaultSwitch">Jadikan sebagai alamat pengiriman utama</label>
+								<label class="form-check-label fw-semibold" for="editDefaultSwitch">{{ __('Set as primary shipping address') }}</label>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer border-top py-3 px-4">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-					<button type="submit" class="mn-btn-1 btn"><span>Perbarui Alamat</span></button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+					<button type="submit" class="mn-btn-1 btn"><span>{{ __('Update Address') }}</span></button>
 				</div>
 			</form>
 		</div>

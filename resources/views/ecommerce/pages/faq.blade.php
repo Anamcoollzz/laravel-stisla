@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Faq - Ecommerce')
+@section('title', __('FAQ - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,13 +32,13 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">FAQ Page</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('FAQ Page') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">FAQ Page</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('FAQ Page') }}</li>
 								</ul>
 								<!-- mn-breadcrumb-list end -->
 							</div>
@@ -56,8 +56,8 @@
 			<!-- Faq section -->
 			<section class="mn-faq p-b-15">
 				<div class="mn-title d-none">
-					<h2>frequently asked <span>questions</span></h2>
-					<p>Customer service management.</p>
+					<h2>{{ __('frequently asked') }} <span>{{ __('questions') }}</span></h2>
+					<p>{{ __('Customer service management.') }}</p>
 				</div>
 				<div class="row">
 					<div class="col-lg-6">

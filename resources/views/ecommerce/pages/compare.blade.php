@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Compare - Ecommerce')
+@section('title', __('Compare - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,13 +32,13 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">Compare Page</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('Compare Page') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">Compare Page</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('Compare Page') }}</li>
 								</ul>
 								<!-- mn-breadcrumb-list end -->
 							</div>
@@ -49,52 +49,52 @@
 
 			<!-- Compare section -->
 			<section class="mn-compare-list p-b-15">
-				<h2 class="d-none">Compare</h2>
+				<h2 class="d-none">{{ __('Compare') }}</h2>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="mn-compare-box">
 							@if (($compares ?? collect())->isEmpty())
 								<div class="p-4 text-center w-100">
-									<p class="mn-compare-page-msg mb-3">Your Compare list is empty!</p>
-									<a href="{{ route('ecommerce.products.index') }}" class="mn-btn-1"><span>Browse Products</span></a>
+									<p class="mn-compare-page-msg mb-3">{{ __('Your Compare list is empty!') }}</p>
+									<a href="{{ route('ecommerce.products.index') }}" class="mn-btn-1"><span>{{ __('Browse Products') }}</span></a>
 								</div>
 							@else
 								<div class="mn-compare-col title-col">
 									<div class="mn-compare-cell">
 										<div class="title">
-											<h5>Product Image</h5>
+											<h5>{{ __('Product Image') }}</h5>
 										</div>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>Name</h5>
+										<h5>{{ __('Name') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>Category</h5>
+										<h5>{{ __('Category') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>Ratings</h5>
+										<h5>{{ __('Ratings') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>Availability</h5>
+										<h5>{{ __('Availability') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>location</h5>
+										<h5>{{ __('Location') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>Brand</h5>
+										<h5>{{ __('Brand') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>SKU</h5>
+										<h5>{{ __('SKU') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>Quantity</h5>
+										<h5>{{ __('Quantity') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
-										<h5>Size</h5>
+										<h5>{{ __('Size') }}</h5>
 									</div>
 									<div class="mn-compare-cell">
 										<div class="desc">
-											<h5>Description</h5>
+											<h5>{{ __('Description') }}</h5>
 										</div>
 									</div>
 								</div>
@@ -115,11 +115,11 @@
 												<div class="mn-action">
 													<ul>
 														<li>
-															<a href="javascript:void(0);" class="mn-btn-group wishlist mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $product->id }}" title="Wishlist"><i
+															<a href="javascript:void(0);" class="mn-btn-group wishlist mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $product->id }}" title="{{ __('Wishlist') }}"><i
 																	class="ri-heart-line"></i></a>
 														</li>
 														<li>
-															<a href="javascript:void(0)" title="Add To Cart"
+															<a href="javascript:void(0)" title="{{ __('Add To Cart') }}"
 																class="mn-btn-group add-to-cart mn-add-cart" data-product-id="{{ $product->id }}"><i
 																	class="ri-shopping-cart-line"></i></a>
 														</li>
@@ -139,17 +139,17 @@
 													<i class="ri-star-fill {{ $star <= $avgRating ? '' : 'grey' }}"></i>
 												@endfor
 											</span>
-											<p class="rating-info">({{ $reviewCount }} Review)</p>
+											<p class="rating-info">({{ $reviewCount }} {{ __('Review') }})</p>
 										</div>
 										<div class="mn-compare-cell">
 											@if ($product->stock > 0)
-												<p class="i-stock">In Stock</p>
+												<p class="i-stock">{{ __('In Stock') }}</p>
 											@else
-												<p class="o-stock">Out Of Stock</p>
+												<p class="o-stock">{{ __('Out Of Stock') }}</p>
 											@endif
 										</div>
 										<div class="mn-compare-cell">
-											<p>{{ $compare->location ?: 'In Store, Online' }}</p>
+											<p>{{ $compare->location ?: __('In Store, Online') }}</p>
 										</div>
 										<div class="mn-compare-cell">
 											<p>{{ $product->brand?->name ?? ($product->vendor?->name ?? '-') }}</p>

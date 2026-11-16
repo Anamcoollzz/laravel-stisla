@@ -11,7 +11,7 @@
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'About Us - Ecommerce')
+@section('title', __('About Us - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -43,13 +43,13 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">About us Page</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('About us Page') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">About us Page</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('About us Page') }}</li>
 								</ul>
 								<!-- mn-breadcrumb-list end -->
 							</div>
@@ -119,7 +119,7 @@
 					<div class="col-md-12">
 						<div class="testim-bg">
 							<div class="section-title d-none">
-								<h2>Customers <span>Review</span></h2>
+								<h2>{{ __('Customers') }} <span>{{ __('Review') }}</span></h2>
 							</div>
 							<div class="mn-test-outer mn-testimonials">
 								<ul class="mn-testimonial-slider owl-carousel">
@@ -133,7 +133,7 @@
 												<div class="mn-test-content">
 													<div class="mn-test-desc">{{ $testimonial->content }}</div>
 													<div class="mn-test-name">{{ $testimonial->name }}</div>
-													<div class="mn-test-designation">({{ $testimonial->designation ?: 'Customer' }})</div>
+													<div class="mn-test-designation">({{ $testimonial->designation ?: __('Customer') }})</div>
 												</div>
 											</div>
 											<img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom" alt="quotes">
@@ -162,8 +162,8 @@
 								<span class="counter">{{ number_format($facts['vendors'] ?? 0) }}{{ ($facts['vendors'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
-								<h4>Vendors</h4>
-								<p>Verified and trusted merchant partners providing premium catalog goods.</p>
+								<h4>{{ __('Vendors') }}</h4>
+								<p>{{ __('Verified and trusted merchant partners providing premium catalog goods.') }}</p>
 							</div>
 						</div>
 					</div>
@@ -173,8 +173,8 @@
 								<span class="counter">{{ number_format($facts['brands'] ?? 0) }}{{ ($facts['brands'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
-								<h4>Brands</h4>
-								<p>Recognized and curated domestic and international brands.</p>
+								<h4>{{ __('Brands') }}</h4>
+								<p>{{ __('Recognized and curated domestic and international brands.') }}</p>
 							</div>
 						</div>
 					</div>
@@ -184,8 +184,8 @@
 								<span class="counter">{{ number_format($facts['stock'] ?? 0, 0, ',', '.') }}{{ ($facts['stock'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
-								<h4>Items in Stock</h4>
-								<p>Ready to ship units stored across active fulfillment warehouses.</p>
+								<h4>{{ __('Items in Stock') }}</h4>
+								<p>{{ __('Ready to ship units stored across active fulfillment warehouses.') }}</p>
 							</div>
 						</div>
 					</div>
@@ -195,8 +195,8 @@
 								<span class="counter">{{ number_format($facts['products'] ?? 0) }}{{ ($facts['products'] ?? 0) > 0 ? '+' : '' }}</span>
 							</div>
 							<div class="mn-facts-desc">
-								<h4>Products</h4>
-								<p>Diverse range of verified and quality guaranteed items.</p>
+								<h4>{{ __('Products') }}</h4>
+								<p>{{ __('Diverse range of verified and quality guaranteed items.') }}</p>
 							</div>
 						</div>
 					</div>
@@ -207,7 +207,7 @@
 			<!-- Team Section -->
 			<section class="mn-team-section p-tb-15">
 				<div class="mn-title">
-					<h2>Our <span>Team</span></h2>
+					<h2>{{ __('Our') }} <span>{{ __('Team') }}</span></h2>
 				</div>
 				<div class="mn-team owl-carousel">
 					@forelse ($ourTeams as $member)

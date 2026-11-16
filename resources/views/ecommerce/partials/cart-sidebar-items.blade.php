@@ -13,11 +13,11 @@
 				<input class="qty-input cart-qty-input" type="text" name="mn-qtybtn" value="{{ $item['quantity'] }}" data-product-id="{{ $item['id'] }}">
 				<div class="inc mn-qtybtn">+</div>
 			</div>
-			<a href="javascript:void(0)" class="cart-remove-item" data-product-id="{{ $item['id'] }}" title="Remove item">×</a>
+			<a href="javascript:void(0)" class="cart-remove-item" data-product-id="{{ $item['id'] }}" title="{{ __('Remove item') }}">×</a>
 		</div>
 	</li>
 @empty
 	<li class="cart-empty-msg text-center p-3">
-		<p class="mn-cart-msg m-0">Your Cart is empty!</p>
+		<p class="mn-cart-msg m-0">{{ __('Your Cart is empty!') }}</p>
 	</li>
 @endforelse

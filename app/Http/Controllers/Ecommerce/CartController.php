@@ -22,7 +22,7 @@ class CartController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'unauthenticated',
-                    'message' => 'Silakan login terlebih dahulu untuk mengakses keranjang belanja!',
+                    'message' => __('Please login first to access your shopping cart!'),
                     'redirect' => route('ecommerce.login'),
                 ], 401);
             }
@@ -65,7 +65,7 @@ class CartController extends Controller
         if (! Auth::check()) {
             return response()->json([
                 'status' => 'unauthenticated',
-                'message' => 'Silakan login terlebih dahulu untuk menambahkan produk ke keranjang belanja!',
+                'message' => __('Please login first to add products to your shopping cart!'),
                 'redirect' => route('ecommerce.login'),
             ], 401);
         }
@@ -104,7 +104,7 @@ class CartController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Added to Cart successfully!',
+            'message' => __('Added to Cart successfully!'),
             'count' => $totalQuantity,
             'subtotal' => $subtotal,
             'subtotal_formatted' => 'Rp '.number_format($subtotal, 0, ',', '.'),
@@ -123,7 +123,7 @@ class CartController extends Controller
         if (! Auth::check()) {
             return response()->json([
                 'status' => 'unauthenticated',
-                'message' => 'Silakan login terlebih dahulu!',
+                'message' => __('Please login first!'),
                 'redirect' => route('ecommerce.login'),
             ], 401);
         }
@@ -157,7 +157,7 @@ class CartController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Cart updated successfully!',
+            'message' => __('Cart updated successfully!'),
             'count' => $totalQuantity,
             'subtotal' => $subtotal,
             'subtotal_formatted' => 'Rp '.number_format($subtotal, 0, ',', '.'),
@@ -176,7 +176,7 @@ class CartController extends Controller
         if (! Auth::check()) {
             return response()->json([
                 'status' => 'unauthenticated',
-                'message' => 'Silakan login terlebih dahulu!',
+                'message' => __('Please login first!'),
                 'redirect' => route('ecommerce.login'),
             ], 401);
         }
@@ -195,7 +195,7 @@ class CartController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Removed from Cart successfully!',
+            'message' => __('Removed from Cart successfully!'),
             'count' => $totalQuantity,
             'subtotal' => $subtotal,
             'subtotal_formatted' => 'Rp '.number_format($subtotal, 0, ',', '.'),

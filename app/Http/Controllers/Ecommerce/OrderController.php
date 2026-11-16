@@ -74,6 +74,6 @@ class OrderController extends Controller
 
         return redirect()
             ->route('ecommerce.checkout.detail', $order->order_number)
-            ->with('success', 'Bukti pembayaran berhasil diunggah dan sedang menunggu verifikasi.');
+            ->with('success', __('Payment proof uploaded successfully and is awaiting verification.'));
     }
 }

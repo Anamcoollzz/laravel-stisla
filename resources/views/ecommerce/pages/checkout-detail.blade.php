@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Detail Pesanan #' . $order->order_number . ' - Ecommerce')
+@section('title', __('Order Detail') . ' #' . $order->order_number . ' - Ecommerce')
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -100,13 +100,13 @@
 			<div class="col-12">
 				<div class="row gi_breadcrumb_inner">
 					<div class="col-md-6 col-sm-12">
-						<h2 class="mn-breadcrumb-title">Detail Checkout Pesanan</h2>
+						<h2 class="mn-breadcrumb-title">{{ __('Order Checkout Detail') }}</h2>
 					</div>
 					<div class="col-md-6 col-sm-12">
 						<ul class="mn-breadcrumb-list">
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.shop') }}">Shop</a></li>
-							<li class="mn-breadcrumb-item active">Detail Pesanan</li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.shop') }}">{{ __('Shop') }}</a></li>
+							<li class="mn-breadcrumb-item active">{{ __('Order Detail') }}</li>
 						</ul>
 					</div>
 				</div>
@@ -121,7 +121,7 @@
 				<div class="d-flex align-items-center">
 					<i class="ri-checkbox-circle-fill text-success fs-3 me-2"></i>
 					<div>
-						<h5 class="alert-heading mb-0 fw-bold">Pesanan Berhasil Dibuat!</h5>
+						<h5 class="alert-heading mb-0 fw-bold">{{ __('Order Created Successfully!') }}</h5>
 						<p class="mb-0 small">{{ session('success') }}</p>
 					</div>
 				</div>
@@ -135,9 +135,9 @@
 				<div class="row align-items-center g-3">
 					<div class="col-md-7">
 						<span class="badge bg-white text-primary fw-bold px-3 py-1 mb-2" style="font-size: 12px; border-radius: 20px;">
-							<i class="ri-shopping-bag-3-line me-1"></i> No. Pesanan: #{{ $order->order_number }}
+							<i class="ri-shopping-bag-3-line me-1"></i> {{ __('Order No.') }}: #{{ $order->order_number }}
 						</span>
-						<h3 class="fw-bold mb-1 text-white" style="font-size: 22px;">Terima Kasih Atas Pesanan Anda!</h3>
+						<h3 class="fw-bold mb-1 text-white" style="font-size: 22px;">{{ __('Thank You For Your Order!') }}</h3>
 						<p class="mb-0 text-white-50 small">
 							<i class="ri-calendar-line me-1"></i> {{ $order->created_at->format('d F Y, H:i') }} WIB &bull; 
 							<i class="ri-user-3-line me-1"></i> {{ $order->recipient_name }}
@@ -146,20 +146,20 @@
 					<div class="col-md-5 text-md-end">
 						<div class="d-inline-flex flex-column align-items-md-end gap-1">
 							<div>
-								<span class="text-white-50 small d-block">Status Pesanan:</span>
+								<span class="text-white-50 small d-block">{{ __('Order Status') }}:</span>
 								@if ($order->status === 'completed')
-									<span class="badge bg-success px-3 py-2 fs-6">Selesai</span>
+									<span class="badge bg-success px-3 py-2 fs-6">{{ __('Completed') }}</span>
 								@elseif ($order->status === 'cancelled')
-									<span class="badge bg-danger px-3 py-2 fs-6">Dibatalkan</span>
+									<span class="badge bg-danger px-3 py-2 fs-6">{{ __('Cancelled') }}</span>
 								@elseif ($order->status === 'processing' || $order->status === 'shipped')
-									<span class="badge bg-info text-dark px-3 py-2 fs-6">Diproses / Dikirim</span>
+									<span class="badge bg-info text-dark px-3 py-2 fs-6">{{ __('Processing / Shipped') }}</span>
 								@else
-									<span class="badge bg-warning text-dark px-3 py-2 fs-6">Menunggu Pembayaran</span>
+									<span class="badge bg-warning text-dark px-3 py-2 fs-6">{{ __('Awaiting Payment') }}</span>
 								@endif
 							</div>
 							<div class="mt-1">
 								<span class="badge bg-light text-dark px-2 py-1 small">
-									Status Bayar: <strong>{{ strtoupper($order->payment_status) }}</strong>
+									{{ __('Payment Status') }}: <strong>{{ __(strtoupper($order->payment_status)) }}</strong>
 								</span>
 							</div>
 						</div>
@@ -175,19 +175,19 @@
 				<div class="card border shadow-sm mb-4" style="border-radius: 12px;">
 					<div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
 						<h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">
-							<i class="ri-shopping-basket-line me-1 text-primary"></i> 1. Data Produk Yang Dipesan
+							<i class="ri-shopping-basket-line me-1 text-primary"></i> 1. {{ __('Ordered Products') }}
 						</h5>
-						<span class="badge bg-light text-dark border">{{ $order->items->count() }} Item</span>
+						<span class="badge bg-light text-dark border">{{ $order->items->count() }} {{ __('Item') }}</span>
 					</div>
 					<div class="card-body p-0">
 						<div class="table-responsive">
 							<table class="table align-middle mb-0">
 								<thead class="table-light">
 									<tr>
-										<th scope="col" class="ps-4" style="font-size: 13px;">Produk</th>
-										<th scope="col" class="text-center" style="font-size: 13px;">Harga Satuan</th>
-										<th scope="col" class="text-center" style="font-size: 13px;">Jumlah</th>
-										<th scope="col" class="text-end pe-4" style="font-size: 13px;">Total</th>
+										<th scope="col" class="ps-4" style="font-size: 13px;">{{ __('Product') }}</th>
+										<th scope="col" class="text-center" style="font-size: 13px;">{{ __('Unit Price') }}</th>
+										<th scope="col" class="text-center" style="font-size: 13px;">{{ __('Quantity') }}</th>
+										<th scope="col" class="text-end pe-4" style="font-size: 13px;">{{ __('Total') }}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -235,7 +235,7 @@
 				<div class="card border shadow-sm mb-4" style="border-radius: 12px;">
 					<div class="card-header bg-white py-3 border-bottom">
 						<h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">
-							<i class="ri-truck-line me-1 text-primary"></i> 2. Data Pengiriman
+							<i class="ri-truck-line me-1 text-primary"></i> 2. {{ __('Shipping Information') }}
 						</h5>
 					</div>
 					<div class="card-body p-4">
@@ -245,7 +245,7 @@
 								<div class="p-3 border rounded-3 h-100 bg-light">
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="badge bg-secondary-subtle text-secondary border fw-bold" style="font-size: 11px;">
-											<i class="ri-map-pin-line me-1"></i> Alamat Pengiriman
+											<i class="ri-map-pin-line me-1"></i> {{ __('Shipping Address') }}
 										</span>
 									</div>
 									<h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">{{ $order->recipient_name }}</h6>
@@ -260,7 +260,7 @@
 									@endif
 									@if ($order->notes)
 										<div class="mt-2 pt-2 border-top">
-											<small class="text-secondary fst-italic"><strong>Catatan:</strong> {{ $order->notes }}</small>
+											<small class="text-secondary fst-italic"><strong>{{ __('Notes:') }}</strong> {{ $order->notes }}</small>
 										</div>
 									@endif
 								</div>
@@ -271,10 +271,10 @@
 								<div class="p-3 border rounded-3 h-100 bg-light">
 									<div class="d-flex align-items-center justify-content-between mb-2">
 										<span class="badge bg-info-subtle text-info-emphasis border fw-bold" style="font-size: 11px;">
-											<i class="ri-truck-fill me-1"></i> Ekspedisi / Kurir
+											<i class="ri-truck-fill me-1"></i> {{ __('Expedition / Courier') }}
 										</span>
 										@if ($order->shipping_cost <= 0)
-											<span class="badge bg-success fw-bold" style="font-size: 11px;">Gratis Ongkir</span>
+											<span class="badge bg-success fw-bold" style="font-size: 11px;">{{ __('Free Shipping') }}</span>
 										@endif
 									</div>
 									<div class="d-flex align-items-center gap-2 mb-2">
@@ -284,27 +284,27 @@
 										<h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ $order->shipping_name }}</h6>
 									</div>
 									<div class="mb-2">
-										<span class="text-muted small">Tarif Ongkir: </span>
+										<span class="text-muted small">{{ __('Shipping Fee') }}: </span>
 										<strong class="text-dark small">
-											{{ $order->shipping_cost <= 0 ? 'Rp 0 (Gratis Ongkir)' : 'Rp ' . number_format($order->shipping_cost, 0, ',', '.') }}
+											{{ $order->shipping_cost <= 0 ? 'Rp 0 (' . __('Free Shipping') . ')' : 'Rp ' . number_format($order->shipping_cost, 0, ',', '.') }}
 										</strong>
 									</div>
 									@if ($order->shipping_estimated_delivery)
 										<div class="text-muted small">
-											<i class="ri-time-line me-1"></i> Estimasi Sampai: <strong>{{ $order->shipping_estimated_delivery }}</strong>
+											<i class="ri-time-line me-1"></i> {{ __('Estimated Arrival') }}: <strong>{{ $order->shipping_estimated_delivery }}</strong>
 										</div>
 									@endif
 									@if ($order->tracking_number || $order->tracking_proof_url)
 										<div class="mt-2 pt-2 border-top">
 											@if ($order->tracking_number)
 												<div class="small mb-1">
-													<span class="text-muted">No. Resi:</span>
+													<span class="text-muted">{{ __('Tracking Number') }}:</span>
 													<span class="font-monospace fw-bold text-primary">{{ $order->tracking_number }}</span>
 												</div>
 											@endif
 											@if ($order->tracking_proof_url)
 												<a href="{{ $order->tracking_proof_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;">
-													<i class="ri-file-text-line me-1"></i> Lihat Bukti Resi
+													<i class="ri-file-text-line me-1"></i> {{ __('View Tracking Proof') }}
 												</a>
 											@endif
 										</div>
@@ -319,7 +319,7 @@
 				<div class="card border shadow-sm mb-4" style="border-radius: 12px;">
 					<div class="card-header bg-white py-3 border-bottom">
 						<h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">
-							<i class="ri-bank-card-line me-1 text-primary"></i> 3. Data Pembayaran
+							<i class="ri-bank-card-line me-1 text-primary"></i> 3. {{ __('Payment Information') }}
 						</h5>
 					</div>
 					<div class="card-body p-4">
@@ -327,7 +327,7 @@
 							<div class="col-md-6">
 								<div class="p-3 border rounded-3 h-100 bg-light">
 									<span class="badge bg-primary-subtle text-primary border fw-bold mb-2" style="font-size: 11px;">
-										Metode Pembayaran
+										{{ __('Payment Method') }}
 									</span>
 									<div class="d-flex align-items-center gap-2 mb-2">
 										@if ($order->paymentMethod && $order->paymentMethod->logo_url)
@@ -336,9 +336,9 @@
 										<h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ $order->payment_name }}</h6>
 									</div>
 									<div class="mb-2 text-muted small">
-										Biaya Layanan: 
+										{{ __('Service Fee') }}: 
 										<strong class="text-dark">
-											{{ $order->payment_fee <= 0 ? 'Bebas Biaya' : 'Rp ' . number_format($order->payment_fee, 0, ',', '.') }}
+											{{ $order->payment_fee <= 0 ? __('No Fee') : 'Rp ' . number_format($order->payment_fee, 0, ',', '.') }}
 										</strong>
 									</div>
 									@if ($order->paymentMethod && $order->paymentMethod->instructions)
@@ -357,7 +357,7 @@
 									<div class="p-3 border rounded-3 h-100 bg-white border-primary" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
 										<div class="d-flex align-items-center justify-content-between mb-2">
 											<span class="badge bg-primary text-white fw-bold" style="font-size: 11px;">
-												<i class="ri-bank-line me-1"></i> Rekening Tujuan Transfer
+												<i class="ri-bank-line me-1"></i> {{ __('Transfer Destination Account') }}
 											</span>
 											@if ($order->paymentBank && $order->paymentBank->qr_code_url)
 												<button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" data-bs-toggle="modal" data-bs-target="#modalQrDetail" style="font-size: 11px; border-radius: 4px;">
@@ -365,33 +365,33 @@
 												</button>
 											@endif
 										</div>
-										<h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">{{ $order->bank_name ?? 'Bank Transfer' }}</h6>
+										<h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">{{ $order->bank_name ?? __('Bank Transfer') }}</h6>
 										<div class="d-flex align-items-center gap-2 mb-2">
 											<span class="font-monospace fw-bold text-primary fs-5" id="detailAccNumber">{{ $order->bank_account_number }}</span>
-											<button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 btn-copy-detail" data-account="{{ $order->bank_account_number }}" style="font-size: 11px; border-radius: 4px;" title="Salin">
-												<i class="ri-file-copy-line"></i> Salin
+											<button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 btn-copy-detail" data-account="{{ $order->bank_account_number }}" style="font-size: 11px; border-radius: 4px;" title="{{ __('Copy') }}">
+												<i class="ri-file-copy-line"></i> {{ __('Copy') }}
 											</button>
 										</div>
 										<p class="text-muted small mb-0">
-											Atas Nama: <strong>{{ $order->bank_account_name }}</strong>
+											{{ __('Account Holder') }}: <strong>{{ $order->bank_account_name }}</strong>
 										</p>
 									</div>
 								@elseif ($order->payment_type === 'cod')
 									<div class="p-3 border rounded-3 h-100 bg-light">
 										<span class="badge bg-success-subtle text-success border fw-bold mb-2" style="font-size: 11px;">
-											<i class="ri-hand-coin-line me-1"></i> Pembayaran COD
+											<i class="ri-hand-coin-line me-1"></i> {{ __('COD Payment') }}
 										</span>
 										<p class="text-muted small mb-0" style="line-height: 1.5;">
-											Mohon siapkan uang tunai sebesar <strong>Rp {{ number_format($order->grand_total, 0, ',', '.') }}</strong> saat kurir mengantarkan pesanan ke alamat Anda.
+											{!! __('Please prepare cash of :amount when the courier delivers your order to your address.', ['amount' => '<strong>Rp ' . number_format($order->grand_total, 0, ',', '.') . '</strong>']) !!}
 										</p>
 									</div>
 								@else
 									<div class="p-3 border rounded-3 h-100 bg-light">
 										<span class="badge bg-info-subtle text-info-emphasis border fw-bold mb-2" style="font-size: 11px;">
-											Status Pembayaran
+											{{ __('Payment Status') }}
 										</span>
 										<p class="text-muted small mb-0">
-											Silakan ikuti instruksi pembayaran yang telah ditentukan untuk menyelesaikan transaksi.
+											{{ __('Please follow the specified payment instructions to complete the transaction.') }}
 										</p>
 									</div>
 								@endif
@@ -402,15 +402,15 @@
 						<div class="mt-4 pt-4 border-top">
 							<div class="d-flex align-items-center justify-content-between mb-3">
 								<h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">
-									<i class="ri-upload-cloud-2-line me-1 text-primary"></i> Bukti Pembayaran
+									<i class="ri-upload-cloud-2-line me-1 text-primary"></i> {{ __('Payment Proof') }}
 								</h6>
 								@if ($order->payment_proof_url)
 									<span class="badge bg-success-subtle text-success border" style="font-size: 11px;">
-										<i class="ri-check-double-line me-1"></i> Sudah Diunggah
+										<i class="ri-check-double-line me-1"></i> {{ __('Uploaded') }}
 									</span>
 								@else
 									<span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 11px;">
-										Belum Diunggah
+										{{ __('Not Uploaded Yet') }}
 									</span>
 								@endif
 							</div>
@@ -427,18 +427,18 @@
 											</div>
 										@else
 											<a href="{{ $order->payment_proof_url }}" target="_blank" rel="noopener">
-												<img src="{{ $order->payment_proof_url }}" alt="Bukti Pembayaran" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6;">
+												<img src="{{ $order->payment_proof_url }}" alt="{{ __('Payment Proof') }}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6;">
 											</a>
 										@endif
 										<div>
-											<p class="fw-semibold text-dark mb-1 small">Bukti Transfer / Pembayaran</p>
+											<p class="fw-semibold text-dark mb-1 small">{{ __('Transfer / Payment Proof') }}</p>
 											<p class="text-muted mb-0" style="font-size: 12px;">
-												Diunggah pada: {{ $order->payment_proof_uploaded_at?->format('d M Y, H:i') ?? '-' }} WIB
+												{{ __('Uploaded at') }}: {{ $order->payment_proof_uploaded_at?->format('d M Y, H:i') ?? '-' }} WIB
 											</p>
 										</div>
 									</div>
 									<a href="{{ $order->payment_proof_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
-										<i class="ri-external-link-line me-1"></i> Lihat File
+										<i class="ri-external-link-line me-1"></i> {{ __('View File') }}
 									</a>
 								</div>
 							@endif
@@ -449,7 +449,7 @@
 									<div class="row g-2 align-items-end">
 										<div class="col-md-8">
 											<label for="payment_proof" class="form-label small fw-semibold text-dark mb-1">
-												{{ $order->payment_proof_url ? 'Ganti Bukti Pembayaran' : 'Unggah Bukti Pembayaran' }} (JPG, PNG, WebP, PDF &bull; Maks. 4MB)
+												{{ $order->payment_proof_url ? __('Replace Payment Proof') : __('Upload Payment Proof') }} (JPG, PNG, WebP, PDF &bull; {{ __('Max. 4MB') }})
 											</label>
 											<input type="file" name="payment_proof" id="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf" class="form-control form-control-sm @error('payment_proof') is-invalid @enderror" required>
 											@error('payment_proof')
@@ -458,7 +458,7 @@
 										</div>
 										<div class="col-md-4">
 											<button type="submit" class="btn btn-primary btn-sm w-100 py-2 text-white fw-semibold">
-												<i class="ri-upload-2-line me-1"></i> Upload Bukti
+												<i class="ri-upload-2-line me-1"></i> {{ __('Upload Proof') }}
 											</button>
 										</div>
 									</div>
@@ -474,48 +474,48 @@
 				<div class="sticky-top" style="top: 24px; z-index: 10;">
 					<div class="card border shadow-sm p-4 mb-3" style="border-radius: 12px; background: #fff;">
 						<h5 class="fw-bold border-bottom pb-3 mb-3 text-dark" style="font-size: 17px;">
-							<i class="ri-file-list-3-line me-1 text-primary"></i> Ringkasan Pembayaran
+							<i class="ri-file-list-3-line me-1 text-primary"></i> {{ __('Payment Summary') }}
 						</h5>
 
 						<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
-							<span class="text-muted">Subtotal Produk</span>
+							<span class="text-muted">{{ __('Product Subtotal') }}</span>
 							<span class="fw-semibold">{{ $order->formatted_subtotal }}</span>
 						</div>
 
 						<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
-							<span class="text-muted">Biaya Pengiriman</span>
+							<span class="text-muted">{{ __('Shipping Cost') }}</span>
 							<span class="fw-semibold text-primary">{{ $order->formatted_shipping_cost }}</span>
 						</div>
 
 						@if ($order->payment_fee > 0)
 							<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
-								<span class="text-muted">Biaya Layanan</span>
+								<span class="text-muted">{{ __('Service Fee') }}</span>
 								<span class="fw-semibold text-dark">{{ $order->formatted_payment_fee }}</span>
 							</div>
 						@endif
 
 						@if ($order->discount_amount > 0)
 							<div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
-								<span class="text-muted">Diskon ({{ $order->coupon_code }})</span>
+								<span class="text-muted">{{ __('Discount') }} ({{ $order->coupon_code }})</span>
 								<span class="fw-semibold text-danger">- Rp {{ number_format($order->discount_amount, 0, ',', '.') }}</span>
 							</div>
 						@endif
 
 						<div class="d-flex justify-content-between pt-3 border-top mt-2 mb-4">
-							<span class="fw-bold text-dark" style="font-size: 16px;">Total Pembayaran</span>
+							<span class="fw-bold text-dark" style="font-size: 16px;">{{ __('Total Payment') }}</span>
 							<span class="fw-bold text-primary" style="font-size: 20px;">{{ $order->formatted_grand_total }}</span>
 						</div>
 
 						<!-- Action Buttons -->
 						<div class="d-flex flex-column gap-2 no-print">
 							<button type="button" class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-1" onclick="window.print()" style="border-radius: 8px; font-weight: 600;">
-								<i class="ri-printer-line"></i> Cetak / Simpan Bukti
+								<i class="ri-printer-line"></i> {{ __('Print / Save Receipt') }}
 							</button>
 							<a href="{{ route('ecommerce.shop') }}" class="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center gap-1 text-white" style="border-radius: 8px; font-weight: 600;">
-								<i class="ri-shopping-bag-line"></i> Belanja Produk Lain
+								<i class="ri-shopping-bag-line"></i> {{ __('Shop Other Products') }}
 							</a>
 							<a href="{{ route('ecommerce.index.html') }}" class="btn btn-link text-muted small text-center mt-1">
-								Kembali ke Beranda
+								{{ __('Back to Home') }}
 							</a>
 						</div>
 					</div>
@@ -523,7 +523,7 @@
 					<!-- Trust badge -->
 					<div class="card border p-3 text-center bg-light no-print" style="border-radius: 10px;">
 						<p class="small text-muted mb-0">
-							<i class="ri-customer-service-2-line text-primary me-1"></i> Butuh bantuan dengan pesanan Anda? Hubungi Layanan Pelanggan kami 24/7.
+							<i class="ri-customer-service-2-line text-primary me-1"></i> {{ __('Need help with your order? Contact our 24/7 Customer Service.') }}
 						</p>
 					</div>
 				</div>
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 
 			const originalHtml = this.innerHTML;
-			this.innerHTML = '<i class="ri-check-line text-success"></i> Tersalin!';
+			this.innerHTML = '<i class="ri-check-line text-success"></i> ' + @json(__('Copied!'));
 			this.classList.add('btn-success', 'text-white');
 			this.classList.remove('btn-outline-secondary');
 			const self = this;

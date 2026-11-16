@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Track Order - Ecommerce')
+@section('title', __('Track Order - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,13 +32,13 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">Track Order</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('Track Order') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">Track Order</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('Track Order') }}</li>
 								</ul>
 								<!-- mn-breadcrumb-list end -->
 							</div>
@@ -50,8 +50,8 @@
 			<!-- Track Order section -->
 			<section class="mn-track p-b-15">
 				<div class="mn-title d-none">
-					<h2>Track<span> Order</span></h2>
-					<p>We delivering happiness and needs, Faster than you can think.</p>
+					<h2>{{ __('Track') }}<span> {{ __('Order') }}</span></h2>
+					<p>{{ __('We deliver happiness and needs, faster than you can think.') }}</p>
 				</div>
 				<div class="row">
 					<div class="container">
@@ -60,7 +60,7 @@
 							<div class="row m-b-m-30">
 								<div class="col-lg-3 col-sm-6 col-12 m-b-30">
 									<div class="mn-track-card"><span
-											class="mn-track-title">order</span><span>#5874</span>
+											class="mn-track-title">{{ __('order') }}</span><span>#5874</span>
 									</div>
 								</div>
 								<div class="col-lg-3 col-sm-6 col-12 m-b-30">
@@ -68,13 +68,12 @@
 											T-shirt</span><span>m975mn</span></div>
 								</div>
 								<div class="col-lg-3 col-sm-6 col-12 m-b-30">
-									<div class="mn-track-card"><span class="mn-track-title">Expected
-											date</span><span>June
+									<div class="mn-track-card"><span class="mn-track-title">{{ __('Expected date') }}</span><span>June
 											15, 2026</span></div>
 								</div>
 								<div class="col-lg-3 col-sm-6 col-12 m-b-30">
-									<div class="mn-track-card"><span class="mn-track-title">Progress</span><span>
-											Quality Check
+									<div class="mn-track-card"><span class="mn-track-title">{{ __('Progress') }}</span><span>
+											{{ __('Quality Check') }}
 										</span></div>
 								</div>
 							</div>
@@ -87,7 +86,7 @@
 										</span>
 										<span class="mn-step-icon">
 											<i class="ri-shield-check-line"></i>
-										</span>Order<br> confirmed
+										</span>{{ __('Order') }}<br> {{ __('confirmed') }}
 									</div>
 
 									<div class="mn-step mn-step-completed">
@@ -96,22 +95,22 @@
 										</span>
 										<span class="mn-step-icon">
 											<i class="ri-settings-5-line"></i>
-										</span>Processing<br> order
+										</span>{{ __('Processing') }}<br> {{ __('order') }}
 									</div>
 									<div class="mn-step mn-step-active">
 										<span class="mn-step-icon">
 											<i class="ri-gift-line"></i>
-										</span>Quality<br> check
+										</span>{{ __('Quality') }}<br> {{ __('check') }}
 									</div>
 									<div class="mn-step">
 										<span class="mn-step-icon">
 											<i class="ri-truck-line"></i>
-										</span>Product<br> dispatched
+										</span>{{ __('Product') }}<br> {{ __('dispatched') }}
 									</div>
 									<div class="mn-step">
 										<span class="mn-step-icon">
 											<i class="ri-home-4-line"></i>
-										</span>Product<br> delivered
+										</span>{{ __('Product') }}<br> {{ __('delivered') }}
 									</div>
 								</div>
 								<div class="mn-steps-header">

@@ -84,8 +84,8 @@
 					<div class="col-md-6 col-sm-12">
 						<!-- mn-breadcrumb-list start -->
 						<ul class="mn-breadcrumb-list">
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.blogs.index') }}">Blog</a></li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.blogs.index') }}">{{ __('Blog') }}</a></li>
 							<li class="mn-breadcrumb-item active">{{ Str::limit($blog->title, 25) }}</li>
 						</ul>
 						<!-- mn-breadcrumb-list end -->
@@ -107,9 +107,9 @@
 							<div class="single-blog-detail">
 								<label>
 									{{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }} - 
-									<span class="text-primary font-weight-bold">{{ $blog->category ?? 'General' }}</span>
+									<span class="text-primary font-weight-bold">{{ $blog->category ?? __('General') }}</span>
 									@if ($blog->author_name)
-										• By <span class="text-dark">{{ $blog->author_name }}</span>
+										• {{ __('By') }} <span class="text-dark">{{ $blog->author_name }}</span>
 									@endif
 								</label>
 								<h3>{{ $blog->title }}</h3>
@@ -137,7 +137,7 @@
 
 					<div class="mn-blog-cmt-preview">
 						<div class="mn-blog-comment-wrapper">
-							<h4 class="mn-blog-dmn-title">Comments : {{ str_pad($totalComments, 2, '0', STR_PAD_LEFT) }}</h4>
+							<h4 class="mn-blog-dmn-title">{{ __('Comments') }} : {{ str_pad($totalComments, 2, '0', STR_PAD_LEFT) }}</h4>
 							@forelse ($comments as $comment)
 								<div class="mn-single-comment-wrapper mt-35" id="comment-{{ $comment->id }}">
 									<div class="mn-blog-user-img">
@@ -148,7 +148,7 @@
 										<span>{{ $comment->created_at->format('F d, Y') }}</span>
 										<p>{{ $comment->comment }}</p>
 										<div class="mn-blog-details-btn">
-											<a href="#comment-form" onclick="setReply({{ $comment->id }}, '{{ addslashes($comment->name) }}')">Reply</a>
+											<a href="#comment-form" onclick="setReply({{ $comment->id }}, '{{ addslashes($comment->name) }}')">{{ __('Reply') }}</a>
 										</div>
 									</div>
 								</div>
@@ -159,27 +159,27 @@
 											<img src="{{ $reply->avatar_url }}" alt="{{ $reply->name }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
 										</div>
 										<div class="mn-blog-comment-content">
-											<h5>{{ $reply->name }} <span class="badge bg-light text-muted small border ms-1">Reply</span></h5>
+											<h5>{{ $reply->name }} <span class="badge bg-light text-muted small border ms-1">{{ __('Reply') }}</span></h5>
 											<span>{{ $reply->created_at->format('F d, Y') }}</span>
 											<p>{{ $reply->comment }}</p>
 											<div class="mn-blog-details-btn">
-												<a href="#comment-form" onclick="setReply({{ $comment->id }}, '{{ addslashes($reply->name) }}')">Reply</a>
+												<a href="#comment-form" onclick="setReply({{ $comment->id }}, '{{ addslashes($reply->name) }}')">{{ __('Reply') }}</a>
 											</div>
 										</div>
 									</div>
 								@endforeach
 							@empty
-								<p class="text-muted py-3">Belum ada komentar untuk artikel ini. Jadilah yang pertama berkomentar!</p>
+								<p class="text-muted py-3">{{ __('No comments for this article yet. Be the first to comment!') }}</p>
 							@endforelse
 						</div>
 					</div>
 
 					<div class="mn-blog-cmt-form" id="comment-form">
 						<div class="mn-blog-reply-wrapper mt-50">
-							<h4 class="mn-blog-dmn-title" id="reply-title">Leave A Reply</h4>
+							<h4 class="mn-blog-dmn-title" id="reply-title">{{ __('Leave A Reply') }}</h4>
 							<div id="reply-alert" class="alert alert-info py-2 px-3 d-none align-items-center justify-content-between mb-3" style="border-radius: 6px;">
-								<span>Membalas komentar <strong id="reply-to-name"></strong></span>
-								<button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="cancelReply()">Batal Balas</button>
+								<span>{{ __('Replying to comment') }} <strong id="reply-to-name"></strong></span>
+								<button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="cancelReply()">{{ __('Cancel Reply') }}</button>
 							</div>
 
 							<form class="mn-blog-form" action="{{ route('ecommerce.blogs.comment.store', $blog->slug) }}" method="POST">
@@ -199,7 +199,7 @@
 								<div class="row">
 									<div class="col-md-6">
 										<div class="mn-leave-form">
-											<input type="text" name="name" placeholder="Full Name" value="{{ old('name', auth()->user()?->name) }}" {{ auth()->check() ? 'readonly style=background-color:#f8f9fa;' : '' }} required>
+											<input type="text" name="name" placeholder="{{ __('Full Name') }}" value="{{ old('name', auth()->user()?->name) }}" {{ auth()->check() ? 'readonly style=background-color:#f8f9fa;' : '' }} required>
 										</div>
 										@error('name')
 											<small class="text-danger d-block mt-1">{{ $message }}</small>
@@ -207,7 +207,7 @@
 									</div>
 									<div class="col-md-6">
 										<div class="mn-leave-form">
-											<input type="email" name="email" placeholder="Email Address" value="{{ old('email', auth()->user()?->email) }}" {{ auth()->check() ? 'readonly style=background-color:#f8f9fa;' : '' }} required>
+											<input type="email" name="email" placeholder="{{ __('Email Address') }}" value="{{ old('email', auth()->user()?->email) }}" {{ auth()->check() ? 'readonly style=background-color:#f8f9fa;' : '' }} required>
 										</div>
 										@error('email')
 											<small class="text-danger d-block mt-1">{{ $message }}</small>
@@ -215,8 +215,8 @@
 									</div>
 									<div class="col-md-12">
 										<div class="mn-text-leave">
-											<textarea name="comment" placeholder="Your Message / Comment" required>{{ old('comment') }}</textarea>
-											<button type="submit" class="mn-btn-2 border-0"><span>Submit Comment</span></button>
+											<textarea name="comment" placeholder="{{ __('Your Message / Comment') }}" required>{{ old('comment') }}</textarea>
+											<button type="submit" class="mn-btn-2 border-0"><span>{{ __('Submit Comment') }}</span></button>
 										</div>
 										@error('comment')
 											<small class="text-danger d-block mt-1">{{ $message }}</small>
@@ -235,7 +235,7 @@
 		<div class="mn-blogs-sidebar mn-blogs-leftside col-lg-4 col-md-12 m-t-991">
 			<div class="mn-blog-search">
 				<form class="mn-blog-search-form" action="{{ route('ecommerce.blogs.index') }}" method="GET">
-					<input class="form-control" name="search" placeholder="Search Our Blog" type="text" value="{{ request('search') }}">
+					<input class="form-control" name="search" placeholder="{{ __('Search Our Blog') }}" type="text" value="{{ request('search') }}">
 					<button class="submit" type="submit"><i class="ri-search-line"></i></button>
 				</form>
 			</div>
@@ -243,7 +243,7 @@
 				<!-- Sidebar Recent Blog Block -->
 				<div class="mn-sidebar-block mn-sidebar-recent-blog">
 					<div class="mn-sb-title">
-						<h3 class="mn-sidebar-title">Recent Articles</h3>
+						<h3 class="mn-sidebar-title">{{ __('Recent Articles') }}</h3>
 					</div>
 					<div class="mn-blog-block-content mn-sidebar-dropdown">
 						@forelse ($recentBlogs as $recent)
@@ -258,11 +258,11 @@
 										<a href="{{ route('ecommerce.blogs.detail', $recent->slug) }}">{{ Str::limit($recent->title, 40) }}</a>
 									</h5>
 									<div class="mn-blog-date">{{ $recent->published_at ? $recent->published_at->format('F d, Y') : $recent->created_at->format('F d, Y') }}</div>
-									<span class="text-primary small">- {{ $recent->category ?? 'General' }}</span>
+									<span class="text-primary small">- {{ $recent->category ?? __('General') }}</span>
 								</div>
 							</div>
 						@empty
-							<p class="text-muted small">No other articles available.</p>
+							<p class="text-muted small">{{ __('No other articles available.') }}</p>
 						@endforelse
 					</div>
 				</div>
@@ -272,7 +272,7 @@
 				@if ($categories->isNotEmpty())
 					<div class="mn-sidebar-block">
 						<div class="mn-sb-title">
-							<h3 class="mn-sidebar-title">Categories</h3>
+							<h3 class="mn-sidebar-title">{{ __('Categories') }}</h3>
 						</div>
 						<div class="mn-blog-block-content mn-sidebar-dropdown">
 							<ul>
@@ -299,7 +299,7 @@ function setReply(parentId, authorName) {
     document.getElementById('reply-to-name').innerText = authorName;
     document.getElementById('reply-alert').classList.remove('d-none');
     document.getElementById('reply-alert').classList.add('d-flex');
-    document.getElementById('reply-title').innerText = 'Reply to ' + authorName;
+    document.getElementById('reply-title').innerText = @json(__('Reply to')) + ' ' + authorName;
     const form = document.getElementById('comment-form');
     if (form) form.scrollIntoView({ behavior: 'smooth' });
 }
@@ -308,7 +308,7 @@ function cancelReply() {
     document.getElementById('comment-parent-id').value = '';
     document.getElementById('reply-alert').classList.add('d-none');
     document.getElementById('reply-alert').classList.remove('d-flex');
-    document.getElementById('reply-title').innerText = 'Leave A Reply';
+    document.getElementById('reply-title').innerText = @json(__('Leave A Reply'));
 }
 </script>
 @endsection

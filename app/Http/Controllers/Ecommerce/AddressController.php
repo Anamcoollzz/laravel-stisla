@@ -21,7 +21,7 @@ class AddressController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'unauthenticated',
-                    'message' => 'Silakan login terlebih dahulu untuk mengakses daftar alamat!',
+                    'message' => __('Please login first to access your address list!'),
                     'redirect' => route('ecommerce.login'),
                 ], 401);
             }
@@ -102,7 +102,7 @@ class AddressController extends Controller
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Alamat berhasil ditambahkan!',
+                'message' => __('Address added successfully!'),
                 'data' => $address,
             ]);
         }
@@ -162,7 +162,7 @@ class AddressController extends Controller
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Alamat berhasil diperbarui!',
+                'message' => __('Address updated successfully!'),
                 'data' => $address,
             ]);
         }
@@ -203,7 +203,7 @@ class AddressController extends Controller
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Alamat berhasil dihapus!',
+                'message' => __('Address deleted successfully!'),
             ]);
         }
 
@@ -230,7 +230,7 @@ class AddressController extends Controller
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Alamat utama berhasil diperbarui!',
+                'message' => __('Primary address updated successfully!'),
                 'data' => $address->fresh(),
             ]);
         }

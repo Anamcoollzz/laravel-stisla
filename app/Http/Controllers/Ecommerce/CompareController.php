@@ -62,7 +62,7 @@ class CompareController extends Controller
         if ($existing) {
             $existing->delete();
             $isCompared = false;
-            $message = 'Removed from Compare list successfully!';
+            $message = __('Removed from Compare list successfully!');
         } else {
             ProductCompare::create([
                 'user_id' => Auth::check() ? (int) Auth::id() : null,
@@ -72,7 +72,7 @@ class CompareController extends Controller
                 'quantity' => 1,
             ]);
             $isCompared = true;
-            $message = 'Added to Compare list successfully!';
+            $message = __('Added to Compare list successfully!');
         }
 
         $count = $this->compareQuery($request)->count();
@@ -100,10 +100,10 @@ class CompareController extends Controller
             return response()->json([
                 'status' => 'success',
                 'count' => $count,
-                'message' => 'Removed from Compare list successfully!',
+                'message' => __('Removed from Compare list successfully!'),
             ]);
         }
 
-        return redirect()->route('ecommerce.compare')->with('success', 'Product removed from compare list.');
+        return redirect()->route('ecommerce.compare')->with('success', __('Product removed from compare list.'));
     }
 }

@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Ticket List - Ecommerce')
+@section('title', __('Ticket List - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,12 +32,12 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">Ticket List</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('Ticket List') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">Ticket List</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('Ticket List') }}</li>
 								</ul>
 							</div>
 						</div>
@@ -70,14 +70,14 @@
 				@endphp
 
 				<div class="d-flex align-items-center justify-content-between mb-3">
-					<h4 class="mb-0 fw-bold">Tiket &amp; Pesan Saya</h4>
+					<h4 class="mb-0 fw-bold">{{ __('My Tickets & Messages') }}</h4>
 					@if ($hasOpenTicket)
 						<span class="badge bg-info-subtle text-info-emphasis border px-3 py-2" style="font-size: 12px;">
-							<i class="ri-information-line me-1"></i> Tutup tiket aktif untuk membuat pesan baru
+							<i class="ri-information-line me-1"></i> {{ __('Close active ticket to create a new message') }}
 						</span>
 					@else
 						<a href="{{ route('ecommerce.contact-us') }}" class="mn-btn-2">
-							<span><i class="ri-add-line me-1"></i> Kirim Pesan Baru</span>
+							<span><i class="ri-add-line me-1"></i> {{ __('Send New Message') }}</span>
 						</a>
 					@endif
 				</div>
@@ -87,10 +87,10 @@
 						<div class="mb-3">
 							<i class="ri-customer-service-2-line" style="font-size: 52px; color: #adb5bd;"></i>
 						</div>
-						<h4 class="fw-bold">Belum ada tiket</h4>
-						<p class="text-muted mb-4">Anda belum pernah mengirim pesan atau tiket bantuan.</p>
+						<h4 class="fw-bold">{{ __('No tickets yet') }}</h4>
+						<p class="text-muted mb-4">{{ __('You have not sent any messages or support tickets yet.') }}</p>
 						<div>
-							<a href="{{ route('ecommerce.contact-us') }}" class="mn-btn-2"><span>Hubungi Kami</span></a>
+							<a href="{{ route('ecommerce.contact-us') }}" class="mn-btn-2"><span>{{ __('Contact Us') }}</span></a>
 						</div>
 					</div>
 				@else
@@ -99,7 +99,7 @@
 						<div class="col-lg-4 col-md-12">
 							<div class="card border shadow-sm" style="border-radius: 12px; overflow: hidden;">
 								<div class="card-header bg-white py-3 border-bottom">
-									<h6 class="mb-0 fw-bold">Daftar Tiket ({{ $tickets->count() }})</h6>
+									<h6 class="mb-0 fw-bold">{{ __('Ticket List') }} ({{ $tickets->count() }})</h6>
 								</div>
 								<div class="list-group list-group-flush">
 									@foreach ($tickets as $ticket)
@@ -117,7 +117,7 @@
 											<div class="d-flex justify-content-between align-items-start mb-1">
 												<span class="fw-bold small">#{{ $ticket->id }} &bull; {{ \Illuminate\Support\Str::limit($ticket->title, 36) }}</span>
 												<span class="badge {{ $statusBadge }}" style="font-size: 10px;">
-													{{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
+													{{ __(ucfirst(str_replace('_', ' ', $ticket->status))) }}
 												</span>
 											</div>
 											<p class="mb-1 small {{ $isActive ? 'text-white-50' : 'text-muted' }} text-truncate">
@@ -152,18 +152,18 @@
 									<div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
 										<div>
 											<h5 class="mb-1 fw-bold text-dark">#{{ $activeTicket->id }} &mdash; {{ $activeTicket->title }}</h5>
-											<small class="text-muted">Dibuat pada {{ $activeTicket->created_at?->format('d F Y, H:i') }} WIB</small>
+											<small class="text-muted">{{ __('Created on') }} {{ $activeTicket->created_at?->format('d F Y, H:i') }} WIB</small>
 										</div>
 										<div class="d-flex align-items-center gap-2">
 											<span class="badge {{ $activeStatusBadge }} px-3 py-2">
-												{{ ucfirst(str_replace('_', ' ', $activeTicket->status)) }}
+												{{ __(ucfirst(str_replace('_', ' ', $activeTicket->status))) }}
 											</span>
 											@if ($activeTicket->status !== 'closed')
-												<form action="{{ route('ecommerce.ticket-list.close', $activeTicket) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menutup tiket ini?');">
+												<form action="{{ route('ecommerce.ticket-list.close', $activeTicket) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to close this ticket?') }}');">
 													@csrf
 													@method('PATCH')
 													<button type="submit" class="btn btn-sm btn-outline-danger">
-														<i class="ri-close-circle-line me-1"></i> Tutup Tiket
+														<i class="ri-close-circle-line me-1"></i> {{ __('Close Ticket') }}
 													</button>
 												</form>
 											@endif
@@ -174,7 +174,7 @@
 										<div class="mb-3 p-3 bg-white border rounded-3 shadow-sm">
 											<div class="d-flex justify-content-between align-items-center mb-2">
 												<span class="fw-bold text-primary small">
-													<i class="ri-user-3-line me-1"></i> {{ auth()->user()->name }} (Anda)
+													<i class="ri-user-3-line me-1"></i> {{ auth()->user()->name }} ({{ __('You') }})
 												</span>
 												<small class="text-muted">{{ $activeTicket->created_at?->format('d M Y, H:i') }}</small>
 											</div>
@@ -190,9 +190,9 @@
 												<div class="d-flex justify-content-between align-items-center mb-2">
 													<span class="fw-bold small {{ $isSelf ? 'text-primary' : 'text-dark' }}">
 														@if ($isSelf)
-															<i class="ri-user-3-line me-1"></i> {{ auth()->user()->name }} (Anda)
+															<i class="ri-user-3-line me-1"></i> {{ auth()->user()->name }} ({{ __('You') }})
 														@else
-															<i class="ri-customer-service-2-line me-1 text-primary"></i> {{ $reply->user?->name ?? 'Admin Support' }} (Support)
+															<i class="ri-customer-service-2-line me-1 text-primary"></i> {{ $reply->user?->name ?? __('Admin Support') }} ({{ __('Support') }})
 														@endif
 													</span>
 													<small class="text-muted">{{ $reply->created_at?->format('d M Y, H:i') }}</small>
@@ -204,17 +204,17 @@
 									<div class="card-footer bg-white p-3 border-top">
 										@if ($activeTicket->status === 'closed')
 											<div class="alert alert-secondary mb-0 text-center small">
-												Tiket ini sudah ditutup. Silakan buat pesan baru di halaman <a href="{{ route('ecommerce.contact-us') }}" class="fw-bold">Contact Us</a> jika masih membutuhkan bantuan.
+												{!! __('This ticket is closed. Please create a new message on the :link page if you still need assistance.', ['link' => '<a href="' . route('ecommerce.contact-us') . '" class="fw-bold">' . __('Contact Us') . '</a>']) !!}
 											</div>
 										@else
 											<form action="{{ route('ecommerce.ticket-list.reply', $activeTicket) }}" method="POST">
 												@csrf
 												<div class="mb-2">
-													<textarea name="message" rows="3" class="form-control" placeholder="Tulis balasan Anda..." required>{{ old('message') }}</textarea>
+													<textarea name="message" rows="3" class="form-control" placeholder="{{ __('Write your reply...') }}" required>{{ old('message') }}</textarea>
 												</div>
 												<div class="text-end">
 													<button type="submit" class="mn-btn-2">
-														<span><i class="ri-send-plane-line me-1"></i> Kirim Balasan</span>
+														<span><i class="ri-send-plane-line me-1"></i> {{ __('Send Reply') }}</span>
 													</button>
 												</div>
 											</form>

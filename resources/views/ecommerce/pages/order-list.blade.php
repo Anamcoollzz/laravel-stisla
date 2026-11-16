@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Order List - Ecommerce')
+@section('title', __('Order List - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,13 +32,13 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">Order List</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('Order List') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">Order List</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('Order List') }}</li>
 								</ul>
 								<!-- mn-breadcrumb-list end -->
 							</div>
@@ -53,9 +53,9 @@
 					<div class="col-md-12">
 						<div class="mn-vendor-dashboard-card">
 							<div class="mn-vendor-card-header">
-								<h5>My Orders</h5>
+								<h5>{{ __('My Orders') }}</h5>
 								<div class="mn-header-btn d-flex align-items-center gap-2">
-									<a class="mn-btn-2" href="{{ route('ecommerce.products.index') }}"><span>Shop Now</span></a>
+									<a class="mn-btn-2" href="{{ route('ecommerce.products.index') }}"><span>{{ __('Shop Now') }}</span></a>
 								</div>
 							</div>
 							<div class="mn-vendor-card-body">
@@ -63,12 +63,12 @@
 									<table class="mn-table">
 										<thead>
 											<tr>
-												<th scope="col">Order #</th>
-												<th scope="col">Date</th>
-												<th scope="col">Items</th>
-												<th scope="col">Total</th>
-												<th scope="col">Status</th>
-												<th scope="col">Payment</th>
+												<th scope="col">{{ __('Order #') }}</th>
+												<th scope="col">{{ __('Date') }}</th>
+												<th scope="col">{{ __('Items') }}</th>
+												<th scope="col">{{ __('Total') }}</th>
+												<th scope="col">{{ __('Status') }}</th>
+												<th scope="col">{{ __('Payment') }}</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -101,22 +101,22 @@
 																<span>
 																	{{ $firstItem->product_title ?? $firstItem->product->title }}
 																	@if ($order->items->count() > 1)
-																		<small class="text-muted">(+{{ $order->items->count() - 1 }} produk lainnya, {{ $totalQty }} pcs)</small>
+																		<small class="text-muted">(+{{ $order->items->count() - 1 }} {{ __('other products') }}, {{ $totalQty }} {{ __('pcs') }})</small>
 																	@else
-																		<small class="text-muted">({{ $totalQty }} pcs)</small>
+																		<small class="text-muted">({{ $totalQty }} {{ __('pcs') }})</small>
 																	@endif
 																</span>
 															</a>
 														@else
-															<span>{{ $totalQty }} item</span>
+															<span>{{ $totalQty }} {{ __('item') }}</span>
 														@endif
 													</td>
 													<td><span class="fw-semibold">{{ $order->formatted_grand_total }}</span></td>
 													<td>
-														<span class="{{ $statusClass }}">{{ ucfirst($order->status) }}</span>
+														<span class="{{ $statusClass }}">{{ __(ucfirst($order->status)) }}</span>
 													</td>
 													<td>
-														<span class="{{ $paymentClass }}">{{ ucfirst($order->payment_status) }}</span>
+														<span class="{{ $paymentClass }}">{{ __(ucfirst($order->payment_status)) }}</span>
 													</td>
 												</tr>
 											@empty
@@ -125,10 +125,10 @@
 														<div class="m-b-15">
 															<i class="ri-shopping-bag-3-line" style="font-size: 48px; color: #adb5bd;"></i>
 														</div>
-														<h4>Belum ada pesanan</h4>
-														<p class="text-muted">Anda belum memiliki riwayat pesanan. Yuk mulai belanja sekarang.</p>
+														<h4>{{ __('No orders yet') }}</h4>
+														<p class="text-muted">{{ __('You do not have any order history yet. Start shopping now.') }}</p>
 														<div class="m-t-15">
-															<a href="{{ route('ecommerce.products.index') }}" class="mn-btn-2"><span>Shop Now</span></a>
+															<a href="{{ route('ecommerce.products.index') }}" class="mn-btn-2"><span>{{ __('Shop Now') }}</span></a>
 														</div>
 													</td>
 												</tr>

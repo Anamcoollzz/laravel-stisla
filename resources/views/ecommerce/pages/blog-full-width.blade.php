@@ -4,7 +4,7 @@
 @endphp
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Our Blogs - Ecommerce')
+@section('title', __('Our Blogs - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -36,13 +36,13 @@
 			<div class="col-12">
 				<div class="row gi_breadcrumb_inner">
 					<div class="col-md-6 col-sm-12">
-						<h2 class="mn-breadcrumb-title">Our Blogs</h2>
+						<h2 class="mn-breadcrumb-title">{{ __('Our Blogs') }}</h2>
 					</div>
 					<div class="col-md-6 col-sm-12">
 						<!-- mn-breadcrumb-list start -->
 						<ul class="mn-breadcrumb-list">
-							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-							<li class="mn-breadcrumb-item active">Blogs</li>
+							<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+							<li class="mn-breadcrumb-item active">{{ __('Blogs') }}</li>
 						</ul>
 						<!-- mn-breadcrumb-list end -->
 					</div>
@@ -60,15 +60,15 @@
 						<div class="row g-2 align-items-center">
 							<div class="col-md-6 col-lg-7">
 								<div class="input-group">
-									<input type="text" name="search" class="form-control" placeholder="Search blog articles, topics, keywords..." value="{{ request('search') }}" style="border-radius: 8px 0 0 8px; height: 46px;">
+									<input type="text" name="search" class="form-control" placeholder="{{ __('Search blog articles, topics, keywords...') }}" value="{{ request('search') }}" style="border-radius: 8px 0 0 8px; height: 46px;">
 									<button class="btn btn-primary px-4" type="submit" style="border-radius: 0 8px 8px 0; height: 46px;">
-										<i class="ri-search-line"></i> Search
+										<i class="ri-search-line"></i> {{ __('Search') }}
 									</button>
 								</div>
 							</div>
 							<div class="col-md-4 col-lg-3">
 								<select name="category" class="form-select form-control" onchange="this.form.submit()" style="border-radius: 8px; height: 46px;">
-									<option value="">All Categories</option>
+									<option value="">{{ __('All Categories') }}</option>
 									@foreach ($categories as $cat)
 										<option value="{{ $cat->category }}" {{ request('category') === $cat->category ? 'selected' : '' }}>
 											{{ $cat->category }} ({{ $cat->count }})
@@ -79,7 +79,7 @@
 							<div class="col-md-2 col-lg-2 text-md-end">
 								@if (request('search') || request('category'))
 									<a href="{{ route('ecommerce.blogs.index') }}" class="btn btn-outline-secondary w-100" style="border-radius: 8px; height: 46px; display: inline-flex; align-items: center; justify-content: center;">
-										<i class="ri-close-line me-1"></i> Reset
+										<i class="ri-close-line me-1"></i> {{ __('Reset') }}
 									</a>
 								@endif
 							</div>
@@ -88,9 +88,9 @@
 
 					@if ($categories->isNotEmpty())
 						<div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top align-items-center">
-							<small class="text-muted me-2 font-weight-bold">Popular Topics:</small>
+							<small class="text-muted me-2 font-weight-bold">{{ __('Popular Topics:') }}</small>
 							<a href="{{ route('ecommerce.blogs.index', array_filter(['search' => request('search')])) }}" class="badge {{ !request('category') ? 'bg-primary text-white' : 'bg-white text-dark border' }} text-decoration-none px-3 py-2" style="border-radius: 20px;">
-								All
+								{{ __('All') }}
 							</a>
 							@foreach ($categories as $cat)
 								<a href="{{ route('ecommerce.blogs.index', array_filter(['category' => $cat->category, 'search' => request('search')])) }}" class="badge {{ request('category') === $cat->category ? 'bg-primary text-white' : 'bg-white text-dark border' }} text-decoration-none px-3 py-2" style="border-radius: 20px;">
@@ -110,20 +110,20 @@
 			<div class="col-12">
 				<div class="alert alert-light border d-flex justify-content-between align-items-center py-2 px-3 mb-0" style="border-radius: 8px;">
 					<span>
-						Showing results for
+						{{ __('Showing results for') }}
 						@if (request('search'))
-							keyword: <strong>"{{ request('search') }}"</strong>
+							{{ __('keyword') }}: <strong>"{{ request('search') }}"</strong>
 						@endif
 						@if (request('search') && request('category'))
-							in
+							{{ __('in') }}
 						@endif
 						@if (request('category'))
-							category: <strong>"{{ request('category') }}"</strong>
+							{{ __('category') }}: <strong>"{{ request('category') }}"</strong>
 						@endif
-						({{ $blogs->total() }} articles found)
+						({{ $blogs->total() }} {{ __('articles found') }})
 					</span>
 					<a href="{{ route('ecommerce.blogs.index') }}" class="text-danger small font-weight-bold text-decoration-none">
-						<i class="ri-close-circle-line"></i> Clear filters
+						<i class="ri-close-circle-line"></i> {{ __('Clear filters') }}
 					</a>
 				</div>
 			</div>
@@ -148,7 +148,7 @@
 										<div class="detail p-3 d-flex flex-column flex-grow-1">
 											<label class="text-muted small mb-2">
 												{{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }} - 
-												<a href="{{ route('ecommerce.blogs.index', ['category' => $blog->category]) }}" class="text-primary font-weight-bold">{{ $blog->category ?? 'General' }}</a>
+												<a href="{{ route('ecommerce.blogs.index', ['category' => $blog->category]) }}" class="text-primary font-weight-bold">{{ $blog->category ?? __('General') }}</a>
 											</label>
 											<h3 class="mb-2" style="font-size: 1.15rem; line-height: 1.4;">
 												<a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ $blog->title }}</a>
@@ -159,7 +159,7 @@
 												</p>
 											@endif
 											<div class="more-info mt-auto pt-2 border-top">
-												<a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">Read More<i class="ri-arrow-right-double-line"></i></a>
+												<a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ __('Read More') }}<i class="ri-arrow-right-double-line"></i></a>
 											</div>
 										</div>
 									</div>
@@ -169,10 +169,10 @@
 							<div class="col-12 py-5 text-center">
 								<div class="py-4">
 									<i class="ri-article-line" style="font-size: 3.5rem; color: #ccc;"></i>
-									<h4 class="mt-3 text-dark">No Articles Found</h4>
-									<p class="text-muted">We couldn't find any blog posts matching your search criteria.</p>
+									<h4 class="mt-3 text-dark">{{ __('No Articles Found') }}</h4>
+									<p class="text-muted">{{ __("We couldn't find any blog posts matching your search criteria.") }}</p>
 									<a href="{{ route('ecommerce.blogs.index') }}" class="btn btn-primary px-4 mt-2" style="border-radius: 8px;">
-										View All Articles
+										{{ __('View All Articles') }}
 									</a>
 								</div>
 							</div>
@@ -183,7 +183,7 @@
 				<!-- Pagination Start -->
 				@if ($blogs->total() > 0)
 					<div class="mn-pro-pagination">
-						<span>Showing {{ $blogs->firstItem() ?? 0 }}-{{ $blogs->lastItem() ?? 0 }} of {{ $blogs->total() }} items</span>
+						<span>{{ __('Showing :from-:to of :total items', ['from' => $blogs->firstItem() ?? 0, 'to' => $blogs->lastItem() ?? 0, 'total' => $blogs->total()]) }}</span>
 						@if ($blogs->hasPages())
 							<ul class="mn-pro-pagination-inner">
 								@if ($blogs->onFirstPage())
@@ -201,9 +201,9 @@
 								@endforeach
 
 								@if ($blogs->hasMorePages())
-									<li><a class="next" href="{{ $blogs->nextPageUrl() }}">Next <i class="ri-arrow-right-double-line"></i></a></li>
+									<li><a class="next" href="{{ $blogs->nextPageUrl() }}">{{ __('Next') }} <i class="ri-arrow-right-double-line"></i></a></li>
 								@else
-									<li class="disabled"><span>Next <i class="ri-arrow-right-double-line"></i></span></li>
+									<li class="disabled"><span>{{ __('Next') }} <i class="ri-arrow-right-double-line"></i></span></li>
 								@endif
 							</ul>
 						@endif

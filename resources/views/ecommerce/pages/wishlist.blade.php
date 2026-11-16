@@ -1,6 +1,6 @@
 @extends('ecommerce.layouts.app-ecommerce')
 
-@section('title', 'Wishlist - Ecommerce')
+@section('title', __('Wishlist - Ecommerce'))
 
 @section('vendor-css')
   <link href="{{ asset('mantu/assets/css/vendor/bootstrap.min.css') }}" rel="stylesheet">
@@ -32,13 +32,13 @@
 					<div class="col-12">
 						<div class="row gi_breadcrumb_inner">
 							<div class="col-md-6 col-sm-12">
-								<h2 class="mn-breadcrumb-title">Wishlist Page</h2>
+								<h2 class="mn-breadcrumb-title">{{ __('Wishlist Page') }}</h2>
 							</div>
 							<div class="col-md-6 col-sm-12">
 								<!-- mn-breadcrumb-list start -->
 								<ul class="mn-breadcrumb-list">
-									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">Home</a></li>
-									<li class="mn-breadcrumb-item active">Wishlist Page</li>
+									<li class="mn-breadcrumb-item"><a href="{{ route('ecommerce.index.html') }}">{{ __('Home') }}</a></li>
+									<li class="mn-breadcrumb-item active">{{ __('Wishlist Page') }}</li>
 								</ul>
 								<!-- mn-breadcrumb-list end -->
 							</div>
@@ -50,16 +50,16 @@
 			<!-- Wishlist section -->
 			<section class="mn-wishlist-page p-b-15">
 				<div class="mn-title d-none">
-					<h2>Product <span>Wishlist</span></h2>
-					<p>Your product wish is our first priority.</p>
+					<h2>{{ __('Product') }} <span>{{ __('Wishlist') }}</span></h2>
+					<p>{{ __('Your product wish is our first priority.') }}</p>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="mn-vendor-dashboard-card">
 							<div class="mn-vendor-card-header">
-								<h5>Wishlist</h5>
+								<h5>{{ __('Wishlist') }}</h5>
 								<div class="mn-header-btn">
-									<a class="mn-btn-2" href="{{ route('ecommerce.products.index') }}"><span>Shop Now</span></a>
+									<a class="mn-btn-2" href="{{ route('ecommerce.products.index') }}"><span>{{ __('Shop Now') }}</span></a>
 								</div>
 							</div>
 							<div class="mn-vendor-card-body">
@@ -67,42 +67,42 @@
 									<table class="mn-table">
 										<thead>
 											<tr>
-												<th scope="col">ID</th>
-												<th scope="col">Product</th>
-												<th scope="col">Date</th>
-												<th scope="col">Price</th>
-												<th scope="col">Status</th>
-												<th scope="col">Actions</th>
+												<th scope="col">{{ __('ID') }}</th>
+												<th scope="col">{{ __('Product') }}</th>
+												<th scope="col">{{ __('Date') }}</th>
+												<th scope="col">{{ __('Price') }}</th>
+												<th scope="col">{{ __('Status') }}</th>
+												<th scope="col">{{ __('Actions') }}</th>
 											</tr>
 										</thead>
 										<tbody class="wish-empt">
 											@forelse ($products as $product)
 												<tr class="pro-gl-content" data-product-id="{{ $product->id }}">
 													<td><span>#{{ $product->id }}</span></td>
-													<td data-label="Product" class="mn-cart-pro-name">
+													<td data-label="{{ __('Product') }}" class="mn-cart-pro-name">
 														<a href="{{ route('ecommerce.products.detail', $product->slug) }}" class="mn-item">
 															<img class="prod-img"
 																src="{{ $product->thumbnail_url }}" alt="{{ $product->title }}">{{ $product->title }}
 														</a>
 													</td>
-													<td><span>{{ $product->created_at?->format('d M Y') ?? 'Recently' }}</span></td>
+													<td><span>{{ $product->created_at?->format('d M Y') ?? __('Recently') }}</span></td>
 													<td><span>Rp {{ number_format($product->final_price, 0, ',', '.') }}</span></td>
 													<td>
 														@if ($product->stock > 0)
-															<span class="avl">Available</span>
+															<span class="avl">{{ __('Available') }}</span>
 														@else
-															<span class="out">Out Of Stock</span>
+															<span class="out">{{ __('Out Of Stock') }}</span>
 														@endif
 													</td>
 													<td>
 														<span class="tbl-btn">
 															<a class="mn-btn-2 add-to-cart mn-add-cart" href="javascript:void(0)"
 																data-product-id="{{ $product->id }}"
-																title="Add To Cart">
+																title="{{ __('Add To Cart') }}">
 																<span><i class="ri-shopping-cart-line"></i></span>
 															</a>
 															<a class="mn-btn-1 mn-remove-wish btn" data-product-id="{{ $product->id }}"
-																href="javascript:void(0)" title="Remove From List">
+																href="javascript:void(0)" title="{{ __('Remove From List') }}">
 																<span><i class="ri-close-line"></i></span>
 															</a>
 														</span>
@@ -114,10 +114,10 @@
 														<div class="m-b-15">
 															<i class="ri-heart-line" style="font-size: 48px; color: #adb5bd;"></i>
 														</div>
-														<h4>Your Wishlist is empty</h4>
-														<p class="text-muted">Explore our shop and save your favorite items here.</p>
+														<h4>{{ __('Your Wishlist is empty') }}</h4>
+														<p class="text-muted">{{ __('Explore our shop and save your favorite items here.') }}</p>
 														<div class="m-t-15">
-															<a href="{{ route('ecommerce.products.index') }}" class="btn btn-primary btn-sm">Shop Now</a>
+															<a href="{{ route('ecommerce.products.index') }}" class="btn btn-primary btn-sm">{{ __('Shop Now') }}</a>
 														</div>
 													</td>
 												</tr>

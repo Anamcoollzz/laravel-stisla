@@ -68,16 +68,16 @@
                   @if ($banner->subtitle)
                     <p>{{ $banner->subtitle }}</p>
                   @endif
-                  <a href="{{ $banner->target_url }}" class="mn-btn-2"><span>{{ $banner->button_text ?: 'Shop Now' }}</span></a>
+                  <a href="{{ $banner->target_url }}" class="mn-btn-2"><span>{{ $banner->button_text ?: __('Shop Now') }}</span></a>
                 </div>
               </div>
             @empty
               <div class="mn-hero-slide swiper-slide slide-1">
                 <div class="mn-hero-detail">
-                  <p class="label"><span>50%<br>Off</span></p>
-                  <h1>Fashion sale <br>for women's</h1>
-                  <p>Elevate your every day. Style that speaks volumes.</p>
-                  <a href="{{ route('ecommerce.products.index') }}" class="mn-btn-2"><span>Shop Now</span></a>
+                  <p class="label"><span>50%<br>{{ __('Off') }}</span></p>
+                  <h1>{!! __('Fashion sale <br>for women\'s') !!}</h1>
+                  <p>{{ __('Elevate your every day. Style that speaks volumes.') }}</p>
+                  <a href="{{ route('ecommerce.products.index') }}" class="mn-btn-2"><span>{{ __('Shop Now') }}</span></a>
                 </div>
               </div>
             @endforelse
@@ -90,18 +90,18 @@
             @forelse ($featuredCategories as $category)
               @php
                 $maxDiscount = (int) ($category->products_max_discount_percent ?? 0);
-                $badgeText = $maxDiscount > 0 ? $maxDiscount.'%' : 'Hot';
+                $badgeText = $maxDiscount > 0 ? $maxDiscount.'%' : __('Hot');
               @endphp
               <div class="mn-cat-card cat-card-{{ ($loop->index % 6) + 1 }}">
                 <p class="lbl"><span>{{ $badgeText }}</span></p>
                 <span class="bg">{{ $badgeText }}</span>
-                <h4>{{ $category->parent?->name ?? 'Collection' }}</h4>
+                <h4>{{ $category->parent?->name ?? __('Collection') }}</h4>
                 <h3>
                   <a href="{{ route('ecommerce.products.index', ['category' => $category->slug]) }}" style="color: inherit;">
                     {{ $category->name }}
                   </a>
                 </h3>
-                <p>Items ({{ $category->products_count }})</p>
+                <p>{{ __('Items') }} ({{ $category->products_count }})</p>
                 <ul>
                   @foreach ($category->products->take(3) as $catProduct)
                     <li>
@@ -114,11 +114,11 @@
               </div>
             @empty
               <div class="mn-cat-card cat-card-1">
-                <p class="lbl"><span>Hot</span></p>
-                <span class="bg">Hot</span>
-                <h4>Collection</h4>
-                <h3>Products</h3>
-                <p>Items (0)</p>
+                <p class="lbl"><span>{{ __('Hot') }}</span></p>
+                <span class="bg">{{ __('Hot') }}</span>
+                <h4>{{ __('Collection') }}</h4>
+                <h3>{{ __('Products') }}</h3>
+                <p>{{ __('Items') }} (0)</p>
               </div>
             @endforelse
           </div>
@@ -127,7 +127,7 @@
         <!-- New Section -->
         <section class="mn-new-product p-tb-15">
           <div class="mn-title">
-            <h2>New <span>Arrivals</span></h2>
+            <h2>{{ __('New') }} <span>{{ __('Arrivals') }}</span></h2>
           </div>
           <div class="mn-product owl-carousel">
             @if (isset($newArrivalProducts) && $newArrivalProducts->isNotEmpty())
@@ -136,19 +136,19 @@
                   <div class="mn-product-img">
                     @if ($product->is_trending)
                       <div class="lbl">
-                        <span class="trending">trending</span>
+                        <span class="trending">{{ __('trending') }}</span>
                       </div>
                     @elseif ($product->is_new)
                       <div class="lbl">
-                        <span class="new">new</span>
+                        <span class="new">{{ __('new') }}</span>
                       </div>
                     @elseif ($product->is_sale)
                       <div class="lbl">
-                        <span class="sale">sale</span>
+                        <span class="sale">{{ __('sale') }}</span>
                       </div>
                     @elseif ($product->discount_percent > 0)
                       <div class="lbl">
-                        <span class="discount">{{ (int) $product->discount_percent }}% off</span>
+                        <span class="discount">{{ (int) $product->discount_percent }}% {{ __('off') }}</span>
                       </div>
                     @endif
                     <div class="mn-img">
@@ -159,10 +159,10 @@
                       <div class="mn-pro-loader"></div>
                       <div class="mn-options">
                         <ul>
-                          <li><a href="{{ route('ecommerce.products.detail', $product->slug) }}" data-tooltip title="Quick View">
+                          <li><a href="{{ route('ecommerce.products.detail', $product->slug) }}" data-tooltip title="{{ __('Quick View') }}">
                               <i class="ri-eye-line"></i></a></li>
-                          <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare" data-product-id="{{ $product->id }}"><i class="ri-repeat-line"></i></a></li>
-                          <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart" data-product-id="{{ $product->id }}"><i class="ri-shopping-cart-line"></i></a>
+                          <li><a href="javascript:void(0)" data-tooltip title="{{ __('Compare') }}" class="mn-compare" data-product-id="{{ $product->id }}"><i class="ri-repeat-line"></i></a></li>
+                          <li><a href="javascript:void(0)" data-tooltip title="{{ __('Add To Cart') }}" class="mn-add-cart" data-product-id="{{ $product->id }}"><i class="ri-shopping-cart-line"></i></a>
                           </li>
                         </ul>
                       </div>
@@ -170,7 +170,7 @@
                   </div>
                   <div class="mn-product-detail">
                     <div class="cat">
-                      <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $product->category?->name ?? 'Product' }}</a>
+                      <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $product->category?->name ?? __('Product') }}</a>
                       @if ($product->size)
                         <ul>
                           <li>{{ strtolower($product->size->code ?: $product->size->name) }}</li>
@@ -196,7 +196,7 @@
                           </ul>
                         @endif
                       </div>
-                      <a href="javascript:void(0);" class="mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $product->id }}" data-tooltip title="Wishlist">
+                      <a href="javascript:void(0);" class="mn-wishlist {{ in_array($product->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $product->id }}" data-tooltip title="{{ __('Wishlist') }}">
                         <i class="ri-heart-{{ in_array($product->id, $userWishlistIds ?? []) ? 'fill' : 'line' }}"></i>
                       </a>
                     </div>
@@ -562,7 +562,7 @@
         <section class="mn-new-product p-tb-15">
           <div class="mn-title mn-title-2">
             <div class="mn-timer">
-              <h2>Day of the <span>Deals</span></h2>
+              <h2>{{ __('Day of the') }} <span>{{ __('Deals') }}</span></h2>
               <div class="timer1 timer dealend-timer" data-date="September 30, 2026 19:15:10 PDT">
               </div>
             </div>
@@ -573,23 +573,23 @@
                 <div class="mn-product-img">
                   @if ($deal->discount_percent > 0)
                     <div class="lbl">
-                      <span class="discount">{{ (int) $deal->discount_percent }}% off</span>
+                      <span class="discount">{{ (int) $deal->discount_percent }}% {{ __('off') }}</span>
                     </div>
                   @elseif ($deal->is_deal)
                     <div class="lbl">
-                      <span class="sale">deal</span>
+                      <span class="sale">{{ __('deal') }}</span>
                     </div>
                   @elseif ($deal->is_trending)
                     <div class="lbl">
-                      <span class="trending">trending</span>
+                      <span class="trending">{{ __('trending') }}</span>
                     </div>
                   @elseif ($deal->is_new)
                     <div class="lbl">
-                      <span class="new">new</span>
+                      <span class="new">{{ __('new') }}</span>
                     </div>
                   @elseif ($deal->is_sale)
                     <div class="lbl">
-                      <span class="sale">sale</span>
+                      <span class="sale">{{ __('sale') }}</span>
                     </div>
                   @endif
                   <div class="mn-img">
@@ -600,16 +600,16 @@
                     <div class="mn-pro-loader"></div>
                     <div class="mn-options">
                       <ul>
-                        <li><a href="{{ route('ecommerce.products.detail', $deal->slug) }}" data-tooltip title="Quick View"><i class="ri-eye-line"></i></a></li>
-                        <li><a href="javascript:void(0)" data-tooltip title="Compare" class="mn-compare" data-product-id="{{ $deal->id }}"><i class="ri-repeat-line"></i></a></li>
-                        <li><a href="javascript:void(0)" data-tooltip title="Add To Cart" class="mn-add-cart" data-product-id="{{ $deal->id }}"><i class="ri-shopping-cart-line"></i></a></li>
+                        <li><a href="{{ route('ecommerce.products.detail', $deal->slug) }}" data-tooltip title="{{ __('Quick View') }}"><i class="ri-eye-line"></i></a></li>
+                        <li><a href="javascript:void(0)" data-tooltip title="{{ __('Compare') }}" class="mn-compare" data-product-id="{{ $deal->id }}"><i class="ri-repeat-line"></i></a></li>
+                        <li><a href="javascript:void(0)" data-tooltip title="{{ __('Add To Cart') }}" class="mn-add-cart" data-product-id="{{ $deal->id }}"><i class="ri-shopping-cart-line"></i></a></li>
                       </ul>
                     </div>
                   </div>
                 </div>
                 <div class="mn-product-detail">
                   <div class="cat">
-                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $deal->category?->name ?? 'Product' }}</a>
+                    <a href="{{ route('ecommerce.shop-right-sidebar.html') }}">{{ $deal->category?->name ?? __('Product') }}</a>
                     @if ($deal->size)
                       <ul>
                         <li>{{ strtolower($deal->size->code ?: $deal->size->name) }}</li>
@@ -635,7 +635,7 @@
                         </ul>
                       @endif
                     </div>
-                    <a href="javascript:void(0);" class="mn-wishlist {{ in_array($deal->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $deal->id }}" data-tooltip title="Wishlist">
+                    <a href="javascript:void(0);" class="mn-wishlist {{ in_array($deal->id, $userWishlistIds ?? []) ? 'active' : '' }}" data-product-id="{{ $deal->id }}" data-tooltip title="{{ __('Wishlist') }}">
                       <i class="ri-heart-{{ in_array($deal->id, $userWishlistIds ?? []) ? 'fill' : 'line' }}"></i>
                     </a>
                   </div>
@@ -655,7 +655,7 @@
             <div class="col-md-12">
               <div class="testim-bg">
                 <div class="section-title d-none">
-                  <h2>Customers <span>Review</span></h2>
+                  <h2>{{ __('Customers') }} <span>{{ __('Review') }}</span></h2>
                 </div>
                 <div class="mn-test-outer mn-testimonials">
                   <ul class="mn-testimonial-slider owl-carousel">
@@ -669,7 +669,7 @@
                           <div class="mn-test-content">
                             <div class="mn-test-desc">{{ $testimonial->content }}</div>
                             <div class="mn-test-name">{{ $testimonial->name }}</div>
-                            <div class="mn-test-designation">({{ $testimonial->designation ?: 'Customer' }})</div>
+                            <div class="mn-test-designation">({{ $testimonial->designation ?: __('Customer') }})</div>
                           </div>
                         </div>
                         <img src="{{ asset('mantu/assets/img/icons/bottom-quotes.svg') }}" class="svg_img test_svg bottom" alt="quotes">
@@ -692,7 +692,7 @@
         <!-- Blog Section Start -->
         <section class="mn-blog p-tb-15">
           <div class="mn-title">
-            <h2>Our <span>Blogs</span></h2>
+            <h2>{{ __('Our') }} <span>{{ __('Blogs') }}</span></h2>
           </div>
           <div class="mn-blog-carousel owl-carousel">
             @forelse ($blogs as $blog)
@@ -702,10 +702,10 @@
                     <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}"><img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"></a>
                   </figure>
                   <div class="detail">
-                    <label>{{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }} - <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ $blog->category ?? 'General' }}</a></label>
+                    <label>{{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }} - <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ $blog->category ?? __('General') }}</a></label>
                     <h3><a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ $blog->title }}</a></h3>
                     <div class="more-info">
-                      <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">Read More<i class="ri-arrow-right-double-line"></i></a>
+                      <a href="{{ route('ecommerce.blogs.detail', $blog->slug) }}">{{ __('Read More') }}<i class="ri-arrow-right-double-line"></i></a>
                     </div>
                   </div>
                 </div>
