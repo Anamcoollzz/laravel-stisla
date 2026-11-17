@@ -285,3 +285,4 @@ Route::prefix('app')->group(function () {
 
 require __DIR__.'/pages-web.php';
 require __DIR__.'/ecommerce-pages-web.php';
+require __DIR__.'/spark-admin-web.php';
