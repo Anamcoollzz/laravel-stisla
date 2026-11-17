@@ -146,6 +146,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Permissions', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 3],
             ['name' => 'Menu Management', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 4],
             ['name' => 'Database Backup', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 5],
+            ['name' => 'Log Request', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 6],
         ];
 
         foreach ($accessChildren as $child) {

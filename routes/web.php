@@ -13,6 +13,7 @@ use App\Http\Controllers\EcommerceFaqController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FooterProductCategoryController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\LogRequestController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OurTeamController;
@@ -274,6 +275,11 @@ Route::prefix('app')->group(function () {
         Route::post('backups', [BackupController::class, 'create'])->name('backups.create');
         Route::get('backups/{filename}/download', [BackupController::class, 'download'])->name('backups.download');
         Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
+
+        Route::delete('log-requests/clear', [LogRequestController::class, 'clear'])->name('log-requests.clear');
+        Route::resource('log-requests', LogRequestController::class)->only(['index', 'show', 'destroy'])->parameters([
+            'log-requests' => 'logRequest',
+        ]);
     });
 });
 

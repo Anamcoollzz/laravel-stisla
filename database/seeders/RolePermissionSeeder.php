@@ -51,6 +51,7 @@ class RolePermissionSeeder extends Seeder
             'payment-banks' => ['view', 'create', 'edit', 'delete'],
             'chat' => ['view', 'create', 'delete'],
             'backup' => ['view', 'create', 'download', 'delete'],
+            'log-requests' => ['view', 'delete'],
             'settings' => ['view', 'edit'],
         ];
 
