@@ -112,7 +112,7 @@
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item text-danger" href="page-login.html"><i class="bi bi-box-arrow-right"></i>
+                <li><a class="dropdown-item text-danger" href="{{ route('pages.spark-admin.page-login') }}"><i class="bi bi-box-arrow-right"></i>
                         Logout</a></li>
             </ul>
         </div>

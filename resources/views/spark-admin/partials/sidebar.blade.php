@@ -4,7 +4,7 @@
          ========================================== -->
 <div class="sidebar-wrapper" id="sidebar">
     <!-- Brand Logo / Identity -->
-    <a href="index.html" class="sidebar-brand">
+    <a href="{{ route('pages.spark-admin.index') }}" class="sidebar-brand">
         <i class="bi bi-asterisk"></i>
         <span>Spark Admin</span>
     </a>
@@ -16,7 +16,7 @@
             <div class="sidebar-menu-title">Menu</div>
             <ul class="sidebar-menu-list">
                 <li class="sidebar-menu-item">
-                    <a href="index.html" class="sidebar-menu-link active" id="menu-overview" title="Overview">
+                    <a href="{{ route('pages.spark-admin.index') }}" class="sidebar-menu-link {{ request()->routeIs('pages.spark-admin.index') ? 'active' : '' }}" id="menu-overview" title="Overview">
                         <i class="bi bi-grid-fill"></i>
                         <span>Dashboard</span>
                     </a>
@@ -29,19 +29,19 @@
             <div class="sidebar-menu-title">Components</div>
             <ul class="sidebar-menu-list">
                 <li class="sidebar-menu-item">
-                    <a href="tables-basic.html" class="sidebar-menu-link" id="menu-basictables" title="Basic Tables">
+                    <a href="{{ route('pages.spark-admin.tables-basic') }}" class="sidebar-menu-link {{ request()->routeIs('pages.spark-admin.tables-basic') ? 'active' : '' }}" id="menu-basictables" title="Basic Tables">
                         <i class="bi bi-table"></i>
                         <span>Basic Tables</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="ui-forms.html" class="sidebar-menu-link" id="menu-uiforms" title="Forms and Input">
+                    <a href="{{ route('pages.spark-admin.ui-forms') }}" class="sidebar-menu-link {{ request()->routeIs('pages.spark-admin.ui-forms') ? 'active' : '' }}" id="menu-uiforms" title="Forms and Input">
                         <i class="bi bi-input-cursor-text"></i>
                         <span>Forms & Input</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="ui-buttons.html" class="sidebar-menu-link" id="menu-uibuttons" title="Buttons">
+                    <a href="{{ route('pages.spark-admin.ui-buttons') }}" class="sidebar-menu-link {{ request()->routeIs('pages.spark-admin.ui-buttons') ? 'active' : '' }}" id="menu-uibuttons" title="Buttons">
                         <i class="bi bi-menu-button-wide-fill"></i>
                         <span>Buttons & Alerts</span>
                     </a>
@@ -54,19 +54,19 @@
             <div class="sidebar-menu-title">Pages</div>
             <ul class="sidebar-menu-list">
                 <li class="sidebar-menu-item">
-                    <a href="page-blank.html" class="sidebar-menu-link" id="menu-blankpage" title="Blank Page">
+                    <a href="{{ route('pages.spark-admin.page-blank') }}" class="sidebar-menu-link {{ request()->routeIs('pages.spark-admin.page-blank') ? 'active' : '' }}" id="menu-blankpage" title="Blank Page">
                         <i class="bi bi-file-earmark"></i>
                         <span>Blank Page</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="page-login.html" class="sidebar-menu-link" id="menu-loginpage" title="Login Page">
+                    <a href="{{ route('pages.spark-admin.page-login') }}" class="sidebar-menu-link {{ request()->routeIs('pages.spark-admin.page-login') ? 'active' : '' }}" id="menu-loginpage" title="Login Page">
                         <i class="bi bi-box-arrow-in-right"></i>
                         <span>Login Screen</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="page-404.html" class="sidebar-menu-link" id="menu-404" title="404 Page">
+                    <a href="{{ route('pages.spark-admin.page-404') }}" class="sidebar-menu-link {{ request()->routeIs('pages.spark-admin.page-404') ? 'active' : '' }}" id="menu-404" title="404 Page">
                         <i class="bi bi-slash-circle"></i>
                         <span>Error 404</span>
                     </a>
