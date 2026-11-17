@@ -36,6 +36,13 @@ return [
                     'help' => 'Choose between the default centered card layout or the side cover split layout for the login page.',
                     'rules' => ['in:default,login-2'],
                 ],
+                'is_active_register_page' => [
+                    'label' => 'Active Register Page',
+                    'type' => 'switch',
+                    'default' => '1',
+                    'help' => 'Enable or disable the public registration page (/app/auth/register).',
+                    'rules' => ['nullable', 'boolean'],
+                ],
                 'google_analytics_code' => ['label' => 'Google Analytics Code', 'type' => 'code', 'rules' => ['string', 'max:5000']],
             ],
         ],

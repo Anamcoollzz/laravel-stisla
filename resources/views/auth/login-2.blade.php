@@ -134,9 +134,11 @@
               </button>
             </div>
 
-            <div class="mt-4 text-center">
-              {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
-            </div>
+            @if (\App\Models\Setting::getValue('is_active_register_page', '1') === '1')
+              <div class="mt-4 text-center">
+                {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
+              </div>
+            @endif
           </form>
         </div>
 

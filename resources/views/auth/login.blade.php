@@ -131,9 +131,11 @@
               </form>
             </div>
           </div>
-          <div class="mt-5 text-muted text-center">
-            {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
-          </div>
+          @if (\App\Models\Setting::getValue('is_active_register_page', '1') === '1')
+            <div class="mt-5 text-muted text-center">
+              {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
+            </div>
+          @endif
           <div class="simple-footer">
             Copyright &copy; {{ $siteTitle }} {{ \App\Models\Setting::getValue('year', date('Y')) }}
             <div class="mt-1">
