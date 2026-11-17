@@ -43,6 +43,13 @@ return [
                     'help' => 'Enable or disable the public registration page (/app/auth/register).',
                     'rules' => ['nullable', 'boolean'],
                 ],
+                'send_activation_email_on_register' => [
+                    'label' => 'Send Activation Email on Register',
+                    'type' => 'switch',
+                    'default' => '0',
+                    'help' => 'Send an account activation link via email when a user registers. Users must activate their account before logging in.',
+                    'rules' => ['nullable', 'boolean'],
+                ],
                 'google_analytics_code' => ['label' => 'Google Analytics Code', 'type' => 'code', 'rules' => ['string', 'max:5000']],
             ],
         ],

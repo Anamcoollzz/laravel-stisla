@@ -63,6 +63,9 @@ Route::prefix('app')->group(function () {
 
         Route::get('/auth/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
         Route::post('/auth/register', [RegisterController::class, 'register'])->name('register.store');
+        Route::get('/auth/activate/{id}/{hash}', [RegisterController::class, 'activate'])
+            ->middleware('signed')
+            ->name('register.activate');
 
         Route::get('/auth/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
         Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');

@@ -38,10 +38,22 @@ class LoginController extends Controller
         $credentials = $request->safe()->only(['email', 'password']);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-
             /** @var User $user */
             $user = Auth::user();
+
+            if (Setting::getValue('send_activation_email_on_register', '0') === '1'
+                && $user->email_verified_at === null
+                && ! $user->hasRole('admin')) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()
+                    ->with('error', __('Akun Anda belum aktif. Silakan cek email Anda dan klik link aktivasi terlebih dahulu.'))
+                    ->onlyInput('email');
+            }
+
+            $request->session()->regenerate();
             $user->update(['last_logged_in' => now()]);
 
             return redirect()
