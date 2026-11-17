@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EcommerceFaqController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FooterProductCategoryController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\LogRequestController;
 use App\Http\Controllers\MenuController;
@@ -44,7 +45,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/pages/index.html');
+Route::get('/', HomeController::class);
 Route::get('/lang/{locale}', [LocaleController::class, 'switch']);
 Route::get('/privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
 
@@ -285,3 +286,4 @@ Route::prefix('app')->group(function () {
 
 require __DIR__.'/pages-web.php';
 require __DIR__.'/ecommerce-pages-web.php';
+require __DIR__.'/spark-admin-web.php';
