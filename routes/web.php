@@ -13,6 +13,7 @@ use App\Http\Controllers\EcommerceFaqController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FooterProductCategoryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LaravelLogController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\LogRequestController;
 use App\Http\Controllers\MenuController;
@@ -281,6 +282,11 @@ Route::prefix('app')->group(function () {
         Route::resource('log-requests', LogRequestController::class)->only(['index', 'show', 'destroy'])->parameters([
             'log-requests' => 'logRequest',
         ]);
+
+        Route::get('laravel-logs', [LaravelLogController::class, 'index'])->name('laravel-logs.index');
+        Route::get('laravel-logs/download', [LaravelLogController::class, 'download'])->name('laravel-logs.download');
+        Route::post('laravel-logs/clear', [LaravelLogController::class, 'clear'])->name('laravel-logs.clear');
+        Route::delete('laravel-logs/delete', [LaravelLogController::class, 'destroy'])->name('laravel-logs.destroy');
     });
 });
 
