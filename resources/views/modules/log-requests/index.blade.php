@@ -316,7 +316,7 @@
       @if ($logRequests->hasPages())
         <div class="card-footer d-flex justify-content-between align-items-center">
           <span class="small text-muted">Halaman {{ $logRequests->currentPage() }} dari {{ $logRequests->lastPage() }}</span>
-          {{ $logRequests->links() }}
+          {{ $logRequests->links('pagination::bootstrap-4') }}
         </div>
       @endif
     </div>
