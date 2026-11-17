@@ -9,6 +9,7 @@ use App\Http\Controllers\BlogCommentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DatabaseTableController;
 use App\Http\Controllers\EcommerceFaqController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FooterProductCategoryController;
@@ -287,6 +288,9 @@ Route::prefix('app')->group(function () {
         Route::get('laravel-logs/download', [LaravelLogController::class, 'download'])->name('laravel-logs.download');
         Route::post('laravel-logs/clear', [LaravelLogController::class, 'clear'])->name('laravel-logs.clear');
         Route::delete('laravel-logs/delete', [LaravelLogController::class, 'destroy'])->name('laravel-logs.destroy');
+
+        Route::get('database-tables', [DatabaseTableController::class, 'index'])->name('database-tables.index');
+        Route::get('database-tables/{table}', [DatabaseTableController::class, 'show'])->name('database-tables.show');
     });
 });
 

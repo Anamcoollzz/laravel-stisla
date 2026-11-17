@@ -53,6 +53,7 @@ class RolePermissionSeeder extends Seeder
             'backup' => ['view', 'create', 'download', 'delete'],
             'log-requests' => ['view', 'delete'],
             'laravel-logs' => ['view', 'delete'],
+            'database-tables' => ['view'],
             'settings' => ['view', 'edit'],
         ];
 
