@@ -43,6 +43,8 @@ return [
 
     'is_stisla_demo' => (bool) env('IS_STISLA_DEMO', false),
 
+    'admin_template' => env('ADMIN_TEMPLATE', 'stisla'),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL
