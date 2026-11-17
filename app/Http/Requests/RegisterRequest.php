@@ -28,6 +28,7 @@ class RegisterRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'confirmed', Password::min(8)],
             'agree' => ['accepted'],
+            'captcha' => ['required', 'captcha'],
         ];
     }
 
@@ -43,6 +44,19 @@ class RegisterRequest extends FormRequest
             'email' => __('Email'),
             'password' => __('Password'),
             'agree' => __('terms and conditions'),
+            'captcha' => __('Captcha'),
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'captcha.captcha' => __('Kode captcha tidak sesuai.'),
         ];
     }
 }

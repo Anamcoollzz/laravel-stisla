@@ -25,6 +25,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'captcha' => ['required', 'captcha'],
         ];
     }
 
@@ -38,6 +39,19 @@ class LoginRequest extends FormRequest
         return [
             'email' => __('Email'),
             'password' => __('Password'),
+            'captcha' => __('Captcha'),
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'captcha.captcha' => __('Kode captcha tidak sesuai.'),
         ];
     }
 }

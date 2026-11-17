@@ -25,6 +25,12 @@
     @if ($errors->any())
       swal(@json(__('Error')), @json($errors->first()), 'error');
     @endif
+
+    $(document).on('click', '.btn-refresh-captcha', function() {
+      var img = $(this).closest('.form-group').find('.captcha-img img');
+      var src = img.attr('src').split('?')[0];
+      img.attr('src', src + '?' + Date.now());
+    });
   </script>
 @endpush
 
@@ -116,6 +122,27 @@
                   {{ __('Please fill in your password.') }}
                 @enderror
               </div>
+            </div>
+
+            <div class="form-group">
+              <label for="captcha">{{ __('Captcha') }} <span class="text-danger">*</span></label>
+              <div class="d-flex align-items-center mb-2">
+                <span class="captcha-img mr-2">{!! captcha_img('flat') !!}</span>
+                <button type="button" class="btn btn-outline-secondary btn-sm btn-refresh-captcha" title="{{ __('Refresh Captcha') }}">
+                  <i class="fas fa-sync-alt"></i>
+                </button>
+              </div>
+              <input
+                id="captcha"
+                type="text"
+                class="form-control @error('captcha') is-invalid @enderror"
+                name="captcha"
+                placeholder="{{ __('Masukkan kode captcha') }}"
+                required
+              >
+              @error('captcha')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
 
             <div class="form-group">
