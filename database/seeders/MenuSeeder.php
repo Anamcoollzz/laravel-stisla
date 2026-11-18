@@ -179,5 +179,43 @@ class MenuSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+
+        // 5. News App Menus (ADMIN_MENU_APP=news)
+        Menu::firstOrCreate(
+            ['app' => 'news', 'name' => 'Dashboard', 'type' => 'item'],
+            [
+                'icon' => 'fas fa-fire',
+                'route' => 'dashboard',
+                'order' => 1,
+                'is_active' => true,
+            ]
+        );
+
+        $newsDropdown = Menu::firstOrCreate(
+            ['app' => 'news', 'name' => 'News Management', 'type' => 'dropdown'],
+            [
+                'icon' => 'fas fa-newspaper',
+                'order' => 10,
+                'is_active' => true,
+            ]
+        );
+
+        $newsChildren = [
+            ['name' => 'News Articles', 'route' => 'admin.news.index', 'permission' => 'news.view', 'order' => 1],
+            ['name' => 'News Categories', 'route' => 'news-categories.index', 'permission' => 'news-categories.view', 'order' => 2],
+        ];
+
+        foreach ($newsChildren as $child) {
+            Menu::firstOrCreate(
+                ['app' => 'news', 'parent_id' => $newsDropdown->id, 'name' => $child['name']],
+                [
+                    'type' => 'item',
+                    'route' => $child['route'],
+                    'permission' => $child['permission'],
+                    'order' => $child['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
     }
 }

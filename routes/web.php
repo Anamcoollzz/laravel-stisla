@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
+use App\Http\Controllers\Admin\News\NewsController as AdminNewsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -294,6 +296,22 @@ Route::prefix('app')->group(function () {
 
         Route::get('database-tables', [DatabaseTableController::class, 'index'])->name('database-tables.index');
         Route::get('database-tables/{table}', [DatabaseTableController::class, 'show'])->name('database-tables.show');
+
+        Route::get('news-categories/export', [AdminNewsCategoryController::class, 'export'])->name('news-categories.export');
+        Route::get('news-categories/export-pdf', [AdminNewsCategoryController::class, 'exportPdf'])->name('news-categories.exportPdf');
+        Route::get('news-categories/template', [AdminNewsCategoryController::class, 'template'])->name('news-categories.template');
+        Route::post('news-categories/import', [AdminNewsCategoryController::class, 'import'])->name('news-categories.import');
+        Route::resource('news-categories', AdminNewsCategoryController::class)->parameters([
+            'news-categories' => 'newsCategory',
+        ]);
+
+        Route::get('news/export', [AdminNewsController::class, 'export'])->name('admin.news.export');
+        Route::get('news/export-pdf', [AdminNewsController::class, 'exportPdf'])->name('admin.news.exportPdf');
+        Route::get('news/template', [AdminNewsController::class, 'template'])->name('admin.news.template');
+        Route::post('news/import', [AdminNewsController::class, 'import'])->name('admin.news.import');
+        Route::resource('news', AdminNewsController::class)->parameters([
+            'news' => 'news',
+        ])->names('admin.news');
     });
 });
 

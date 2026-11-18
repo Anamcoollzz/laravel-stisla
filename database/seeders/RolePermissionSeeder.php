@@ -54,6 +54,8 @@ class RolePermissionSeeder extends Seeder
             'log-requests' => ['view', 'delete'],
             'laravel-logs' => ['view', 'delete'],
             'database-tables' => ['view'],
+            'news-categories' => ['view', 'create', 'edit', 'delete'],
+            'news' => ['view', 'create', 'edit', 'delete'],
             'settings' => ['view', 'edit'],
         ];
 
