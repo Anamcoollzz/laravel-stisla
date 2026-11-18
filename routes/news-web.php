@@ -9,7 +9,7 @@ Route::prefix('news')->name('news.')->group(function () {
     Route::get('/all', [PublicNewsController::class, 'all'])->name('all');
     Route::get('/p/{slug}', [PublicNewsController::class, 'show'])->name('show');
     Route::post('/p/{slug}/comment', [PublicNewsController::class, 'storeComment'])->name('comment.store');
-    Route::view('/about', 'news.about')->name('about');
+    Route::get('/about', [PublicNewsController::class, 'about'])->name('about');
     Route::view('/categori', 'news.categori')->name('categori');
     Route::view('/latest_news', 'news.latest_news')->name('latest_news');
     Route::view('/blog', 'news.blog')->name('blog');

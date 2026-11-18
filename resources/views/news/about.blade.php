@@ -63,40 +63,29 @@
                 </div>
             </div>
             <div class="row">
-                <!-- single Tem -->
-                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-">
-                    <div class="single-team mb-30">
-                        <div class="team-img">
-                            <img src="{{ asset('news-assets/img/gallery/team2.png') }}" alt="">
-                        </div>
-                        <div class="team-caption">
-                            <h3><a href="#">Ethan Welch</a></h3>
-                            <span>UX Designer</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-">
-                    <div class="single-team mb-30">
-                        <div class="team-img">
-                            <img src="{{ asset('news-assets/img/gallery/team3.png') }}" alt="">
-                        </div>
-                        <div class="team-caption">
-                            <h3><a href="#">Ethan Welch</a></h3>
-                            <span>UX Designer</span>
+                @forelse ($ourTeams as $team)
+                    <!-- single Tem -->
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-">
+                        <div class="single-team mb-30">
+                            <div class="team-img">
+                                <img src="{{ $team->image_url }}" alt="{{ $team->name }}" style="width: 100%; height: 370px; object-fit: cover;">
+                            </div>
+                            <div class="team-caption">
+                                @php
+                                    $teamUrl = $team->linkedin_url ?: ($team->twitter_url ?: $team->facebook_url);
+                                @endphp
+                                <h3>
+                                    <a href="{{ $teamUrl ?: '#' }}" @if ($teamUrl) target="_blank" rel="noopener noreferrer" @endif>{{ $team->name }}</a>
+                                </h3>
+                                <span>{{ $team->position }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-">
-                    <div class="single-team mb-30">
-                        <div class="team-img">
-                            <img src="{{ asset('news-assets/img/gallery/team1.png') }}" alt="">
-                        </div>
-                        <div class="team-caption">
-                            <h3><a href="#">Ethan Welch</a></h3>
-                            <span>UX Designer</span>
-                        </div>
+                @empty
+                    <div class="col-12">
+                        <p class="text-muted">{{ __('Belum ada anggota tim.') }}</p>
                     </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </div>

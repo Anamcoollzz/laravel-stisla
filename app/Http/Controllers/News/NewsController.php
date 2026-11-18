@@ -7,6 +7,7 @@ use App\Models\News\News;
 use App\Models\News\NewsCategory;
 use App\Models\News\NewsComment;
 use App\Models\News\NewsTag;
+use App\Models\OurTeam;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,6 +67,20 @@ class NewsController extends Controller
             'selectedCategory',
             'selectedTag'
         ));
+    }
+
+    /**
+     * Display the news about page with active team members.
+     */
+    public function about(): View
+    {
+        $ourTeams = OurTeam::query()
+            ->active()
+            ->orderBy('order')
+            ->latest('id')
+            ->get();
+
+        return view('news.about', compact('ourTeams'));
     }
 
     /**
