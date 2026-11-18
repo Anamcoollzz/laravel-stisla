@@ -49,6 +49,7 @@
                         @endforeach
                         <li><a href="#"><i class="fa fa-user"></i> {{ $news->publisher?->name ?? 'Admin' }}</a></li>
                         <li><a href="#"><i class="fa fa-calendar"></i> {{ ($news->published_at ?? $news->created_at)?->format('d M Y') }}</a></li>
+                        <li><a href="javascript:void(0)"><i class="fa fa-eye"></i> {{ number_format($news->views_count) }} {{ __('views') }}</a></li>
                      </ul>
                      <div class="news-article-content" style="line-height: 1.8;">
                         {!! nl2br(e((string) $news->content)) !!}

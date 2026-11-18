@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\ChatMessage;
 use App\Models\FooterProductCategory;
 use App\Models\Menu;
+use App\Models\News\News;
 use App\Models\PaymentBank;
 use App\Models\PaymentMethod;
 use App\Models\Product;
@@ -346,6 +347,23 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('storeServices', $storeServices);
             } else {
                 $view->with('storeServices', collect());
+            }
+        });
+
+        View::composer('news.partials.footer', function ($view) {
+            if (Schema::hasTable('news')) {
+                $popularNewsPosts = News::query()
+                    ->published()
+                    ->with(['publisher'])
+                    ->orderByDesc('views_count')
+                    ->orderByDesc('published_at')
+                    ->latest('id')
+                    ->limit(3)
+                    ->get();
+
+                $view->with('popularNewsPosts', $popularNewsPosts);
+            } else {
+                $view->with('popularNewsPosts', collect());
             }
         });
     }

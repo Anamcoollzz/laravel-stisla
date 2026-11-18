@@ -26,6 +26,7 @@ class News extends Model
         'thumbnail',
         'published_at',
         'status',
+        'views_count',
         'news_category_id',
         'publisher_user_id',
     ];
@@ -37,6 +38,7 @@ class News extends Model
     {
         return [
             'published_at' => 'datetime',
+            'views_count' => 'integer',
             'news_category_id' => 'integer',
             'publisher_user_id' => 'integer',
         ];

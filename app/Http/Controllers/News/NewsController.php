@@ -79,6 +79,8 @@ class NewsController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
+        $news->increment('views_count');
+
         $prevPost = News::query()
             ->published()
             ->where('id', '<', $news->id)
