@@ -86,18 +86,12 @@ class News extends Model
     {
         return Attribute::make(
             get: function (): string {
-                if ($this->thumbnail) {
-                    if (str_starts_with($this->thumbnail, 'http://') || str_starts_with($this->thumbnail, 'https://')) {
-                        return $this->thumbnail;
-                    }
+                if ($resolved = $this->resolveMediaPath($this->thumbnail)) {
+                    return $resolved;
+                }
 
-                    if (str_starts_with($this->thumbnail, 'news-assets/') || file_exists(public_path($this->thumbnail))) {
-                        return asset($this->thumbnail);
-                    }
-
-                    if (Storage::disk('public')->exists($this->thumbnail)) {
-                        return Storage::disk('public')->url($this->thumbnail);
-                    }
+                if ($resolvedMini = $this->resolveMediaPath($this->thumbnail_mini)) {
+                    return $resolvedMini;
                 }
 
                 $index = ((max(1, (int) ($this->id ?? 1)) - 1) % 5) + 1;
@@ -108,30 +102,42 @@ class News extends Model
     }
 
     /**
-     * Mini thumbnail URL with smart fallback to news-assets.
+     * Mini thumbnail URL synchronized with thumbnailUrl when not explicitly set.
      */
     protected function thumbnailMiniUrl(): Attribute
     {
         return Attribute::make(
             get: function (): string {
-                if ($this->thumbnail_mini) {
-                    if (str_starts_with($this->thumbnail_mini, 'http://') || str_starts_with($this->thumbnail_mini, 'https://')) {
-                        return $this->thumbnail_mini;
-                    }
-
-                    if (str_starts_with($this->thumbnail_mini, 'news-assets/') || file_exists(public_path($this->thumbnail_mini))) {
-                        return asset($this->thumbnail_mini);
-                    }
-
-                    if (Storage::disk('public')->exists($this->thumbnail_mini)) {
-                        return Storage::disk('public')->url($this->thumbnail_mini);
-                    }
+                if ($resolvedMini = $this->resolveMediaPath($this->thumbnail_mini)) {
+                    return $resolvedMini;
                 }
 
-                $index = ((max(1, (int) ($this->id ?? 1)) - 1) % 10) + 1;
-
-                return asset("news-assets/img/post/post_{$index}.png");
+                return $this->thumbnail_url;
             }
         );
+    }
+
+    /**
+     * Resolve a stored media path or URL to a public URL.
+     */
+    protected function resolveMediaPath(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'news-assets/') || file_exists(public_path($path))) {
+            return asset($path);
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->url($path);
+        }
+
+        return null;
     }
 }
