@@ -56,6 +56,7 @@ class RolePermissionSeeder extends Seeder
             'database-tables' => ['view'],
             'news-categories' => ['view', 'create', 'edit', 'delete'],
             'news-tags' => ['view', 'create', 'edit', 'delete'],
+            'news-comments' => ['view', 'create', 'edit', 'delete'],
             'news' => ['view', 'create', 'edit', 'delete'],
             'settings' => ['view', 'edit'],
         ];

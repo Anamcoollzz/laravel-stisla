@@ -123,29 +123,107 @@
                      </div>
                   </div>
                </div>
+               <div class="comments-area" id="commentsArea">
+                  <h4>{{ $news->approvedTopLevelComments->count() }} Comments</h4>
+                  @forelse ($news->approvedTopLevelComments as $comment)
+                     <div class="comment-list">
+                        <div class="single-comment justify-content-between d-flex">
+                           <div class="user justify-content-between d-flex w-100">
+                              <div class="thumb">
+                                 <img src="{{ $comment->user?->avatar_url ?? asset('news-assets/img/comment/comment_1.png') }}" alt="{{ $comment->name }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 50%;">
+                              </div>
+                              <div class="desc w-100">
+                                 <p class="comment">{{ $comment->comment }}</p>
+                                 <div class="d-flex justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                       <h5><a href="{{ $comment->website ?: '#' }}">{{ $comment->name }}</a></h5>
+                                       <p class="date">{{ $comment->created_at?->format('F d, Y \a\t g:i a') }}</p>
+                                    </div>
+                                    <div class="reply-btn">
+                                       <a href="#commentForm" class="btn-reply text-uppercase btn-reply-comment" data-id="{{ $comment->id }}" data-name="{{ $comment->name }}">reply</a>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        @foreach ($comment->replies as $reply)
+                           <div class="single-comment justify-content-between d-flex mt-3 ml-5 pl-3 border-left">
+                              <div class="user justify-content-between d-flex w-100">
+                                 <div class="thumb">
+                                    <img src="{{ $reply->user?->avatar_url ?? asset('news-assets/img/comment/comment_2.png') }}" alt="{{ $reply->name }}" style="width: 55px; height: 55px; object-fit: cover; border-radius: 50%;">
+                                 </div>
+                                 <div class="desc w-100">
+                                    <p class="comment">{{ $reply->comment }}</p>
+                                    <div class="d-flex justify-content-between">
+                                       <div class="d-flex align-items-center">
+                                          <h5><a href="#">{{ $reply->name }}</a></h5>
+                                          <p class="date">{{ $reply->created_at?->format('F d, Y \a\t g:i a') }}</p>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        @endforeach
+                     </div>
+                  @empty
+                     <p class="text-muted">{{ __('Belum ada komentar. Jadilah yang pertama berkomentar!') }}</p>
+                  @endforelse
+               </div>
                <div class="comment-form">
                   <h4>Leave a Reply</h4>
-                  <form class="form-contact comment_form" action="#" id="commentForm">
+                  @if (session('comment_success'))
+                     <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('comment_success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     </div>
+                  @endif
+                  @if ($errors->any())
+                     <div class="alert alert-danger">
+                        <ul class="mb-0 pl-3">
+                           @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                           @endforeach
+                        </ul>
+                     </div>
+                  @endif
+                  <div id="replyingToBanner" class="alert alert-info py-2 px-3 mb-3 justify-content-between align-items-center" style="display: none;">
+                     <span>Membalas komentar: <strong id="replyingToName"></strong></span>
+                     <button type="button" class="btn btn-sm btn-link text-danger p-0" id="btnCancelReply">Batal</button>
+                  </div>
+                  <form class="form-contact comment_form" action="{{ route('news.comment.store', $news->slug) }}" method="POST" id="commentForm">
+                     @csrf
+                     <input type="hidden" name="parent_id" id="commentParentId" value="{{ old('parent_id') }}">
                      <div class="row">
                         <div class="col-12">
                            <div class="form-group">
-                              <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9"
-                                 placeholder="Write Comment"></textarea>
+                              <textarea class="form-control w-100 @error('comment') is-invalid @enderror" name="comment" id="comment" cols="30" rows="9"
+                                 placeholder="Write Comment" required>{{ old('comment') }}</textarea>
                            </div>
                         </div>
                         <div class="col-sm-6">
                            <div class="form-group">
-                              <input class="form-control" name="name" id="name" type="text" placeholder="Name">
+                              <input class="form-control @error('name') is-invalid @enderror" name="name" id="name" type="text" placeholder="Name" value="{{ old('name', auth()->user()?->name) }}" required>
                            </div>
                         </div>
                         <div class="col-sm-6">
                            <div class="form-group">
-                              <input class="form-control" name="email" id="email" type="email" placeholder="Email">
+                              <input class="form-control @error('email') is-invalid @enderror" name="email" id="email" type="email" placeholder="Email" value="{{ old('email', auth()->user()?->email) }}" required>
                            </div>
                         </div>
                         <div class="col-12">
                            <div class="form-group">
-                              <input class="form-control" name="website" id="website" type="text" placeholder="Website">
+                              <input class="form-control @error('website') is-invalid @enderror" name="website" id="website" type="text" placeholder="Website (Optional)" value="{{ old('website') }}">
+                           </div>
+                        </div>
+                        <div class="col-12">
+                           <div class="form-group">
+                              <div class="d-flex align-items-center mb-2">
+                                 <span class="captcha-img mr-2">{!! captcha_img('flat') !!}</span>
+                                 <button type="button" class="btn btn-outline-secondary btn-sm btn-refresh-captcha" title="Refresh Captcha">
+                                    <i class="fa fa-sync-alt"></i>
+                                 </button>
+                              </div>
+                              <input class="form-control @error('captcha') is-invalid @enderror" name="captcha" id="captcha" type="text" placeholder="Masukkan kode captcha" required>
                            </div>
                         </div>
                      </div>
@@ -274,6 +352,36 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    document.querySelectorAll('.btn-refresh-captcha').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var img = this.closest('.form-group').querySelector('.captcha-img img');
+            if (img) {
+                img.src = img.src.split('?')[0] + '?' + Date.now();
+            }
+        });
+    });
+
+    document.querySelectorAll('.btn-reply-comment').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var parentInput = document.getElementById('commentParentId');
+            var banner = document.getElementById('replyingToBanner');
+            var nameEl = document.getElementById('replyingToName');
+            if (parentInput && banner && nameEl) {
+                parentInput.value = this.dataset.id;
+                nameEl.textContent = this.dataset.name;
+                banner.style.display = 'flex';
+            }
+        });
+    });
+
+    var cancelReply = document.getElementById('btnCancelReply');
+    if (cancelReply) {
+        cancelReply.addEventListener('click', function () {
+            document.getElementById('commentParentId').value = '';
+            document.getElementById('replyingToBanner').style.display = 'none';
+        });
+    }
 });
 </script>
 @endpush

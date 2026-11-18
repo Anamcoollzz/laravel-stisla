@@ -204,6 +204,7 @@ class MenuSeeder extends Seeder
             ['name' => 'News Articles', 'route' => 'admin.news.index', 'permission' => 'news.view', 'order' => 1],
             ['name' => 'News Categories', 'route' => 'news-categories.index', 'permission' => 'news-categories.view', 'order' => 2],
             ['name' => 'News Tags', 'route' => 'news-tags.index', 'permission' => 'news-tags.view', 'order' => 3],
+            ['name' => 'News Comments', 'route' => 'news-comments.index', 'permission' => 'news-comments.view', 'order' => 4],
         ];
 
         foreach ($newsChildren as $child) {

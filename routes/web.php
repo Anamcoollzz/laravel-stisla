@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
+use App\Http\Controllers\Admin\News\NewsCommentController as AdminNewsCommentController;
 use App\Http\Controllers\Admin\News\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\News\NewsTagController as AdminNewsTagController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -321,6 +322,16 @@ Route::prefix('app')->group(function () {
         Route::resource('news', AdminNewsController::class)->parameters([
             'news' => 'news',
         ])->names('admin.news');
+
+        Route::get('news-comments/export', [AdminNewsCommentController::class, 'export'])->name('news-comments.export');
+        Route::get('news-comments/export-pdf', [AdminNewsCommentController::class, 'exportPdf'])->name('news-comments.exportPdf');
+        Route::get('news-comments/template', [AdminNewsCommentController::class, 'template'])->name('news-comments.template');
+        Route::post('news-comments/import', [AdminNewsCommentController::class, 'import'])->name('news-comments.import');
+        Route::patch('news-comments/{newsComment}/toggle-approval', [AdminNewsCommentController::class, 'toggleApproval'])->name('news-comments.toggleApproval');
+        Route::post('news-comments/{newsComment}/reply', [AdminNewsCommentController::class, 'reply'])->name('news-comments.reply');
+        Route::resource('news-comments', AdminNewsCommentController::class)->only(['index', 'show', 'destroy'])->parameters([
+            'news-comments' => 'newsComment',
+        ]);
     });
 });
 

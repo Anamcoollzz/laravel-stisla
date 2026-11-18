@@ -5,8 +5,12 @@ namespace App\Http\Controllers\News;
 use App\Http\Controllers\Controller;
 use App\Models\News\News;
 use App\Models\News\NewsCategory;
+use App\Models\News\NewsComment;
 use App\Models\News\NewsTag;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class NewsController extends Controller
@@ -71,7 +75,7 @@ class NewsController extends Controller
     {
         $news = News::query()
             ->published()
-            ->with(['category', 'publisher', 'tags'])
+            ->with(['category', 'publisher', 'tags', 'approvedTopLevelComments'])
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -113,5 +117,42 @@ class NewsController extends Controller
             'tags',
             'recentPosts'
         ));
+    }
+
+    /**
+     * Store a new public comment on a news article (pending admin verification).
+     */
+    public function storeComment(Request $request, string $slug): RedirectResponse
+    {
+        $news = News::query()
+            ->published()
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email', 'max:150'],
+            'website' => ['nullable', 'string', 'max:255'],
+            'comment' => ['required', 'string', 'max:3000'],
+            'parent_id' => ['nullable', 'integer', Rule::exists('news_comments', 'id')],
+            'captcha' => ['required', 'captcha'],
+        ], [
+            'captcha.captcha' => __('Kode captcha tidak sesuai.'),
+        ]);
+
+        NewsComment::query()->create([
+            'news_id' => $news->id,
+            'user_id' => Auth::id(),
+            'parent_id' => $validated['parent_id'] ?? null,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'website' => $validated['website'] ?? null,
+            'comment' => $validated['comment'],
+            'is_approved' => false,
+        ]);
+
+        return redirect()
+            ->to(route('news.show', $news->slug).'#commentsArea')
+            ->with('comment_success', __('Komentar Anda berhasil dikirim dan sedang menunggu verifikasi admin.'));
     }
 }

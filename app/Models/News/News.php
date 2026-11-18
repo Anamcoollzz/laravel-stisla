@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class News extends Model
@@ -69,6 +70,30 @@ class News extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(NewsTag::class, 'news_news_tag', 'news_id', 'news_tag_id');
+    }
+
+    /**
+     * All comments on this news item.
+     *
+     * @return HasMany<NewsComment, $this>
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(NewsComment::class, 'news_id');
+    }
+
+    /**
+     * Approved top-level comments with approved replies.
+     *
+     * @return HasMany<NewsComment, $this>
+     */
+    public function approvedTopLevelComments(): HasMany
+    {
+        return $this->hasMany(NewsComment::class, 'news_id')
+            ->whereNull('parent_id')
+            ->where('is_approved', true)
+            ->with(['user', 'replies' => fn ($q) => $q->where('is_approved', true)->with('user')->latest()])
+            ->latest();
     }
 
     /**
