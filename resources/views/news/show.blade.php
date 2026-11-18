@@ -1,6 +1,32 @@
 @extends('news.layouts.app-news')
 
-@section('title', $news->title . ' - News')
+@php
+    $seoDescription = \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags((string) $news->content))), 160);
+    $seoKeywords = collect([$news->category?->name])->merge($news->tags->pluck('name'))->filter()->implode(', ');
+    $articleUrl = route('news.show', $news->slug);
+    $encodedUrl = urlencode($articleUrl);
+    $encodedTitle = urlencode($news->title);
+@endphp
+
+@section('title', $news->title . ' - ' . config('app.name', 'News'))
+@section('meta_description', $seoDescription)
+@section('meta_keywords', $seoKeywords ?: 'news, berita, artikel')
+@section('meta_author', $news->publisher?->name ?? config('app.name', 'Admin'))
+@section('canonical_url', $articleUrl)
+@section('og_type', 'article')
+@section('og_image', $news->thumbnail_url)
+
+@push('meta')
+    @if ($news->published_at ?? $news->created_at)
+        <meta property="article:published_time" content="{{ ($news->published_at ?? $news->created_at)->toIso8601String() }}">
+    @endif
+    @if ($news->category)
+        <meta property="article:section" content="{{ $news->category->name }}">
+    @endif
+    @foreach ($news->tags as $metaTag)
+        <meta property="article:tag" content="{{ $metaTag->name }}">
+    @endforeach
+@endpush
 
 @section('content')
 <!--================Blog Area =================-->
@@ -30,14 +56,15 @@
                   </div>
                </div>
                <div class="navigation-top">
-                  <div class="d-sm-flex justify-content-between text-center">
-                     <p class="like-info"><span class="align-middle"><i class="fa fa-heart"></i></span> Share this article</p>
+                  <div class="d-sm-flex justify-content-between text-center align-items-center">
+                     <p class="like-info mb-0"><span class="align-middle"><i class="fa fa-share-alt"></i></span> Share this article</p>
                      <div class="col-sm-4 text-center my-2 my-sm-0"></div>
                      <ul class="social-icons">
-                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fab fa-dribbble"></i></a></li>
-                        <li><a href="#"><i class="fab fa-behance"></i></a></li>
+                        <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ $encodedUrl }}" target="_blank" rel="noopener noreferrer" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="https://twitter.com/intent/tweet?url={{ $encodedUrl }}&text={{ $encodedTitle }}" target="_blank" rel="noopener noreferrer" title="Share on X / Twitter"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="https://wa.me/?text={{ $encodedTitle }}%20{{ $encodedUrl }}" target="_blank" rel="noopener noreferrer" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a></li>
+                        <li><a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $encodedUrl }}" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="javascript:void(0)" class="btn-copy-news-link" data-url="{{ $articleUrl }}" title="Copy Link"><i class="fa fa-link"></i></a></li>
                      </ul>
                   </div>
                   <div class="navigation-area">
@@ -220,3 +247,33 @@
    </section>
    <!--================ Blog Area end =================-->
 @endsection
+
+@push('js')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-copy-news-link').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var url = this.dataset.url;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url);
+            } else {
+                var temp = document.createElement('input');
+                temp.value = url;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+            }
+            var icon = this.querySelector('i');
+            if (icon) {
+                icon.className = 'fa fa-check text-success';
+                setTimeout(function () {
+                    icon.className = 'fa fa-link';
+                }, 1800);
+            }
+        });
+    });
+});
+</script>
+@endpush

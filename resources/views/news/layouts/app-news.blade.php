@@ -4,7 +4,27 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@yield('title', 'News HTML-5 Template')</title>
-    <meta name="description" content="@yield('meta_description', '')">
+    <meta name="description" content="@yield('meta_description', 'Portal berita terkini, artikel informatif, dan liputan terbaru.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'news, berita, artikel, informasi terkini')">
+    <meta name="author" content="@yield('meta_author', config('app.name', 'News'))">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
+    <link rel="canonical" href="@yield('canonical_url', url()->current())">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="{{ config('app.name', 'News') }}">
+    <meta property="og:title" content="@yield('title', 'News HTML-5 Template')">
+    <meta property="og:description" content="@yield('meta_description', 'Portal berita terkini, artikel informatif, dan liputan terbaru.')">
+    <meta property="og:url" content="@yield('canonical_url', url()->current())">
+    <meta property="og:image" content="@yield('og_image', asset('news-assets/img/logo/logo.png'))">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'News HTML-5 Template')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Portal berita terkini, artikel informatif, dan liputan terbaru.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('news-assets/img/logo/logo.png'))">
+    @stack('meta')
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('news-assets/img/favicon.ico') }}">
 

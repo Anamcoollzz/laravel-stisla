@@ -1,6 +1,30 @@
 @extends('news.layouts.app-news')
 
-@section('title', 'All News - News HTML-5 Template')
+@php
+    $pageTitle = 'All News';
+    if ($selectedCategory !== '') {
+        $activeCat = $categories->firstWhere('id', (int) $selectedCategory);
+        if ($activeCat) {
+            $pageTitle = $activeCat->name . ' - News';
+        }
+    } elseif ($selectedTag !== '') {
+        $activeTag = $tags->firstWhere('slug', $selectedTag);
+        if ($activeTag) {
+            $pageTitle = '#' . $activeTag->name . ' - News';
+        }
+    } elseif ($search !== '') {
+        $pageTitle = 'Search: ' . $search . ' - News';
+    }
+    $seoDescription = 'Kumpulan berita dan artikel terbaru' . ($selectedCategory !== '' && isset($activeCat) ? ' kategori ' . $activeCat->name : '') . '.';
+    $seoKeywords = $categories->pluck('name')->merge($tags->pluck('name'))->filter()->implode(', ');
+@endphp
+
+@section('title', $pageTitle)
+@section('meta_description', $seoDescription)
+@section('meta_keywords', $seoKeywords ?: 'news, berita, artikel')
+@section('canonical_url', route('news.all'))
+@section('og_type', 'website')
+@section('og_image', $newsList->first()?->thumbnail_url ?? asset('news-assets/img/logo/logo.png'))
 
 @section('content')
 <!--================Blog Area =================-->
