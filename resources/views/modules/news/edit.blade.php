@@ -73,6 +73,22 @@
               </div>
 
               <div class="form-group">
+                <label for="tag_ids">{{ __('News Tags') }}</label>
+                @php
+                  $selectedTagIds = old('tag_ids', $news->tags->pluck('id')->all());
+                @endphp
+                <select id="tag_ids" name="tag_ids[]" class="form-control @error('tag_ids') is-invalid @enderror" multiple style="min-height: 110px;">
+                  @foreach ($tags as $tag)
+                    <option value="{{ $tag->id }}" @selected(in_array($tag->id, $selectedTagIds))>{{ $tag->name }}</option>
+                  @endforeach
+                </select>
+                @error('tag_ids')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                <small class="form-text text-muted">{{ __('Tahan Ctrl / Cmd untuk memilih lebih dari satu tag.') }}</small>
+              </div>
+
+              <div class="form-group">
                 <label for="publisher_user_id">{{ __('Publisher') }}</label>
                 <select id="publisher_user_id" name="publisher_user_id" class="form-control @error('publisher_user_id') is-invalid @enderror">
                   @foreach ($publishers as $publisher)

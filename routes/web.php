@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
 use App\Http\Controllers\Admin\News\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\News\NewsTagController as AdminNewsTagController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -303,6 +304,14 @@ Route::prefix('app')->group(function () {
         Route::post('news-categories/import', [AdminNewsCategoryController::class, 'import'])->name('news-categories.import');
         Route::resource('news-categories', AdminNewsCategoryController::class)->parameters([
             'news-categories' => 'newsCategory',
+        ]);
+
+        Route::get('news-tags/export', [AdminNewsTagController::class, 'export'])->name('news-tags.export');
+        Route::get('news-tags/export-pdf', [AdminNewsTagController::class, 'exportPdf'])->name('news-tags.exportPdf');
+        Route::get('news-tags/template', [AdminNewsTagController::class, 'template'])->name('news-tags.template');
+        Route::post('news-tags/import', [AdminNewsTagController::class, 'import'])->name('news-tags.import');
+        Route::resource('news-tags', AdminNewsTagController::class)->parameters([
+            'news-tags' => 'newsTag',
         ]);
 
         Route::get('news/export', [AdminNewsController::class, 'export'])->name('admin.news.export');

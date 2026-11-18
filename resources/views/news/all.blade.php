@@ -33,6 +33,9 @@
                                         @if ($item->category)
                                             <li><a href="{{ route('news.all', ['category' => $item->category->id]) }}"><i class="fa fa-tag"></i> {{ $item->category->name }}</a></li>
                                         @endif
+                                        @foreach ($item->tags as $tag)
+                                            <li><a href="{{ route('news.all', ['tag' => $tag->slug]) }}">#{{ $tag->name }}</a></li>
+                                        @endforeach
                                         <li><a href="#"><i class="fa fa-user"></i> {{ $item->publisher?->name ?? 'Admin' }}</a></li>
                                     </ul>
                                 </div>
@@ -114,14 +117,16 @@
                         <aside class="single_sidebar_widget tag_cloud_widget">
                             <h4 class="widget_title">Tag Clouds</h4>
                             <ul class="list">
-                                <li><a href="#">project</a></li>
-                                <li><a href="#">love</a></li>
-                                <li><a href="#">technology</a></li>
-                                <li><a href="#">travel</a></li>
-                                <li><a href="#">restaurant</a></li>
-                                <li><a href="#">life style</a></li>
-                                <li><a href="#">design</a></li>
-                                <li><a href="#">illustration</a></li>
+                                @forelse ($tags as $tag)
+                                    <li>
+                                        <a href="{{ route('news.all', array_filter(['tag' => $tag->slug, 'category' => $selectedCategory, 'search' => $search])) }}"
+                                           class="{{ $selectedTag === $tag->slug ? 'bg-danger text-white border-danger' : '' }}">
+                                            {{ $tag->name }}
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li><a href="#">News</a></li>
+                                @endforelse
                             </ul>
                         </aside>
 

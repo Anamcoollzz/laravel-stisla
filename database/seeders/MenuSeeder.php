@@ -203,6 +203,7 @@ class MenuSeeder extends Seeder
         $newsChildren = [
             ['name' => 'News Articles', 'route' => 'admin.news.index', 'permission' => 'news.view', 'order' => 1],
             ['name' => 'News Categories', 'route' => 'news-categories.index', 'permission' => 'news-categories.view', 'order' => 2],
+            ['name' => 'News Tags', 'route' => 'news-tags.index', 'permission' => 'news-tags.view', 'order' => 3],
         ];
 
         foreach ($newsChildren as $child) {

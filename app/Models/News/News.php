@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
 
 class News extends Model
@@ -58,6 +59,16 @@ class News extends Model
     public function publisher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'publisher_user_id');
+    }
+
+    /**
+     * Tags attached to this news item.
+     *
+     * @return BelongsToMany<NewsTag, $this>
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(NewsTag::class, 'news_news_tag', 'news_id', 'news_tag_id');
     }
 
     /**

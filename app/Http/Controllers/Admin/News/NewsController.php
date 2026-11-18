@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Imports\NewsImport;
 use App\Models\News\News;
 use App\Models\News\NewsCategory;
+use App\Models\News\NewsTag;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
@@ -35,7 +36,7 @@ class NewsController extends Controller
         $selectedCategory = trim((string) $request->query('news_category_id', ''));
 
         $newsList = News::query()
-            ->with(['category', 'publisher'])
+            ->with(['category', 'publisher', 'tags'])
             ->when($selectedStatus !== '', fn ($q) => $q->where('status', $selectedStatus))
             ->when($selectedCategory !== '', fn ($q) => $q->where('news_category_id', $selectedCategory))
             ->latest('id')
@@ -60,8 +61,9 @@ class NewsController extends Controller
 
         $categories = NewsCategory::query()->orderBy('name')->get();
         $publishers = User::query()->orderBy('name')->get(['id', 'name', 'email']);
+        $tags = NewsTag::query()->orderBy('name')->get();
 
-        return view('modules.news.create', compact('categories', 'publishers'));
+        return view('modules.news.create', compact('categories', 'publishers', 'tags'));
     }
 
     /**
@@ -81,6 +83,8 @@ class NewsController extends Controller
             'thumbnail_mini' => ['nullable', 'image', 'max:1024'],
             'published_at' => ['nullable', 'date'],
             'status' => ['required', 'string', Rule::in(['draft', 'published', 'archived'])],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['integer', Rule::exists('news_tags', 'id')],
         ]);
 
         $slug = filled($validated['slug'] ?? null)
@@ -100,7 +104,7 @@ class NewsController extends Controller
             $publishedAt = now();
         }
 
-        News::query()->create([
+        $news = News::query()->create([
             'title' => $validated['title'],
             'slug' => $slug,
             'content' => $validated['content'] ?? null,
@@ -111,6 +115,8 @@ class NewsController extends Controller
             'news_category_id' => $validated['news_category_id'] ?? null,
             'publisher_user_id' => $validated['publisher_user_id'] ?? Auth::id(),
         ]);
+
+        $news->tags()->sync($validated['tag_ids'] ?? []);
 
         return redirect()
             ->route('admin.news.index')
@@ -124,7 +130,7 @@ class NewsController extends Controller
     {
         Gate::authorize('news.view');
 
-        $news->load(['category', 'publisher']);
+        $news->load(['category', 'publisher', 'tags']);
 
         return view('modules.news.show', compact('news'));
     }
@@ -136,10 +142,12 @@ class NewsController extends Controller
     {
         Gate::authorize('news.edit');
 
+        $news->load('tags');
         $categories = NewsCategory::query()->orderBy('name')->get();
         $publishers = User::query()->orderBy('name')->get(['id', 'name', 'email']);
+        $tags = NewsTag::query()->orderBy('name')->get();
 
-        return view('modules.news.edit', compact('news', 'categories', 'publishers'));
+        return view('modules.news.edit', compact('news', 'categories', 'publishers', 'tags'));
     }
 
     /**
@@ -159,6 +167,8 @@ class NewsController extends Controller
             'thumbnail_mini' => ['nullable', 'image', 'max:1024'],
             'published_at' => ['nullable', 'date'],
             'status' => ['required', 'string', Rule::in(['draft', 'published', 'archived'])],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['integer', Rule::exists('news_tags', 'id')],
         ]);
 
         $slug = filled($validated['slug'] ?? null)
@@ -197,6 +207,8 @@ class NewsController extends Controller
             'news_category_id' => $validated['news_category_id'] ?? null,
             'publisher_user_id' => $validated['publisher_user_id'] ?? $news->publisher_user_id,
         ]);
+
+        $news->tags()->sync($validated['tag_ids'] ?? []);
 
         return redirect()
             ->route('admin.news.index')

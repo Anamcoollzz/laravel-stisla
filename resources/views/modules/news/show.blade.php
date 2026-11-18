@@ -53,6 +53,14 @@
               @endif
             </div>
             <div class="form-group">
+              <label class="text-muted small text-uppercase font-weight-bold d-block">{{ __('News Tags') }}</label>
+              @forelse ($news->tags as $tag)
+                <span class="badge badge-primary mr-1 mb-1">{{ $tag->name }}</span>
+              @empty
+                <span class="text-muted">-</span>
+              @endforelse
+            </div>
+            <div class="form-group">
               <label class="text-muted small text-uppercase font-weight-bold d-block">{{ __('Publisher') }}</label>
               <div>{{ $news->publisher?->name ?? '-' }}</div>
             </div>

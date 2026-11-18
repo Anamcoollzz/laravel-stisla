@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\News\News;
 use App\Models\News\NewsCategory;
+use App\Models\News\NewsTag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -44,6 +45,25 @@ class NewsSeeder extends Seeder
                 ['name' => $cat['name']],
                 ['description' => $cat['description']]
             );
+        }
+
+        $tagMap = [
+            'Teknologi' => ['AI', 'Technology'],
+            'Bisnis & Ekonomi' => ['UMKM', 'Startup'],
+            'Gaya Hidup' => ['Lifestyle'],
+            'Olahraga' => ['Sports'],
+            'Hiburan' => ['Festival'],
+        ];
+
+        $seededTags = [];
+        foreach ($tagMap as $catTags) {
+            foreach ($catTags as $tagName) {
+                $tagSlug = Str::slug($tagName);
+                $seededTags[$tagName] = NewsTag::query()->firstOrCreate(
+                    ['slug' => $tagSlug],
+                    ['name' => $tagName]
+                );
+            }
         }
 
         $publisherId = User::query()->first()?->id;
@@ -88,7 +108,7 @@ class NewsSeeder extends Seeder
 
         foreach ($articles as $article) {
             $slug = Str::slug($article['title']);
-            News::query()->firstOrCreate(
+            $news = News::query()->firstOrCreate(
                 ['slug' => $slug],
                 [
                     'title' => $article['title'],
@@ -99,6 +119,14 @@ class NewsSeeder extends Seeder
                     'published_at' => $article['published_at'],
                 ]
             );
+
+            $tagIds = collect($tagMap[$article['category']] ?? [])
+                ->map(fn (string $tagName) => $seededTags[$tagName]->id ?? null)
+                ->filter()
+                ->all();
+            if (! empty($tagIds)) {
+                $news->tags()->syncWithoutDetaching($tagIds);
+            }
         }
     }
 }
