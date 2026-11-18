@@ -81,7 +81,7 @@
                   list="app-options"
                   class="form-control @error('app') is-invalid @enderror"
                   placeholder="online-shop"
-                  value="{{ old('app', 'online-shop') }}"
+                  value="{{ old('app', config('app.menu_app', 'online-shop')) }}"
                   required
                 >
                 <datalist id="app-options">

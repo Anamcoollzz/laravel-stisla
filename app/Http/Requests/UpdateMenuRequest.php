@@ -50,7 +50,7 @@ class UpdateMenuRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'app' => $this->filled('app') ? trim((string) $this->app) : 'online-shop',
+            'app' => $this->filled('app') ? trim((string) $this->app) : config('app.menu_app', 'online-shop'),
             'is_active' => $this->boolean('is_active'),
             'order' => $this->filled('order') ? (int) $this->order : 0,
         ]);
