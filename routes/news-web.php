@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\News\NewsController as PublicNewsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('news')->name('news.')->group(function () {
     Route::view('/', 'news.index')->name('index');
     Route::view('/index.html', 'news.index')->name('index.html');
+    Route::get('/all', [PublicNewsController::class, 'all'])->name('all');
     Route::view('/about', 'news.about')->name('about');
     Route::view('/categori', 'news.categori')->name('categori');
     Route::view('/latest_news', 'news.latest_news')->name('latest_news');

@@ -56,6 +56,7 @@
                                         <li><a href="{{ route('news.latest_news') }}">Latest News</a></li>
                                         <li><a href="#">Pages</a>
                                             <ul class="submenu">
+                                                <li><a href="{{ route('news.all') }}">All News</a></li>
                                                 <li><a href="{{ route('news.blog') }}">Blog</a></li>
                                                 <li><a href="{{ route('news.blog_details') }}">Blog Details</a></li>
                                                 <li><a href="{{ route('news.elements') }}">Element</a></li>
