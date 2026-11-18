@@ -17,7 +17,7 @@
                                 <div class="blog_item_img">
                                     <img class="card-img rounded-0" src="{{ $item->thumbnail_url }}" alt="{{ $item->title }}">
                                     @if ($date)
-                                        <a href="{{ route('news.blog_details') }}" class="blog_item_date">
+                                        <a href="{{ route('news.show', $item->slug) }}" class="blog_item_date">
                                             <h3>{{ $date->format('d') }}</h3>
                                             <p>{{ $date->format('M') }}</p>
                                         </a>
@@ -25,7 +25,7 @@
                                 </div>
 
                                 <div class="blog_details">
-                                    <a class="d-inline-block" href="{{ route('news.blog_details') }}">
+                                    <a class="d-inline-block" href="{{ route('news.show', $item->slug) }}">
                                         <h2>{{ $item->title }}</h2>
                                     </a>
                                     <p>{{ \Illuminate\Support\Str::limit(strip_tags((string) $item->content), 180) }}</p>
@@ -103,7 +103,7 @@
                                 <div class="media post_item">
                                     <img src="{{ $recent->thumbnail_mini_url }}" alt="{{ $recent->title }}" style="width: 80px; height: 80px; object-fit: cover;">
                                     <div class="media-body">
-                                        <a href="{{ route('news.blog_details') }}">
+                                        <a href="{{ route('news.show', $recent->slug) }}">
                                             <h3>{{ \Illuminate\Support\Str::limit($recent->title, 42) }}</h3>
                                         </a>
                                         <p>{{ ($recent->published_at ?? $recent->created_at)?->format('F d, Y') }}</p>

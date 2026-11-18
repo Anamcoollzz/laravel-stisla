@@ -63,4 +63,55 @@ class NewsController extends Controller
             'selectedTag'
         ));
     }
+
+    /**
+     * Display a single published news article by slug.
+     */
+    public function show(string $slug): View
+    {
+        $news = News::query()
+            ->published()
+            ->with(['category', 'publisher', 'tags'])
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        $prevPost = News::query()
+            ->published()
+            ->where('id', '<', $news->id)
+            ->orderByDesc('id')
+            ->first();
+
+        $nextPost = News::query()
+            ->published()
+            ->where('id', '>', $news->id)
+            ->orderBy('id')
+            ->first();
+
+        $categories = NewsCategory::query()
+            ->withCount(['news' => fn ($q) => $q->published()])
+            ->orderBy('name')
+            ->get();
+
+        $tags = NewsTag::query()
+            ->withCount(['news' => fn ($q) => $q->published()])
+            ->orderBy('name')
+            ->get();
+
+        $recentPosts = News::query()
+            ->published()
+            ->where('id', '!=', $news->id)
+            ->orderByDesc('published_at')
+            ->latest('id')
+            ->limit(4)
+            ->get();
+
+        return view('news.show', compact(
+            'news',
+            'prevPost',
+            'nextPost',
+            'categories',
+            'tags',
+            'recentPosts'
+        ));
+    }
 }
