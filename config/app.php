@@ -45,6 +45,8 @@ return [
 
     'admin_template' => env('ADMIN_TEMPLATE', 'stisla'),
 
+    'menu_app' => env('MENU_APP', 'online-shop'),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL

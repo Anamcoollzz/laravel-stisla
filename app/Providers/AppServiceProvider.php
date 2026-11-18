@@ -66,8 +66,10 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer(['layouts.app', 'partials.sidebar-pages'], function ($view) {
             if (Schema::hasTable('menus')) {
+                $menuApp = (string) config('app.menu_app', 'online-shop');
                 $sidebarMenus = Menu::query()
-                    ->with(['children' => fn ($query) => $query->where('is_active', true)->orderBy('order')])
+                    ->with(['children' => fn ($query) => $query->where('is_active', true)->where('app', $menuApp)->orderBy('order')])
+                    ->where('app', $menuApp)
                     ->whereNull('parent_id')
                     ->where('is_active', true)
                     ->orderBy('order')

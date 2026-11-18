@@ -26,6 +26,7 @@ class UpdateMenuRequest extends FormRequest
         $menuId = $this->route('menu')?->id ?? $this->route('menu');
 
         return [
+            'app' => ['required', 'string', 'max:50'],
             'parent_id' => [
                 'nullable',
                 'integer',
@@ -49,6 +50,7 @@ class UpdateMenuRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'app' => $this->filled('app') ? trim((string) $this->app) : 'online-shop',
             'is_active' => $this->boolean('is_active'),
             'order' => $this->filled('order') ? (int) $this->order : 0,
         ]);
@@ -62,6 +64,7 @@ class UpdateMenuRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'app' => __('App'),
             'parent_id' => __('Parent Menu'),
             'name' => __('Menu Name'),
             'type' => __('Menu Type'),

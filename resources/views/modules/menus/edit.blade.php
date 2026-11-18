@@ -73,6 +73,29 @@
               <h4>{{ __('Menu Form') }}</h4>
             </div>
             <div class="card-body">
+              <div class="form-group">
+                <label for="app">{{ __('App') }} <span class="text-danger">*</span></label>
+                <input
+                  type="text"
+                  id="app"
+                  name="app"
+                  list="app-options"
+                  class="form-control @error('app') is-invalid @enderror"
+                  placeholder="online-shop"
+                  value="{{ old('app', $menu->app ?? 'online-shop') }}"
+                  required
+                >
+                <datalist id="app-options">
+                  @foreach ($apps as $appOption)
+                    <option value="{{ $appOption }}">
+                  @endforeach
+                </datalist>
+                @error('app')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <small class="form-text text-muted">{{ __('Identifier aplikasi untuk memisahkan sidebar (default: online-shop).') }}</small>
+              </div>
+
               <div class="form-row">
                 <div class="form-group col-md-8">
                   <label for="name">{{ __('Menu Name') }} <span class="text-danger">*</span></label>

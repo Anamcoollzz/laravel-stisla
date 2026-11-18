@@ -29,11 +29,15 @@
           </div>
           <div class="card-body">
             <div class="row">
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-4">
                 <label class="d-block text-muted small text-uppercase font-weight-bold">{{ __('ID') }}</label>
                 <div class="font-weight-600">#{{ $menu->id }}</div>
               </div>
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-4">
+                <label class="d-block text-muted small text-uppercase font-weight-bold">{{ __('App') }}</label>
+                <div><span class="badge badge-info">{{ $menu->app ?? 'online-shop' }}</span></div>
+              </div>
+              <div class="form-group col-md-4">
                 <label class="d-block text-muted small text-uppercase font-weight-bold">{{ __('Menu Name') }}</label>
                 <div class="font-weight-600">{{ __($menu->name) }}</div>
               </div>

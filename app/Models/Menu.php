@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Route;
 
-#[Fillable(['parent_id', 'name', 'type', 'icon', 'route', 'url', 'permission', 'order', 'is_active'])]
+#[Fillable(['app', 'parent_id', 'name', 'type', 'icon', 'route', 'url', 'permission', 'order', 'is_active'])]
 class Menu extends Model
 {
     /** @use HasFactory<MenuFactory> */
