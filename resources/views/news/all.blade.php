@@ -15,7 +15,7 @@
                             @endphp
                             <article class="blog_item">
                                 <div class="blog_item_img">
-                                    <img class="card-img rounded-0" src="{{ $item->thumbnail_url ?? asset('news-assets/img/blog/single_blog_1.png') }}" alt="{{ $item->title }}">
+                                    <img class="card-img rounded-0" src="{{ $item->thumbnail_url }}" alt="{{ $item->title }}">
                                     @if ($date)
                                         <a href="{{ route('news.blog_details') }}" class="blog_item_date">
                                             <h3>{{ $date->format('d') }}</h3>
@@ -101,7 +101,7 @@
                             <h3 class="widget_title">Recent Post</h3>
                             @forelse ($recentPosts as $recent)
                                 <div class="media post_item">
-                                    <img src="{{ $recent->thumbnail_mini_url ?? $recent->thumbnail_url ?? asset('news-assets/img/post/post_1.png') }}" alt="{{ $recent->title }}" style="width: 80px; height: 80px; object-fit: cover;">
+                                    <img src="{{ $recent->thumbnail_mini_url }}" alt="{{ $recent->title }}" style="width: 80px; height: 80px; object-fit: cover;">
                                     <div class="media-body">
                                         <a href="{{ route('news.blog_details') }}">
                                             <h3>{{ \Illuminate\Support\Str::limit($recent->title, 42) }}</h3>

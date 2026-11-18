@@ -80,41 +80,57 @@ class News extends Model
     }
 
     /**
-     * Main thumbnail URL.
+     * Main thumbnail URL with smart fallback to news-assets.
      */
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(
-            get: function (): ?string {
-                if (! $this->thumbnail) {
-                    return null;
+            get: function (): string {
+                if ($this->thumbnail) {
+                    if (str_starts_with($this->thumbnail, 'http://') || str_starts_with($this->thumbnail, 'https://')) {
+                        return $this->thumbnail;
+                    }
+
+                    if (str_starts_with($this->thumbnail, 'news-assets/') || file_exists(public_path($this->thumbnail))) {
+                        return asset($this->thumbnail);
+                    }
+
+                    if (Storage::disk('public')->exists($this->thumbnail)) {
+                        return Storage::disk('public')->url($this->thumbnail);
+                    }
                 }
 
-                if (str_starts_with($this->thumbnail, 'http://') || str_starts_with($this->thumbnail, 'https://')) {
-                    return $this->thumbnail;
-                }
+                $index = ((max(1, (int) ($this->id ?? 1)) - 1) % 5) + 1;
 
-                return Storage::disk('public')->url($this->thumbnail);
+                return asset("news-assets/img/blog/single_blog_{$index}.png");
             }
         );
     }
 
     /**
-     * Mini thumbnail URL.
+     * Mini thumbnail URL with smart fallback to news-assets.
      */
     protected function thumbnailMiniUrl(): Attribute
     {
         return Attribute::make(
-            get: function (): ?string {
-                if (! $this->thumbnail_mini) {
-                    return null;
+            get: function (): string {
+                if ($this->thumbnail_mini) {
+                    if (str_starts_with($this->thumbnail_mini, 'http://') || str_starts_with($this->thumbnail_mini, 'https://')) {
+                        return $this->thumbnail_mini;
+                    }
+
+                    if (str_starts_with($this->thumbnail_mini, 'news-assets/') || file_exists(public_path($this->thumbnail_mini))) {
+                        return asset($this->thumbnail_mini);
+                    }
+
+                    if (Storage::disk('public')->exists($this->thumbnail_mini)) {
+                        return Storage::disk('public')->url($this->thumbnail_mini);
+                    }
                 }
 
-                if (str_starts_with($this->thumbnail_mini, 'http://') || str_starts_with($this->thumbnail_mini, 'https://')) {
-                    return $this->thumbnail_mini;
-                }
+                $index = ((max(1, (int) ($this->id ?? 1)) - 1) % 10) + 1;
 
-                return Storage::disk('public')->url($this->thumbnail_mini);
+                return asset("news-assets/img/post/post_{$index}.png");
             }
         );
     }
