@@ -105,7 +105,7 @@
                 </div>
                 <div class="dropdown-list-content dropdown-list-message">
                   @forelse ($navMessages as $navMessage)
-                    <a href="{{ route('chat.index', ['user' => $navMessage->sender_id]) }}" @class(['dropdown-item', 'dropdown-item-unread' => ! $navMessage->is_read])>
+                    <a href="{{ route('chat.index', ['user' => $navMessage->sender?->uuid]) }}" @class(['dropdown-item', 'dropdown-item-unread' => ! $navMessage->is_read])>
                       <div class="dropdown-item-avatar">
                         <img alt="image" src="{{ $navMessage->sender?->avatar_url ?? asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle">
                         @if ($navMessage->sender?->isOnline())

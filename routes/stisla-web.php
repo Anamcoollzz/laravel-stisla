@@ -102,9 +102,9 @@ Route::prefix('app')->group(function () {
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');
-        Route::post('chat/{user}', [ChatController::class, 'send'])->name('chat.send');
-        Route::get('chat/{user}/messages', [ChatController::class, 'fetchMessages'])->name('chat.messages');
-        Route::delete('chat/{user}/clear', [ChatController::class, 'clear'])->name('chat.clear');
+        Route::post('chat/{user:uuid}', [ChatController::class, 'send'])->name('chat.send');
+        Route::get('chat/{user:uuid}/messages', [ChatController::class, 'fetchMessages'])->name('chat.messages');
+        Route::delete('chat/{user:uuid}/clear', [ChatController::class, 'clear'])->name('chat.clear');
 
         Route::get('backups', [BackupController::class, 'index'])->name('backups.index');
         Route::post('backups', [BackupController::class, 'create'])->name('backups.create');

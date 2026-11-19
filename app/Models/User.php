@@ -12,14 +12,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'first_name', 'last_name', 'email', 'avatar', 'role', 'phone', 'address', 'city', 'state', 'postal_code', 'password', 'last_logged_in'])]
+#[Fillable(['uuid', 'name', 'first_name', 'last_name', 'email', 'avatar', 'role', 'phone', 'address', 'city', 'state', 'postal_code', 'password', 'last_logged_in'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
+
+    /**
+     * Boot model event hooks.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (User $user): void {
+            if (blank($user->uuid)) {
+                $user->uuid = (string) Str::uuid();
+            }
+        });
+    }
 
     /**
      * Get the attributes that should be cast.
