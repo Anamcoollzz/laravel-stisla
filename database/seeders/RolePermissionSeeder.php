@@ -66,6 +66,7 @@ class RolePermissionSeeder extends Seeder
             'lp-faqs' => ['view', 'create', 'edit', 'delete'],
             'lp-workers' => ['view', 'create', 'edit', 'delete'],
             'lp-galleries' => ['view', 'create', 'edit', 'delete'],
+            'lp-company-profile' => ['view', 'edit'],
             'settings' => ['view', 'edit'],
         ];
 

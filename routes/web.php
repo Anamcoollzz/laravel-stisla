@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LP\CompanyProfileController as AdminCompanyProfileController;
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
 use App\Http\Controllers\Admin\LP\LpGalleryController as AdminLpGalleryController;
@@ -424,6 +425,9 @@ Route::prefix('app')->group(function () {
         Route::resource('lp-galleries', AdminLpGalleryController::class)->parameters([
             'lp-galleries' => 'lpGallery',
         ]);
+
+        Route::get('lp-company-profile', [AdminCompanyProfileController::class, 'edit'])->name('lp-company-profile.edit');
+        Route::put('lp-company-profile', [AdminCompanyProfileController::class, 'update'])->name('lp-company-profile.update');
     });
 });
 
