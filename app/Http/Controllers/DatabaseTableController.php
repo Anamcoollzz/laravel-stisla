@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class DatabaseTableController extends Controller
@@ -118,6 +121,8 @@ class DatabaseTableController extends Controller
             $activeTab = 'data';
         }
 
+        $primaryKey = $this->resolvePrimaryKey($indexes, $columnNames);
+
         return view('modules.database-tables.show', compact(
             'table',
             'columns',
@@ -130,8 +135,254 @@ class DatabaseTableController extends Controller
             'perPage',
             'sort',
             'direction',
-            'activeTab'
+            'activeTab',
+            'primaryKey'
         ));
+    }
+
+    /**
+     * Update a column definition or rename a column in the specified table.
+     */
+    public function updateColumn(Request $request, string $table, string $column): RedirectResponse
+    {
+        Gate::authorize('database-tables.view');
+
+        $validTables = collect(Schema::getTables())->pluck('name')->all();
+        if (! in_array($table, $validTables, true)) {
+            abort(404, __('Tabel tidak ditemukan.'));
+        }
+
+        $columnNames = Schema::getColumnListing($table);
+        if (! in_array($column, $columnNames, true)) {
+            abort(404, __('Kolom tidak ditemukan.'));
+        }
+
+        $validated = $request->validate([
+            'new_name' => ['required', 'string', 'max:64', 'regex:/^[a-zA-Z_][a-zA-Z0-9_]*$/'],
+            'type' => ['required', Rule::in([
+                'string',
+                'text',
+                'longText',
+                'integer',
+                'bigInteger',
+                'unsignedBigInteger',
+                'float',
+                'decimal',
+                'boolean',
+                'date',
+                'dateTime',
+                'json',
+            ])],
+            'length' => ['nullable', 'integer', 'min:1', 'max:65535'],
+            'default_value' => ['nullable', 'string', 'max:255'],
+            'comment' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $newName = $validated['new_name'];
+        if ($newName !== $column && in_array($newName, $columnNames, true)) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
+                ->with('error', __('Nama kolom baru sudah ada di tabel ini.'));
+        }
+
+        $isNullable = $request->boolean('nullable');
+        $type = $validated['type'];
+        $length = $validated['length'] ?? null;
+        $defaultValue = $validated['default_value'] ?? null;
+        $comment = $validated['comment'] ?? null;
+
+        try {
+            if ($newName !== $column) {
+                Schema::table($table, function (Blueprint $blueprint) use ($column, $newName): void {
+                    $blueprint->renameColumn($column, $newName);
+                });
+            }
+
+            Schema::table($table, function (Blueprint $blueprint) use ($newName, $type, $length, $isNullable, $defaultValue, $comment): void {
+                $colDef = match ($type) {
+                    'string' => $blueprint->string($newName, (int) ($length ?: 255)),
+                    'text' => $blueprint->text($newName),
+                    'longText' => $blueprint->longText($newName),
+                    'integer' => $blueprint->integer($newName),
+                    'bigInteger' => $blueprint->bigInteger($newName),
+                    'unsignedBigInteger' => $blueprint->unsignedBigInteger($newName),
+                    'float' => $blueprint->float($newName),
+                    'decimal' => $blueprint->decimal($newName, 15, 2),
+                    'boolean' => $blueprint->boolean($newName),
+                    'date' => $blueprint->date($newName),
+                    'dateTime' => $blueprint->dateTime($newName),
+                    'json' => $blueprint->json($newName),
+                };
+
+                $colDef->nullable($isNullable);
+
+                if ($defaultValue !== null && $defaultValue !== '') {
+                    $colDef->default($type === 'boolean' ? filter_var($defaultValue, FILTER_VALIDATE_BOOLEAN) : $defaultValue);
+                }
+
+                if ($comment !== null && $comment !== '') {
+                    $colDef->comment($comment);
+                }
+
+                $colDef->change();
+            });
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
+                ->with('error', __('Gagal mengubah kolom: ').$e->getMessage());
+        }
+
+        return redirect()
+            ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
+            ->with('success', __('Kolom berhasil diperbarui.'));
+    }
+
+    /**
+     * Drop the specified column from the table.
+     */
+    public function destroyColumn(string $table, string $column): RedirectResponse
+    {
+        Gate::authorize('database-tables.view');
+
+        $validTables = collect(Schema::getTables())->pluck('name')->all();
+        if (! in_array($table, $validTables, true)) {
+            abort(404, __('Tabel tidak ditemukan.'));
+        }
+
+        $columnNames = Schema::getColumnListing($table);
+        if (! in_array($column, $columnNames, true)) {
+            abort(404, __('Kolom tidak ditemukan.'));
+        }
+
+        if ($column === 'id' || count($columnNames) <= 1) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
+                ->with('error', __('Kolom id atau satu-satunya kolom tidak dapat dihapus.'));
+        }
+
+        try {
+            Schema::table($table, function (Blueprint $blueprint) use ($column): void {
+                $blueprint->dropColumn($column);
+            });
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
+                ->with('error', __('Gagal menghapus kolom: ').$e->getMessage());
+        }
+
+        return redirect()
+            ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
+            ->with('success', __('Kolom berhasil dihapus.'));
+    }
+
+    /**
+     * Update a row in the specified table.
+     */
+    public function updateRow(Request $request, string $table, string $rowId): RedirectResponse
+    {
+        Gate::authorize('database-tables.view');
+
+        $validTables = collect(Schema::getTables())->pluck('name')->all();
+        if (! in_array($table, $validTables, true)) {
+            abort(404, __('Tabel tidak ditemukan.'));
+        }
+
+        $columns = Schema::getColumns($table);
+        $indexes = Schema::getIndexes($table);
+        $columnNames = array_column($columns, 'name');
+        $primaryKey = $this->resolvePrimaryKey($indexes, $columnNames);
+
+        if ($primaryKey === null) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
+                ->with('error', __('Tabel tidak memiliki primary key tunggal untuk diubah.'));
+        }
+
+        $values = $request->input('values', []);
+        $nulls = $request->input('nulls', []);
+        $updateData = [];
+
+        foreach ($columns as $col) {
+            $colName = $col['name'];
+            if ($colName === $primaryKey && ($col['auto_increment'] ?? false)) {
+                continue;
+            }
+
+            if (isset($nulls[$colName]) && ($col['nullable'] ?? false)) {
+                $updateData[$colName] = null;
+
+                continue;
+            }
+
+            if (array_key_exists($colName, $values)) {
+                $updateData[$colName] = $values[$colName];
+            }
+        }
+
+        try {
+            DB::table($table)->where($primaryKey, $rowId)->update($updateData);
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
+                ->with('error', __('Gagal mengubah data: ').$e->getMessage());
+        }
+
+        return redirect()
+            ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
+            ->with('success', __('Data baris berhasil diperbarui.'));
+    }
+
+    /**
+     * Delete a row from the specified table.
+     */
+    public function destroyRow(string $table, string $rowId): RedirectResponse
+    {
+        Gate::authorize('database-tables.view');
+
+        $validTables = collect(Schema::getTables())->pluck('name')->all();
+        if (! in_array($table, $validTables, true)) {
+            abort(404, __('Tabel tidak ditemukan.'));
+        }
+
+        $columns = Schema::getColumns($table);
+        $indexes = Schema::getIndexes($table);
+        $columnNames = array_column($columns, 'name');
+        $primaryKey = $this->resolvePrimaryKey($indexes, $columnNames);
+
+        if ($primaryKey === null) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
+                ->with('error', __('Tabel tidak memiliki primary key tunggal untuk dihapus.'));
+        }
+
+        try {
+            DB::table($table)->where($primaryKey, $rowId)->delete();
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
+                ->with('error', __('Gagal menghapus data: ').$e->getMessage());
+        }
+
+        return redirect()
+            ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
+            ->with('success', __('Data baris berhasil dihapus.'));
+    }
+
+    /**
+     * Resolve a single-column primary key name for a table.
+     *
+     * @param  array<int, array<string, mixed>>  $indexes
+     * @param  array<int, string>  $columnNames
+     */
+    protected function resolvePrimaryKey(array $indexes, array $columnNames): ?string
+    {
+        foreach ($indexes as $index) {
+            if (($index['primary'] ?? false) && count($index['columns'] ?? []) === 1) {
+                return $index['columns'][0];
+            }
+        }
+
+        return in_array('id', $columnNames, true) ? 'id' : null;
     }
 
     /**

@@ -325,6 +325,10 @@ Route::prefix('app')->group(function () {
 
         Route::get('database-tables', [DatabaseTableController::class, 'index'])->name('database-tables.index');
         Route::get('database-tables/{table}', [DatabaseTableController::class, 'show'])->name('database-tables.show');
+        Route::put('database-tables/{table}/columns/{column}', [DatabaseTableController::class, 'updateColumn'])->name('database-tables.columns.update');
+        Route::delete('database-tables/{table}/columns/{column}', [DatabaseTableController::class, 'destroyColumn'])->name('database-tables.columns.destroy');
+        Route::put('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'updateRow'])->name('database-tables.rows.update');
+        Route::delete('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'destroyRow'])->name('database-tables.rows.destroy');
 
         Route::get('news-categories/export', [AdminNewsCategoryController::class, 'export'])->name('news-categories.export');
         Route::get('news-categories/export-pdf', [AdminNewsCategoryController::class, 'exportPdf'])->name('news-categories.exportPdf');
