@@ -2519,5 +2519,12 @@
     "Facebook": "Facebook",
     "Twitter / X": "Twitter / X",
     "GitHub": "GitHub",
-    "Instagram": "Instagram"
+    "Instagram": "Instagram",
+    "User Dashboard": "Dashboard Pengguna",
+    "Unread Notifications": "Notifikasi Belum Dibaca",
+    "Unread Messages": "Pesan Belum Dibaca",
+    "My Tickets": "Tiket Saya",
+    "Recent Notifications": "Notifikasi Terbaru",
+    "My Recent Tickets": "Tiket Terbaru Saya",
+    "No tickets found.": "Belum ada tiket."
 }

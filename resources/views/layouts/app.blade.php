@@ -236,9 +236,11 @@
                   <i class="fas fa-bolt"></i> {{ __('Activities') }}
                 </a>
               @endif
-              <a href="{{ route('settings.index') }}" class="dropdown-item has-icon">
-                <i class="fas fa-cog"></i> Settings
-              </a>
+              @can('settings.view')
+                <a href="{{ route('settings.index') }}" class="dropdown-item has-icon">
+                  <i class="fas fa-cog"></i> {{ __('Settings') }}
+                </a>
+              @endcan
               <div class="dropdown-divider"></div>
               <form action="{{ route('logout') }}" method="POST" id="logout-form" class="d-none">
                 @csrf
@@ -263,12 +265,31 @@
             </div>
             <ul class="sidebar-menu">
               @if (isset($sidebarMenus) && $sidebarMenus->isNotEmpty())
-                @foreach ($sidebarMenus as $menu)
+                @php
+                  $menuList = $sidebarMenus->values();
+                @endphp
+                @foreach ($menuList as $index => $menu)
                   @if (! $menu->canAccess())
                     @continue
                   @endif
 
                   @if ($menu->type === 'header')
+                    @php
+                      $hasVisibleItemBelow = false;
+                      for ($i = $index + 1; $i < $menuList->count(); $i++) {
+                          $nextMenu = $menuList[$i];
+                          if ($nextMenu->type === 'header') {
+                              break;
+                          }
+                          if ($nextMenu->canAccess()) {
+                              $hasVisibleItemBelow = true;
+                              break;
+                          }
+                      }
+                    @endphp
+                    @if (! $hasVisibleItemBelow)
+                      @continue
+                    @endif
                     <li class="menu-header">{{ __($menu->name) }}</li>
                   @elseif ($menu->type === 'dropdown')
                     <li @class(['nav-item dropdown', 'active' => $menu->isActiveRoute()])>

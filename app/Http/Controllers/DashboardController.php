@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppNotification;
+use App\Models\ChatMessage;
 use App\Models\LP\CompanyMilestone;
 use App\Models\LP\CompanyStat;
 use App\Models\LP\CompanyValue;
@@ -35,6 +37,12 @@ class DashboardController extends Controller
     public function index(): View
     {
         Gate::authorize('dashboard.view');
+
+        $authUser = auth()->user();
+
+        if ($authUser instanceof User && $authUser->hasRole('user') && ! $authUser->hasAnyRole(['admin', 'staff'])) {
+            return $this->userDashboard($authUser);
+        }
 
         if (config('stisla.menu_app') === 'lp-compro-workers') {
             return $this->comproWorkers();
@@ -246,6 +254,57 @@ class DashboardController extends Controller
             'topProducts' => $topProducts,
             'lowStockProducts' => $lowStockProducts,
             'currentYear' => $currentYear,
+        ]);
+    }
+
+    /**
+     * Display the dedicated dashboard for standard users.
+     */
+    public function userDashboard(User $user): View
+    {
+        Gate::authorize('dashboard.view');
+
+        $unreadNotifications = AppNotification::query()
+            ->forUser($user->id)
+            ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $user->id))
+            ->count();
+
+        $unreadMessages = ChatMessage::query()
+            ->where('receiver_id', $user->id)
+            ->where('is_read', false)
+            ->count();
+
+        $myTicketsCount = Ticket::query()
+            ->where('user_id', $user->id)
+            ->count();
+
+        $myOrdersCount = Order::query()
+            ->where('user_id', $user->id)
+            ->count();
+
+        $recentNotifications = AppNotification::query()
+            ->forUser($user->id)
+            ->with(['readers' => fn ($query) => $query->where('users.id', $user->id)])
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        $recentTickets = Ticket::query()
+            ->where('user_id', $user->id)
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        return view('dashboards.user', [
+            'user' => $user,
+            'stats' => [
+                'unread_notifications' => $unreadNotifications,
+                'unread_messages' => $unreadMessages,
+                'tickets' => $myTicketsCount,
+                'orders' => $myOrdersCount,
+            ],
+            'recentNotifications' => $recentNotifications,
+            'recentTickets' => $recentTickets,
         ]);
     }
 }

@@ -2483,5 +2483,12 @@
     "Facebook": "Facebook",
     "Twitter / X": "Twitter / X",
     "GitHub": "GitHub",
-    "Instagram": "Instagram"
+    "Instagram": "Instagram",
+    "User Dashboard": "User Dashboard",
+    "Unread Notifications": "Unread Notifications",
+    "Unread Messages": "Unread Messages",
+    "My Tickets": "My Tickets",
+    "Recent Notifications": "Recent Notifications",
+    "My Recent Tickets": "My Recent Tickets",
+    "No tickets found.": "No tickets found."
 }

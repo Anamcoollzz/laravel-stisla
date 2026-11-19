@@ -88,7 +88,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Event::listen(Login::class, function (Login $event): void {
-            if ($event->user instanceof \App\Models\User) {
+            if ($event->user instanceof User) {
                 $event->user->forceFill(['last_logged_in' => now()])->saveQuietly();
             }
         });
@@ -100,7 +100,7 @@ class AppServiceProvider extends ServiceProvider
                 $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
             }
 
-            if ($authUser instanceof \App\Models\User && $authUser->last_logged_in === null) {
+            if ($authUser instanceof User && $authUser->last_logged_in === null) {
                 $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
             }
 
@@ -143,7 +143,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        View::composer(['dashboard', 'dashboard-ecommerce', 'dashboards.compro-workers'], function ($view) {
+        View::composer(['dashboard', 'dashboard-ecommerce', 'dashboards.compro-workers', 'dashboards.user'], function ($view) {
             $announcements = Schema::hasTable('announcements')
                 ? Announcement::query()->published()->limit(5)->get()
                 : collect();
