@@ -2,6 +2,10 @@
 
 @section('title', __('Profile'))
 
+@push('css')
+  <link rel="stylesheet" href="{{ asset('node_modules/bootstrap-social/bootstrap-social.css') }}">
+@endpush
+
 @push('js')
   <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
@@ -186,6 +190,31 @@
               </li>
             </ul>
           </div>
+          @if ($user->facebook_url || $user->twitter_url || $user->github_url || $user->instagram_url)
+            <div class="card-footer text-center">
+              <div class="font-weight-bold mb-2">{{ __('Social Links') }}</div>
+              @if ($user->facebook_url)
+                <a href="{{ $user->facebook_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-social-icon btn-facebook mr-1" title="Facebook">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              @endif
+              @if ($user->twitter_url)
+                <a href="{{ $user->twitter_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-social-icon btn-twitter mr-1" title="Twitter / X">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              @endif
+              @if ($user->github_url)
+                <a href="{{ $user->github_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-social-icon btn-github mr-1" title="GitHub">
+                  <i class="fab fa-github"></i>
+                </a>
+              @endif
+              @if ($user->instagram_url)
+                <a href="{{ $user->instagram_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-social-icon btn-instagram" title="Instagram">
+                  <i class="fab fa-instagram"></i>
+                </a>
+              @endif
+            </div>
+          @endif
         </div>
       </div>
 
@@ -241,6 +270,46 @@
                 <div class="col-sm-9">
                   <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>
                   @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="facebook_url" class="col-sm-3 col-form-label"><i class="fab fa-facebook-f mr-1 text-primary"></i> {{ __('Facebook') }}</label>
+                <div class="col-sm-9">
+                  <input type="url" name="facebook_url" id="facebook_url" class="form-control @error('facebook_url') is-invalid @enderror" value="{{ old('facebook_url', $user->facebook_url) }}" placeholder="https://facebook.com/username">
+                  @error('facebook_url')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="twitter_url" class="col-sm-3 col-form-label"><i class="fab fa-twitter mr-1 text-info"></i> {{ __('Twitter / X') }}</label>
+                <div class="col-sm-9">
+                  <input type="url" name="twitter_url" id="twitter_url" class="form-control @error('twitter_url') is-invalid @enderror" value="{{ old('twitter_url', $user->twitter_url) }}" placeholder="https://x.com/username">
+                  @error('twitter_url')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="github_url" class="col-sm-3 col-form-label"><i class="fab fa-github mr-1 text-dark"></i> {{ __('GitHub') }}</label>
+                <div class="col-sm-9">
+                  <input type="url" name="github_url" id="github_url" class="form-control @error('github_url') is-invalid @enderror" value="{{ old('github_url', $user->github_url) }}" placeholder="https://github.com/username">
+                  @error('github_url')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="instagram_url" class="col-sm-3 col-form-label"><i class="fab fa-instagram mr-1 text-danger"></i> {{ __('Instagram') }}</label>
+                <div class="col-sm-9">
+                  <input type="url" name="instagram_url" id="instagram_url" class="form-control @error('instagram_url') is-invalid @enderror" value="{{ old('instagram_url', $user->instagram_url) }}" placeholder="https://instagram.com/username">
+                  @error('instagram_url')
                     <div class="invalid-feedback">{{ $message }}</div>
                   @enderror
                 </div>
