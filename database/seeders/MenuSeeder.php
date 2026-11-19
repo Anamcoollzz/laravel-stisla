@@ -219,5 +219,42 @@ class MenuSeeder extends Seeder
                 ]
             );
         }
+
+        // 6. LP Compro Workers App Menus (ADMIN_MENU_APP=lp-compro-workers)
+        Menu::firstOrCreate(
+            ['app' => 'lp-compro-workers', 'name' => 'Dashboard', 'type' => 'item'],
+            [
+                'icon' => 'fas fa-fire',
+                'route' => 'dashboard',
+                'order' => 1,
+                'is_active' => true,
+            ]
+        );
+
+        $lpComproDropdown = Menu::firstOrCreate(
+            ['app' => 'lp-compro-workers', 'name' => 'Company Profile', 'type' => 'dropdown'],
+            [
+                'icon' => 'fas fa-globe',
+                'order' => 10,
+                'is_active' => true,
+            ]
+        );
+
+        $lpComproChildren = [
+            ['name' => 'Company Stats', 'route' => 'lp-company-stats.index', 'permission' => 'lp-company-stats.view', 'order' => 1],
+        ];
+
+        foreach ($lpComproChildren as $child) {
+            Menu::firstOrCreate(
+                ['app' => 'lp-compro-workers', 'parent_id' => $lpComproDropdown->id, 'name' => $child['name']],
+                [
+                    'type' => 'item',
+                    'route' => $child['route'],
+                    'permission' => $child['permission'],
+                    'order' => $child['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
     }
 }

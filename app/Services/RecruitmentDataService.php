@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\LP\CompanyStat;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class RecruitmentDataService
@@ -14,6 +16,23 @@ class RecruitmentDataService
      */
     public function getCompanyStats(): array
     {
+        if (Schema::hasTable('company_stats')) {
+            $dbStats = CompanyStat::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbStats->isNotEmpty()) {
+                return $dbStats->map(fn (CompanyStat $stat): array => [
+                    'value' => $stat->value,
+                    'label' => $stat->label,
+                    'description' => (string) ($stat->description ?? ''),
+                    'icon' => $stat->icon,
+                ])->all();
+            }
+        }
+
         return [
             [
                 'value' => '10+',

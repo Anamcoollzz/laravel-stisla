@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
 use App\Http\Controllers\Admin\News\NewsCommentController as AdminNewsCommentController;
 use App\Http\Controllers\Admin\News\NewsController as AdminNewsController;
@@ -21,6 +22,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LaravelLogController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\LogRequestController;
+use App\Http\Controllers\LP\PageController;
+use App\Http\Controllers\LP\WorkerCatalogController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OurTeamController;
@@ -52,13 +55,13 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // start lp
-Route::get('/', [\App\Http\Controllers\LP\PageController::class, 'home'])->name('home');
-Route::get('/about', [\App\Http\Controllers\LP\PageController::class, 'about'])->name('about');
-Route::get('/services', [\App\Http\Controllers\LP\PageController::class, 'services'])->name('services');
-Route::get('/catalog', [\App\Http\Controllers\LP\WorkerCatalogController::class, 'index'])->name('catalog');
-Route::get('/catalog/{slug}', [\App\Http\Controllers\LP\WorkerCatalogController::class, 'show'])->name('worker.detail');
-Route::get('/gallery', [\App\Http\Controllers\LP\PageController::class, 'gallery'])->name('gallery');
-Route::get('/contact', [\App\Http\Controllers\LP\PageController::class, 'contact'])->name('contact');
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/services', [PageController::class, 'services'])->name('services');
+Route::get('/catalog', [WorkerCatalogController::class, 'index'])->name('catalog');
+Route::get('/catalog/{slug}', [WorkerCatalogController::class, 'show'])->name('worker.detail');
+Route::get('/gallery', [PageController::class, 'gallery'])->name('gallery');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 // end lp
 
 // Route::get('/', HomeController::class);
@@ -341,6 +344,14 @@ Route::prefix('app')->group(function () {
         Route::post('news-comments/{newsComment}/reply', [AdminNewsCommentController::class, 'reply'])->name('news-comments.reply');
         Route::resource('news-comments', AdminNewsCommentController::class)->only(['index', 'show', 'destroy'])->parameters([
             'news-comments' => 'newsComment',
+        ]);
+
+        Route::get('lp-company-stats/export', [AdminCompanyStatController::class, 'export'])->name('lp-company-stats.export');
+        Route::get('lp-company-stats/export-pdf', [AdminCompanyStatController::class, 'exportPdf'])->name('lp-company-stats.exportPdf');
+        Route::get('lp-company-stats/template', [AdminCompanyStatController::class, 'template'])->name('lp-company-stats.template');
+        Route::post('lp-company-stats/import', [AdminCompanyStatController::class, 'import'])->name('lp-company-stats.import');
+        Route::resource('lp-company-stats', AdminCompanyStatController::class)->parameters([
+            'lp-company-stats' => 'companyStat',
         ]);
     });
 });
