@@ -2,23 +2,17 @@
 
 namespace App\Models\LP;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Table('company_milestones')]
+#[Fillable(['year', 'title', 'description', 'order', 'is_active'])]
 class CompanyMilestone extends Model
 {
     use HasFactory;
-
-    protected $table = 'company_milestones';
-
-    protected $fillable = [
-        'year',
-        'title',
-        'description',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

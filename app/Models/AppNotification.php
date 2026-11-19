@@ -2,35 +2,16 @@
 
 namespace App\Models;
 
-use Database\Factories\AppNotificationFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 
+#[Fillable(['title', 'message', 'type', 'icon', 'action_url', 'user_id', 'is_broadcast', 'created_by'])]
 class AppNotification extends Model
 {
-    /** @use HasFactory<AppNotificationFactory> */
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'title',
-        'message',
-        'type',
-        'icon',
-        'action_url',
-        'user_id',
-        'is_broadcast',
-        'created_by',
-    ];
-
     /**
      * Available notification types.
      *

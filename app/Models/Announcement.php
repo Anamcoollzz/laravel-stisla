@@ -2,35 +2,15 @@
 
 namespace App\Models;
 
-use Database\Factories\AnnouncementFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
+#[Fillable(['title', 'slug', 'content', 'type', 'published_at', 'expires_at', 'is_active', 'is_pinned', 'created_by'])]
 class Announcement extends Model
 {
-    /** @use HasFactory<AnnouncementFactory> */
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'title',
-        'slug',
-        'content',
-        'type',
-        'published_at',
-        'expires_at',
-        'is_active',
-        'is_pinned',
-        'created_by',
-    ];
-
     /**
      * Available announcement types.
      *

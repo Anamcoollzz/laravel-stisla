@@ -2,45 +2,19 @@
 
 namespace App\Models\LP;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+#[Table('workers')]
+#[Fillable(['slug', 'code', 'name', 'category', 'category_label', 'age', 'age_bracket', 'origin', 'origin_region', 'education', 'experience_years', 'experience_label', 'experience_bracket', 'status', 'is_featured', 'published_date', 'photo', 'gallery', 'languages', 'bio', 'skills', 'work_history', 'placement_preferences', 'training_certifications', 'medical_check'])]
 class Worker extends Model
 {
     use HasFactory;
-
-    protected $table = 'workers';
-
-    protected $fillable = [
-        'slug',
-        'code',
-        'name',
-        'category',
-        'category_label',
-        'age',
-        'age_bracket',
-        'origin',
-        'origin_region',
-        'education',
-        'experience_years',
-        'experience_label',
-        'experience_bracket',
-        'status',
-        'is_featured',
-        'published_date',
-        'photo',
-        'gallery',
-        'languages',
-        'bio',
-        'skills',
-        'work_history',
-        'placement_preferences',
-        'training_certifications',
-        'medical_check',
-    ];
 
     /**
      * @return array<string, string>

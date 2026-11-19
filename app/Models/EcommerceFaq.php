@@ -2,21 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable(['question', 'answer', 'column', 'order', 'is_active'])]
 class EcommerceFaq extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'question',
-        'answer',
-        'column',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[Fillable(['id', 'name'])]
 class Province extends Model
 {
     public $incrementing = false;
@@ -12,12 +14,6 @@ class Province extends Model
     public $timestamps = false;
 
     protected $keyType = 'string';
-
-    /** @var list<string> */
-    protected $fillable = [
-        'id',
-        'name',
-    ];
 
     /**
      * Get the regencies/cities belonging to this province.

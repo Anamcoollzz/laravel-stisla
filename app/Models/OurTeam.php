@@ -2,26 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+#[Fillable(['name', 'position', 'image', 'twitter_url', 'facebook_url', 'linkedin_url', 'order', 'is_active'])]
 class OurTeam extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'position',
-        'image',
-        'twitter_url',
-        'facebook_url',
-        'linkedin_url',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

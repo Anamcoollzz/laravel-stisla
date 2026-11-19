@@ -3,26 +3,17 @@
 namespace App\Models\News;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[Fillable(['news_id', 'user_id', 'parent_id', 'name', 'email', 'website', 'comment', 'is_approved'])]
 class NewsComment extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'news_id',
-        'user_id',
-        'parent_id',
-        'name',
-        'email',
-        'website',
-        'comment',
-        'is_approved',
-    ];
 
     /**
      * @return array<string, string>

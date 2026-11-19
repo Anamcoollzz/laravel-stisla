@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,33 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+#[Fillable(['category_id', 'brand_id', 'vendor_id', 'size_id', 'color_id', 'title', 'slug', 'sku', 'price', 'discount_percent', 'stock', 'short_description', 'description_detail', 'spesifications', 'tags', 'thumbnail', 'is_active', 'is_trending', 'is_new', 'is_sale', 'is_deal'])]
 class Product extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'category_id',
-        'brand_id',
-        'vendor_id',
-        'size_id',
-        'color_id',
-        'title',
-        'slug',
-        'sku',
-        'price',
-        'discount_percent',
-        'stock',
-        'short_description',
-        'description_detail',
-        'spesifications',
-        'tags',
-        'thumbnail',
-        'is_active',
-        'is_trending',
-        'is_new',
-        'is_sale',
-        'is_deal',
-    ];
 
     /**
      * @return array<string, string>

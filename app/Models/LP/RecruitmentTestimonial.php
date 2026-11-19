@@ -2,28 +2,19 @@
 
 namespace App\Models\LP;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+#[Table('recruitment_testimonials')]
+#[Fillable(['name', 'location', 'service', 'quote', 'avatar', 'rating', 'order', 'is_active'])]
 class RecruitmentTestimonial extends Model
 {
     use HasFactory;
-
-    protected $table = 'recruitment_testimonials';
-
-    protected $fillable = [
-        'name',
-        'location',
-        'service',
-        'quote',
-        'avatar',
-        'rating',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

@@ -2,40 +2,18 @@
 
 namespace App\Models\LP;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+#[Table('company_profiles')]
+#[Fillable(['name', 'legal_name', 'logo', 'tagline', 'footer_description', 'copyright_year', 'license_number', 'whatsapp_number', 'phone_display', 'secondary_phone', 'email', 'address', 'short_address', 'operating_hours_weekday', 'operating_hours_saturday', 'operating_hours_sunday', 'map_embed_url', 'instagram_url', 'facebook_url', 'youtube_url', 'default_whatsapp_message'])]
 class CompanyProfile extends Model
 {
     use HasFactory;
-
-    protected $table = 'company_profiles';
-
-    protected $fillable = [
-        'name',
-        'legal_name',
-        'logo',
-        'tagline',
-        'footer_description',
-        'copyright_year',
-        'license_number',
-        'whatsapp_number',
-        'phone_display',
-        'secondary_phone',
-        'email',
-        'address',
-        'short_address',
-        'operating_hours_weekday',
-        'operating_hours_saturday',
-        'operating_hours_sunday',
-        'map_embed_url',
-        'instagram_url',
-        'facebook_url',
-        'youtube_url',
-        'default_whatsapp_message',
-    ];
 
     /**
      * Logo URL accessor with smart fallback.
