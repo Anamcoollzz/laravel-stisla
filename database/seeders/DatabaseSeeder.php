@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,
             SppPaymentSeeder::class,
             TicketSeeder::class,
+            AnnouncementSeeder::class,
             ProductCategorySeeder::class,
             ProductMasterDataSeeder::class,
             ProductSeeder::class,

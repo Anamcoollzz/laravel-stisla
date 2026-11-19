@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -84,6 +85,10 @@ Route::prefix('app')->group(function () {
         Route::get('tickets/export-pdf', [TicketController::class, 'exportPdf'])->name('tickets.exportPdf');
         Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
         Route::resource('tickets', TicketController::class);
+
+        Route::post('announcements/{announcement}/duplicate', [AnnouncementController::class, 'duplicate'])->name('announcements.duplicate');
+        Route::patch('announcements/{announcement}/toggle-active', [AnnouncementController::class, 'toggleActive'])->name('announcements.toggleActive');
+        Route::resource('announcements', AnnouncementController::class);
 
         Route::post('our-teams/{ourTeam}/duplicate', [OurTeamController::class, 'duplicate'])->name('our-teams.duplicate');
         Route::resource('our-teams', OurTeamController::class)->parameters([
