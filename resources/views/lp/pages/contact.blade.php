@@ -80,38 +80,49 @@
                         Fill out your contact details below for a quick inquiry preview, or connect immediately via WhatsApp.
                     </p>
 
-                    <div id="contactSuccessState" class="mt-6 hidden rounded-xl border border-teal/30 bg-teal-light p-5 text-sm text-navy-dark" role="status">
-                        <div class="flex items-start gap-3">
-                            <i data-lucide="check-circle-2" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
-                            <div>
-                                <strong class="block font-bold">Inquiry Preview Prepared</strong>
-                                <p class="mt-1 text-xs text-ink-muted">
-                                    This demonstration form validated your message locally. For immediate consultant assistance, send your inquiry directly on WhatsApp below.
-                                </p>
-                                <a id="contactWhatsAppDirectLink" href="#" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center gap-2 rounded-lg bg-teal px-4 py-2 text-xs font-semibold text-white hover:bg-navy">
-                                    <span>Send This Message on WhatsApp</span>
-                                </a>
+                    @if (session('success'))
+                        <div class="mt-6 rounded-xl border border-teal/30 bg-teal-light p-5 text-sm text-navy-dark" role="status">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
+                                <div>
+                                    <strong class="block font-bold">{{ __('Terima kasih!') }}</strong>
+                                    <p class="mt-1 text-xs text-ink-muted">{{ session('success') }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-700" role="alert">
+                            <ul class="list-disc pl-4 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     <form
-                        id="contactForm"
-                        data-whatsapp-number="{{ preg_replace('/[^0-9]/', '', $company['whatsapp_number']) }}"
+                        id="contactInquiryForm"
+                        action="{{ route('contact.store') }}"
+                        method="POST"
                         class="mt-6 space-y-4"
-                        novalidate
                     >
+                        @csrf
                         <div>
                             <label for="contactFullName" class="block text-xs font-bold text-navy-dark mb-1.5">Full Name</label>
                             <input
                                 id="contactFullName"
                                 type="text"
                                 name="full_name"
+                                value="{{ old('full_name') }}"
                                 required
                                 placeholder="e.g., Amanda Putri"
-                                class="w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
+                                class="w-full rounded-xl border {{ $errors->has('full_name') ? 'border-red-500' : 'border-border-subtle' }} bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
                             >
-                            <p data-error-for="contactFullName" class="mt-1 hidden text-xs font-medium text-red-600">Please enter your full name.</p>
+                            @error('full_name')
+                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -121,11 +132,14 @@
                                     id="contactEmail"
                                     type="email"
                                     name="email"
+                                    value="{{ old('email') }}"
                                     required
                                     placeholder="name@example.com"
-                                    class="w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
+                                    class="w-full rounded-xl border {{ $errors->has('email') ? 'border-red-500' : 'border-border-subtle' }} bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
                                 >
-                                <p data-error-for="contactEmail" class="mt-1 hidden text-xs font-medium text-red-600">Please enter a valid email address.</p>
+                                @error('email')
+                                    <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label for="contactPhone" class="block text-xs font-bold text-navy-dark mb-1.5">Phone Number</label>
@@ -133,11 +147,14 @@
                                     id="contactPhone"
                                     type="tel"
                                     name="phone"
+                                    value="{{ old('phone') }}"
                                     required
                                     placeholder="0812-xxxx-xxxx"
-                                    class="w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
+                                    class="w-full rounded-xl border {{ $errors->has('phone') ? 'border-red-500' : 'border-border-subtle' }} bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
                                 >
-                                <p data-error-for="contactPhone" class="mt-1 hidden text-xs font-medium text-red-600">Please enter a valid phone number.</p>
+                                @error('phone')
+                                    <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
@@ -147,11 +164,14 @@
                                 id="contactSubject"
                                 type="text"
                                 name="subject"
+                                value="{{ old('subject') }}"
                                 required
                                 placeholder="e.g., Babysitter / Caregiver Inquiry"
-                                class="w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
+                                class="w-full rounded-xl border {{ $errors->has('subject') ? 'border-red-500' : 'border-border-subtle' }} bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
                             >
-                            <p data-error-for="contactSubject" class="mt-1 hidden text-xs font-medium text-red-600">Please provide a subject.</p>
+                            @error('subject')
+                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
@@ -162,15 +182,63 @@
                                 rows="4"
                                 required
                                 placeholder="Describe the worker role, household location, and preferred schedule..."
-                                class="w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
-                            ></textarea>
-                            <p data-error-for="contactMessage" class="mt-1 hidden text-xs font-medium text-red-600">Please enter your message.</p>
+                                class="w-full rounded-xl border {{ $errors->has('message') ? 'border-red-500' : 'border-border-subtle' }} bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
+                            >{{ old('message') }}</textarea>
+                            @error('message')
+                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="contactCaptcha" class="block text-xs font-bold text-navy-dark mb-1.5">{{ __('Security Captcha') }}</label>
+                            <div class="flex flex-wrap items-center gap-3">
+                                <span id="contactCaptchaImg" class="inline-block overflow-hidden rounded-xl border border-border-subtle bg-white">
+                                    {!! captcha_img('flat') !!}
+                                </span>
+                                <button
+                                    type="button"
+                                    id="btnRefreshContactCaptcha"
+                                    class="inline-flex items-center gap-1.5 rounded-xl border border-border-subtle bg-surface px-3 py-2.5 text-xs font-semibold text-navy-dark transition hover:border-navy"
+                                >
+                                    <i data-lucide="refresh-cw" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                                    <span>{{ __('Refresh') }}</span>
+                                </button>
+                                <input
+                                    id="contactCaptcha"
+                                    type="text"
+                                    name="captcha"
+                                    required
+                                    autocomplete="off"
+                                    placeholder="{{ __('Enter captcha code') }}"
+                                    class="min-w-[160px] flex-1 rounded-xl border {{ $errors->has('captcha') ? 'border-red-500' : 'border-border-subtle' }} bg-surface px-4 py-3 text-sm text-ink focus:border-teal focus:bg-white focus:outline-none"
+                                >
+                            </div>
+                            @error('captcha')
+                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <button type="submit" class="w-full rounded-xl bg-navy px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-navy-dark">
                             Submit Inquiry
                         </button>
                     </form>
+
+                    @push('scripts')
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var refreshBtn = document.getElementById('btnRefreshContactCaptcha');
+                                var captchaContainer = document.getElementById('contactCaptchaImg');
+                                if (refreshBtn && captchaContainer) {
+                                    refreshBtn.addEventListener('click', function () {
+                                        var img = captchaContainer.querySelector('img');
+                                        if (img) {
+                                            img.src = '/captcha/flat?' + Date.now();
+                                        }
+                                    });
+                                }
+                            });
+                        </script>
+                    @endpush
                 </div>
 
                 {{-- Google Maps Embed Placeholder + Direct WhatsApp CTA --}}

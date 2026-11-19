@@ -71,6 +71,7 @@ class RolePermissionSeeder extends Seeder
             'lp-milestones' => ['view', 'create', 'edit', 'delete'],
             'lp-vision-mission' => ['view', 'edit'],
             'lp-company-values' => ['view', 'create', 'edit', 'delete'],
+            'lp-contact-inquiries' => ['view', 'create', 'edit', 'delete'],
             'settings' => ['view', 'edit'],
         ];
 

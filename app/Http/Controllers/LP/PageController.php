@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\LP\CompanyIntroduction;
 use App\Models\LP\CompanyMilestone;
 use App\Models\LP\CompanyValue;
+use App\Models\LP\ContactInquiry;
 use App\Models\LP\VisionMission;
 use App\Services\RecruitmentDataService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
@@ -182,5 +185,36 @@ class PageController extends Controller
         return view('lp.pages.contact', [
             'company' => config('company'),
         ]);
+    }
+
+    /**
+     * Store a new public contact inquiry with captcha verification.
+     */
+    public function storeContact(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'full_name' => ['required', 'string', 'max:150'],
+            'email' => ['required', 'email', 'max:150'],
+            'phone' => ['required', 'string', 'max:50'],
+            'subject' => ['required', 'string', 'max:200'],
+            'message' => ['required', 'string', 'max:5000'],
+            'captcha' => ['required', 'captcha'],
+        ], [
+            'captcha.captcha' => __('Kode captcha tidak sesuai. Silakan coba lagi.'),
+        ]);
+
+        ContactInquiry::query()->create([
+            'full_name' => $validated['full_name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'subject' => $validated['subject'],
+            'message' => $validated['message'],
+            'ip_address' => $request->ip(),
+            'is_read' => false,
+        ]);
+
+        return redirect()
+            ->route('contact')
+            ->with('success', __('Pesan Anda berhasil dikirim! Tim kami akan segera menghubungi Anda.'));
     }
 }

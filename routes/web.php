@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\LP\CompanyMilestoneController as AdminCompanyMile
 use App\Http\Controllers\Admin\LP\CompanyProfileController as AdminCompanyProfileController;
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\CompanyValueController as AdminCompanyValueController;
+use App\Http\Controllers\Admin\LP\ContactInquiryController as AdminContactInquiryController;
 use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
 use App\Http\Controllers\Admin\LP\LpGalleryController as AdminLpGalleryController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
@@ -74,6 +75,7 @@ Route::get('/catalog', [WorkerCatalogController::class, 'index'])->name('catalog
 Route::get('/catalog/{slug}', [WorkerCatalogController::class, 'show'])->name('worker.detail');
 Route::get('/gallery', [PageController::class, 'gallery'])->name('gallery');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [PageController::class, 'storeContact'])->name('contact.store');
 // end lp
 
 // Route::get('/', HomeController::class);
@@ -455,6 +457,15 @@ Route::prefix('app')->group(function () {
         Route::post('lp-company-values/{companyValue}/duplicate', [AdminCompanyValueController::class, 'duplicate'])->name('lp-company-values.duplicate');
         Route::resource('lp-company-values', AdminCompanyValueController::class)->parameters([
             'lp-company-values' => 'companyValue',
+        ]);
+
+        Route::get('lp-contact-inquiries/export', [AdminContactInquiryController::class, 'export'])->name('lp-contact-inquiries.export');
+        Route::get('lp-contact-inquiries/export-pdf', [AdminContactInquiryController::class, 'exportPdf'])->name('lp-contact-inquiries.exportPdf');
+        Route::get('lp-contact-inquiries/template', [AdminContactInquiryController::class, 'template'])->name('lp-contact-inquiries.template');
+        Route::post('lp-contact-inquiries/import', [AdminContactInquiryController::class, 'import'])->name('lp-contact-inquiries.import');
+        Route::patch('lp-contact-inquiries/{contactInquiry}/toggle-read', [AdminContactInquiryController::class, 'toggleRead'])->name('lp-contact-inquiries.toggleRead');
+        Route::resource('lp-contact-inquiries', AdminContactInquiryController::class)->only(['index', 'show', 'destroy'])->parameters([
+            'lp-contact-inquiries' => 'contactInquiry',
         ]);
     });
 });
