@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
+use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
 use App\Http\Controllers\Admin\News\NewsCommentController as AdminNewsCommentController;
 use App\Http\Controllers\Admin\News\NewsController as AdminNewsController;
@@ -352,6 +353,14 @@ Route::prefix('app')->group(function () {
         Route::post('lp-company-stats/import', [AdminCompanyStatController::class, 'import'])->name('lp-company-stats.import');
         Route::resource('lp-company-stats', AdminCompanyStatController::class)->parameters([
             'lp-company-stats' => 'companyStat',
+        ]);
+
+        Route::get('lp-services/export', [AdminRecruitmentServiceController::class, 'export'])->name('lp-services.export');
+        Route::get('lp-services/export-pdf', [AdminRecruitmentServiceController::class, 'exportPdf'])->name('lp-services.exportPdf');
+        Route::get('lp-services/template', [AdminRecruitmentServiceController::class, 'template'])->name('lp-services.template');
+        Route::post('lp-services/import', [AdminRecruitmentServiceController::class, 'import'])->name('lp-services.import');
+        Route::resource('lp-services', AdminRecruitmentServiceController::class)->parameters([
+            'lp-services' => 'recruitmentService',
         ]);
     });
 });

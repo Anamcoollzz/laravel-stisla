@@ -242,6 +242,7 @@ class MenuSeeder extends Seeder
 
         $lpComproChildren = [
             ['name' => 'Company Stats', 'route' => 'lp-company-stats.index', 'permission' => 'lp-company-stats.view', 'order' => 1],
+            ['name' => 'Services', 'route' => 'lp-services.index', 'permission' => 'lp-services.view', 'order' => 2],
         ];
 
         foreach ($lpComproChildren as $child) {

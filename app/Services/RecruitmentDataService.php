@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\LP\CompanyStat;
+use App\Models\LP\RecruitmentService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -68,6 +69,31 @@ class RecruitmentDataService
      */
     public function getServices(): array
     {
+        if (Schema::hasTable('recruitment_services')) {
+            $dbServices = RecruitmentService::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbServices->isNotEmpty()) {
+                return $dbServices->map(fn (RecruitmentService $service): array => [
+                    'slug' => $service->slug,
+                    'category_key' => $service->category_key,
+                    'title' => $service->title,
+                    'subtitle' => (string) ($service->subtitle ?? ''),
+                    'icon' => $service->icon,
+                    'image' => (string) ($service->image ?? ''),
+                    'image_url' => $service->image_url,
+                    'short_description' => (string) ($service->short_description ?? ''),
+                    'description' => (string) ($service->description ?? ''),
+                    'responsibilities' => $service->responsibilities ?? [],
+                    'skills' => $service->skills ?? [],
+                    'benefits' => $service->benefits ?? [],
+                ])->all();
+            }
+        }
+
         return [
             [
                 'slug' => 'domestic-helper',

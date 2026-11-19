@@ -25,7 +25,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-12">
                         <div class="lg:col-span-5 {{ $index % 2 === 1 ? 'lg:order-2' : '' }}">
                             <img
-                                src="{{ asset($service['image']) }}"
+                                src="{{ $service['image_url'] ?? asset($service['image']) }}"
                                 alt="{{ $service['title'] }}"
                                 loading="lazy"
                                 class="h-72 w-full object-cover object-top lg:h-full"

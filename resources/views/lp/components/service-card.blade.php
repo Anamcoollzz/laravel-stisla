@@ -3,7 +3,7 @@
 <article {{ $attributes->merge(['class' => 'group flex flex-col overflow-hidden rounded-2xl border border-border-subtle bg-white shadow-xs transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-md']) }}>
     <div class="relative aspect-16/10 overflow-hidden bg-surface">
         <img
-            src="{{ asset($service['image']) }}"
+            src="{{ $service['image_url'] ?? asset($service['image']) }}"
             alt="{{ $service['title'] }}"
             loading="lazy"
             class="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
