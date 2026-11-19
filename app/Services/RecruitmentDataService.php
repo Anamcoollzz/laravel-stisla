@@ -8,6 +8,7 @@ use App\Models\LP\RecruitmentService;
 use App\Models\LP\RecruitmentStep;
 use App\Models\LP\RecruitmentTestimonial;
 use App\Models\LP\WhyChooseUs;
+use App\Models\LP\Worker;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -706,11 +707,57 @@ class RecruitmentDataService
     }
 
     /**
-     * Structured sample candidate profiles ready for future Eloquent replacement.
+     * Structured candidate profiles backed by Eloquent with static fallback.
      *
      * @return array<int, array<string, mixed>>
      */
     private function allWorkersData(): array
+    {
+        if (Schema::hasTable('workers')) {
+            $dbWorkers = Worker::query()->orderByDesc('published_date')->latest('id')->get();
+
+            if ($dbWorkers->isNotEmpty()) {
+                return $dbWorkers->map(fn (Worker $worker): array => [
+                    'id' => $worker->id,
+                    'slug' => $worker->slug,
+                    'code' => $worker->code,
+                    'name' => $worker->name,
+                    'category' => $worker->category,
+                    'category_label' => $worker->category_label,
+                    'age' => $worker->age,
+                    'age_bracket' => $worker->age_bracket,
+                    'origin' => (string) ($worker->origin ?? ''),
+                    'origin_region' => (string) ($worker->origin_region ?? ''),
+                    'education' => (string) ($worker->education ?? ''),
+                    'experience_years' => $worker->experience_years,
+                    'experience_label' => (string) ($worker->experience_label ?? ''),
+                    'experience_bracket' => $worker->experience_bracket,
+                    'status' => $worker->status,
+                    'is_featured' => $worker->is_featured,
+                    'created_at' => ($worker->published_date ?? $worker->created_at)?->format('Y-m-d') ?? now()->toDateString(),
+                    'photo' => (string) ($worker->photo ?? ''),
+                    'photo_url' => $worker->photo_url,
+                    'gallery' => $worker->gallery ?? ($worker->photo ? [$worker->photo] : []),
+                    'gallery_urls' => $worker->gallery_urls,
+                    'languages' => $worker->languages ?? [],
+                    'bio' => (string) ($worker->bio ?? ''),
+                    'skills' => $worker->skills ?? [],
+                    'work_history' => $worker->work_history ?? [],
+                    'placement_preferences' => $worker->placement_preferences ?? [],
+                    'training_certifications' => $worker->training_certifications ?? [],
+                ])->all();
+            }
+        }
+
+        return $this->defaultWorkersData();
+    }
+
+    /**
+     * Default sample candidate profiles for initial seeding & fallback.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function defaultWorkersData(): array
     {
         return [
             [

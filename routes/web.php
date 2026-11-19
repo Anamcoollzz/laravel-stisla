@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitme
 use App\Http\Controllers\Admin\LP\RecruitmentStepController as AdminRecruitmentStepController;
 use App\Http\Controllers\Admin\LP\RecruitmentTestimonialController as AdminRecruitmentTestimonialController;
 use App\Http\Controllers\Admin\LP\WhyChooseUsController as AdminWhyChooseUsController;
+use App\Http\Controllers\Admin\LP\WorkerController as AdminWorkerController;
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
 use App\Http\Controllers\Admin\News\NewsCommentController as AdminNewsCommentController;
 use App\Http\Controllers\Admin\News\NewsController as AdminNewsController;
@@ -403,6 +404,15 @@ Route::prefix('app')->group(function () {
         Route::post('lp-faqs/{lpFaq}/duplicate', [AdminLpFaqController::class, 'duplicate'])->name('lp-faqs.duplicate');
         Route::resource('lp-faqs', AdminLpFaqController::class)->parameters([
             'lp-faqs' => 'lpFaq',
+        ]);
+
+        Route::get('lp-workers/export', [AdminWorkerController::class, 'export'])->name('lp-workers.export');
+        Route::get('lp-workers/export-pdf', [AdminWorkerController::class, 'exportPdf'])->name('lp-workers.exportPdf');
+        Route::get('lp-workers/template', [AdminWorkerController::class, 'template'])->name('lp-workers.template');
+        Route::post('lp-workers/import', [AdminWorkerController::class, 'import'])->name('lp-workers.import');
+        Route::post('lp-workers/{worker}/duplicate', [AdminWorkerController::class, 'duplicate'])->name('lp-workers.duplicate');
+        Route::resource('lp-workers', AdminWorkerController::class)->parameters([
+            'lp-workers' => 'worker',
         ]);
     });
 });

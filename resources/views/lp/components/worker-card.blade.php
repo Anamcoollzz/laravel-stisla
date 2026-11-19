@@ -45,7 +45,7 @@
     {{-- Consistent Aspect-Ratio Photo Header --}}
     <div class="relative aspect-4/5 overflow-hidden bg-surface">
         <img
-            src="{{ asset($worker['photo']) }}"
+            src="{{ $worker['photo_url'] ?? asset($worker['photo']) }}"
             alt="{{ $worker['name'] }} — {{ $worker['category_label'] }}"
             loading="lazy"
             class="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"

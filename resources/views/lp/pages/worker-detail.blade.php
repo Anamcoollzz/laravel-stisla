@@ -3,7 +3,7 @@
 @section('title', $worker['name'] . ' (' . $worker['code'] . ') — ' . $worker['category_label'] . ' | ' . config('company.legal_name'))
 @section('meta_description', 'Public candidate profile for ' . $worker['name'] . ' (' . $worker['code'] . '), ' . $worker['category_label'] . ' from ' . $worker['origin'] . ' with ' . $worker['experience_label'] . ' experience.')
 @section('og_title', $worker['name'] . ' — ' . $worker['category_label'])
-@section('og_image', asset($worker['photo']))
+@section('og_image', $worker['photo_url'] ?? asset($worker['photo']))
 
 @section('content')
     @php
@@ -48,7 +48,7 @@
                         <div class="relative aspect-4/5 overflow-hidden rounded-xl bg-surface">
                             <img
                                 id="workerMainPhoto"
-                                src="{{ asset($worker['photo']) }}"
+                                src="{{ $worker['photo_url'] ?? asset($worker['photo']) }}"
                                 alt="{{ $worker['name'] }} — {{ $worker['category_label'] }}"
                                 class="h-full w-full object-cover object-top"
                                 onerror="this.onerror=null;this.src='{{ asset('lp-assets/images/general/placeholder-worker.svg') }}';"
@@ -65,15 +65,18 @@
                         @if (count($worker['gallery']) > 1)
                             <div class="mt-4 flex flex-wrap gap-2.5" role="group" aria-label="Additional candidate photos">
                                 @foreach ($worker['gallery'] as $index => $galleryPhoto)
+                                    @php
+                                        $galleryUrl = $worker['gallery_urls'][$index] ?? asset($galleryPhoto);
+                                    @endphp
                                     <button
                                         type="button"
-                                        data-worker-thumb="{{ asset($galleryPhoto) }}"
+                                        data-worker-thumb="{{ $galleryUrl }}"
                                         data-worker-thumb-alt="{{ $worker['name'] }} photo {{ $index + 1 }}"
                                         class="h-20 w-20 overflow-hidden rounded-xl border-2 transition {{ $index === 0 ? 'border-teal ring-2 ring-teal/20' : 'border-border-subtle hover:border-navy' }}"
                                         aria-label="View photo {{ $index + 1 }} of {{ $worker['name'] }}"
                                     >
                                         <img
-                                            src="{{ asset($galleryPhoto) }}"
+                                            src="{{ $galleryUrl }}"
                                             alt="{{ $worker['name'] }} thumbnail {{ $index + 1 }}"
                                             loading="lazy"
                                             class="h-full w-full object-cover object-top"
