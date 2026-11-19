@@ -46,7 +46,7 @@ class StoreMenuRequest extends FormRequest
         $rawApp = $this->input('app');
         $apps = is_array($rawApp)
             ? $rawApp
-            : (filled($rawApp) ? explode(',', (string) $rawApp) : [config('app.menu_app', 'online-shop')]);
+            : (filled($rawApp) ? explode(',', (string) $rawApp) : [config('stisla.menu_app', 'online-shop')]);
 
         $normalizedApps = array_values(array_unique(array_filter(array_map(
             fn (mixed $item): string => trim((string) $item),
@@ -54,7 +54,7 @@ class StoreMenuRequest extends FormRequest
         ))));
 
         $this->merge([
-            'app' => $normalizedApps !== [] ? $normalizedApps : [config('app.menu_app', 'online-shop')],
+            'app' => $normalizedApps !== [] ? $normalizedApps : [config('stisla.menu_app', 'online-shop')],
             'is_active' => $this->boolean('is_active'),
             'order' => $this->filled('order') ? (int) $this->order : 0,
         ]);

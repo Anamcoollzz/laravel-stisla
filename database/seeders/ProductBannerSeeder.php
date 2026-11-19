@@ -13,6 +13,10 @@ class ProductBannerSeeder extends Seeder
      */
     public function run(): void
     {
+        if (config('stisla.menu_app') !== 'online-shop') {
+            return;
+        }
+
         $womenProduct = Product::query()->active()->where('slug', 'floral-bohemian-summer-maxi-dress')->first()
             ?? Product::query()->active()->first();
         $menProduct = Product::query()->active()->where('slug', 'classic-oxford-slim-long-sleeve-shirt')->first()

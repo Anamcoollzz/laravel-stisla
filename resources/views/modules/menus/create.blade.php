@@ -87,7 +87,7 @@
               <div class="form-group">
                 <label for="app">{{ __('App') }} <span class="text-danger">*</span></label>
                 @php
-                  $selectedApps = (array) old('app', [config('app.menu_app', 'online-shop')]);
+                  $selectedApps = (array) old('app', [config('stisla.menu_app', 'online-shop')]);
                   $allAppOptions = collect($apps)->merge($selectedApps)->filter()->unique()->sort()->values();
                 @endphp
                 <select

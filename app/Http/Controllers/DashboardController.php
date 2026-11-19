@@ -36,11 +36,11 @@ class DashboardController extends Controller
     {
         Gate::authorize('dashboard.view');
 
-        if (config('app.menu_app') === 'lp-compro-workers') {
+        if (config('stisla.menu_app') === 'lp-compro-workers') {
             return $this->comproWorkers();
         }
 
-        if (config('app.menu_app') === 'online-shop') {
+        if (config('stisla.menu_app') === 'online-shop') {
             return $this->ecommerce();
         }
 

@@ -242,7 +242,7 @@
         </ul>
       </nav>
       <div class="main-sidebar">
-        @if (config('app.is_stisla_demo'))
+        @if (config('stisla.is_demo'))
           @include('partials.sidebar-pages')
         @else
           <aside id="sidebar-wrapper">

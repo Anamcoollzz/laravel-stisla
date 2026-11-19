@@ -32,7 +32,7 @@
       img.attr('src', src + '?' + Date.now());
     });
 
-    @if (config('app.is_demo'))
+    @if (config('stisla.is_demo'))
       $(document).on('click', '.btn-use-demo', function() {
         $('#email').val($(this).data('email')).trigger('change');
         $('#password').val($(this).data('password')).trigger('change');
@@ -87,7 +87,7 @@
           <h4 class="text-dark font-weight-normal">{{ __('Welcome to') }} <span class="font-weight-bold">{{ $siteTitle }}</span></h4>
           <p class="text-muted">{{ __('Before you get started, you must login or register if you don\'t already have an account.') }}</p>
 
-          @if (config('app.is_demo'))
+          @if (config('stisla.is_demo'))
             <div class="alert alert-info mb-3 d-flex justify-content-between align-items-center" role="alert">
               <div>
                 <div class="font-weight-bold mb-1">

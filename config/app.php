@@ -41,14 +41,6 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
-    'is_stisla_demo' => (bool) env('IS_STISLA_DEMO', false),
-
-    'is_demo' => (bool) env('APP_IS_DEMO', false),
-
-    'admin_template' => env('ADMIN_TEMPLATE', 'stisla'),
-
-    'menu_app' => env('ADMIN_MENU_APP', 'online-shop'),
-
     /*
     |--------------------------------------------------------------------------
     | Application URL

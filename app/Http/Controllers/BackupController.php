@@ -41,7 +41,7 @@ class BackupController extends Controller
     {
         Gate::authorize('backup.create');
 
-        if (config('app.is_demo')) {
+        if (config('stisla.is_demo')) {
             return redirect()
                 ->route('backups.index')
                 ->with('error', __('Fitur pembuatan backup dinonaktifkan dalam mode demo.'));

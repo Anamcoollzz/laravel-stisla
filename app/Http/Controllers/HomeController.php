@@ -11,7 +11,7 @@ class HomeController extends Controller
      */
     public function __invoke(): RedirectResponse
     {
-        $template = strtolower((string) config('app.admin_template', 'stisla'));
+        $template = strtolower((string) config('stisla.admin_template', 'stisla'));
 
         if ($template === 'spark') {
             return redirect('/pages-spark-admin/dashboard');
