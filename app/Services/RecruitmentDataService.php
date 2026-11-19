@@ -766,6 +766,7 @@ class RecruitmentDataService
                     'work_history' => $worker->work_history ?? [],
                     'placement_preferences' => $worker->placement_preferences ?? [],
                     'training_certifications' => $worker->training_certifications ?? [],
+                    'medical_check' => (string) ($worker->medical_check ?: 'General health & physical readiness screening completed'),
                 ])->all();
             }
         }

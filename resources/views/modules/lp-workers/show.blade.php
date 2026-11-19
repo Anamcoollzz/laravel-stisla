@@ -66,6 +66,10 @@
                 <th>{{ __('Featured') }}</th>
                 <td>{{ $worker->is_featured ? __('Ya') : __('Tidak') }}</td>
               </tr>
+              <tr>
+                <th>{{ __('Medical Check / Kesehatan') }}</th>
+                <td>{{ $worker->medical_check ?: '-' }}</td>
+              </tr>
             </table>
           </div>
         </div>

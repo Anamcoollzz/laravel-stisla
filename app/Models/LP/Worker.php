@@ -39,6 +39,7 @@ class Worker extends Model
         'work_history',
         'placement_preferences',
         'training_certifications',
+        'medical_check',
     ];
 
     /**

@@ -142,6 +142,12 @@
           </div>
 
           <div class="form-group">
+            <label for="medical_check">{{ __('Medical Check / Kesehatan') }}</label>
+            <input type="text" name="medical_check" id="medical_check" value="{{ old('medical_check') }}" class="form-control @error('medical_check') is-invalid @enderror" placeholder="General health & physical readiness screening completed">
+            @error('medical_check')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+
+          <div class="form-group">
             <label for="bio">{{ __('Bio / Ringkasan Profil') }}</label>
             <textarea name="bio" id="bio" rows="3" class="form-control @error('bio') is-invalid @enderror">{{ old('bio') }}</textarea>
             @error('bio')<div class="invalid-feedback">{{ $message }}</div>@enderror

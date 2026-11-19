@@ -277,6 +277,7 @@ class WorkerController extends Controller
             'photo' => ['nullable', 'string', 'max:255'],
             'photo_file' => ['nullable', 'image', 'max:2048'],
             'bio' => ['nullable', 'string', 'max:5000'],
+            'medical_check' => ['nullable', 'string', 'max:255'],
             'gallery_text' => ['nullable', 'string'],
             'languages_text' => ['nullable', 'string'],
             'skills_text' => ['nullable', 'string'],

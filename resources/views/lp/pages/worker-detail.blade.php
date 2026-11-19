@@ -91,7 +91,7 @@
                                 <i data-lucide="heart-pulse" class="h-4 w-4 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
                                 <div>
                                     <strong class="block text-navy-dark">Medical Readiness</strong>
-                                    <span class="text-ink-muted">{{ $worker['medical_check'] }}</span>
+                                    <span class="text-ink-muted">{{ $worker['medical_check'] ?? 'General health & physical readiness screening completed' }}</span>
                                 </div>
                             </div>
                             <div class="flex items-start gap-2.5">
