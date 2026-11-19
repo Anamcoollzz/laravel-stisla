@@ -31,6 +31,13 @@
       var src = img.attr('src').split('?')[0];
       img.attr('src', src + '?' + Date.now());
     });
+
+    @if (config('app.is_demo'))
+      $(document).on('click', '.btn-use-demo', function() {
+        $('#email').val($(this).data('email')).trigger('change');
+        $('#password').val($(this).data('password')).trigger('change');
+      });
+    @endif
   </script>
 @endpush
 
@@ -73,6 +80,28 @@
             </div>
 
             <div class="card-body">
+              @if (config('app.is_demo'))
+                <div class="alert alert-info mb-3 d-flex justify-content-between align-items-center" role="alert">
+                  <div>
+                    <div class="font-weight-bold mb-1">
+                      <i class="fas fa-info-circle mr-1"></i> {{ __('Demo Account') }}
+                    </div>
+                    <div class="small">
+                      <div>{{ __('Email') }}: <code>admin@example.com</code></div>
+                      <div>{{ __('Password') }}: <code>password</code></div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-light text-primary font-weight-bold btn-use-demo"
+                    data-email="admin@example.com"
+                    data-password="password"
+                  >
+                    <i class="fas fa-magic mr-1"></i> {{ __('Use') }}
+                  </button>
+                </div>
+              @endif
+
               <form method="POST" action="{{ route('login.attempt') }}" class="needs-validation" novalidate="">
                 @csrf
                 <div class="form-group">
