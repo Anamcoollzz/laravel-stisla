@@ -35,7 +35,7 @@
       <div class="card-header">
         <h4><i class="fas fa-address-card mr-2 text-primary"></i> {{ __('Edit Informasi Kontak & Perusahaan') }}</h4>
       </div>
-      <form action="{{ route('lp-company-profile.update') }}" method="POST">
+      <form action="{{ route('lp-company-profile.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="card-body">
@@ -120,6 +120,33 @@
                 <label for="license_number">{{ __('Nomor Lisensi') }}</label>
                 <input type="text" name="license_number" id="license_number" value="{{ old('license_number', $profile->license_number) }}" class="form-control @error('license_number') is-invalid @enderror">
                 @error('license_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-5">
+              <div class="form-group">
+                <label for="logo_file">{{ __('Upload Logo Perusahaan') }}</label>
+                <input type="file" name="logo_file" id="logo_file" class="form-control @error('logo_file') is-invalid @enderror" accept="image/*">
+                @error('logo_file')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="mt-2">
+                  <img src="{{ $profile->logo_url }}" alt="{{ $profile->legal_name }}" class="rounded border p-1 bg-light" style="max-height: 56px;">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <label for="logo">{{ __('Atau Path / URL Logo') }}</label>
+                <input type="text" name="logo" id="logo" value="{{ old('logo', $profile->logo) }}" class="form-control @error('logo') is-invalid @enderror" placeholder="lp-assets/images/general/logo.svg">
+                @error('logo')<div class="invalid-feedback">{{ $message }}</div>@enderror
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="copyright_year">{{ __('Tahun Copyright') }}</label>
+                <input type="text" name="copyright_year" id="copyright_year" value="{{ old('copyright_year', $profile->copyright_year ?: date('Y')) }}" class="form-control @error('copyright_year') is-invalid @enderror" placeholder="{{ date('Y') }}">
+                @error('copyright_year')<div class="invalid-feedback">{{ $message }}</div>@enderror
               </div>
             </div>
           </div>

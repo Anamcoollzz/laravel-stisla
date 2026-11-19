@@ -16,8 +16,18 @@ class CompanyProfileSeeder extends Seeder
 
         $existing = CompanyProfile::query()->first();
         if ($existing) {
+            $updates = [];
             if (blank($existing->footer_description)) {
-                $existing->update(['footer_description' => $defaultFooterDescription]);
+                $updates['footer_description'] = $defaultFooterDescription;
+            }
+            if (blank($existing->logo)) {
+                $updates['logo'] = 'lp-assets/images/general/logo.svg';
+            }
+            if (blank($existing->copyright_year)) {
+                $updates['copyright_year'] = date('Y');
+            }
+            if ($updates !== []) {
+                $existing->update($updates);
             }
 
             return;
@@ -26,8 +36,10 @@ class CompanyProfileSeeder extends Seeder
         CompanyProfile::query()->create([
             'name' => config('company.name', 'Permata Kasih Anugerah'),
             'legal_name' => config('company.legal_name', 'PT Permata Kasih Anugerah'),
+            'logo' => 'lp-assets/images/general/logo.svg',
             'tagline' => config('company.tagline', 'Trusted Manpower Recruitment & Family Care Placement'),
             'footer_description' => $defaultFooterDescription,
+            'copyright_year' => date('Y'),
             'license_number' => config('company.license_number', 'Official LPK License No. 563/LPK-BKS/2018'),
             'whatsapp_number' => config('company.whatsapp_number', '6282299109766'),
             'phone_display' => config('company.phone_display', '+62 822-9910-9766'),

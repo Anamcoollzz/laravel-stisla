@@ -9,6 +9,7 @@
     $phoneDisplay = $profile?->phone_display ?: config('company.phone_display');
     $email = $profile?->email ?: config('company.email');
     $legalName = $profile?->legal_name ?: config('company.legal_name');
+    $copyrightYear = $profile?->copyright_year ?: date('Y');
     $tagline = $profile?->tagline ?: config('company.tagline', 'Professional Manpower Recruitment & Placement Agency');
 
     $footerServices = \Illuminate\Support\Facades\Schema::hasTable('recruitment_services')
@@ -102,7 +103,7 @@
 
     <div class="border-t border-white/10 bg-black/20 py-4">
         <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 text-xs text-slate-400 sm:flex-row sm:px-6 lg:px-8">
-            <p>&copy; {{ date('Y') }} {{ $legalName }}. All Rights Reserved.</p>
+            <p>&copy; {{ $copyrightYear }} {{ $legalName }}. All Rights Reserved.</p>
             <p>{{ $tagline }}</p>
         </div>
     </div>

@@ -7,6 +7,7 @@ use App\Models\LP\CompanyProfile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class CompanyProfileController extends Controller
@@ -21,8 +22,10 @@ class CompanyProfileController extends Controller
         $profile = CompanyProfile::query()->first() ?? new CompanyProfile([
             'name' => config('company.name'),
             'legal_name' => config('company.legal_name'),
+            'logo' => 'lp-assets/images/general/logo.svg',
             'tagline' => config('company.tagline'),
             'footer_description' => config('company.footer_description', 'A professional manpower recruitment and placement company connecting households and businesses with carefully selected Domestic Helpers (ART), Babysitters, Nannies, Caregivers, and Elderly Care specialists.'),
+            'copyright_year' => date('Y'),
             'license_number' => config('company.license_number'),
             'whatsapp_number' => config('company.whatsapp_number'),
             'phone_display' => config('company.phone_display'),
@@ -53,8 +56,11 @@ class CompanyProfileController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'legal_name' => ['required', 'string', 'max:150'],
+            'logo' => ['nullable', 'string', 'max:255'],
+            'logo_file' => ['nullable', 'image', 'max:2048'],
             'tagline' => ['nullable', 'string', 'max:255'],
             'footer_description' => ['nullable', 'string', 'max:1000'],
+            'copyright_year' => ['nullable', 'string', 'max:20'],
             'license_number' => ['nullable', 'string', 'max:150'],
             'whatsapp_number' => ['required', 'string', 'max:30'],
             'phone_display' => ['required', 'string', 'max:50'],
@@ -73,6 +79,15 @@ class CompanyProfileController extends Controller
         ]);
 
         $profile = CompanyProfile::query()->first();
+
+        if ($request->hasFile('logo_file')) {
+            if ($profile?->logo && Storage::disk('public')->exists($profile->logo)) {
+                Storage::disk('public')->delete($profile->logo);
+            }
+            $validated['logo'] = $request->file('logo_file')->store('lp-company', 'public');
+        }
+
+        unset($validated['logo_file']);
 
         if ($profile) {
             $profile->update($validated);
