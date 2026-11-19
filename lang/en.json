@@ -2226,5 +2226,20 @@
     "Atau Path / URL Avatar": "Or Avatar Path / URL",
     "Contoh: South Jakarta": "Example: South Jakarta",
     "Contoh: Babysitter Placement": "Example: Babysitter Placement",
-    "Tidak ada data testimoni.": "No testimonial data available."
+    "Tidak ada data testimoni.": "No testimonial data available.",
+    "Daftar FAQ": "FAQ List",
+    "Tambah FAQ": "Add FAQ",
+    "Detail FAQ": "FAQ Detail",
+    "Form FAQ": "FAQ Form",
+    "Import FAQ": "Import FAQs",
+    "Laporan FAQ": "FAQ Report",
+    "FAQ ini akan dihapus permanen!": "This FAQ will be permanently deleted!",
+    "FAQ berhasil ditambahkan.": "FAQ created successfully.",
+    "FAQ berhasil diperbarui.": "FAQ updated successfully.",
+    "FAQ berhasil diduplikasi.": "FAQ duplicated successfully.",
+    "FAQ berhasil dihapus.": "FAQ deleted successfully.",
+    "FAQ berhasil diimport.": "FAQs imported successfully.",
+    "Pertanyaan": "Question",
+    "Jawaban": "Answer",
+    "Tidak ada data FAQ.": "No FAQ data available."
 }

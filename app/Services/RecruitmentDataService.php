@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\LP\CompanyStat;
+use App\Models\LP\LpFaq;
 use App\Models\LP\RecruitmentService;
 use App\Models\LP\RecruitmentStep;
 use App\Models\LP\RecruitmentTestimonial;
@@ -434,6 +435,21 @@ class RecruitmentDataService
      */
     public function getFaqs(): array
     {
+        if (Schema::hasTable('lp_faqs')) {
+            $dbFaqs = LpFaq::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbFaqs->isNotEmpty()) {
+                return $dbFaqs->map(fn (LpFaq $faq): array => [
+                    'question' => $faq->question,
+                    'answer' => $faq->answer,
+                ])->all();
+            }
+        }
+
         return [
             [
                 'question' => 'How can I find a suitable worker?',

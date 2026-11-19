@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
+use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
 use App\Http\Controllers\Admin\LP\RecruitmentStepController as AdminRecruitmentStepController;
 use App\Http\Controllers\Admin\LP\RecruitmentTestimonialController as AdminRecruitmentTestimonialController;
@@ -393,6 +394,15 @@ Route::prefix('app')->group(function () {
         Route::post('lp-testimonials/{recruitmentTestimonial}/duplicate', [AdminRecruitmentTestimonialController::class, 'duplicate'])->name('lp-testimonials.duplicate');
         Route::resource('lp-testimonials', AdminRecruitmentTestimonialController::class)->parameters([
             'lp-testimonials' => 'recruitmentTestimonial',
+        ]);
+
+        Route::get('lp-faqs/export', [AdminLpFaqController::class, 'export'])->name('lp-faqs.export');
+        Route::get('lp-faqs/export-pdf', [AdminLpFaqController::class, 'exportPdf'])->name('lp-faqs.exportPdf');
+        Route::get('lp-faqs/template', [AdminLpFaqController::class, 'template'])->name('lp-faqs.template');
+        Route::post('lp-faqs/import', [AdminLpFaqController::class, 'import'])->name('lp-faqs.import');
+        Route::post('lp-faqs/{lpFaq}/duplicate', [AdminLpFaqController::class, 'duplicate'])->name('lp-faqs.duplicate');
+        Route::resource('lp-faqs', AdminLpFaqController::class)->parameters([
+            'lp-faqs' => 'lpFaq',
         ]);
     });
 });
