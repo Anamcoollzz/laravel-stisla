@@ -223,7 +223,7 @@
                     <a href="{{ route('gallery') }}" class="group overflow-hidden rounded-2xl border border-border-subtle bg-white shadow-xs transition hover:-translate-y-1 hover:shadow-md">
                         <div class="aspect-16/10 overflow-hidden bg-surface">
                             <img
-                                src="{{ asset($item['image']) }}"
+                                src="{{ $item['image_url'] ?? asset($item['image']) }}"
                                 alt="{{ $item['title'] }}"
                                 loading="lazy"
                                 class="h-full w-full object-cover transition duration-500 group-hover:scale-105"

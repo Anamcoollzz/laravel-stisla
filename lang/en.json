@@ -2282,5 +2282,21 @@
     "Riwayat Kerja (1 per baris)": "Work History (1 per line)",
     "Preferensi Penempatan (Key: Value per baris)": "Placement Preferences (Key: Value per line)",
     "Galeri Foto Path (1 per baris)": "Gallery Photo Paths (1 per line)",
-    "Tidak ada data pekerja.": "No worker data available."
+    "Tidak ada data pekerja.": "No worker data available.",
+    "Galleries": "Galleries",
+    "Daftar Galeri Kegiatan": "Activity Gallery List",
+    "Tambah Galeri": "Add Gallery",
+    "Edit Galeri": "Edit Gallery",
+    "Detail Galeri": "Gallery Detail",
+    "Form Galeri Kegiatan": "Activity Gallery Form",
+    "Import Galeri Kegiatan": "Import Activity Gallery",
+    "Laporan Galeri Kegiatan": "Activity Gallery Report",
+    "Item galeri ini akan dihapus permanen!": "This gallery item will be permanently deleted!",
+    "Item galeri berhasil ditambahkan.": "Gallery item created successfully.",
+    "Item galeri berhasil diperbarui.": "Gallery item updated successfully.",
+    "Item galeri berhasil diduplikasi.": "Gallery item duplicated successfully.",
+    "Item galeri berhasil dihapus.": "Gallery item deleted successfully.",
+    "Item galeri berhasil diimport.": "Gallery items imported successfully.",
+    "Tanggal / Periode": "Date / Period",
+    "Tidak ada data galeri.": "No gallery data available."
 }

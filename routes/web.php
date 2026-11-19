@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
+use App\Http\Controllers\Admin\LP\LpGalleryController as AdminLpGalleryController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
 use App\Http\Controllers\Admin\LP\RecruitmentStepController as AdminRecruitmentStepController;
 use App\Http\Controllers\Admin\LP\RecruitmentTestimonialController as AdminRecruitmentTestimonialController;
@@ -413,6 +414,15 @@ Route::prefix('app')->group(function () {
         Route::post('lp-workers/{worker}/duplicate', [AdminWorkerController::class, 'duplicate'])->name('lp-workers.duplicate');
         Route::resource('lp-workers', AdminWorkerController::class)->parameters([
             'lp-workers' => 'worker',
+        ]);
+
+        Route::get('lp-galleries/export', [AdminLpGalleryController::class, 'export'])->name('lp-galleries.export');
+        Route::get('lp-galleries/export-pdf', [AdminLpGalleryController::class, 'exportPdf'])->name('lp-galleries.exportPdf');
+        Route::get('lp-galleries/template', [AdminLpGalleryController::class, 'template'])->name('lp-galleries.template');
+        Route::post('lp-galleries/import', [AdminLpGalleryController::class, 'import'])->name('lp-galleries.import');
+        Route::post('lp-galleries/{lpGallery}/duplicate', [AdminLpGalleryController::class, 'duplicate'])->name('lp-galleries.duplicate');
+        Route::resource('lp-galleries', AdminLpGalleryController::class)->parameters([
+            'lp-galleries' => 'lpGallery',
         ]);
     });
 });

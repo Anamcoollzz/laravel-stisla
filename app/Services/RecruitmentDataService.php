@@ -4,9 +4,16 @@ namespace App\Services;
 
 use App\Models\LP\CompanyStat;
 use App\Models\LP\LpFaq;
+use App\Models\LP\LpGallery;
+use App\Models\LP\LpFaq;
+use App\Models\LP\LpGallery;
 use App\Models\LP\RecruitmentService;
 use App\Models\LP\RecruitmentStep;
 use App\Models\LP\RecruitmentTestimonial;
+use App\Models\LP\RecruitmentStep;
+use App\Models\LP\RecruitmentTestimonial;
+use App\Models\LP\WhyChooseUs;
+use App\Models\LP\Worker;
 use App\Models\LP\WhyChooseUs;
 use App\Models\LP\Worker;
 use Illuminate\Support\Collection;
@@ -607,6 +614,26 @@ class RecruitmentDataService
      */
     public function getGalleryItems(): array
     {
+        if (Schema::hasTable('lp_galleries')) {
+            $dbGalleries = LpGallery::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbGalleries->isNotEmpty()) {
+                return $dbGalleries->map(fn (LpGallery $item): array => [
+                    'id' => 'gal-'.$item->id,
+                    'title' => $item->title,
+                    'category' => $item->category,
+                    'date' => (string) ($item->date ?? ''),
+                    'description' => (string) ($item->description ?? ''),
+                    'image' => (string) ($item->image ?? ''),
+                    'image_url' => $item->image_url,
+                ])->all();
+            }
+        }
+
         return [
             [
                 'id' => 'gal-1',

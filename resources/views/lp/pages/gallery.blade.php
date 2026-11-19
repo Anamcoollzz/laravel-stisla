@@ -56,7 +56,7 @@
                         <button
                             type="button"
                             data-gallery-trigger
-                            data-image="{{ asset($item['image']) }}"
+                            data-image="{{ $item['image_url'] ?? asset($item['image']) }}"
                             data-title="{{ $item['title'] }}"
                             data-category="{{ $item['category'] }}"
                             data-date="{{ $item['date'] }}"
@@ -65,7 +65,7 @@
                         >
                             <div class="relative aspect-16/11 w-full overflow-hidden bg-surface">
                                 <img
-                                    src="{{ asset($item['image']) }}"
+                                    src="{{ $item['image_url'] ?? asset($item['image']) }}"
                                     alt="{{ $item['title'] }}"
                                     loading="lazy"
                                     class="h-full w-full object-cover transition duration-500 group-hover:scale-105"

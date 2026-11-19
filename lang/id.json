@@ -2318,5 +2318,21 @@
     "Riwayat Kerja (1 per baris)": "Riwayat Kerja (1 per baris)",
     "Preferensi Penempatan (Key: Value per baris)": "Preferensi Penempatan (Key: Value per baris)",
     "Galeri Foto Path (1 per baris)": "Galeri Foto Path (1 per baris)",
-    "Tidak ada data pekerja.": "Tidak ada data pekerja."
+    "Tidak ada data pekerja.": "Tidak ada data pekerja.",
+    "Galleries": "Galeri",
+    "Daftar Galeri Kegiatan": "Daftar Galeri Kegiatan",
+    "Tambah Galeri": "Tambah Galeri",
+    "Edit Galeri": "Edit Galeri",
+    "Detail Galeri": "Detail Galeri",
+    "Form Galeri Kegiatan": "Form Galeri Kegiatan",
+    "Import Galeri Kegiatan": "Import Galeri Kegiatan",
+    "Laporan Galeri Kegiatan": "Laporan Galeri Kegiatan",
+    "Item galeri ini akan dihapus permanen!": "Item galeri ini akan dihapus permanen!",
+    "Item galeri berhasil ditambahkan.": "Item galeri berhasil ditambahkan.",
+    "Item galeri berhasil diperbarui.": "Item galeri berhasil diperbarui.",
+    "Item galeri berhasil diduplikasi.": "Item galeri berhasil diduplikasi.",
+    "Item galeri berhasil dihapus.": "Item galeri berhasil dihapus.",
+    "Item galeri berhasil diimport.": "Item galeri berhasil diimport.",
+    "Tanggal / Periode": "Tanggal / Periode",
+    "Tidak ada data galeri.": "Tidak ada data galeri."
 }

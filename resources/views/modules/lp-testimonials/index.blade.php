@@ -25,6 +25,8 @@
       ]
     });
 
+    $('[data-toggle="tooltip"]').tooltip();
+
     $(document).on('click', '.btn-delete', function(e) {
       e.preventDefault();
       var form = $(this).closest('form');
@@ -131,19 +133,19 @@
                     @endif
                   </td>
                   <td>
-                    <a href="{{ route('lp-testimonials.show', $item) }}" class="btn btn-info btn-sm" title="{{ __('Detail') }}">
+                    <a href="{{ route('lp-testimonials.show', $item) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="{{ __('Detail') }}">
                       <i class="fas fa-eye"></i>
                     </a>
                     @can('lp-testimonials.create')
                       <form action="{{ route('lp-testimonials.duplicate', $item) }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-secondary btn-sm" title="{{ __('Duplikat') }}">
+                        <button type="submit" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{ __('Duplikat') }}">
                           <i class="fas fa-copy"></i>
                         </button>
                       </form>
                     @endcan
                     @can('lp-testimonials.edit')
-                      <a href="{{ route('lp-testimonials.edit', $item) }}" class="btn btn-warning btn-sm" title="{{ __('Edit') }}">
+                      <a href="{{ route('lp-testimonials.edit', $item) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="{{ __('Edit') }}">
                         <i class="fas fa-edit"></i>
                       </a>
                     @endcan
@@ -151,7 +153,7 @@
                       <form action="{{ route('lp-testimonials.destroy', $item) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="button" class="btn btn-danger btn-sm btn-delete" title="{{ __('Hapus') }}">
+                        <button type="button" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" title="{{ __('Hapus') }}">
                           <i class="fas fa-trash"></i>
                         </button>
                       </form>
