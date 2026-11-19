@@ -60,6 +60,7 @@ class RolePermissionSeeder extends Seeder
             'news' => ['view', 'create', 'edit', 'delete'],
             'lp-company-stats' => ['view', 'create', 'edit', 'delete'],
             'lp-services' => ['view', 'create', 'edit', 'delete'],
+            'lp-why-choose-us' => ['view', 'create', 'edit', 'delete'],
             'settings' => ['view', 'edit'],
         ];
 

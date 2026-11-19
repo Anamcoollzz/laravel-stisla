@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -93,6 +94,23 @@ class CompanyStatController extends Controller
         return redirect()
             ->route('lp-company-stats.index')
             ->with('success', __('Statistik perusahaan berhasil diperbarui.'));
+    }
+
+    /**
+     * Duplicate the specified company statistic.
+     */
+    public function duplicate(CompanyStat $companyStat): RedirectResponse
+    {
+        Gate::authorize('lp-company-stats.create');
+
+        $copy = $companyStat->replicate();
+        $copy->label = Str::limit($companyStat->label, 143, '').' (Copy)';
+        $copy->order = ((int) CompanyStat::query()->max('order')) + 1;
+        $copy->save();
+
+        return redirect()
+            ->route('lp-company-stats.index')
+            ->with('success', __('Statistik perusahaan berhasil diduplikasi.'));
     }
 
     /**

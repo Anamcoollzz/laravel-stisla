@@ -96,7 +96,7 @@
                 <th>{{ __('Ikon') }}</th>
                 <th>{{ __('Deskripsi') }}</th>
                 <th>{{ __('Status') }}</th>
-                <th width="160">{{ __('Aksi') }}</th>
+                <th width="195">{{ __('Aksi') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -119,6 +119,14 @@
                     <a href="{{ route('lp-company-stats.show', $stat) }}" class="btn btn-info btn-sm" title="{{ __('Detail') }}">
                       <i class="fas fa-eye"></i>
                     </a>
+                    @can('lp-company-stats.create')
+                      <form action="{{ route('lp-company-stats.duplicate', $stat) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary btn-sm" title="{{ __('Duplikat') }}">
+                          <i class="fas fa-copy"></i>
+                        </button>
+                      </form>
+                    @endcan
                     @can('lp-company-stats.edit')
                       <a href="{{ route('lp-company-stats.edit', $stat) }}" class="btn btn-warning btn-sm" title="{{ __('Edit') }}">
                         <i class="fas fa-edit"></i>

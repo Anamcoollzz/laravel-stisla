@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\LP\CompanyStat;
 use App\Models\LP\RecruitmentService;
+use App\Models\LP\WhyChooseUs;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -267,6 +268,22 @@ class RecruitmentDataService
      */
     public function getWhyChooseUs(): array
     {
+        if (Schema::hasTable('why_choose_us')) {
+            $dbItems = WhyChooseUs::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbItems->isNotEmpty()) {
+                return $dbItems->map(fn (WhyChooseUs $item): array => [
+                    'title' => $item->title,
+                    'description' => (string) ($item->description ?? ''),
+                    'icon' => $item->icon,
+                ])->all();
+            }
+        }
+
         return [
             [
                 'title' => 'Carefully Selected Candidates',

@@ -110,6 +110,33 @@ class RecruitmentServiceController extends Controller
     }
 
     /**
+     * Duplicate the specified recruitment service.
+     */
+    public function duplicate(RecruitmentService $recruitmentService): RedirectResponse
+    {
+        Gate::authorize('lp-services.create');
+
+        $copy = $recruitmentService->replicate();
+        $copy->title = Str::limit($recruitmentService->title, 143, '').' (Copy)';
+
+        $baseSlug = Str::slug($recruitmentService->slug.'-copy');
+        $slug = $baseSlug;
+        $counter = 2;
+        while (RecruitmentService::query()->where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        $copy->slug = $slug;
+        $copy->order = ((int) RecruitmentService::query()->max('order')) + 1;
+        $copy->save();
+
+        return redirect()
+            ->route('lp-services.index')
+            ->with('success', __('Layanan rekrutmen berhasil diduplikasi.'));
+    }
+
+    /**
      * Remove the specified recruitment service from storage.
      */
     public function destroy(RecruitmentService $recruitmentService): RedirectResponse
@@ -117,7 +144,14 @@ class RecruitmentServiceController extends Controller
         Gate::authorize('lp-services.delete');
 
         if ($recruitmentService->image && Storage::disk('public')->exists($recruitmentService->image)) {
-            Storage::disk('public')->delete($recruitmentService->image);
+            $isImageUsedByOthers = RecruitmentService::query()
+                ->where('id', '!=', $recruitmentService->id)
+                ->where('image', $recruitmentService->image)
+                ->exists();
+
+            if (! $isImageUsedByOthers) {
+                Storage::disk('public')->delete($recruitmentService->image);
+            }
         }
 
         $recruitmentService->delete();

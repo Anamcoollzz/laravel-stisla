@@ -96,7 +96,7 @@
                 <th>{{ __('Category Key') }}</th>
                 <th>{{ __('Ikon') }}</th>
                 <th>{{ __('Status') }}</th>
-                <th width="160">{{ __('Aksi') }}</th>
+                <th width="195">{{ __('Aksi') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -126,6 +126,14 @@
                     <a href="{{ route('lp-services.show', $service) }}" class="btn btn-info btn-sm" title="{{ __('Detail') }}">
                       <i class="fas fa-eye"></i>
                     </a>
+                    @can('lp-services.create')
+                      <form action="{{ route('lp-services.duplicate', $service) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary btn-sm" title="{{ __('Duplikat') }}">
+                          <i class="fas fa-copy"></i>
+                        </button>
+                      </form>
+                    @endcan
                     @can('lp-services.edit')
                       <a href="{{ route('lp-services.edit', $service) }}" class="btn btn-warning btn-sm" title="{{ __('Edit') }}">
                         <i class="fas fa-edit"></i>

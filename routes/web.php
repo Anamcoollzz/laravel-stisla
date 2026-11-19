@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
+use App\Http\Controllers\Admin\LP\WhyChooseUsController as AdminWhyChooseUsController;
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
 use App\Http\Controllers\Admin\News\NewsCommentController as AdminNewsCommentController;
 use App\Http\Controllers\Admin\News\NewsController as AdminNewsController;
@@ -351,6 +352,7 @@ Route::prefix('app')->group(function () {
         Route::get('lp-company-stats/export-pdf', [AdminCompanyStatController::class, 'exportPdf'])->name('lp-company-stats.exportPdf');
         Route::get('lp-company-stats/template', [AdminCompanyStatController::class, 'template'])->name('lp-company-stats.template');
         Route::post('lp-company-stats/import', [AdminCompanyStatController::class, 'import'])->name('lp-company-stats.import');
+        Route::post('lp-company-stats/{companyStat}/duplicate', [AdminCompanyStatController::class, 'duplicate'])->name('lp-company-stats.duplicate');
         Route::resource('lp-company-stats', AdminCompanyStatController::class)->parameters([
             'lp-company-stats' => 'companyStat',
         ]);
@@ -359,8 +361,18 @@ Route::prefix('app')->group(function () {
         Route::get('lp-services/export-pdf', [AdminRecruitmentServiceController::class, 'exportPdf'])->name('lp-services.exportPdf');
         Route::get('lp-services/template', [AdminRecruitmentServiceController::class, 'template'])->name('lp-services.template');
         Route::post('lp-services/import', [AdminRecruitmentServiceController::class, 'import'])->name('lp-services.import');
+        Route::post('lp-services/{recruitmentService}/duplicate', [AdminRecruitmentServiceController::class, 'duplicate'])->name('lp-services.duplicate');
         Route::resource('lp-services', AdminRecruitmentServiceController::class)->parameters([
             'lp-services' => 'recruitmentService',
+        ]);
+
+        Route::get('lp-why-choose-us/export', [AdminWhyChooseUsController::class, 'export'])->name('lp-why-choose-us.export');
+        Route::get('lp-why-choose-us/export-pdf', [AdminWhyChooseUsController::class, 'exportPdf'])->name('lp-why-choose-us.exportPdf');
+        Route::get('lp-why-choose-us/template', [AdminWhyChooseUsController::class, 'template'])->name('lp-why-choose-us.template');
+        Route::post('lp-why-choose-us/import', [AdminWhyChooseUsController::class, 'import'])->name('lp-why-choose-us.import');
+        Route::post('lp-why-choose-us/{whyChooseUs}/duplicate', [AdminWhyChooseUsController::class, 'duplicate'])->name('lp-why-choose-us.duplicate');
+        Route::resource('lp-why-choose-us', AdminWhyChooseUsController::class)->parameters([
+            'lp-why-choose-us' => 'whyChooseUs',
         ]);
     });
 });
