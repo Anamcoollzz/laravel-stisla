@@ -105,8 +105,8 @@ class AppServiceProvider extends ServiceProvider
             if (Schema::hasTable('menus')) {
                 $menuApp = (string) config('app.menu_app', 'online-shop');
                 $sidebarMenus = Menu::query()
-                    ->with(['children' => fn ($query) => $query->where('is_active', true)->where('app', $menuApp)->orderBy('order')])
-                    ->where('app', $menuApp)
+                    ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
+                    ->forApp($menuApp)
                     ->whereNull('parent_id')
                     ->where('is_active', true)
                     ->orderBy('order')

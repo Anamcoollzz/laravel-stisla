@@ -181,24 +181,18 @@ class MenuSeeder extends Seeder
         );
 
         // 5. News App Menus (ADMIN_MENU_APP=news)
-        Menu::firstOrCreate(
-            ['app' => 'news', 'name' => 'Dashboard', 'type' => 'item'],
-            [
-                'icon' => 'fas fa-fire',
-                'route' => 'dashboard',
-                'order' => 1,
-                'is_active' => true,
-            ]
-        );
+        $this->firstOrCreateForApp('news', ['name' => 'Dashboard', 'type' => 'item'], [
+            'icon' => 'fas fa-fire',
+            'route' => 'dashboard',
+            'order' => 1,
+            'is_active' => true,
+        ]);
 
-        $newsDropdown = Menu::firstOrCreate(
-            ['app' => 'news', 'name' => 'News Management', 'type' => 'dropdown'],
-            [
-                'icon' => 'fas fa-newspaper',
-                'order' => 10,
-                'is_active' => true,
-            ]
-        );
+        $newsDropdown = $this->firstOrCreateForApp('news', ['name' => 'News Management', 'type' => 'dropdown'], [
+            'icon' => 'fas fa-newspaper',
+            'order' => 10,
+            'is_active' => true,
+        ]);
 
         $newsChildren = [
             ['name' => 'News Articles', 'route' => 'admin.news.index', 'permission' => 'news.view', 'order' => 1],
@@ -208,37 +202,28 @@ class MenuSeeder extends Seeder
         ];
 
         foreach ($newsChildren as $child) {
-            Menu::firstOrCreate(
-                ['app' => 'news', 'parent_id' => $newsDropdown->id, 'name' => $child['name']],
-                [
-                    'type' => 'item',
-                    'route' => $child['route'],
-                    'permission' => $child['permission'],
-                    'order' => $child['order'],
-                    'is_active' => true,
-                ]
-            );
+            $this->firstOrCreateForApp('news', ['parent_id' => $newsDropdown->id, 'name' => $child['name']], [
+                'type' => 'item',
+                'route' => $child['route'],
+                'permission' => $child['permission'],
+                'order' => $child['order'],
+                'is_active' => true,
+            ]);
         }
 
         // 6. LP Compro Workers App Menus (ADMIN_MENU_APP=lp-compro-workers)
-        Menu::firstOrCreate(
-            ['app' => 'lp-compro-workers', 'name' => 'Dashboard', 'type' => 'item'],
-            [
-                'icon' => 'fas fa-fire',
-                'route' => 'dashboard',
-                'order' => 1,
-                'is_active' => true,
-            ]
-        );
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Dashboard', 'type' => 'item'], [
+            'icon' => 'fas fa-fire',
+            'route' => 'dashboard',
+            'order' => 1,
+            'is_active' => true,
+        ]);
 
-        $lpComproDropdown = Menu::firstOrCreate(
-            ['app' => 'lp-compro-workers', 'name' => 'Company Profile', 'type' => 'dropdown'],
-            [
-                'icon' => 'fas fa-globe',
-                'order' => 10,
-                'is_active' => true,
-            ]
-        );
+        $lpComproDropdown = $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Company Profile', 'type' => 'dropdown'], [
+            'icon' => 'fas fa-globe',
+            'order' => 10,
+            'is_active' => true,
+        ]);
 
         $lpComproChildren = [
             ['name' => 'Company Stats', 'route' => 'lp-company-stats.index', 'permission' => 'lp-company-stats.view', 'order' => 1],
@@ -258,16 +243,31 @@ class MenuSeeder extends Seeder
         ];
 
         foreach ($lpComproChildren as $child) {
-            Menu::firstOrCreate(
-                ['app' => 'lp-compro-workers', 'parent_id' => $lpComproDropdown->id, 'name' => $child['name']],
-                [
-                    'type' => 'item',
-                    'route' => $child['route'],
-                    'permission' => $child['permission'],
-                    'order' => $child['order'],
-                    'is_active' => true,
-                ]
-            );
+            $this->firstOrCreateForApp('lp-compro-workers', ['parent_id' => $lpComproDropdown->id, 'name' => $child['name']], [
+                'type' => 'item',
+                'route' => $child['route'],
+                'permission' => $child['permission'],
+                'order' => $child['order'],
+                'is_active' => true,
+            ]);
         }
+    }
+
+    /**
+     * Find or create a menu item scoped to a specific app identifier.
+     *
+     * @param  array<string, mixed>  $match
+     * @param  array<string, mixed>  $attributes
+     */
+    private function firstOrCreateForApp(string $app, array $match, array $attributes): Menu
+    {
+        $query = Menu::query()->forApp($app);
+        foreach ($match as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        return $query->first() ?? Menu::query()->create(array_merge($match, $attributes, [
+            'app' => [$app],
+        ]));
     }
 }

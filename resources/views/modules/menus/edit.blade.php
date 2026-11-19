@@ -2,7 +2,12 @@
 
 @section('title', __('Modules › Edit Menu'))
 
+@push('css')
+  <link rel="stylesheet" href="{{ asset('node_modules/select2/dist/css/select2.min.css') }}">
+@endpush
+
 @push('js')
+  <script src="{{ asset('node_modules/select2/dist/js/select2.full.min.js') }}"></script>
   <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
@@ -23,7 +28,14 @@
     }
 
     $('#type').on('change', updateTypeVisibility);
-    $(document).ready(updateTypeVisibility);
+    $(document).ready(function() {
+      updateTypeVisibility();
+      $('.select2-apps').select2({
+        tags: true,
+        tokenSeparators: [','],
+        width: '100%'
+      });
+    });
 
     $('#icon').on('input', function() {
       var iconClass = $(this).val();
@@ -75,25 +87,25 @@
             <div class="card-body">
               <div class="form-group">
                 <label for="app">{{ __('App') }} <span class="text-danger">*</span></label>
-                <input
-                  type="text"
+                @php
+                  $selectedApps = (array) old('app', $menu->app ?? ['online-shop']);
+                  $allAppOptions = collect($apps)->merge($selectedApps)->filter()->unique()->sort()->values();
+                @endphp
+                <select
                   id="app"
-                  name="app"
-                  list="app-options"
-                  class="form-control @error('app') is-invalid @enderror"
-                  placeholder="online-shop"
-                  value="{{ old('app', $menu->app ?? 'online-shop') }}"
+                  name="app[]"
+                  multiple
+                  class="form-control select2-apps @error('app') is-invalid @enderror"
                   required
                 >
-                <datalist id="app-options">
-                  @foreach ($apps as $appOption)
-                    <option value="{{ $appOption }}">
+                  @foreach ($allAppOptions as $appOption)
+                    <option value="{{ $appOption }}" @selected(in_array($appOption, $selectedApps, true))>{{ $appOption }}</option>
                   @endforeach
-                </datalist>
+                </select>
                 @error('app')
-                  <div class="invalid-feedback">{{ $message }}</div>
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
-                <small class="form-text text-muted">{{ __('Identifier aplikasi untuk memisahkan sidebar (default: online-shop).') }}</small>
+                <small class="form-text text-muted">{{ __('Pilih satu atau lebih aplikasi yang dapat mengakses menu ini (bisa ketik nama app baru).') }}</small>
               </div>
 
               <div class="form-row">

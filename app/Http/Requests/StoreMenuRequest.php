@@ -24,7 +24,8 @@ class StoreMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'app' => ['required', 'string', 'max:50'],
+            'app' => ['required', 'array', 'min:1'],
+            'app.*' => ['required', 'string', 'max:50'],
             'parent_id' => ['nullable', 'integer', Rule::exists('menus', 'id')],
             'name' => ['required', 'string', 'max:150'],
             'type' => ['required', 'string', Rule::in(['header', 'item', 'dropdown'])],
@@ -42,8 +43,18 @@ class StoreMenuRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $rawApp = $this->input('app');
+        $apps = is_array($rawApp)
+            ? $rawApp
+            : (filled($rawApp) ? explode(',', (string) $rawApp) : [config('app.menu_app', 'online-shop')]);
+
+        $normalizedApps = array_values(array_unique(array_filter(array_map(
+            fn (mixed $item): string => trim((string) $item),
+            $apps
+        ))));
+
         $this->merge([
-            'app' => $this->filled('app') ? trim((string) $this->app) : config('app.menu_app', 'online-shop'),
+            'app' => $normalizedApps !== [] ? $normalizedApps : [config('app.menu_app', 'online-shop')],
             'is_active' => $this->boolean('is_active'),
             'order' => $this->filled('order') ? (int) $this->order : 0,
         ]);
