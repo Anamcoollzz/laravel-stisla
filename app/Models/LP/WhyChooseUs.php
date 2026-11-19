@@ -2,23 +2,17 @@
 
 namespace App\Models\LP;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Table('why_choose_us')]
+#[Fillable(['title', 'description', 'icon', 'order', 'is_active'])]
 class WhyChooseUs extends Model
 {
     use HasFactory;
-
-    protected $table = 'why_choose_us';
-
-    protected $fillable = [
-        'title',
-        'description',
-        'icon',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

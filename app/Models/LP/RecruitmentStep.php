@@ -2,24 +2,17 @@
 
 namespace App\Models\LP;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Table('recruitment_steps')]
+#[Fillable(['step', 'title', 'description', 'icon', 'order', 'is_active'])]
 class RecruitmentStep extends Model
 {
     use HasFactory;
-
-    protected $table = 'recruitment_steps';
-
-    protected $fillable = [
-        'step',
-        'title',
-        'description',
-        'icon',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

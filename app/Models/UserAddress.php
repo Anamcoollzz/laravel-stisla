@@ -2,26 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable(['user_id', 'label', 'recipient_name', 'phone_number', 'address_line', 'city', 'state', 'postal_code', 'notes', 'is_default'])]
 class UserAddress extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'user_id',
-        'label',
-        'recipient_name',
-        'phone_number',
-        'address_line',
-        'city',
-        'state',
-        'postal_code',
-        'notes',
-        'is_default',
-    ];
 
     /**
      * @return array<string, string>

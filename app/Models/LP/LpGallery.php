@@ -2,27 +2,19 @@
 
 namespace App\Models\LP;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+#[Table('lp_galleries')]
+#[Fillable(['title', 'category', 'date', 'description', 'image', 'order', 'is_active'])]
 class LpGallery extends Model
 {
     use HasFactory;
-
-    protected $table = 'lp_galleries';
-
-    protected $fillable = [
-        'title',
-        'category',
-        'date',
-        'description',
-        'image',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

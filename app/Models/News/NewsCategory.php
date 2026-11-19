@@ -2,18 +2,15 @@
 
 namespace App\Models\News;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[Fillable(['name', 'description'])]
 class NewsCategory extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'description',
-    ];
 
     /**
      * News items belonging to this category.
