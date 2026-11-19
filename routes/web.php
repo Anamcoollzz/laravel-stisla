@@ -65,6 +65,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\PreventInDemoMode;
 use Illuminate\Support\Facades\Route;
 
 // start lp
@@ -313,22 +314,24 @@ Route::prefix('app')->group(function () {
         Route::get('backups/{filename}/download', [BackupController::class, 'download'])->name('backups.download');
         Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
 
-        Route::delete('log-requests/clear', [LogRequestController::class, 'clear'])->name('log-requests.clear');
-        Route::resource('log-requests', LogRequestController::class)->only(['index', 'show', 'destroy'])->parameters([
-            'log-requests' => 'logRequest',
-        ]);
+        Route::middleware(PreventInDemoMode::class)->group(function () {
+            Route::delete('log-requests/clear', [LogRequestController::class, 'clear'])->name('log-requests.clear');
+            Route::resource('log-requests', LogRequestController::class)->only(['index', 'show', 'destroy'])->parameters([
+                'log-requests' => 'logRequest',
+            ]);
 
-        Route::get('laravel-logs', [LaravelLogController::class, 'index'])->name('laravel-logs.index');
-        Route::get('laravel-logs/download', [LaravelLogController::class, 'download'])->name('laravel-logs.download');
-        Route::post('laravel-logs/clear', [LaravelLogController::class, 'clear'])->name('laravel-logs.clear');
-        Route::delete('laravel-logs/delete', [LaravelLogController::class, 'destroy'])->name('laravel-logs.destroy');
+            Route::get('laravel-logs', [LaravelLogController::class, 'index'])->name('laravel-logs.index');
+            Route::get('laravel-logs/download', [LaravelLogController::class, 'download'])->name('laravel-logs.download');
+            Route::post('laravel-logs/clear', [LaravelLogController::class, 'clear'])->name('laravel-logs.clear');
+            Route::delete('laravel-logs/delete', [LaravelLogController::class, 'destroy'])->name('laravel-logs.destroy');
 
-        Route::get('database-tables', [DatabaseTableController::class, 'index'])->name('database-tables.index');
-        Route::get('database-tables/{table}', [DatabaseTableController::class, 'show'])->name('database-tables.show');
-        Route::put('database-tables/{table}/columns/{column}', [DatabaseTableController::class, 'updateColumn'])->name('database-tables.columns.update');
-        Route::delete('database-tables/{table}/columns/{column}', [DatabaseTableController::class, 'destroyColumn'])->name('database-tables.columns.destroy');
-        Route::put('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'updateRow'])->name('database-tables.rows.update');
-        Route::delete('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'destroyRow'])->name('database-tables.rows.destroy');
+            Route::get('database-tables', [DatabaseTableController::class, 'index'])->name('database-tables.index');
+            Route::get('database-tables/{table}', [DatabaseTableController::class, 'show'])->name('database-tables.show');
+            Route::put('database-tables/{table}/columns/{column}', [DatabaseTableController::class, 'updateColumn'])->name('database-tables.columns.update');
+            Route::delete('database-tables/{table}/columns/{column}', [DatabaseTableController::class, 'destroyColumn'])->name('database-tables.columns.destroy');
+            Route::put('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'updateRow'])->name('database-tables.rows.update');
+            Route::delete('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'destroyRow'])->name('database-tables.rows.destroy');
+        });
 
         Route::get('news-categories/export', [AdminNewsCategoryController::class, 'export'])->name('news-categories.export');
         Route::get('news-categories/export-pdf', [AdminNewsCategoryController::class, 'exportPdf'])->name('news-categories.exportPdf');
