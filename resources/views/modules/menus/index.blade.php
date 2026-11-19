@@ -125,7 +125,9 @@
                         @endif
                       </td>
                       <td>
-                        <span class="badge badge-info">{{ $menu->app ?? 'online-shop' }}</span>
+                        @foreach ((array) ($menu->app ?? ['online-shop']) as $appBadge)
+                          <span class="badge badge-info mb-1">{{ $appBadge }}</span>
+                        @endforeach
                       </td>
                       <td>
                         @if ($menu->parent_id)

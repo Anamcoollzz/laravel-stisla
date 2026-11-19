@@ -20,6 +20,7 @@ class MenuFactory extends Factory
     public function definition(): array
     {
         return [
+            'app' => ['online-shop'],
             'parent_id' => null,
             'name' => fake()->words(2, true),
             'type' => 'item',

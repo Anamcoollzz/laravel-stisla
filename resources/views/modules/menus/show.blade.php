@@ -35,7 +35,11 @@
               </div>
               <div class="form-group col-md-4">
                 <label class="d-block text-muted small text-uppercase font-weight-bold">{{ __('App') }}</label>
-                <div><span class="badge badge-info">{{ $menu->app ?? 'online-shop' }}</span></div>
+                <div>
+                  @foreach ((array) ($menu->app ?? ['online-shop']) as $appBadge)
+                    <span class="badge badge-info mr-1">{{ $appBadge }}</span>
+                  @endforeach
+                </div>
               </div>
               <div class="form-group col-md-4">
                 <label class="d-block text-muted small text-uppercase font-weight-bold">{{ __('Menu Name') }}</label>

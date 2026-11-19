@@ -26,36 +26,22 @@
                             <div class="footer-tittle">
                                 <h4>Popular post</h4>
                             </div>
-                            <!-- Popular post -->
-                            <div class="whats-right-single mb-20">
-                                <div class="whats-right-img">
-                                    <img src="{{ asset('news-assets/img/gallery/footer_post1.png') }}" alt="">
+                            @forelse ($popularNewsPosts ?? collect() as $popularPost)
+                                <!-- Popular post -->
+                                <div class="whats-right-single mb-20">
+                                    <div class="whats-right-img">
+                                        <a href="{{ route('news.show', $popularPost->slug) }}">
+                                            <img src="{{ $popularPost->thumbnail_mini_url }}" alt="{{ $popularPost->title }}" style="width: 86px; height: 70px; object-fit: cover; border-radius: 4px;">
+                                        </a>
+                                    </div>
+                                    <div class="whats-right-cap">
+                                        <h4><a href="{{ route('news.show', $popularPost->slug) }}">{{ \Illuminate\Support\Str::limit($popularPost->title, 50) }}</a></h4>
+                                        <p>{{ $popularPost->publisher?->name ?? 'Admin' }}  |  {{ ($popularPost->published_at ?? $popularPost->created_at)?->diffForHumans() ?? '-' }}  |  {{ number_format($popularPost->views_count) }} {{ __('views') }}</p>
+                                    </div>
                                 </div>
-                                <div class="whats-right-cap">
-                                    <h4><a href="{{ route('news.latest_news') }}">Scarlett’s disappointment at latest accolade</a></h4>
-                                    <p>Jhon  |  2 hours ago</p>
-                                </div>
-                            </div>
-                            <!-- Popular post -->
-                            <div class="whats-right-single mb-20">
-                                <div class="whats-right-img">
-                                    <img src="{{ asset('news-assets/img/gallery/footer_post2.png') }}" alt="">
-                                </div>
-                                <div class="whats-right-cap">
-                                    <h4><a href="{{ route('news.latest_news') }}">Scarlett’s disappointment at latest accolade</a></h4>
-                                    <p>Jhon  |  2 hours ago</p>
-                                </div>
-                            </div>
-                            <!-- Popular post -->
-                            <div class="whats-right-single mb-20">
-                                <div class="whats-right-img">
-                                    <img src="{{ asset('news-assets/img/gallery/footer_post3.png') }}" alt="">
-                                </div>
-                                <div class="whats-right-cap">
-                                    <h4><a href="{{ route('news.latest_news') }}">Scarlett’s disappointment at latest accolade</a></h4>
-                                    <p>Jhon  |  2 hours ago</p>
-                                </div>
-                            </div>
+                            @empty
+                                <p class="info1">{{ __('Belum ada berita populer.') }}</p>
+                            @endforelse
                         </div>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">

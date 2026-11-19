@@ -19,9 +19,114 @@
   </style>
 @endpush
 
+@push('js')
+  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
+@endpush
+
 @push('page-js')
   <script>
     "use strict";
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+    @if (session('success'))
+      swal(@json(__('Berhasil')), @json(session('success')), 'success');
+    @endif
+
+    @if (session('error'))
+      swal(@json(__('Error')), @json(session('error')), 'error');
+    @endif
+
+    $(document).on('click', '.btn-edit-row', function() {
+      var $btn = $(this);
+      var row = $btn.data('row');
+      var columns = @json($columns);
+      var primaryKey = @json($primaryKey);
+      var $container = $('#editRowFields').empty();
+
+      $('#formEditRow').attr('action', $btn.data('action'));
+      $('#editRowPkLabel').text(primaryKey + ': ' + (row[primaryKey] ?? ''));
+
+      columns.forEach(function(col) {
+        var name = col.name;
+        var val = row[name];
+        var isPkAi = (name === primaryKey && col.auto_increment);
+        var type = String(col.type_name || col.type || '').toLowerCase();
+        var isLong = type.indexOf('text') !== -1 || type.indexOf('json') !== -1 || (val !== null && String(val).length > 100);
+        var isNull = (val === null || val === undefined);
+
+        var html = '<div class="form-group">';
+        html += '<div class="d-flex justify-content-between align-items-center mb-1">';
+        html += '<label class="mb-0 font-weight-bold"><code>' + name + '</code> <small class="text-muted">(' + (col.type || col.type_name) + ')</small></label>';
+        if (col.nullable && !isPkAi) {
+          html += '<label class="mb-0 small"><input type="checkbox" name="nulls[' + name + ']" value="1" class="row-null-toggle" data-target="rowInput_' + name + '"' + (isNull ? ' checked' : '') + '> NULL</label>';
+        }
+        html += '</div>';
+
+        var safeVal = isNull ? '' : String(val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        if (isLong) {
+          html += '<textarea id="rowInput_' + name + '" name="values[' + name + ']" rows="3" class="form-control"' + (isPkAi ? ' readonly' : '') + (isNull && col.nullable ? ' disabled' : '') + '>' + safeVal + '</textarea>';
+        } else {
+          html += '<input type="text" id="rowInput_' + name + '" name="values[' + name + ']" value="' + safeVal + '" class="form-control"' + (isPkAi ? ' readonly' : '') + (isNull && col.nullable ? ' disabled' : '') + '>';
+        }
+        html += '</div>';
+        $container.append(html);
+      });
+
+      $('#modalEditRow').modal('show');
+    });
+
+    $(document).on('change', '.row-null-toggle', function() {
+      var targetId = $(this).data('target');
+      $('#' + targetId).prop('disabled', $(this).is(':checked'));
+    });
+
+    $(document).on('click', '.btn-delete-row', function(e) {
+      e.preventDefault();
+      var form = $(this).closest('form');
+      var pk = $(this).data('pk');
+      swal({
+        title: @json(__('Apakah Anda yakin?')),
+        text: @json(__('Baris data ini akan dihapus permanen:')) + ' #' + pk,
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          form.submit();
+        }
+      });
+    });
+
+    $(document).on('click', '.btn-edit-column', function() {
+      var $btn = $(this);
+      $('#formEditColumn').attr('action', $btn.data('action'));
+      $('#editColCurrentName').text($btn.data('column'));
+      $('#editColNewName').val($btn.data('column'));
+      $('#editColType').val($btn.data('mapped-type'));
+      $('#editColLength').val($btn.data('length') || '');
+      $('#editColNullable').prop('checked', Boolean($btn.data('nullable')));
+      $('#editColDefault').val($btn.data('default') || '');
+      $('#editColComment').val($btn.data('comment') || '');
+      $('#modalEditColumn').modal('show');
+    });
+
+    $(document).on('click', '.btn-drop-column', function(e) {
+      e.preventDefault();
+      var form = $(this).closest('form');
+      var colName = $(this).data('column');
+      swal({
+        title: @json(__('Apakah Anda yakin?')),
+        text: @json(__('Kolom akan dihapus permanen beserta datanya:')) + ' ' + colName,
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          form.submit();
+        }
+      });
+    });
 
     $(document).on('click', '.btn-view-cell', function() {
       var col = $(this).data('column');
@@ -160,6 +265,9 @@
                         </a>
                       </th>
                     @endforeach
+                    @if ($primaryKey !== null)
+                      <th class="text-nowrap" style="width: 100px;">{{ __('Aksi') }}</th>
+                    @endif
                   </tr>
                 </thead>
                 <tbody>
@@ -183,10 +291,37 @@
                           @endif
                         </td>
                       @endforeach
+                      @if ($primaryKey !== null)
+                        <td class="text-nowrap">
+                          <button
+                            type="button"
+                            class="btn btn-warning btn-sm btn-edit-row"
+                            data-toggle="tooltip"
+                            title="{{ __('Ubah Data') }}"
+                            data-action="{{ route('database-tables.rows.update', [$table, $row->{$primaryKey}]) }}"
+                            data-row='@json($row)'
+                          >
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <form action="{{ route('database-tables.rows.destroy', [$table, $row->{$primaryKey}]) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button
+                              type="button"
+                              class="btn btn-danger btn-sm btn-delete-row"
+                              data-toggle="tooltip"
+                              title="{{ __('Hapus Data') }}"
+                              data-pk="{{ $row->{$primaryKey} }}"
+                            >
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </form>
+                        </td>
+                      @endif
                     </tr>
                   @empty
                     <tr>
-                      <td colspan="{{ max(1, count($columnNames)) }}" class="text-center py-4 text-muted">
+                      <td colspan="{{ max(1, count($columnNames) + ($primaryKey !== null ? 1 : 0)) }}" class="text-center py-4 text-muted">
                         <i class="fas fa-inbox fa-2x mb-2 d-block text-secondary"></i>
                         {{ __('Tidak ada data pada tabel ini.') }}
                       </td>
@@ -225,10 +360,31 @@
                     <th>{{ __('Default') }}</th>
                     <th class="text-center">{{ __('Auto Increment') }}</th>
                     <th>{{ __('Collation / Komentar') }}</th>
+                    <th style="width: 110px;">{{ __('Aksi') }}</th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach ($columns as $idx => $col)
+                    @php
+                      $rawType = strtolower((string) ($col['type_name'] ?? $col['type'] ?? 'string'));
+                      $mappedType = match (true) {
+                          str_contains($rawType, 'bigint') => 'bigInteger',
+                          str_contains($rawType, 'tinyint(1)') || $rawType === 'boolean' || $rawType === 'bool' => 'boolean',
+                          str_contains($rawType, 'int') => 'integer',
+                          str_contains($rawType, 'longtext') => 'longText',
+                          str_contains($rawType, 'text') => 'text',
+                          str_contains($rawType, 'decimal') => 'decimal',
+                          str_contains($rawType, 'float') || str_contains($rawType, 'double') => 'float',
+                          $rawType === 'date' => 'date',
+                          str_contains($rawType, 'datetime') || str_contains($rawType, 'timestamp') => 'dateTime',
+                          str_contains($rawType, 'json') => 'json',
+                          default => 'string',
+                      };
+                      $colLength = '';
+                      if (preg_match('/\((\d+)\)/', (string) ($col['type'] ?? ''), $m)) {
+                          $colLength = $m[1];
+                      }
+                    @endphp
                     <tr>
                       <td class="text-muted font-weight-bold">{{ $idx + 1 }}</td>
                       <td>
@@ -262,6 +418,38 @@
                         {{ $col['collation'] ?? '-' }}
                         @if (!empty($col['comment']))
                           <div class="text-dark">{{ $col['comment'] }}</div>
+                        @endif
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-sm btn-edit-column"
+                          data-toggle="tooltip"
+                          title="{{ __('Ubah Kolom') }}"
+                          data-action="{{ route('database-tables.columns.update', [$table, $col['name']]) }}"
+                          data-column="{{ $col['name'] }}"
+                          data-mapped-type="{{ $mappedType }}"
+                          data-length="{{ $colLength }}"
+                          data-nullable="{{ $col['nullable'] ? 1 : 0 }}"
+                          data-default="{{ $col['default'] }}"
+                          data-comment="{{ $col['comment'] ?? '' }}"
+                        >
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        @if ($col['name'] !== 'id' && count($columns) > 1)
+                          <form action="{{ route('database-tables.columns.destroy', [$table, $col['name']]) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button
+                              type="button"
+                              class="btn btn-danger btn-sm btn-drop-column"
+                              data-toggle="tooltip"
+                              title="{{ __('Hapus Kolom') }}"
+                              data-column="{{ $col['name'] }}"
+                            >
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </form>
                         @endif
                       </td>
                     </tr>
@@ -382,6 +570,102 @@
           <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Tutup') }}</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal Edit Column -->
+  <div class="modal fade" id="modalEditColumn" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form id="formEditColumn" action="" method="POST" class="modal-content">
+        @csrf
+        @method('PUT')
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-edit text-warning mr-2"></i> {{ __('Ubah Kolom') }}: <code id="editColCurrentName"></code></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('Tutup') }}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="editColNewName">{{ __('Nama Kolom') }} <span class="text-danger">*</span></label>
+            <input type="text" name="new_name" id="editColNewName" class="form-control" required>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="form-group">
+                <label for="editColType">{{ __('Tipe Data') }} <span class="text-danger">*</span></label>
+                <select name="type" id="editColType" class="form-control" required>
+                  <option value="string">string (VARCHAR)</option>
+                  <option value="text">text (TEXT)</option>
+                  <option value="longText">longText (LONGTEXT)</option>
+                  <option value="integer">integer (INT)</option>
+                  <option value="bigInteger">bigInteger (BIGINT)</option>
+                  <option value="unsignedBigInteger">unsignedBigInteger</option>
+                  <option value="float">float (FLOAT)</option>
+                  <option value="decimal">decimal (15,2)</option>
+                  <option value="boolean">boolean (TINYINT)</option>
+                  <option value="date">date (DATE)</option>
+                  <option value="dateTime">dateTime (DATETIME)</option>
+                  <option value="json">json (JSON)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <label for="editColLength">{{ __('Panjang (VARCHAR)') }}</label>
+                <input type="number" name="length" id="editColLength" min="1" max="65535" class="form-control" placeholder="255">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="form-group">
+                <label for="editColDefault">{{ __('Default Value') }}</label>
+                <input type="text" name="default_value" id="editColDefault" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <label class="d-block">{{ __('Nullable') }}</label>
+                <label class="custom-switch mt-2">
+                  <input type="checkbox" name="nullable" id="editColNullable" value="1" class="custom-switch-input">
+                  <span class="custom-switch-indicator"></span>
+                  <span class="custom-switch-description">{{ __('Ya') }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group mb-0">
+            <label for="editColComment">{{ __('Komentar') }}</label>
+            <input type="text" name="comment" id="editColComment" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer bg-whitesmoke">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Batal') }}</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> {{ __('Simpan Perubahan') }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Edit Row -->
+  <div class="modal fade" id="modalEditRow" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <form id="formEditRow" action="" method="POST" class="modal-content">
+        @csrf
+        @method('PUT')
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-edit text-warning mr-2"></i> {{ __('Ubah Data Baris') }} (<code id="editRowPkLabel"></code>)</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('Tutup') }}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="editRowFields" style="max-height: 65vh; overflow-y: auto;"></div>
+        <div class="modal-footer bg-whitesmoke">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Batal') }}</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> {{ __('Simpan Perubahan') }}</button>
+        </div>
+      </form>
     </div>
   </div>
 @endsection

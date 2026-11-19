@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\ChatMessage;
 use App\Models\FooterProductCategory;
+use App\Models\LP\CompanyProfile;
 use App\Models\Menu;
+use App\Models\News\News;
 use App\Models\PaymentBank;
 use App\Models\PaymentMethod;
 use App\Models\Product;
@@ -15,9 +17,11 @@ use App\Models\ProductWishlist;
 use App\Models\Setting;
 use App\Models\StoreService;
 use App\Models\Testimonial;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +39,39 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Vite::useBuildDirectory('lp-build');
+        Blade::anonymousComponentPath(resource_path('views/lp/components'));
+
+        if (Schema::hasTable('company_profiles')) {
+            $companyProfile = CompanyProfile::query()->first();
+
+            if ($companyProfile) {
+                config([
+                    'company.name' => $companyProfile->name,
+                    'company.legal_name' => $companyProfile->legal_name,
+                    'company.tagline' => $companyProfile->tagline ?: config('company.tagline'),
+                    'company.footer_description' => $companyProfile->footer_description ?: config('company.footer_description'),
+                    'company.license_number' => $companyProfile->license_number ?: config('company.license_number'),
+                    'company.whatsapp_number' => $companyProfile->whatsapp_number,
+                    'company.phone_display' => $companyProfile->phone_display,
+                    'company.secondary_phone' => $companyProfile->secondary_phone ?: config('company.secondary_phone'),
+                    'company.email' => $companyProfile->email,
+                    'company.address' => $companyProfile->address,
+                    'company.short_address' => $companyProfile->short_address ?: config('company.short_address'),
+                    'company.operating_hours.weekday' => $companyProfile->operating_hours_weekday ?: config('company.operating_hours.weekday'),
+                    'company.operating_hours.saturday' => $companyProfile->operating_hours_saturday ?: config('company.operating_hours.saturday'),
+                    'company.operating_hours.sunday' => $companyProfile->operating_hours_sunday ?: config('company.operating_hours.sunday'),
+                    'company.map_embed_url' => $companyProfile->map_embed_url ?: config('company.map_embed_url'),
+                    'company.social_links.instagram' => $companyProfile->instagram_url ?: config('company.social_links.instagram'),
+                    'company.social_links.facebook' => $companyProfile->facebook_url ?: config('company.social_links.facebook'),
+                    'company.social_links.youtube' => $companyProfile->youtube_url ?: config('company.social_links.youtube'),
+                    'company.default_whatsapp_message' => $companyProfile->default_whatsapp_message ?: config('company.default_whatsapp_message'),
+                ]);
+
+                View::share('lpCompanyProfile', $companyProfile);
+            }
+        }
+
         Gate::before(function ($user, $ability) {
             return $user->hasRole('admin') ? true : null;
         });
@@ -68,8 +105,8 @@ class AppServiceProvider extends ServiceProvider
             if (Schema::hasTable('menus')) {
                 $menuApp = (string) config('app.menu_app', 'online-shop');
                 $sidebarMenus = Menu::query()
-                    ->with(['children' => fn ($query) => $query->where('is_active', true)->where('app', $menuApp)->orderBy('order')])
-                    ->where('app', $menuApp)
+                    ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
+                    ->forApp($menuApp)
                     ->whereNull('parent_id')
                     ->where('is_active', true)
                     ->orderBy('order')
@@ -346,6 +383,23 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('storeServices', $storeServices);
             } else {
                 $view->with('storeServices', collect());
+            }
+        });
+
+        View::composer('news.partials.footer', function ($view) {
+            if (Schema::hasTable('news')) {
+                $popularNewsPosts = News::query()
+                    ->published()
+                    ->with(['publisher'])
+                    ->orderByDesc('views_count')
+                    ->orderByDesc('published_at')
+                    ->latest('id')
+                    ->limit(3)
+                    ->get();
+
+                $view->with('popularNewsPosts', $popularNewsPosts);
+            } else {
+                $view->with('popularNewsPosts', collect());
             }
         });
     }

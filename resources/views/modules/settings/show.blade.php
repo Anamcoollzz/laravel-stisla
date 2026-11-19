@@ -87,6 +87,17 @@
       $(this).next('.custom-file-label').text(this.files.length ? this.files[0].name : @json(__('Choose File')));
     });
 
+    $(document).on('change', '#login_layout', function() {
+      var previewBtn = $('#btn-preview-login-layout');
+      if (! previewBtn.length) {
+        return;
+      }
+      var targetUrl = $(this).val() === 'login-2'
+        ? previewBtn.data('login2-url')
+        : previewBtn.data('default-url');
+      previewBtn.attr('href', targetUrl);
+    });
+
     $('#btn-reset').on('click', function(e) {
       e.preventDefault();
       swal({
@@ -214,6 +225,28 @@
                     @enderror
                     @if (! empty($field['help']))
                       <div class="form-text text-muted">{{ __($field['help']) }}</div>
+                    @endif
+                    @if ($currentGroup === 'general' && $key === 'login_layout')
+                      <div class="mt-2 d-flex flex-wrap align-items-center" style="gap: .5rem;">
+                        <a
+                          href="{{ (string) $value === 'login-2' ? route('auth-login-2.html') : route('auth-login.html') }}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          id="btn-preview-login-layout"
+                          class="btn btn-sm btn-outline-primary"
+                          data-default-url="{{ route('auth-login.html') }}"
+                          data-login2-url="{{ route('auth-login-2.html') }}"
+                        >
+                          <i class="fas fa-external-link-alt mr-1"></i> {{ __('Preview Selected Layout') }}
+                        </a>
+                        <a href="{{ route('auth-login.html') }}" target="_blank" rel="noopener noreferrer" class="small text-muted">
+                          {{ __('Default') }}
+                        </a>
+                        <span class="text-muted">&bull;</span>
+                        <a href="{{ route('auth-login-2.html') }}" target="_blank" rel="noopener noreferrer" class="small text-muted">
+                          {{ __('Side Cover Split') }}
+                        </a>
+                      </div>
                     @endif
                   </div>
                 </div>
