@@ -32,7 +32,7 @@
       img.attr('src', src + '?' + Date.now());
     });
 
-    @if (config('app.is_demo'))
+    @if (config('stisla.is_demo'))
       $(document).on('click', '.btn-use-demo', function() {
         $('#email').val($(this).data('email')).trigger('change');
         $('#password').val($(this).data('password')).trigger('change');
@@ -87,7 +87,7 @@
           <h4 class="text-dark font-weight-normal">{{ __('Welcome to') }} <span class="font-weight-bold">{{ $siteTitle }}</span></h4>
           <p class="text-muted">{{ __('Before you get started, you must login or register if you don\'t already have an account.') }}</p>
 
-          @if (config('app.is_demo'))
+          @if (config('stisla.is_demo'))
             <div class="alert alert-info mb-3 d-flex justify-content-between align-items-center" role="alert">
               <div>
                 <div class="font-weight-bold mb-1">
@@ -188,6 +188,16 @@
               <button type="submit" class="btn btn-primary btn-lg btn-icon icon-right" tabindex="4">
                 {{ __('Login') }}
               </button>
+            </div>
+
+            <div class="text-center mt-4 mb-3">
+              <div class="text-job text-muted">{{ __('Or Continue With') }}</div>
+            </div>
+
+            <div class="form-group">
+              <a href="{{ route('auth.google') }}" class="btn btn-block btn-social btn-google">
+                <span class="fab fa-google"></span> {{ __('Login with Google') }}
+              </a>
             </div>
 
             @if (\App\Models\Setting::getValue('is_active_register_page', '1') === '1')

@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -34,6 +37,9 @@ Route::prefix('app')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/auth/login', [LoginController::class, 'showLoginForm'])->name('login');
         Route::post('/auth/login', [LoginController::class, 'login'])->name('login.attempt');
+
+        Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+        Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 
         Route::get('/auth/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
         Route::post('/auth/register', [RegisterController::class, 'register'])->name('register.store');
@@ -85,6 +91,14 @@ Route::prefix('app')->group(function () {
         Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
         Route::resource('tickets', TicketController::class);
 
+        Route::post('announcements/{announcement}/duplicate', [AnnouncementController::class, 'duplicate'])->name('announcements.duplicate');
+        Route::patch('announcements/{announcement}/toggle-active', [AnnouncementController::class, 'toggleActive'])->name('announcements.toggleActive');
+        Route::resource('announcements', AnnouncementController::class);
+
+        Route::post('notifications/mark-all-read', [AppNotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+        Route::get('notifications/{notification}/read', [AppNotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::resource('notifications', AppNotificationController::class);
+
         Route::post('our-teams/{ourTeam}/duplicate', [OurTeamController::class, 'duplicate'])->name('our-teams.duplicate');
         Route::resource('our-teams', OurTeamController::class)->parameters([
             'our-teams' => 'ourTeam',
@@ -92,9 +106,9 @@ Route::prefix('app')->group(function () {
 
         Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
         Route::post('chat/read-all', [ChatController::class, 'markAllAsRead'])->name('chat.readAll');
-        Route::post('chat/{user}', [ChatController::class, 'send'])->name('chat.send');
-        Route::get('chat/{user}/messages', [ChatController::class, 'fetchMessages'])->name('chat.messages');
-        Route::delete('chat/{user}/clear', [ChatController::class, 'clear'])->name('chat.clear');
+        Route::post('chat/{user:uuid}', [ChatController::class, 'send'])->name('chat.send');
+        Route::get('chat/{user:uuid}/messages', [ChatController::class, 'fetchMessages'])->name('chat.messages');
+        Route::delete('chat/{user:uuid}/clear', [ChatController::class, 'clear'])->name('chat.clear');
 
         Route::get('backups', [BackupController::class, 'index'])->name('backups.index');
         Route::post('backups', [BackupController::class, 'create'])->name('backups.create');

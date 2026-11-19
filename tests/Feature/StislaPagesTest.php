@@ -45,7 +45,7 @@ test('every local asset referenced by stisla pages exists in public', function (
 });
 
 test('the sidebar marks the current page as active when stisla demo is enabled', function () {
-    config()->set('app.is_stisla_demo', true);
+    config()->set('stisla.is_demo', true);
 
     $this->get(route('bootstrap-alert.html'))
         ->assertOk()
@@ -54,7 +54,7 @@ test('the sidebar marks the current page as active when stisla demo is enabled',
 });
 
 test('the sidebar only shows crud menu when stisla demo is disabled', function () {
-    config()->set('app.is_stisla_demo', false);
+    config()->set('stisla.is_demo', false);
 
     $this->get(route('index.html'))
         ->assertOk()

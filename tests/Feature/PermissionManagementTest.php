@@ -9,7 +9,7 @@ uses(RefreshDatabase::class);
 beforeEach(fn () => $this->actingAsAdmin());
 
 test('permissions index page lists permissions and marks sidebar active', function () {
-    config()->set('app.is_stisla_demo', false);
+    config()->set('stisla.is_demo', false);
 
     $this->get(route('permissions.index'))
         ->assertOk()

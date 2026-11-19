@@ -15,7 +15,7 @@ class PreventInDemoMode
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (config('app.is_demo')) {
+        if (config('stisla.is_demo')) {
             $message = __('Fitur ini tidak tersedia dalam mode demo.');
 
             if ($request->expectsJson()) {

@@ -96,27 +96,6 @@
     <li @class(['nav-item dropdown', 'active' => request()->routeIs('modules-calendar.html', 'modules-chartjs.html', 'modules-datatables.html', 'modules-flag.html', 'modules-font-awesome.html', 'modules-ion-icons.html', 'modules-owl-carousel.html', 'modules-sparkline.html', 'modules-sweet-alert.html', 'modules-toastr.html', 'modules-vector-map.html', 'modules-weather-icon.html', 'classes.*', 'teachers.*', 'students.*', 'subjects.*', 'spp-payments.*', 'tickets.*')])>
       <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>Modules</span></a>
       <ul class="dropdown-menu">
-        @can('classes.view')
-          <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
-        @endcan
-        @can('teachers.view')
-          <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
-        @endcan
-        @can('students.view')
-          <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
-        @endcan
-        @can('subjects.view')
-          <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
-        @endcan
-        @can('spp-payments.view')
-          <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
-        @endcan
-        @can('tickets.view')
-          <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
-        @endcan
-        @can('chat.view')
-          <li @class(['active' => request()->routeIs('chat.*')])><a class="nav-link" href="{{ route('chat.index') }}">{{ __('Chat Box') }}</a></li>
-        @endcan
         <li @class(['active' => request()->routeIs('modules-calendar.html')])><a class="nav-link" href="{{ route('modules-calendar.html') }}">Calendar</a></li>
         <li @class(['active' => request()->routeIs('modules-chartjs.html')])><a class="nav-link" href="{{ route('modules-chartjs.html') }}">ChartJS</a></li>
         <li @class(['active' => request()->routeIs('modules-datatables.html')])><a class="nav-link" href="{{ route('modules-datatables.html') }}">DataTables</a></li>

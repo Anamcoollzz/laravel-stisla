@@ -162,7 +162,7 @@
             <div class="card-header-action">
               @can('backup.create')
                 @php
-                  $isDemo = (bool) config('app.is_demo', false);
+                  $isDemo = (bool) config('stisla.is_demo', false);
                 @endphp
                 <form id="form-create-backup" action="{{ route('backups.create') }}" method="POST" class="d-inline">
                   @csrf

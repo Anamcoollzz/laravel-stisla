@@ -87,7 +87,6 @@ class MenuSeeder extends Seeder
         $financeCommItems = [
             ['name' => 'SPP Payments', 'icon' => 'fas fa-money-bill-wave', 'route' => 'spp-payments.index', 'permission' => 'spp-payments.view', 'order' => 27],
             ['name' => 'Tickets', 'icon' => 'fas fa-ticket-alt', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 29],
-            ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 31],
         ];
 
         foreach ($financeCommItems as $item) {
@@ -258,6 +257,9 @@ class MenuSeeder extends Seeder
             ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 77],
             ['name' => 'Log Request', 'icon' => 'fas fa-history', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 78],
             ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 79],
+            ['name' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route' => 'announcements.index', 'permission' => 'announcements.view', 'order' => 80],
+            ['name' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => 'notifications.index', 'permission' => 'notifications.view', 'order' => 81],
+            ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 82],
         ];
 
         foreach ($systemItems as $item) {

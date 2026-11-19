@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Announcement;
+use App\Models\AppNotification;
 use App\Models\ChatMessage;
 use App\Models\FooterProductCategory;
 use App\Models\LP\CompanyProfile;
@@ -17,7 +19,10 @@ use App\Models\ProductWishlist;
 use App\Models\Setting;
 use App\Models\StoreService;
 use App\Models\Testimonial;
+use App\Models\User;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -76,34 +81,79 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('admin') ? true : null;
         });
 
+        Event::listen(Login::class, function (Login $event): void {
+            if ($event->user instanceof User) {
+                $event->user->forceFill(['last_logged_in' => now()])->saveQuietly();
+            }
+        });
+
+        Event::listen(Login::class, function (Login $event): void {
+            if ($event->user instanceof User) {
+                $event->user->forceFill(['last_logged_in' => now()])->saveQuietly();
+            }
+        });
+
         View::composer('layouts.app', function ($view) {
             $authUser = auth()->user();
 
-            if ($authUser === null || ! Schema::hasTable('chat_messages')) {
-                $view->with('navMessages', collect())->with('navUnreadCount', 0);
-
-                return;
+            if ($authUser instanceof User && $authUser->last_logged_in === null) {
+                $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
             }
 
-            $navMessages = ChatMessage::query()
-                ->where('receiver_id', $authUser->id)
-                ->with('sender')
-                ->latest('id')
-                ->limit(30)
-                ->get()
-                ->unique('sender_id')
-                ->take(5)
-                ->values();
+            if ($authUser instanceof User && $authUser->last_logged_in === null) {
+                $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
+            }
 
-            $view->with('navMessages', $navMessages)->with(
-                'navUnreadCount',
-                ChatMessage::query()->where('receiver_id', $authUser->id)->where('is_read', false)->count()
-            );
+            if ($authUser === null || ! Schema::hasTable('chat_messages')) {
+                $view->with('navMessages', collect())->with('navUnreadCount', 0);
+            } else {
+                $navMessages = ChatMessage::query()
+                    ->where('receiver_id', $authUser->id)
+                    ->with('sender')
+                    ->latest('id')
+                    ->limit(30)
+                    ->get()
+                    ->unique('sender_id')
+                    ->take(5)
+                    ->values();
+
+                $view->with('navMessages', $navMessages)->with(
+                    'navUnreadCount',
+                    ChatMessage::query()->where('receiver_id', $authUser->id)->where('is_read', false)->count()
+                );
+            }
+
+            if ($authUser === null || ! Schema::hasTable('app_notifications')) {
+                $view->with('navNotifications', collect())->with('navNotificationUnreadCount', 0);
+            } else {
+                $navNotifications = AppNotification::query()
+                    ->forUser($authUser->id)
+                    ->with(['readers' => fn ($query) => $query->where('users.id', $authUser->id)])
+                    ->latest('id')
+                    ->limit(10)
+                    ->get();
+
+                $navNotificationUnreadCount = AppNotification::query()
+                    ->forUser($authUser->id)
+                    ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $authUser->id))
+                    ->count();
+
+                $view->with('navNotifications', $navNotifications)
+                    ->with('navNotificationUnreadCount', $navNotificationUnreadCount);
+            }
+        });
+
+        View::composer(['dashboard', 'dashboard-ecommerce', 'dashboards.compro-workers', 'dashboards.user'], function ($view) {
+            $announcements = Schema::hasTable('announcements')
+                ? Announcement::query()->published()->limit(5)->get()
+                : collect();
+
+            $view->with('dashboardAnnouncements', $announcements);
         });
 
         View::composer(['layouts.app', 'partials.sidebar-pages'], function ($view) {
             if (Schema::hasTable('menus')) {
-                $menuApp = (string) config('app.menu_app', 'online-shop');
+                $menuApp = (string) config('stisla.menu_app', 'online-shop');
                 $sidebarMenus = Menu::query()
                     ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
                     ->forApp($menuApp)
