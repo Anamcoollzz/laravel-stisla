@@ -2362,5 +2362,16 @@
     "Milestone perusahaan berhasil dihapus.": "Company milestone deleted successfully.",
     "Milestone perusahaan berhasil diimport.": "Company milestones imported successfully.",
     "Tahun": "Year",
-    "Tidak ada data milestone.": "No milestone data available."
+    "Tidak ada data milestone.": "No milestone data available.",
+    "Vision & Mission": "Vision & Mission",
+    "Edit Visi & Misi Perusahaan": "Edit Company Vision & Mission",
+    "Visi & Misi berhasil diperbarui.": "Vision & Mission updated successfully.",
+    "Visi Perusahaan": "Company Vision",
+    "Badge Visi": "Vision Badge",
+    "Judul Visi": "Vision Title",
+    "Deskripsi Visi": "Vision Description",
+    "Misi Perusahaan": "Company Mission",
+    "Badge Misi": "Mission Badge",
+    "Judul Misi": "Mission Title",
+    "Poin-Poin Misi (1 per baris)": "Mission Points (1 per line)"
 }

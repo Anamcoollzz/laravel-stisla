@@ -5,6 +5,7 @@ namespace App\Http\Controllers\LP;
 use App\Http\Controllers\Controller;
 use App\Models\LP\CompanyIntroduction;
 use App\Models\LP\CompanyMilestone;
+use App\Models\LP\VisionMission;
 use App\Services\RecruitmentDataService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
@@ -62,6 +63,7 @@ class PageController extends Controller
                 ],
             ],
             'milestones' => $this->resolveMilestones(),
+            'visionMission' => Schema::hasTable('vision_missions') ? VisionMission::query()->first() : null,
         ]);
     }
 

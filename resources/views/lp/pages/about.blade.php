@@ -79,45 +79,49 @@
     </section>
 
     {{-- 4. Vision & Mission --}}
+    @php
+        $vm = $visionMission ?? null;
+        $visionEyebrow = $vm?->vision_eyebrow ?: 'Our Vision';
+        $visionTitle = $vm?->vision_title ?: 'Setting a Dependable Standard in Manpower Placement';
+        $visionDesc = $vm?->vision_description ?: 'To be recognized as a trusted, people-centered manpower recruitment partner—delivering qualified workers and fostering respectful, harmonious working relationships in every home.';
+        $missionEyebrow = $vm?->mission_eyebrow ?: 'Our Mission';
+        $missionTitle = $vm?->mission_title ?: 'How We Serve Families & Candidates';
+        $missionPoints = $vm?->mission_points ?: [
+            'Apply disciplined multi-step candidate screening, reference verification, and readiness checks before placement.',
+            'Provide practical orientation in residential hygiene, infant care, senior assistance, and communication etiquette.',
+            'Communicate candidate qualifications transparently while protecting sensitive personal privacy.',
+            'Maintain responsive consultation and structured follow-up assistance after placement day.',
+        ];
+    @endphp
     <section class="bg-white py-20 lg:py-24">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
                 <div class="rounded-2xl bg-navy-dark p-8 text-white sm:p-10 lg:col-span-5">
                     <span class="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gold">
-                        Our Vision
+                        {{ $visionEyebrow }}
                     </span>
                     <h2 class="mt-4 text-2xl font-bold text-white sm:text-3xl">
-                        Setting a Dependable Standard in Manpower Placement
+                        {{ $visionTitle }}
                     </h2>
                     <p class="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
-                        To be recognized as a trusted, people-centered manpower recruitment partner—delivering qualified workers and fostering respectful, harmonious working relationships in every home.
+                        {{ $visionDesc }}
                     </p>
                 </div>
 
                 <div class="rounded-2xl border border-border-subtle bg-surface p-8 sm:p-10 lg:col-span-7">
                     <span class="inline-flex rounded-full bg-teal-light px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal">
-                        Our Mission
+                        {{ $missionEyebrow }}
                     </span>
                     <h2 class="mt-4 text-2xl font-bold text-navy-dark sm:text-3xl">
-                        How We Serve Families &amp; Candidates
+                        {{ $missionTitle }}
                     </h2>
                     <ul class="mt-6 space-y-4">
-                        <li class="flex items-start gap-3 text-sm leading-relaxed text-ink-muted sm:text-base">
-                            <i data-lucide="check-circle-2" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
-                            <span>Apply disciplined multi-step candidate screening, reference verification, and readiness checks before placement.</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm leading-relaxed text-ink-muted sm:text-base">
-                            <i data-lucide="check-circle-2" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
-                            <span>Provide practical orientation in residential hygiene, infant care, senior assistance, and communication etiquette.</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm leading-relaxed text-ink-muted sm:text-base">
-                            <i data-lucide="check-circle-2" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
-                            <span>Communicate candidate qualifications transparently while protecting sensitive personal privacy.</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm leading-relaxed text-ink-muted sm:text-base">
-                            <i data-lucide="check-circle-2" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
-                            <span>Maintain responsive consultation and structured follow-up assistance after placement day.</span>
-                        </li>
+                        @foreach ($missionPoints as $point)
+                            <li class="flex items-start gap-3 text-sm leading-relaxed text-ink-muted sm:text-base">
+                                <i data-lucide="check-circle-2" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
+                                <span>{{ $point }}</span>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
             </div>

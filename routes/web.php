@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\LP\CompanyProfileController as AdminCompanyProfil
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
 use App\Http\Controllers\Admin\LP\LpGalleryController as AdminLpGalleryController;
+use App\Http\Controllers\Admin\LP\VisionMissionController as AdminVisionMissionController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
 use App\Http\Controllers\Admin\LP\RecruitmentStepController as AdminRecruitmentStepController;
 use App\Http\Controllers\Admin\LP\RecruitmentTestimonialController as AdminRecruitmentTestimonialController;
@@ -442,6 +443,9 @@ Route::prefix('app')->group(function () {
         Route::resource('lp-milestones', AdminCompanyMilestoneController::class)->parameters([
             'lp-milestones' => 'companyMilestone',
         ]);
+
+        Route::get('lp-vision-mission', [AdminVisionMissionController::class, 'edit'])->name('lp-vision-mission.edit');
+        Route::put('lp-vision-mission', [AdminVisionMissionController::class, 'update'])->name('lp-vision-mission.update');
     });
 });
 
