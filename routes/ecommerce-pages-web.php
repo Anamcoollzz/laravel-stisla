@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\BlogCommentController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Ecommerce\AddressController as EcommerceAddressController;
 use App\Http\Controllers\Ecommerce\AuthController as EcommerceAuthController;
 use App\Http\Controllers\Ecommerce\BlogController as EcommerceBlogController;
@@ -10,6 +13,22 @@ use App\Http\Controllers\Ecommerce\OrderController as EcommerceOrderController;
 use App\Http\Controllers\Ecommerce\ProductController as EcommerceProductController;
 use App\Http\Controllers\Ecommerce\TicketController as EcommerceTicketController;
 use App\Http\Controllers\Ecommerce\WishlistController as EcommerceWishlistController;
+use App\Http\Controllers\EcommerceFaqController;
+use App\Http\Controllers\FooterProductCategoryController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentBankController;
+use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ProductBannerController;
+use App\Http\Controllers\ProductBrandController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductColorController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductReviewController;
+use App\Http\Controllers\ProductSizeController;
+use App\Http\Controllers\ProductVendorController;
+use App\Http\Controllers\ShippingMethodController;
+use App\Http\Controllers\StoreServiceController;
+use App\Http\Controllers\TestimonialController;
 use App\Models\Blog;
 use App\Models\EcommerceFaq;
 use App\Models\OurTeam;
@@ -256,3 +275,120 @@ foreach ($ecommercePages as $page) {
     Route::view("/ecommerce-pages/{$page}", "ecommerce.pages.{$page}")
         ->name("ecommerce.{$page}");
 }
+
+Route::prefix('app')->middleware('auth')->group(function () {
+    Route::get('/ecommerce/dashboard', [DashboardController::class, 'ecommerce'])->name('dashboard.ecommerce');
+
+    Route::post('product-categories/{productCategory}/duplicate', [ProductCategoryController::class, 'duplicate'])->name('product-categories.duplicate');
+    Route::get('product-categories/export', [ProductCategoryController::class, 'export'])->name('product-categories.export');
+    Route::get('product-categories/export-pdf', [ProductCategoryController::class, 'exportPdf'])->name('product-categories.exportPdf');
+    Route::get('product-categories/template', [ProductCategoryController::class, 'template'])->name('product-categories.template');
+    Route::post('product-categories/import', [ProductCategoryController::class, 'import'])->name('product-categories.import');
+    Route::resource('product-categories', ProductCategoryController::class)->parameters([
+        'product-categories' => 'productCategory',
+    ]);
+
+    Route::post('products/{product}/duplicate', [ProductController::class, 'duplicate'])->name('products.duplicate');
+    Route::get('products/export', [ProductController::class, 'export'])->name('products.export');
+    Route::get('products/export-pdf', [ProductController::class, 'exportPdf'])->name('products.exportPdf');
+    Route::get('products/template', [ProductController::class, 'template'])->name('products.template');
+    Route::post('products/import', [ProductController::class, 'import'])->name('products.import');
+    Route::resource('products', ProductController::class);
+
+    Route::post('product-brands/{productBrand}/duplicate', [ProductBrandController::class, 'duplicate'])->name('product-brands.duplicate');
+    Route::get('product-brands/export', [ProductBrandController::class, 'export'])->name('product-brands.export');
+    Route::get('product-brands/export-pdf', [ProductBrandController::class, 'exportPdf'])->name('product-brands.exportPdf');
+    Route::get('product-brands/template', [ProductBrandController::class, 'template'])->name('product-brands.template');
+    Route::post('product-brands/import', [ProductBrandController::class, 'import'])->name('product-brands.import');
+    Route::resource('product-brands', ProductBrandController::class)->parameters([
+        'product-brands' => 'productBrand',
+    ]);
+
+    Route::post('product-vendors/{productVendor}/duplicate', [ProductVendorController::class, 'duplicate'])->name('product-vendors.duplicate');
+    Route::get('product-vendors/export', [ProductVendorController::class, 'export'])->name('product-vendors.export');
+    Route::get('product-vendors/export-pdf', [ProductVendorController::class, 'exportPdf'])->name('product-vendors.exportPdf');
+    Route::get('product-vendors/template', [ProductVendorController::class, 'template'])->name('product-vendors.template');
+    Route::post('product-vendors/import', [ProductVendorController::class, 'import'])->name('product-vendors.import');
+    Route::resource('product-vendors', ProductVendorController::class)->parameters([
+        'product-vendors' => 'productVendor',
+    ]);
+
+    Route::post('product-sizes/{productSize}/duplicate', [ProductSizeController::class, 'duplicate'])->name('product-sizes.duplicate');
+    Route::get('product-sizes/export', [ProductSizeController::class, 'export'])->name('product-sizes.export');
+    Route::get('product-sizes/export-pdf', [ProductSizeController::class, 'exportPdf'])->name('product-sizes.exportPdf');
+    Route::get('product-sizes/template', [ProductSizeController::class, 'template'])->name('product-sizes.template');
+    Route::post('product-sizes/import', [ProductSizeController::class, 'import'])->name('product-sizes.import');
+    Route::resource('product-sizes', ProductSizeController::class)->parameters([
+        'product-sizes' => 'productSize',
+    ]);
+
+    Route::post('product-colors/{productColor}/duplicate', [ProductColorController::class, 'duplicate'])->name('product-colors.duplicate');
+    Route::get('product-colors/export', [ProductColorController::class, 'export'])->name('product-colors.export');
+    Route::get('product-colors/export-pdf', [ProductColorController::class, 'exportPdf'])->name('product-colors.exportPdf');
+    Route::get('product-colors/template', [ProductColorController::class, 'template'])->name('product-colors.template');
+    Route::post('product-colors/import', [ProductColorController::class, 'import'])->name('product-colors.import');
+    Route::resource('product-colors', ProductColorController::class)->parameters([
+        'product-colors' => 'productColor',
+    ]);
+
+    Route::post('product-banners/{productBanner}/duplicate', [ProductBannerController::class, 'duplicate'])->name('product-banners.duplicate');
+    Route::get('product-banners/export', [ProductBannerController::class, 'export'])->name('product-banners.export');
+    Route::get('product-banners/export-pdf', [ProductBannerController::class, 'exportPdf'])->name('product-banners.exportPdf');
+    Route::get('product-banners/template', [ProductBannerController::class, 'template'])->name('product-banners.template');
+    Route::post('product-banners/import', [ProductBannerController::class, 'import'])->name('product-banners.import');
+    Route::resource('product-banners', ProductBannerController::class)->parameters([
+        'product-banners' => 'productBanner',
+    ]);
+
+    Route::post('blogs/{blog}/duplicate', [BlogController::class, 'duplicate'])->name('blogs.duplicate');
+    Route::resource('blogs', BlogController::class);
+
+    Route::patch('blog-comments/{blogComment}/toggle-approval', [BlogCommentController::class, 'toggleApproval'])->name('blog-comments.toggleApproval');
+    Route::resource('blog-comments', BlogCommentController::class)->only(['index', 'show', 'destroy'])->parameters([
+        'blog-comments' => 'blogComment',
+    ]);
+
+    Route::post('testimonials/{testimonial}/duplicate', [TestimonialController::class, 'duplicate'])->name('testimonials.duplicate');
+    Route::resource('testimonials', TestimonialController::class);
+
+    Route::patch('product-reviews/{productReview}/toggle-approval', [ProductReviewController::class, 'toggleApproval'])->name('product-reviews.toggleApproval');
+    Route::resource('product-reviews', ProductReviewController::class)->only(['index', 'show', 'destroy'])->parameters([
+        'product-reviews' => 'productReview',
+    ]);
+
+    Route::resource('store-services', StoreServiceController::class)->parameters([
+        'store-services' => 'storeService',
+    ]);
+
+    Route::post('ecommerce-faqs/{ecommerceFaq}/duplicate', [EcommerceFaqController::class, 'duplicate'])->name('ecommerce-faqs.duplicate');
+    Route::get('ecommerce-faqs/export', [EcommerceFaqController::class, 'export'])->name('ecommerce-faqs.export');
+    Route::get('ecommerce-faqs/template', [EcommerceFaqController::class, 'template'])->name('ecommerce-faqs.template');
+    Route::post('ecommerce-faqs/import', [EcommerceFaqController::class, 'import'])->name('ecommerce-faqs.import');
+    Route::resource('ecommerce-faqs', EcommerceFaqController::class)->parameters([
+        'ecommerce-faqs' => 'ecommerceFaq',
+    ]);
+
+    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::patch('orders/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('orders.updatePaymentStatus');
+    Route::patch('orders/{order}/tracking', [OrderController::class, 'updateTracking'])->name('orders.updateTracking');
+    Route::resource('orders', OrderController::class)->only(['index', 'show', 'destroy']);
+
+    Route::resource('footer-product-categories', FooterProductCategoryController::class)->parameters([
+        'footer-product-categories' => 'footerProductCategory',
+    ]);
+
+    Route::patch('shipping-methods/{shippingMethod}/toggle', [ShippingMethodController::class, 'toggle'])->name('shipping-methods.toggle');
+    Route::resource('shipping-methods', ShippingMethodController::class)->parameters([
+        'shipping-methods' => 'shippingMethod',
+    ]);
+
+    Route::patch('payment-methods/{paymentMethod}/toggle', [PaymentMethodController::class, 'toggle'])->name('payment-methods.toggle');
+    Route::resource('payment-methods', PaymentMethodController::class)->parameters([
+        'payment-methods' => 'paymentMethod',
+    ]);
+
+    Route::patch('payment-banks/{paymentBank}/toggle', [PaymentBankController::class, 'toggle'])->name('payment-banks.toggle');
+    Route::resource('payment-banks', PaymentBankController::class)->parameters([
+        'payment-banks' => 'paymentBank',
+    ]);
+});
