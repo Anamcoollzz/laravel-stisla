@@ -27,14 +27,10 @@ class MenuSeeder extends Seeder
             ]
         );
 
-        Menu::firstOrCreate(
-            ['name' => 'Ecommerce Dashboard', 'type' => 'item', 'route' => 'dashboard.ecommerce'],
-            [
-                'icon' => 'fas fa-shopping-cart',
-                'order' => 25,
-                'is_active' => true,
-            ]
-        );
+        Menu::query()
+            ->where('name', 'Ecommerce Dashboard')
+            ->where('route', 'dashboard.ecommerce')
+            ->delete();
 
         // 2. SPP Payment App Menus (ADMIN_MENU_APP=spp-payment)
         $oldModulesDropdown = Menu::query()

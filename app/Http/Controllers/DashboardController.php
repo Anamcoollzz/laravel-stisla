@@ -40,6 +40,10 @@ class DashboardController extends Controller
             return $this->comproWorkers();
         }
 
+        if (config('app.menu_app') === 'online-shop') {
+            return $this->ecommerce();
+        }
+
         $currentYear = (int) now()->format('Y');
         $currentMonth = (int) now()->format('n');
 
