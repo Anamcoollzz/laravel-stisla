@@ -29,65 +29,76 @@
             <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
             <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a></li>
           </ul>
+          @php
+            $searchableMenus = collect();
+            foreach ($sidebarMenus ?? collect() as $menu) {
+                if ($menu->type === 'header') {
+                    continue;
+                }
+                if ($menu->permission && ! auth()->user()?->can($menu->permission)) {
+                    continue;
+                }
+                if ($menu->type === 'item') {
+                    $href = $menu->route && \Illuminate\Support\Facades\Route::has($menu->route)
+                        ? route($menu->route)
+                        : ($menu->url ?: '#');
+                    if ($href !== '#') {
+                        $searchableMenus->push([
+                            'label' => __($menu->name),
+                            'parent' => null,
+                            'icon' => $menu->icon ?: 'fas fa-circle',
+                            'url' => $href,
+                        ]);
+                    }
+                } elseif ($menu->type === 'dropdown') {
+                    foreach ($menu->children ?? collect() as $child) {
+                        if ($child->permission && ! auth()->user()?->can($child->permission)) {
+                            continue;
+                        }
+                        $href = $child->route && \Illuminate\Support\Facades\Route::has($child->route)
+                            ? route($child->route)
+                            : ($child->url ?: '#');
+                        if ($href !== '#') {
+                            $searchableMenus->push([
+                                'label' => __($child->name),
+                                'parent' => __($menu->name),
+                                'icon' => $child->icon ?: ($menu->icon ?: 'fas fa-circle'),
+                                'url' => $href,
+                            ]);
+                        }
+                    }
+                }
+            }
+          @endphp
           <div class="search-element">
-            <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="250">
+            <input id="navbar-menu-search" class="form-control" type="search" placeholder="{{ __('Search menu...') }}" aria-label="{{ __('Search menu...') }}" data-width="250" autocomplete="off">
             <button class="btn" type="submit"><i class="fas fa-search"></i></button>
             <div class="search-backdrop"></div>
             <div class="search-result">
               <div class="search-header">
-                Histories
+                {{ __('Menus') }}
               </div>
-              <div class="search-item">
-                <a href="#">How to hack NASA using CSS</a>
-                <a href="#" class="search-close"><i class="fas fa-times"></i></a>
-              </div>
-              <div class="search-item">
-                <a href="#">Kodinger.com</a>
-                <a href="#" class="search-close"><i class="fas fa-times"></i></a>
-              </div>
-              <div class="search-item">
-                <a href="#">#Stisla</a>
-                <a href="#" class="search-close"><i class="fas fa-times"></i></a>
-              </div>
-              <div class="search-header">
-                Result
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <img class="mr-3 rounded" width="30" src="{{ asset('assets/img/products/product-3-50.png') }}" alt="product">
-                  oPhone S9 Limited Edition
-                </a>
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <img class="mr-3 rounded" width="30" src="{{ asset('assets/img/products/product-2-50.png') }}" alt="product">
-                  Drone X2 New Gen-7
-                </a>
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <img class="mr-3 rounded" width="30" src="{{ asset('assets/img/products/product-1-50.png') }}" alt="product">
-                  Headphone Blitz
-                </a>
-              </div>
-              <div class="search-header">
-                Projects
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <div class="search-icon bg-danger text-white mr-3">
-                    <i class="fas fa-code"></i>
-                  </div>
-                  Stisla Admin Template
-                </a>
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <div class="search-icon bg-primary text-white mr-3">
-                    <i class="fas fa-laptop"></i>
-                  </div>
-                  Create a new Homepage Design
-                </a>
+              @forelse ($searchableMenus as $item)
+                <div class="search-item navbar-menu-search-item" data-search="{{ strtolower($item['label'].' '.($item['parent'] ?? '')) }}">
+                  <a href="{{ $item['url'] }}">
+                    <div class="search-icon bg-primary text-white mr-3">
+                      <i class="{{ $item['icon'] }}"></i>
+                    </div>
+                    <div>
+                      <div>{{ $item['label'] }}</div>
+                      @if ($item['parent'])
+                        <div class="text-muted small">{{ $item['parent'] }}</div>
+                      @endif
+                    </div>
+                  </a>
+                </div>
+              @empty
+                <div class="search-item text-muted small px-3 py-2">
+                  {{ __('No matching menu found.') }}
+                </div>
+              @endforelse
+              <div id="navbar-menu-search-empty" class="search-item text-muted small px-3 py-2 d-none">
+                {{ __('No matching menu found.') }}
               </div>
             </div>
           </div>
@@ -220,9 +231,11 @@
               <a href="{{ route('profile.edit') }}" class="dropdown-item has-icon">
                 <i class="far fa-user"></i> {{ __('Profile') }}
               </a>
-              <a href="{{ route('features-activities.html') }}" class="dropdown-item has-icon">
-                <i class="fas fa-bolt"></i> Activities
-              </a>
+              @if (config('stisla.is_demo'))
+                <a href="{{ route('features-activities.html') }}" class="dropdown-item has-icon">
+                  <i class="fas fa-bolt"></i> {{ __('Activities') }}
+                </a>
+              @endif
               <a href="{{ route('settings.index') }}" class="dropdown-item has-icon">
                 <i class="fas fa-cog"></i> Settings
               </a>
@@ -420,6 +433,41 @@
   <!-- Template JS File -->
   <script src="{{ asset('assets/js/scripts.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+
+  <script>
+    (function() {
+      var $input = $('#navbar-menu-search');
+      if (! $input.length) {
+        return;
+      }
+
+      function filterNavbarMenus() {
+        var keyword = ($input.val() || '').toLowerCase().trim();
+        var visibleCount = 0;
+
+        $('.navbar-menu-search-item').each(function() {
+          var text = ($(this).data('search') || '').toString();
+          var matched = keyword === '' || text.indexOf(keyword) !== -1;
+          $(this).toggleClass('d-none', ! matched);
+          if (matched) {
+            visibleCount++;
+          }
+        });
+
+        $('#navbar-menu-search-empty').toggleClass('d-none', visibleCount > 0);
+      }
+
+      $input.on('input keyup focus', filterNavbarMenus);
+
+      $input.closest('form').on('submit', function(e) {
+        e.preventDefault();
+        var $firstLink = $('.navbar-menu-search-item:not(.d-none) a').first();
+        if ($firstLink.length && $firstLink.attr('href')) {
+          window.location.href = $firstLink.attr('href');
+        }
+      });
+    })();
+  </script>
 
   <!-- Page Specific JS File -->
   @stack('page-js')

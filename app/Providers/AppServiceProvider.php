@@ -19,7 +19,10 @@ use App\Models\ProductWishlist;
 use App\Models\Setting;
 use App\Models\StoreService;
 use App\Models\Testimonial;
+use App\Models\User;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -78,8 +81,28 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('admin') ? true : null;
         });
 
+        Event::listen(Login::class, function (Login $event): void {
+            if ($event->user instanceof User) {
+                $event->user->forceFill(['last_logged_in' => now()])->saveQuietly();
+            }
+        });
+
+        Event::listen(Login::class, function (Login $event): void {
+            if ($event->user instanceof \App\Models\User) {
+                $event->user->forceFill(['last_logged_in' => now()])->saveQuietly();
+            }
+        });
+
         View::composer('layouts.app', function ($view) {
             $authUser = auth()->user();
+
+            if ($authUser instanceof User && $authUser->last_logged_in === null) {
+                $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
+            }
+
+            if ($authUser instanceof \App\Models\User && $authUser->last_logged_in === null) {
+                $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
+            }
 
             if ($authUser === null || ! Schema::hasTable('chat_messages')) {
                 $view->with('navMessages', collect())->with('navUnreadCount', 0);
