@@ -217,6 +217,17 @@ class MenuSeeder extends Seeder
         }
 
         // 6. LP Compro Workers App Menus (ADMIN_MENU_APP=lp-compro-workers)
+        $oldLpComproDropdown = Menu::query()
+            ->forApp('lp-compro-workers')
+            ->where('name', 'Company Profile')
+            ->where('type', 'dropdown')
+            ->first();
+
+        if ($oldLpComproDropdown) {
+            Menu::query()->where('parent_id', $oldLpComproDropdown->id)->delete();
+            $oldLpComproDropdown->delete();
+        }
+
         $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Dashboard', 'type' => 'item'], [
             'icon' => 'fas fa-fire',
             'route' => 'dashboard',
@@ -224,31 +235,56 @@ class MenuSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        $lpComproDropdown = $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Company Profile', 'type' => 'dropdown'], [
-            'icon' => 'fas fa-globe',
+        // Recruitment & Catalog
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Recruitment & Catalog', 'type' => 'header'], [
+            'order' => 5,
+            'is_active' => true,
+        ]);
+
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Workers', 'type' => 'item'], [
+            'icon' => 'fas fa-users',
+            'route' => 'lp-workers.index',
+            'permission' => 'lp-workers.view',
             'order' => 10,
             'is_active' => true,
         ]);
 
-        $lpComproChildren = [
-            ['name' => 'Company Stats', 'route' => 'lp-company-stats.index', 'permission' => 'lp-company-stats.view', 'order' => 1],
-            ['name' => 'Services', 'route' => 'lp-services.index', 'permission' => 'lp-services.view', 'order' => 2],
-            ['name' => 'Why Choose Us', 'route' => 'lp-why-choose-us.index', 'permission' => 'lp-why-choose-us.view', 'order' => 3],
-            ['name' => 'Recruitment Steps', 'route' => 'lp-recruitment-steps.index', 'permission' => 'lp-recruitment-steps.view', 'order' => 4],
-            ['name' => 'Testimonials', 'route' => 'lp-testimonials.index', 'permission' => 'lp-testimonials.view', 'order' => 5],
-            ['name' => 'FAQs', 'route' => 'lp-faqs.index', 'permission' => 'lp-faqs.view', 'order' => 6],
-            ['name' => 'Workers', 'route' => 'lp-workers.index', 'permission' => 'lp-workers.view', 'order' => 7],
-            ['name' => 'Galleries', 'route' => 'lp-galleries.index', 'permission' => 'lp-galleries.view', 'order' => 8],
-            ['name' => 'Contact & Company Info', 'route' => 'lp-company-profile.edit', 'permission' => 'lp-company-profile.edit', 'order' => 9],
-            ['name' => 'Company Introduction', 'route' => 'lp-company-introduction.edit', 'permission' => 'lp-company-introduction.edit', 'order' => 10],
-            ['name' => 'Milestones', 'route' => 'lp-milestones.index', 'permission' => 'lp-milestones.view', 'order' => 11],
-            ['name' => 'Vision & Mission', 'route' => 'lp-vision-mission.edit', 'permission' => 'lp-vision-mission.edit', 'order' => 12],
-            ['name' => 'Company Values', 'route' => 'lp-company-values.index', 'permission' => 'lp-company-values.view', 'order' => 13],
-            ['name' => 'Contact Inquiries', 'route' => 'lp-contact-inquiries.index', 'permission' => 'lp-contact-inquiries.view', 'order' => 14],
-        ];
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Services', 'type' => 'item'], [
+            'icon' => 'fas fa-briefcase',
+            'route' => 'lp-services.index',
+            'permission' => 'lp-services.view',
+            'order' => 15,
+            'is_active' => true,
+        ]);
 
-        foreach ($lpComproChildren as $child) {
-            $this->firstOrCreateForApp('lp-compro-workers', ['parent_id' => $lpComproDropdown->id, 'name' => $child['name']], [
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Recruitment Steps', 'type' => 'item'], [
+            'icon' => 'fas fa-stream',
+            'route' => 'lp-recruitment-steps.index',
+            'permission' => 'lp-recruitment-steps.view',
+            'order' => 20,
+            'is_active' => true,
+        ]);
+
+        // Company & Pages
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Company & Pages', 'type' => 'header'], [
+            'order' => 25,
+            'is_active' => true,
+        ]);
+
+        $aboutDropdown = $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'About & Identity', 'type' => 'dropdown'], [
+            'icon' => 'fas fa-building',
+            'order' => 30,
+            'is_active' => true,
+        ]);
+
+        foreach ([
+            ['name' => 'Company Introduction', 'route' => 'lp-company-introduction.edit', 'permission' => 'lp-company-introduction.edit', 'order' => 1],
+            ['name' => 'Vision & Mission', 'route' => 'lp-vision-mission.edit', 'permission' => 'lp-vision-mission.edit', 'order' => 2],
+            ['name' => 'Company Values', 'route' => 'lp-company-values.index', 'permission' => 'lp-company-values.view', 'order' => 3],
+            ['name' => 'Milestones', 'route' => 'lp-milestones.index', 'permission' => 'lp-milestones.view', 'order' => 4],
+            ['name' => 'Company Stats', 'route' => 'lp-company-stats.index', 'permission' => 'lp-company-stats.view', 'order' => 5],
+        ] as $child) {
+            $this->firstOrCreateForApp('lp-compro-workers', ['parent_id' => $aboutDropdown->id, 'name' => $child['name']], [
                 'type' => 'item',
                 'route' => $child['route'],
                 'permission' => $child['permission'],
@@ -256,6 +292,49 @@ class MenuSeeder extends Seeder
                 'is_active' => true,
             ]);
         }
+
+        $trustDropdown = $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Trust & Media', 'type' => 'dropdown'], [
+            'icon' => 'fas fa-images',
+            'order' => 35,
+            'is_active' => true,
+        ]);
+
+        foreach ([
+            ['name' => 'Why Choose Us', 'route' => 'lp-why-choose-us.index', 'permission' => 'lp-why-choose-us.view', 'order' => 1],
+            ['name' => 'Testimonials', 'route' => 'lp-testimonials.index', 'permission' => 'lp-testimonials.view', 'order' => 2],
+            ['name' => 'Galleries', 'route' => 'lp-galleries.index', 'permission' => 'lp-galleries.view', 'order' => 3],
+            ['name' => 'FAQs', 'route' => 'lp-faqs.index', 'permission' => 'lp-faqs.view', 'order' => 4],
+        ] as $child) {
+            $this->firstOrCreateForApp('lp-compro-workers', ['parent_id' => $trustDropdown->id, 'name' => $child['name']], [
+                'type' => 'item',
+                'route' => $child['route'],
+                'permission' => $child['permission'],
+                'order' => $child['order'],
+                'is_active' => true,
+            ]);
+        }
+
+        // Communication
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Communication', 'type' => 'header'], [
+            'order' => 40,
+            'is_active' => true,
+        ]);
+
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Contact Inquiries', 'type' => 'item'], [
+            'icon' => 'fas fa-inbox',
+            'route' => 'lp-contact-inquiries.index',
+            'permission' => 'lp-contact-inquiries.view',
+            'order' => 42,
+            'is_active' => true,
+        ]);
+
+        $this->firstOrCreateForApp('lp-compro-workers', ['name' => 'Contact & Company Info', 'type' => 'item'], [
+            'icon' => 'fas fa-address-card',
+            'route' => 'lp-company-profile.edit',
+            'permission' => 'lp-company-profile.edit',
+            'order' => 45,
+            'is_active' => true,
+        ]);
     }
 
     /**
@@ -271,7 +350,16 @@ class MenuSeeder extends Seeder
             $query->where($column, $value);
         }
 
-        return $query->first() ?? Menu::query()->create(array_merge($match, $attributes, [
+        $existing = $query->first();
+        if ($existing) {
+            if (isset($attributes['icon']) && $existing->icon !== $attributes['icon']) {
+                $existing->update(['icon' => $attributes['icon']]);
+            }
+
+            return $existing;
+        }
+
+        return Menu::query()->create(array_merge($match, $attributes, [
             'app' => [$app],
         ]));
     }
