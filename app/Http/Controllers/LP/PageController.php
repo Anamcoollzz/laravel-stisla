@@ -4,6 +4,7 @@ namespace App\Http\Controllers\LP;
 
 use App\Http\Controllers\Controller;
 use App\Models\LP\CompanyIntroduction;
+use App\Models\LP\CompanyMilestone;
 use App\Services\RecruitmentDataService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
@@ -60,29 +61,55 @@ class PageController extends Controller
                     'icon' => 'headphones',
                 ],
             ],
-            'milestones' => [
-                [
-                    'year' => '2016',
-                    'title' => 'Agency Foundation in Bekasi',
-                    'description' => 'Established to connect households in Greater Jakarta with screened, dependable domestic staff.',
-                ],
-                [
-                    'year' => '2019',
-                    'title' => 'Practical Training Program',
-                    'description' => 'Launched structured training covering infant hygiene, eldercare, and modern household standards.',
-                ],
-                [
-                    'year' => '2022',
-                    'title' => 'Expanded Placement Coverage',
-                    'description' => 'Extended coordinated placement services across Jabodetabek, Bandung, and major Indonesian cities.',
-                ],
-                [
-                    'year' => '2026',
-                    'title' => 'Digital Candidate Directory',
-                    'description' => 'Introduced transparent online candidate profiles and streamlined WhatsApp video interview scheduling.',
-                ],
-            ],
+            'milestones' => $this->resolveMilestones(),
         ]);
+    }
+
+    /**
+     * Get active milestones from database with fallback defaults.
+     *
+     * @return array<int, array<string, string>>
+     */
+    private function resolveMilestones(): array
+    {
+        if (Schema::hasTable('company_milestones')) {
+            $dbMilestones = CompanyMilestone::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbMilestones->isNotEmpty()) {
+                return $dbMilestones->map(fn (CompanyMilestone $item): array => [
+                    'year' => $item->year,
+                    'title' => $item->title,
+                    'description' => (string) ($item->description ?? ''),
+                ])->all();
+            }
+        }
+
+        return [
+            [
+                'year' => '2016',
+                'title' => 'Agency Foundation in Bekasi',
+                'description' => 'Established to connect households in Greater Jakarta with screened, dependable domestic staff.',
+            ],
+            [
+                'year' => '2019',
+                'title' => 'Practical Training Program',
+                'description' => 'Launched structured training covering infant hygiene, eldercare, and modern household standards.',
+            ],
+            [
+                'year' => '2022',
+                'title' => 'Expanded Placement Coverage',
+                'description' => 'Extended coordinated placement services across Jabodetabek, Bandung, and major Indonesian cities.',
+            ],
+            [
+                'year' => '2026',
+                'title' => 'Digital Candidate Directory',
+                'description' => 'Introduced transparent online candidate profiles and streamlined WhatsApp video interview scheduling.',
+            ],
+        ];
     }
 
     /**

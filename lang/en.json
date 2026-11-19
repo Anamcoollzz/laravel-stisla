@@ -2346,5 +2346,21 @@
     "Default: halaman About Us": "Default: About Us page",
     "Label Tombol WhatsApp": "WhatsApp Button Label",
     "Pesan Khusus WhatsApp": "Custom WhatsApp Message",
-    "Default: pesan perusahaan": "Default: company message"
+    "Default: pesan perusahaan": "Default: company message",
+    "Milestones": "Milestones",
+    "Daftar Milestone Perusahaan": "Company Milestones List",
+    "Tambah Milestone": "Add Milestone",
+    "Edit Milestone": "Edit Milestone",
+    "Detail Milestone": "Milestone Detail",
+    "Form Milestone Perusahaan": "Company Milestone Form",
+    "Import Milestone Perusahaan": "Import Company Milestones",
+    "Laporan Milestone Perusahaan": "Company Milestones Report",
+    "Milestone ini akan dihapus permanen!": "This milestone will be permanently deleted!",
+    "Milestone perusahaan berhasil ditambahkan.": "Company milestone created successfully.",
+    "Milestone perusahaan berhasil diperbarui.": "Company milestone updated successfully.",
+    "Milestone perusahaan berhasil diduplikasi.": "Company milestone duplicated successfully.",
+    "Milestone perusahaan berhasil dihapus.": "Company milestone deleted successfully.",
+    "Milestone perusahaan berhasil diimport.": "Company milestones imported successfully.",
+    "Tahun": "Year",
+    "Tidak ada data milestone.": "No milestone data available."
 }

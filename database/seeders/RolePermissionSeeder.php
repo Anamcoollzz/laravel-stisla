@@ -68,6 +68,7 @@ class RolePermissionSeeder extends Seeder
             'lp-galleries' => ['view', 'create', 'edit', 'delete'],
             'lp-company-profile' => ['view', 'edit'],
             'lp-company-introduction' => ['view', 'edit'],
+            'lp-milestones' => ['view', 'create', 'edit', 'delete'],
             'settings' => ['view', 'edit'],
         ];
 

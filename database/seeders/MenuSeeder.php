@@ -251,6 +251,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Galleries', 'route' => 'lp-galleries.index', 'permission' => 'lp-galleries.view', 'order' => 8],
             ['name' => 'Contact & Company Info', 'route' => 'lp-company-profile.edit', 'permission' => 'lp-company-profile.edit', 'order' => 9],
             ['name' => 'Company Introduction', 'route' => 'lp-company-introduction.edit', 'permission' => 'lp-company-introduction.edit', 'order' => 10],
+            ['name' => 'Milestones', 'route' => 'lp-milestones.index', 'permission' => 'lp-milestones.view', 'order' => 11],
         ];
 
         foreach ($lpComproChildren as $child) {

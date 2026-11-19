@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LP\CompanyIntroductionController as AdminCompanyIntroductionController;
+use App\Http\Controllers\Admin\LP\CompanyMilestoneController as AdminCompanyMilestoneController;
 use App\Http\Controllers\Admin\LP\CompanyProfileController as AdminCompanyProfileController;
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
@@ -432,6 +433,15 @@ Route::prefix('app')->group(function () {
 
         Route::get('lp-company-introduction', [AdminCompanyIntroductionController::class, 'edit'])->name('lp-company-introduction.edit');
         Route::put('lp-company-introduction', [AdminCompanyIntroductionController::class, 'update'])->name('lp-company-introduction.update');
+
+        Route::get('lp-milestones/export', [AdminCompanyMilestoneController::class, 'export'])->name('lp-milestones.export');
+        Route::get('lp-milestones/export-pdf', [AdminCompanyMilestoneController::class, 'exportPdf'])->name('lp-milestones.exportPdf');
+        Route::get('lp-milestones/template', [AdminCompanyMilestoneController::class, 'template'])->name('lp-milestones.template');
+        Route::post('lp-milestones/import', [AdminCompanyMilestoneController::class, 'import'])->name('lp-milestones.import');
+        Route::post('lp-milestones/{companyMilestone}/duplicate', [AdminCompanyMilestoneController::class, 'duplicate'])->name('lp-milestones.duplicate');
+        Route::resource('lp-milestones', AdminCompanyMilestoneController::class)->parameters([
+            'lp-milestones' => 'companyMilestone',
+        ]);
     });
 });
 
