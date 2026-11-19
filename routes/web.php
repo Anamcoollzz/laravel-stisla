@@ -51,7 +51,17 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomeController::class);
+// start lp
+Route::get('/', [\App\Http\Controllers\LP\PageController::class, 'home'])->name('home');
+Route::get('/about', [\App\Http\Controllers\LP\PageController::class, 'about'])->name('about');
+Route::get('/services', [\App\Http\Controllers\LP\PageController::class, 'services'])->name('services');
+Route::get('/catalog', [\App\Http\Controllers\LP\WorkerCatalogController::class, 'index'])->name('catalog');
+Route::get('/catalog/{slug}', [\App\Http\Controllers\LP\WorkerCatalogController::class, 'show'])->name('worker.detail');
+Route::get('/gallery', [\App\Http\Controllers\LP\PageController::class, 'gallery'])->name('gallery');
+Route::get('/contact', [\App\Http\Controllers\LP\PageController::class, 'contact'])->name('contact');
+// end lp
+
+// Route::get('/', HomeController::class);
 Route::get('/lang/{locale}', [LocaleController::class, 'switch']);
 Route::get('/privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
 

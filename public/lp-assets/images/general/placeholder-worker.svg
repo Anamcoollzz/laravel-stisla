@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none">
+  <rect width="400" height="500" fill="#F7F9FC"/>
+  <circle cx="200" cy="175" r="74" fill="#CBD5E1"/>
+  <path d="M84 425C84 352 135 300 200 300C265 300 316 352 316 425V500H84V425Z" fill="#94A3B8"/>
+  <rect x="125" y="38" width="150" height="28" rx="14" fill="#153B63" fill-opacity="0.1"/>
+  <text x="200" y="57" text-anchor="middle" fill="#153B63" font-family="sans-serif" font-size="12" font-weight="600">VERIFIED CANDIDATE</text>
+</svg>
