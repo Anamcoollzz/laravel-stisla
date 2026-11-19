@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\LP;
 
 use App\Http\Controllers\Controller;
+use App\Models\LP\CompanyIntroduction;
 use App\Services\RecruitmentDataService;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class PageController extends Controller
@@ -16,6 +18,7 @@ class PageController extends Controller
     public function home(): View
     {
         return view('lp.pages.home', [
+            'companyIntro' => Schema::hasTable('company_introductions') ? CompanyIntroduction::query()->first() : null,
             'featuredWorkers' => $this->recruitmentData->getFeaturedWorkers(4),
             'services' => $this->recruitmentData->getServices(),
             'stats' => $this->recruitmentData->getCompanyStats(),

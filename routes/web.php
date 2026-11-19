@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LP\CompanyIntroductionController as AdminCompanyIntroductionController;
 use App\Http\Controllers\Admin\LP\CompanyProfileController as AdminCompanyProfileController;
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
@@ -428,6 +429,9 @@ Route::prefix('app')->group(function () {
 
         Route::get('lp-company-profile', [AdminCompanyProfileController::class, 'edit'])->name('lp-company-profile.edit');
         Route::put('lp-company-profile', [AdminCompanyProfileController::class, 'update'])->name('lp-company-profile.update');
+
+        Route::get('lp-company-introduction', [AdminCompanyIntroductionController::class, 'edit'])->name('lp-company-introduction.edit');
+        Route::put('lp-company-introduction', [AdminCompanyIntroductionController::class, 'update'])->name('lp-company-introduction.update');
     });
 });
 

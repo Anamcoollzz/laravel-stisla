@@ -8,6 +8,27 @@
     @include('lp.partials.hero')
 
     {{-- 2. Company Introduction --}}
+    @php
+        $intro = $companyIntro ?? null;
+        $introImageUrl = $intro?->image_url ?? asset('lp-assets/images/general/about-training.jpg');
+        $introImageAlt = $intro?->image_alt ?: ('Candidates attending practical orientation at ' . config('company.legal_name'));
+        $introMissionLabel = $intro?->mission_label ?: 'Our Mission';
+        $introMissionText = $intro?->mission_text ?: 'Delivering dependable, carefully screened household and care professionals with transparent communication.';
+        $introEyebrow = $intro?->eyebrow ?: 'Company Introduction';
+        $introTitle = $intro?->title ?: 'Your Trusted Partner in Manpower Solutions';
+        $introParagraph1 = $intro?->paragraph_1 ?: ('Welcoming someone into your home or workplace requires confidence and clarity. At ' . config('company.legal_name') . ', we manage structured candidate screening, practical readiness orientation, and responsive placement coordination so you can hire with peace of mind.');
+        $introParagraph2 = $intro?->paragraph_2;
+        $introF1Icon = $intro?->feature_1_icon ?: 'shield-check';
+        $introF1Title = $intro?->feature_1_title ?: 'Verified Profiles';
+        $introF1Desc = $intro?->feature_1_description ?: 'Identity, reference, and readiness screening prior to listing.';
+        $introF2Icon = $intro?->feature_2_icon ?: 'handshake';
+        $introF2Title = $intro?->feature_2_title ?: 'Guided Placement';
+        $introF2Desc = $intro?->feature_2_description ?: 'Personal consultant support from interview to onboarding.';
+        $introPrimaryLabel = $intro?->primary_button_label ?: 'Learn More';
+        $introPrimaryUrl = $intro?->primary_button_url ?: route('about');
+        $introWaLabel = $intro?->whatsapp_button_label ?: 'Consult Our Team';
+        $introWaMessage = $intro?->whatsapp_button_message;
+    @endphp
     <section class="reveal-section bg-white py-20 lg:py-28">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
@@ -15,16 +36,16 @@
                     <div class="relative">
                         <div class="overflow-hidden rounded-2xl border border-border-subtle shadow-md">
                             <img
-                                src="{{ asset('lp-assets/images/general/about-training.jpg') }}"
-                                alt="Candidates attending practical orientation at PT Permata Kasih Anugerah"
+                                src="{{ $introImageUrl }}"
+                                alt="{{ $introImageAlt }}"
                                 loading="lazy"
                                 class="h-[340px] w-full object-cover sm:h-[420px]"
                             >
                         </div>
                         <div class="mt-4 rounded-2xl border border-border-subtle bg-navy-dark p-5 text-white shadow-lg sm:absolute sm:-bottom-6 sm:right-6 sm:mt-0 sm:max-w-xs">
-                            <p class="text-xs font-bold uppercase tracking-wider text-gold">Our Mission</p>
+                            <p class="text-xs font-bold uppercase tracking-wider text-gold">{{ $introMissionLabel }}</p>
                             <p class="mt-1.5 text-sm leading-relaxed text-white/85">
-                                Delivering dependable, carefully screened household and care professionals with transparent communication.
+                                {{ $introMissionText }}
                             </p>
                         </div>
                     </div>
@@ -32,42 +53,44 @@
 
                 <div class="lg:col-span-6">
                     <x-section-heading
-                        eyebrow="Company Introduction"
-                        title="Your Trusted Partner in Manpower Solutions"
+                        :eyebrow="$introEyebrow"
+                        :title="$introTitle"
                         align="left"
                     />
 
                     <p class="mt-5 text-base leading-relaxed text-ink-muted">
-                        Welcoming someone into your home or workplace requires confidence and clarity. At {{ config('company.legal_name') }}, we manage structured candidate screening, practical readiness orientation, and responsive placement coordination so you can hire with peace of mind.
+                        {{ $introParagraph1 }}
                     </p>
 
-                    <p class="mt-4 text-base leading-relaxed text-ink-muted">
-                        Our mission is to bridge responsible workers with households and businesses through honest candidate profiles, attentive consultation, and follow-up support after placement.
-                    </p>
+                    @if ($introParagraph2)
+                        <p class="mt-4 text-base leading-relaxed text-ink-muted">
+                            {{ $introParagraph2 }}
+                        </p>
+                    @endif
 
                     <div class="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div class="flex items-start gap-3 rounded-xl border border-border-subtle bg-surface p-4">
-                            <i data-lucide="shield-check" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
+                            <i data-lucide="{{ $introF1Icon }}" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
                             <div>
-                                <h3 class="text-sm font-bold text-navy-dark">Verified Profiles</h3>
-                                <p class="mt-1 text-xs text-ink-muted">Identity, reference, and readiness screening prior to listing.</p>
+                                <h3 class="text-sm font-bold text-navy-dark">{{ $introF1Title }}</h3>
+                                <p class="mt-1 text-xs text-ink-muted">{{ $introF1Desc }}</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3 rounded-xl border border-border-subtle bg-surface p-4">
-                            <i data-lucide="handshake" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
+                            <i data-lucide="{{ $introF2Icon }}" class="h-5 w-5 text-teal shrink-0 mt-0.5" aria-hidden="true"></i>
                             <div>
-                                <h3 class="text-sm font-bold text-navy-dark">Guided Placement</h3>
-                                <p class="mt-1 text-xs text-ink-muted">Personal consultant support from interview to onboarding.</p>
+                                <h3 class="text-sm font-bold text-navy-dark">{{ $introF2Title }}</h3>
+                                <p class="mt-1 text-xs text-ink-muted">{{ $introF2Desc }}</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-8 flex flex-wrap items-center gap-3">
-                        <x-primary-button :href="route('about')" variant="primary">
-                            <span>Learn More</span>
+                        <x-primary-button :href="$introPrimaryUrl" variant="primary">
+                            <span>{{ $introPrimaryLabel }}</span>
                             <i data-lucide="arrow-right" class="h-4 w-4" aria-hidden="true"></i>
                         </x-primary-button>
-                        <x-whatsapp-button variant="card" label="Consult Our Team" class="px-5 py-3 text-sm" />
+                        <x-whatsapp-button variant="card" :label="$introWaLabel" :message="$introWaMessage" class="px-5 py-3 text-sm" />
                     </div>
                 </div>
             </div>
