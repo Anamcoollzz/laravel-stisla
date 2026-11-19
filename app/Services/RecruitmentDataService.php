@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\LP\CompanyStat;
 use App\Models\LP\RecruitmentService;
+use App\Models\LP\RecruitmentStep;
 use App\Models\LP\WhyChooseUs;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -325,6 +326,23 @@ class RecruitmentDataService
      */
     public function getRecruitmentSteps(): array
     {
+        if (Schema::hasTable('recruitment_steps')) {
+            $dbSteps = RecruitmentStep::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbSteps->isNotEmpty()) {
+                return $dbSteps->map(fn (RecruitmentStep $step): array => [
+                    'step' => $step->step,
+                    'title' => $step->title,
+                    'description' => (string) ($step->description ?? ''),
+                    'icon' => $step->icon,
+                ])->all();
+            }
+        }
+
         return [
             [
                 'step' => '01',

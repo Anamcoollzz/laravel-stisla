@@ -61,6 +61,7 @@ class RolePermissionSeeder extends Seeder
             'lp-company-stats' => ['view', 'create', 'edit', 'delete'],
             'lp-services' => ['view', 'create', 'edit', 'delete'],
             'lp-why-choose-us' => ['view', 'create', 'edit', 'delete'],
+            'lp-recruitment-steps' => ['view', 'create', 'edit', 'delete'],
             'settings' => ['view', 'edit'],
         ];
 

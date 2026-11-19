@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
+use App\Http\Controllers\Admin\LP\RecruitmentStepController as AdminRecruitmentStepController;
 use App\Http\Controllers\Admin\LP\WhyChooseUsController as AdminWhyChooseUsController;
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
 use App\Http\Controllers\Admin\News\NewsCommentController as AdminNewsCommentController;
@@ -373,6 +374,15 @@ Route::prefix('app')->group(function () {
         Route::post('lp-why-choose-us/{whyChooseUs}/duplicate', [AdminWhyChooseUsController::class, 'duplicate'])->name('lp-why-choose-us.duplicate');
         Route::resource('lp-why-choose-us', AdminWhyChooseUsController::class)->parameters([
             'lp-why-choose-us' => 'whyChooseUs',
+        ]);
+
+        Route::get('lp-recruitment-steps/export', [AdminRecruitmentStepController::class, 'export'])->name('lp-recruitment-steps.export');
+        Route::get('lp-recruitment-steps/export-pdf', [AdminRecruitmentStepController::class, 'exportPdf'])->name('lp-recruitment-steps.exportPdf');
+        Route::get('lp-recruitment-steps/template', [AdminRecruitmentStepController::class, 'template'])->name('lp-recruitment-steps.template');
+        Route::post('lp-recruitment-steps/import', [AdminRecruitmentStepController::class, 'import'])->name('lp-recruitment-steps.import');
+        Route::post('lp-recruitment-steps/{recruitmentStep}/duplicate', [AdminRecruitmentStepController::class, 'duplicate'])->name('lp-recruitment-steps.duplicate');
+        Route::resource('lp-recruitment-steps', AdminRecruitmentStepController::class)->parameters([
+            'lp-recruitment-steps' => 'recruitmentStep',
         ]);
     });
 });
