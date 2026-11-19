@@ -5,6 +5,7 @@ namespace App\Http\Controllers\LP;
 use App\Http\Controllers\Controller;
 use App\Models\LP\CompanyIntroduction;
 use App\Models\LP\CompanyMilestone;
+use App\Models\LP\CompanyValue;
 use App\Models\LP\VisionMission;
 use App\Services\RecruitmentDataService;
 use Illuminate\Support\Facades\Schema;
@@ -40,31 +41,57 @@ class PageController extends Controller
             'stats' => $this->recruitmentData->getCompanyStats(),
             'whyChooseUs' => $this->recruitmentData->getWhyChooseUs(),
             'galleryPreview' => array_slice($this->recruitmentData->getGalleryItems(), 0, 3),
-            'teamValues' => [
-                [
-                    'title' => 'Integrity & Honesty',
-                    'description' => 'Transparent screening and accurate candidate representation build lasting trust with every household.',
-                    'icon' => 'shield-check',
-                ],
-                [
-                    'title' => 'Compassionate Care',
-                    'description' => 'We place helpers and caregivers who genuinely respect children, seniors, and family well-being.',
-                    'icon' => 'heart-handshake',
-                ],
-                [
-                    'title' => 'Professional Readiness',
-                    'description' => 'Practical hospitality, hygiene, and safety orientation prepares candidates before deployment.',
-                    'icon' => 'award',
-                ],
-                [
-                    'title' => 'Accountable Support',
-                    'description' => 'Our consultants remain reachable after placement day to support smooth long-term adaptation.',
-                    'icon' => 'headphones',
-                ],
-            ],
+            'teamValues' => $this->resolveCompanyValues(),
             'milestones' => $this->resolveMilestones(),
             'visionMission' => Schema::hasTable('vision_missions') ? VisionMission::query()->first() : null,
         ]);
+    }
+
+    /**
+     * Get active company values from database with fallback defaults.
+     *
+     * @return array<int, array<string, string>>
+     */
+    private function resolveCompanyValues(): array
+    {
+        if (Schema::hasTable('company_values')) {
+            $dbValues = CompanyValue::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbValues->isNotEmpty()) {
+                return $dbValues->map(fn (CompanyValue $item): array => [
+                    'title' => $item->title,
+                    'description' => (string) ($item->description ?? ''),
+                    'icon' => $item->icon,
+                ])->all();
+            }
+        }
+
+        return [
+            [
+                'title' => 'Integrity & Honesty',
+                'description' => 'Transparent screening and accurate candidate representation build lasting trust with every household.',
+                'icon' => 'shield-check',
+            ],
+            [
+                'title' => 'Compassionate Care',
+                'description' => 'We place helpers and caregivers who genuinely respect children, seniors, and family well-being.',
+                'icon' => 'heart-handshake',
+            ],
+            [
+                'title' => 'Professional Readiness',
+                'description' => 'Practical hospitality, hygiene, and safety orientation prepares candidates before deployment.',
+                'icon' => 'award',
+            ],
+            [
+                'title' => 'Accountable Support',
+                'description' => 'Our consultants remain reachable after placement day to support smooth long-term adaptation.',
+                'icon' => 'headphones',
+            ],
+        ];
     }
 
     /**

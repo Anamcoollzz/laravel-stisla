@@ -2373,5 +2373,22 @@
     "Misi Perusahaan": "Company Mission",
     "Badge Misi": "Mission Badge",
     "Judul Misi": "Mission Title",
-    "Poin-Poin Misi (1 per baris)": "Mission Points (1 per line)"
+    "Poin-Poin Misi (1 per baris)": "Mission Points (1 per line)",
+    "Company Values": "Company Values",
+    "Daftar Nilai Perusahaan": "Company Values List",
+    "Tambah Nilai": "Add Value",
+    "Tambah Nilai Perusahaan": "Add Company Value",
+    "Edit Nilai Perusahaan": "Edit Company Value",
+    "Edit Nilai": "Edit Value",
+    "Detail Nilai Perusahaan": "Company Value Detail",
+    "Form Nilai Perusahaan": "Company Value Form",
+    "Import Nilai Perusahaan": "Import Company Values",
+    "Laporan Nilai Perusahaan": "Company Values Report",
+    "Nilai perusahaan ini akan dihapus permanen!": "This company value will be permanently deleted!",
+    "Nilai perusahaan berhasil ditambahkan.": "Company value created successfully.",
+    "Nilai perusahaan berhasil diperbarui.": "Company value updated successfully.",
+    "Nilai perusahaan berhasil diduplikasi.": "Company value duplicated successfully.",
+    "Nilai perusahaan berhasil dihapus.": "Company value deleted successfully.",
+    "Nilai perusahaan berhasil diimport.": "Company values imported successfully.",
+    "Tidak ada data nilai perusahaan.": "No company value data available."
 }

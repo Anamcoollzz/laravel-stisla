@@ -4,12 +4,13 @@ use App\Http\Controllers\Admin\LP\CompanyIntroductionController as AdminCompanyI
 use App\Http\Controllers\Admin\LP\CompanyMilestoneController as AdminCompanyMilestoneController;
 use App\Http\Controllers\Admin\LP\CompanyProfileController as AdminCompanyProfileController;
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
+use App\Http\Controllers\Admin\LP\CompanyValueController as AdminCompanyValueController;
 use App\Http\Controllers\Admin\LP\LpFaqController as AdminLpFaqController;
 use App\Http\Controllers\Admin\LP\LpGalleryController as AdminLpGalleryController;
-use App\Http\Controllers\Admin\LP\VisionMissionController as AdminVisionMissionController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
 use App\Http\Controllers\Admin\LP\RecruitmentStepController as AdminRecruitmentStepController;
 use App\Http\Controllers\Admin\LP\RecruitmentTestimonialController as AdminRecruitmentTestimonialController;
+use App\Http\Controllers\Admin\LP\VisionMissionController as AdminVisionMissionController;
 use App\Http\Controllers\Admin\LP\WhyChooseUsController as AdminWhyChooseUsController;
 use App\Http\Controllers\Admin\LP\WorkerController as AdminWorkerController;
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
@@ -446,6 +447,15 @@ Route::prefix('app')->group(function () {
 
         Route::get('lp-vision-mission', [AdminVisionMissionController::class, 'edit'])->name('lp-vision-mission.edit');
         Route::put('lp-vision-mission', [AdminVisionMissionController::class, 'update'])->name('lp-vision-mission.update');
+
+        Route::get('lp-company-values/export', [AdminCompanyValueController::class, 'export'])->name('lp-company-values.export');
+        Route::get('lp-company-values/export-pdf', [AdminCompanyValueController::class, 'exportPdf'])->name('lp-company-values.exportPdf');
+        Route::get('lp-company-values/template', [AdminCompanyValueController::class, 'template'])->name('lp-company-values.template');
+        Route::post('lp-company-values/import', [AdminCompanyValueController::class, 'import'])->name('lp-company-values.import');
+        Route::post('lp-company-values/{companyValue}/duplicate', [AdminCompanyValueController::class, 'duplicate'])->name('lp-company-values.duplicate');
+        Route::resource('lp-company-values', AdminCompanyValueController::class)->parameters([
+            'lp-company-values' => 'companyValue',
+        ]);
     });
 });
 
