@@ -249,8 +249,13 @@
                                 <h2 class="text-lg font-bold text-navy-dark">Office Location Map</h2>
                                 <p class="text-xs text-ink-muted">{{ $company['short_address'] }}</p>
                             </div>
+                            @php
+                                $openMapsUrl = $company['map_embed_url']
+                                    ? rtrim(str_replace(['&output=embed', 'output=embed&', '?output=embed'], ['', '', '?'], (string) $company['map_embed_url']), '?&')
+                                    : ('https://maps.google.com/?q=' . urlencode($company['address']));
+                            @endphp
                             <a
-                                href="https://maps.google.com/?q=Kemang+IFI+Graha,+Jatirasa,+Jatiasih,+Bekasi"
+                                href="{{ $openMapsUrl }}"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="inline-flex items-center gap-1.5 rounded-xl border border-border-subtle bg-surface px-3 py-2 text-xs font-semibold text-navy-dark transition hover:border-navy"
@@ -263,7 +268,7 @@
                         <div class="relative min-h-[300px] flex-1 overflow-hidden rounded-xl border border-border-subtle bg-surface">
                             <iframe
                                 src="{{ $company['map_embed_url'] }}"
-                                title="PT Permata Kasih Anugerah Head Office Map"
+                                title="{{ $company['legal_name'] }} Head Office Map"
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"
                                 class="h-full w-full min-h-[300px] border-0"
