@@ -20,7 +20,7 @@
 
     <div class="mt-6 flex items-center gap-3 pt-4 border-t border-border-subtle">
         <img
-            src="{{ asset($testimonial['avatar']) }}"
+            src="{{ $testimonial['avatar_url'] ?? asset($testimonial['avatar']) }}"
             alt="{{ $testimonial['name'] }}"
             width="44"
             height="44"

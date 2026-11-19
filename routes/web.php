@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\LP\CompanyStatController as AdminCompanyStatController;
 use App\Http\Controllers\Admin\LP\RecruitmentServiceController as AdminRecruitmentServiceController;
 use App\Http\Controllers\Admin\LP\RecruitmentStepController as AdminRecruitmentStepController;
+use App\Http\Controllers\Admin\LP\RecruitmentTestimonialController as AdminRecruitmentTestimonialController;
 use App\Http\Controllers\Admin\LP\WhyChooseUsController as AdminWhyChooseUsController;
 use App\Http\Controllers\Admin\News\NewsCategoryController as AdminNewsCategoryController;
 use App\Http\Controllers\Admin\News\NewsCommentController as AdminNewsCommentController;
@@ -383,6 +384,15 @@ Route::prefix('app')->group(function () {
         Route::post('lp-recruitment-steps/{recruitmentStep}/duplicate', [AdminRecruitmentStepController::class, 'duplicate'])->name('lp-recruitment-steps.duplicate');
         Route::resource('lp-recruitment-steps', AdminRecruitmentStepController::class)->parameters([
             'lp-recruitment-steps' => 'recruitmentStep',
+        ]);
+
+        Route::get('lp-testimonials/export', [AdminRecruitmentTestimonialController::class, 'export'])->name('lp-testimonials.export');
+        Route::get('lp-testimonials/export-pdf', [AdminRecruitmentTestimonialController::class, 'exportPdf'])->name('lp-testimonials.exportPdf');
+        Route::get('lp-testimonials/template', [AdminRecruitmentTestimonialController::class, 'template'])->name('lp-testimonials.template');
+        Route::post('lp-testimonials/import', [AdminRecruitmentTestimonialController::class, 'import'])->name('lp-testimonials.import');
+        Route::post('lp-testimonials/{recruitmentTestimonial}/duplicate', [AdminRecruitmentTestimonialController::class, 'duplicate'])->name('lp-testimonials.duplicate');
+        Route::resource('lp-testimonials', AdminRecruitmentTestimonialController::class)->parameters([
+            'lp-testimonials' => 'recruitmentTestimonial',
         ]);
     });
 });

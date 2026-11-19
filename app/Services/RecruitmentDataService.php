@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\LP\CompanyStat;
 use App\Models\LP\RecruitmentService;
 use App\Models\LP\RecruitmentStep;
+use App\Models\LP\RecruitmentTestimonial;
 use App\Models\LP\WhyChooseUs;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -378,6 +379,26 @@ class RecruitmentDataService
      */
     public function getTestimonials(): array
     {
+        if (Schema::hasTable('recruitment_testimonials')) {
+            $dbTestimonials = RecruitmentTestimonial::query()
+                ->active()
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get();
+
+            if ($dbTestimonials->isNotEmpty()) {
+                return $dbTestimonials->map(fn (RecruitmentTestimonial $item): array => [
+                    'name' => $item->name,
+                    'location' => (string) ($item->location ?? ''),
+                    'service' => (string) ($item->service ?? ''),
+                    'quote' => $item->quote,
+                    'avatar' => (string) ($item->avatar ?? ''),
+                    'avatar_url' => $item->avatar_url,
+                    'rating' => $item->rating,
+                ])->all();
+            }
+        }
+
         return [
             [
                 'name' => 'Mrs. Ratna Wijaya',
