@@ -2490,5 +2490,12 @@
     "My Tickets": "My Tickets",
     "Recent Notifications": "Recent Notifications",
     "My Recent Tickets": "My Recent Tickets",
-    "No tickets found.": "No tickets found."
+    "No tickets found.": "No tickets found.",
+    "Or Continue With": "Or Continue With",
+    "Login with Google": "Login with Google",
+    "Register with Google": "Register with Google",
+    "Google OAuth is not configured yet.": "Google OAuth is not configured yet.",
+    "Unable to authenticate with Google. Please try again.": "Unable to authenticate with Google. Please try again.",
+    "Google account did not provide a valid email address.": "Google account did not provide a valid email address.",
+    "Registration is currently disabled.": "Registration is currently disabled."
 }

@@ -184,6 +184,16 @@
                     {{ __('Login') }}
                   </button>
                 </div>
+
+                <div class="text-center mt-3 mb-3">
+                  <div class="text-job text-muted">{{ __('Or Continue With') }}</div>
+                </div>
+
+                <div class="form-group mb-0">
+                  <a href="{{ route('auth.google') }}" class="btn btn-block btn-social btn-google">
+                    <span class="fab fa-google"></span> {{ __('Login with Google') }}
+                  </a>
+                </div>
               </form>
             </div>
           </div>

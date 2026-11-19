@@ -2526,5 +2526,12 @@
     "My Tickets": "Tiket Saya",
     "Recent Notifications": "Notifikasi Terbaru",
     "My Recent Tickets": "Tiket Terbaru Saya",
-    "No tickets found.": "Belum ada tiket."
+    "No tickets found.": "Belum ada tiket.",
+    "Or Continue With": "Atau Lanjutkan Dengan",
+    "Login with Google": "Masuk dengan Google",
+    "Register with Google": "Daftar dengan Google",
+    "Google OAuth is not configured yet.": "Google OAuth belum dikonfigurasi.",
+    "Unable to authenticate with Google. Please try again.": "Gagal melakukan autentikasi dengan Google. Silakan coba lagi.",
+    "Google account did not provide a valid email address.": "Akun Google tidak menyertakan alamat email yang valid.",
+    "Registration is currently disabled.": "Pendaftaran akun saat ini dinonaktifkan."
 }

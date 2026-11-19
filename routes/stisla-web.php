@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -36,6 +37,9 @@ Route::prefix('app')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/auth/login', [LoginController::class, 'showLoginForm'])->name('login');
         Route::post('/auth/login', [LoginController::class, 'login'])->name('login.attempt');
+
+        Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+        Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 
         Route::get('/auth/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
         Route::post('/auth/register', [RegisterController::class, 'register'])->name('register.store');

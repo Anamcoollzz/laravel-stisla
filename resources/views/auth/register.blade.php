@@ -3,6 +3,10 @@
 @section('title', __('Register'))
 
 @push('css')
+  <link rel="stylesheet" href="{{ asset('node_modules/bootstrap-social/bootstrap-social.css') }}">
+@endpush
+
+@push('css')
 @endpush
 
 @push('js')
@@ -102,6 +106,16 @@
                   <button type="submit" class="btn btn-primary btn-lg btn-block">
                     {{ __('Register') }}
                   </button>
+                </div>
+
+                <div class="text-center mt-3 mb-3">
+                  <div class="text-job text-muted">{{ __('Or Continue With') }}</div>
+                </div>
+
+                <div class="form-group mb-0">
+                  <a href="{{ route('auth.google') }}" class="btn btn-block btn-social btn-google">
+                    <span class="fab fa-google"></span> {{ __('Register with Google') }}
+                  </a>
                 </div>
               </form>
             </div>

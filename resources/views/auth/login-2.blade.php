@@ -190,6 +190,16 @@
               </button>
             </div>
 
+            <div class="text-center mt-4 mb-3">
+              <div class="text-job text-muted">{{ __('Or Continue With') }}</div>
+            </div>
+
+            <div class="form-group">
+              <a href="{{ route('auth.google') }}" class="btn btn-block btn-social btn-google">
+                <span class="fab fa-google"></span> {{ __('Login with Google') }}
+              </a>
+            </div>
+
             @if (\App\Models\Setting::getValue('is_active_register_page', '1') === '1')
               <div class="mt-4 text-center">
                 {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
