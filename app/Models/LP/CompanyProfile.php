@@ -15,6 +15,7 @@ class CompanyProfile extends Model
         'name',
         'legal_name',
         'tagline',
+        'footer_description',
         'license_number',
         'whatsapp_number',
         'phone_display',

@@ -1,3 +1,21 @@
+@php
+    $profile = $lpCompanyProfile ?? null;
+    $footerDescription = $profile?->footer_description
+        ?: config('company.footer_description', 'A professional manpower recruitment and placement company connecting households and businesses with carefully selected Domestic Helpers (ART), Babysitters, Nannies, Caregivers, and Elderly Care specialists.');
+    $instagramUrl = $profile?->instagram_url ?: config('company.social_links.instagram');
+    $facebookUrl = $profile?->facebook_url ?: config('company.social_links.facebook');
+    $youtubeUrl = $profile?->youtube_url ?: config('company.social_links.youtube');
+    $address = $profile?->address ?: config('company.address');
+    $phoneDisplay = $profile?->phone_display ?: config('company.phone_display');
+    $email = $profile?->email ?: config('company.email');
+    $legalName = $profile?->legal_name ?: config('company.legal_name');
+    $tagline = $profile?->tagline ?: config('company.tagline', 'Professional Manpower Recruitment & Placement Agency');
+
+    $footerServices = \Illuminate\Support\Facades\Schema::hasTable('recruitment_services')
+        ? \App\Models\LP\RecruitmentService::query()->active()->orderBy('order')->orderBy('id')->limit(6)->get()
+        : collect();
+@endphp
+
 <footer class="bg-navy-dark text-slate-300 mt-auto">
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-12">
@@ -5,18 +23,24 @@
             <div class="lg:col-span-4 space-y-4">
                 <x-logo variant="light" />
                 <p class="text-sm leading-relaxed text-slate-300/85">
-                    A professional manpower recruitment and placement company connecting households and businesses with carefully selected Domestic Helpers (ART), Babysitters, Nannies, Caregivers, and Elderly Care specialists.
+                    {{ $footerDescription }}
                 </p>
                 <div class="flex items-center gap-2.5 pt-1">
-                    <a href="{{ config('company.social_links.instagram') }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-gold hover:text-gold">
-                        <i data-lucide="instagram" class="h-4 w-4" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ config('company.social_links.facebook') }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-gold hover:text-gold">
-                        <i data-lucide="facebook" class="h-4 w-4" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ config('company.social_links.youtube') }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-gold hover:text-gold">
-                        <i data-lucide="youtube" class="h-4 w-4" aria-hidden="true"></i>
-                    </a>
+                    @if ($instagramUrl)
+                        <a href="{{ $instagramUrl }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-gold hover:text-gold">
+                            <i data-lucide="instagram" class="h-4 w-4" aria-hidden="true"></i>
+                        </a>
+                    @endif
+                    @if ($facebookUrl)
+                        <a href="{{ $facebookUrl }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-gold hover:text-gold">
+                            <i data-lucide="facebook" class="h-4 w-4" aria-hidden="true"></i>
+                        </a>
+                    @endif
+                    @if ($youtubeUrl)
+                        <a href="{{ $youtubeUrl }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-gold hover:text-gold">
+                            <i data-lucide="youtube" class="h-4 w-4" aria-hidden="true"></i>
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -37,12 +61,16 @@
             <div class="lg:col-span-3">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Services</h3>
                 <ul class="space-y-2.5 text-sm">
-                    <li><a href="{{ route('catalog', ['category' => 'ART']) }}" class="transition hover:text-gold">Domestic Helper (ART)</a></li>
-                    <li><a href="{{ route('catalog', ['category' => 'Babysitter']) }}" class="transition hover:text-gold">Babysitter</a></li>
-                    <li><a href="{{ route('catalog', ['category' => 'Nanny']) }}" class="transition hover:text-gold">Nanny</a></li>
-                    <li><a href="{{ route('catalog', ['category' => 'Caregiver']) }}" class="transition hover:text-gold">Caregiver</a></li>
-                    <li><a href="{{ route('catalog', ['category' => 'Elderly Care']) }}" class="transition hover:text-gold">Elderly Care</a></li>
-                    <li><a href="{{ route('catalog', ['category' => 'Other']) }}" class="transition hover:text-gold">Other Manpower Services</a></li>
+                    @forelse ($footerServices as $footerService)
+                        <li><a href="{{ route('catalog', ['category' => $footerService->category_key]) }}" class="transition hover:text-gold">{{ $footerService->title }}</a></li>
+                    @empty
+                        <li><a href="{{ route('catalog', ['category' => 'ART']) }}" class="transition hover:text-gold">Domestic Helper (ART)</a></li>
+                        <li><a href="{{ route('catalog', ['category' => 'Babysitter']) }}" class="transition hover:text-gold">Babysitter</a></li>
+                        <li><a href="{{ route('catalog', ['category' => 'Nanny']) }}" class="transition hover:text-gold">Nanny</a></li>
+                        <li><a href="{{ route('catalog', ['category' => 'Caregiver']) }}" class="transition hover:text-gold">Caregiver</a></li>
+                        <li><a href="{{ route('catalog', ['category' => 'Elderly Care']) }}" class="transition hover:text-gold">Elderly Care</a></li>
+                        <li><a href="{{ route('catalog', ['category' => 'Other']) }}" class="transition hover:text-gold">Other Manpower Services</a></li>
+                    @endforelse
                 </ul>
             </div>
 
@@ -52,18 +80,18 @@
                 <ul class="space-y-3 text-sm mb-5">
                     <li class="flex items-start gap-2.5">
                         <i data-lucide="map-pin" class="h-4 w-4 text-gold shrink-0 mt-0.5" aria-hidden="true"></i>
-                        <span class="text-slate-300/90 leading-relaxed">{{ config('company.address') }}</span>
+                        <span class="text-slate-300/90 leading-relaxed">{{ $address }}</span>
                     </li>
                     <li class="flex items-center gap-2.5">
                         <i data-lucide="phone" class="h-4 w-4 text-gold shrink-0" aria-hidden="true"></i>
-                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', config('company.phone_display')) }}" class="transition hover:text-gold">
-                            {{ config('company.phone_display') }}
+                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', (string) $phoneDisplay) }}" class="transition hover:text-gold">
+                            {{ $phoneDisplay }}
                         </a>
                     </li>
                     <li class="flex items-center gap-2.5">
                         <i data-lucide="mail" class="h-4 w-4 text-gold shrink-0" aria-hidden="true"></i>
-                        <a href="mailto:{{ config('company.email') }}" class="break-all transition hover:text-gold">
-                            {{ config('company.email') }}
+                        <a href="mailto:{{ $email }}" class="break-all transition hover:text-gold">
+                            {{ $email }}
                         </a>
                     </li>
                 </ul>
@@ -74,8 +102,8 @@
 
     <div class="border-t border-white/10 bg-black/20 py-4">
         <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 text-xs text-slate-400 sm:flex-row sm:px-6 lg:px-8">
-            <p>&copy; {{ date('Y') }} {{ config('company.legal_name') }}. All Rights Reserved.</p>
-            <p>Professional Manpower Recruitment &amp; Placement Agency</p>
+            <p>&copy; {{ date('Y') }} {{ $legalName }}. All Rights Reserved.</p>
+            <p>{{ $tagline }}</p>
         </div>
     </div>
 </footer>

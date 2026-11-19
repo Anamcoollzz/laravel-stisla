@@ -130,6 +130,12 @@
             @error('tagline')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
 
+          <div class="form-group">
+            <label for="footer_description">{{ __('Deskripsi Footer') }}</label>
+            <textarea name="footer_description" id="footer_description" rows="2" class="form-control @error('footer_description') is-invalid @enderror">{{ old('footer_description', $profile->footer_description) }}</textarea>
+            @error('footer_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">

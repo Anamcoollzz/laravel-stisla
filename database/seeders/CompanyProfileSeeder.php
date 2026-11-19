@@ -12,7 +12,14 @@ class CompanyProfileSeeder extends Seeder
      */
     public function run(): void
     {
-        if (CompanyProfile::query()->exists()) {
+        $defaultFooterDescription = 'A professional manpower recruitment and placement company connecting households and businesses with carefully selected Domestic Helpers (ART), Babysitters, Nannies, Caregivers, and Elderly Care specialists.';
+
+        $existing = CompanyProfile::query()->first();
+        if ($existing) {
+            if (blank($existing->footer_description)) {
+                $existing->update(['footer_description' => $defaultFooterDescription]);
+            }
+
             return;
         }
 
@@ -20,6 +27,7 @@ class CompanyProfileSeeder extends Seeder
             'name' => config('company.name', 'Permata Kasih Anugerah'),
             'legal_name' => config('company.legal_name', 'PT Permata Kasih Anugerah'),
             'tagline' => config('company.tagline', 'Trusted Manpower Recruitment & Family Care Placement'),
+            'footer_description' => $defaultFooterDescription,
             'license_number' => config('company.license_number', 'Official LPK License No. 563/LPK-BKS/2018'),
             'whatsapp_number' => config('company.whatsapp_number', '6282299109766'),
             'phone_display' => config('company.phone_display', '+62 822-9910-9766'),

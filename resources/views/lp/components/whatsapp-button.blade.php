@@ -6,8 +6,10 @@
 ])
 
 @php
-    $number = preg_replace('/[^0-9]/', '', (string) config('company.whatsapp_number', '6282299109766'));
-    $text = $message ?: (string) config('company.default_whatsapp_message');
+    $profile = $lpCompanyProfile ?? null;
+    $rawNumber = $profile?->whatsapp_number ?: config('company.whatsapp_number', '6282299109766');
+    $number = preg_replace('/[^0-9]/', '', (string) $rawNumber);
+    $text = $message ?: ($profile?->default_whatsapp_message ?: (string) config('company.default_whatsapp_message'));
     $href = $url ?: ('https://wa.me/' . $number . '?text=' . rawurlencode($text));
 
     $variantClasses = match ($variant) {

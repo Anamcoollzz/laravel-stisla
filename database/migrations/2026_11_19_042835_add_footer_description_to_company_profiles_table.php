@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('company_profiles', function (Blueprint $table) {
-            //
+            $table->text('footer_description')->nullable()->after('tagline');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('company_profiles', function (Blueprint $table) {
-            //
+            $table->dropColumn('footer_description');
         });
     }
 };

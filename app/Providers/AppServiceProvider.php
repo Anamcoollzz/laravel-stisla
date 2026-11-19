@@ -50,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
                     'company.name' => $companyProfile->name,
                     'company.legal_name' => $companyProfile->legal_name,
                     'company.tagline' => $companyProfile->tagline ?: config('company.tagline'),
+                    'company.footer_description' => $companyProfile->footer_description ?: config('company.footer_description'),
                     'company.license_number' => $companyProfile->license_number ?: config('company.license_number'),
                     'company.whatsapp_number' => $companyProfile->whatsapp_number,
                     'company.phone_display' => $companyProfile->phone_display,
@@ -66,6 +67,8 @@ class AppServiceProvider extends ServiceProvider
                     'company.social_links.youtube' => $companyProfile->youtube_url ?: config('company.social_links.youtube'),
                     'company.default_whatsapp_message' => $companyProfile->default_whatsapp_message ?: config('company.default_whatsapp_message'),
                 ]);
+
+                View::share('lpCompanyProfile', $companyProfile);
             }
         }
 
