@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -89,6 +90,10 @@ Route::prefix('app')->group(function () {
         Route::post('announcements/{announcement}/duplicate', [AnnouncementController::class, 'duplicate'])->name('announcements.duplicate');
         Route::patch('announcements/{announcement}/toggle-active', [AnnouncementController::class, 'toggleActive'])->name('announcements.toggleActive');
         Route::resource('announcements', AnnouncementController::class);
+
+        Route::post('notifications/mark-all-read', [AppNotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+        Route::get('notifications/{notification}/read', [AppNotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::resource('notifications', AppNotificationController::class);
 
         Route::post('our-teams/{ourTeam}/duplicate', [OurTeamController::class, 'duplicate'])->name('our-teams.duplicate');
         Route::resource('our-teams', OurTeamController::class)->parameters([

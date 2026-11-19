@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Announcement;
+use App\Models\AppNotification;
 use App\Models\ChatMessage;
 use App\Models\FooterProductCategory;
 use App\Models\LP\CompanyProfile;
@@ -81,24 +83,49 @@ class AppServiceProvider extends ServiceProvider
 
             if ($authUser === null || ! Schema::hasTable('chat_messages')) {
                 $view->with('navMessages', collect())->with('navUnreadCount', 0);
+            } else {
+                $navMessages = ChatMessage::query()
+                    ->where('receiver_id', $authUser->id)
+                    ->with('sender')
+                    ->latest('id')
+                    ->limit(30)
+                    ->get()
+                    ->unique('sender_id')
+                    ->take(5)
+                    ->values();
 
-                return;
+                $view->with('navMessages', $navMessages)->with(
+                    'navUnreadCount',
+                    ChatMessage::query()->where('receiver_id', $authUser->id)->where('is_read', false)->count()
+                );
             }
 
-            $navMessages = ChatMessage::query()
-                ->where('receiver_id', $authUser->id)
-                ->with('sender')
-                ->latest('id')
-                ->limit(30)
-                ->get()
-                ->unique('sender_id')
-                ->take(5)
-                ->values();
+            if ($authUser === null || ! Schema::hasTable('app_notifications')) {
+                $view->with('navNotifications', collect())->with('navNotificationUnreadCount', 0);
+            } else {
+                $navNotifications = AppNotification::query()
+                    ->forUser($authUser->id)
+                    ->with(['readers' => fn ($query) => $query->where('users.id', $authUser->id)])
+                    ->latest('id')
+                    ->limit(10)
+                    ->get();
 
-            $view->with('navMessages', $navMessages)->with(
-                'navUnreadCount',
-                ChatMessage::query()->where('receiver_id', $authUser->id)->where('is_read', false)->count()
-            );
+                $navNotificationUnreadCount = AppNotification::query()
+                    ->forUser($authUser->id)
+                    ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $authUser->id))
+                    ->count();
+
+                $view->with('navNotifications', $navNotifications)
+                    ->with('navNotificationUnreadCount', $navNotificationUnreadCount);
+            }
+        });
+
+        View::composer(['dashboard', 'dashboard-ecommerce', 'dashboards.compro-workers'], function ($view) {
+            $announcements = Schema::hasTable('announcements')
+                ? Announcement::query()->published()->limit(5)->get()
+                : collect();
+
+            $view->with('dashboardAnnouncements', $announcements);
         });
 
         View::composer(['layouts.app', 'partials.sidebar-pages'], function ($view) {

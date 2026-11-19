@@ -108,4 +108,23 @@ class Announcement extends Model
     {
         return $query->where('is_active', true);
     }
+
+    /**
+     * Scope query to currently published and non-expired announcements.
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('is_active', true)
+            ->where(function (Builder $q): void {
+                $q->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            })
+            ->where(function (Builder $q): void {
+                $q->whereNull('expires_at')
+                    ->orWhere('expires_at', '>=', now());
+            })
+            ->orderByDesc('is_pinned')
+            ->latest('published_at')
+            ->latest('id');
+    }
 }

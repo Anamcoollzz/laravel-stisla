@@ -129,63 +129,59 @@
               <form id="mark-all-read-form" action="{{ route('chat.readAll') }}" method="POST" class="d-none">@csrf</form>
             </li>
           @endcan
-          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
+          <li class="dropdown dropdown-list-toggle">
+            <a href="#" data-toggle="dropdown" @class(['nav-link notification-toggle nav-link-lg', 'beep' => ($navNotificationUnreadCount ?? 0) > 0])>
+              <i class="far fa-bell"></i>
+            </a>
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
-              <div class="dropdown-header">Notifications
-                <div class="float-right">
-                  <a href="#">Mark All As Read</a>
-                </div>
+              <div class="dropdown-header">{{ __('Notifications') }}
+                @if (($navNotificationUnreadCount ?? 0) > 0)
+                  <div class="float-right">
+                    <form action="{{ route('notifications.markAllRead') }}" method="POST" class="d-inline">
+                      @csrf
+                      <button type="submit" class="btn btn-link btn-sm p-0 text-primary">{{ __('Mark All As Read') }}</button>
+                    </form>
+                  </div>
+                @endif
               </div>
               <div class="dropdown-list-content dropdown-list-icons">
-                <a href="#" class="dropdown-item dropdown-item-unread">
-                  <div class="dropdown-item-icon bg-primary text-white">
-                    <i class="fas fa-code"></i>
+                @forelse ($navNotifications ?? collect() as $notif)
+                  @php
+                    $isRead = auth()->check() && $notif->isReadBy((int) auth()->id());
+                    $bgClass = match ($notif->type) {
+                        'primary' => 'bg-primary',
+                        'success' => 'bg-success',
+                        'warning' => 'bg-warning',
+                        'danger' => 'bg-danger',
+                        default => 'bg-info',
+                    };
+                  @endphp
+                  <a href="{{ route('notifications.read', $notif) }}" @class(['dropdown-item', 'dropdown-item-unread' => ! $isRead])>
+                    <div class="dropdown-item-icon {{ $bgClass }} text-white">
+                      <i class="{{ $notif->icon ?: 'fas fa-bell' }}"></i>
+                    </div>
+                    <div class="dropdown-item-desc">
+                      <div class="font-weight-600">{{ $notif->title }}</div>
+                      <div class="small text-muted">{{ \Illuminate\Support\Str::limit($notif->message, 70) }}</div>
+                      <div class="time {{ ! $isRead ? 'text-primary' : '' }}">
+                        {{ $notif->created_at?->diffForHumans() }}
+                        @if ($notif->is_broadcast)
+                          &middot; {{ __('Broadcast') }}
+                        @endif
+                      </div>
+                    </div>
+                  </a>
+                @empty
+                  <div class="dropdown-item text-center text-muted py-4">
+                    {{ __('No notifications yet.') }}
                   </div>
-                  <div class="dropdown-item-desc">
-                    Template update is available now!
-                    <div class="time text-primary">2 Min Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-info text-white">
-                    <i class="far fa-user"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>You</b> and <b>Dedik Sugiharto</b> are now friends
-                    <div class="time">10 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-success text-white">
-                    <i class="fas fa-check"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>Kusnaedi</b> has moved task <b>Fix bug header</b> to <b>Done</b>
-                    <div class="time">12 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-danger text-white">
-                    <i class="fas fa-exclamation-triangle"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    Low disk space. Let's clean it!
-                    <div class="time">17 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-info text-white">
-                    <i class="fas fa-bell"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    Welcome to Stisla template!
-                    <div class="time">Yesterday</div>
-                  </div>
-                </a>
+                @endforelse
               </div>
-              <div class="dropdown-footer text-center">
-                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-              </div>
+              @can('notifications.view')
+                <div class="dropdown-footer text-center">
+                  <a href="{{ route('notifications.index') }}">{{ __('View All') }} <i class="fas fa-chevron-right"></i></a>
+                </div>
+              @endcan
             </div>
           </li>
           <li class="dropdown">
