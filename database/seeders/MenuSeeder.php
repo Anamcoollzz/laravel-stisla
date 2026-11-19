@@ -36,96 +36,183 @@ class MenuSeeder extends Seeder
             ]
         );
 
-        // 2. Modules Section
-        Menu::firstOrCreate(
-            ['name' => 'Modules', 'type' => 'header'],
-            ['order' => 30, 'is_active' => true]
-        );
+        // 2. SPP Payment App Menus (ADMIN_MENU_APP=spp-payment)
+        $oldModulesDropdown = Menu::query()
+            ->forApp('spp-payment')
+            ->where('name', 'Modules')
+            ->where('type', 'dropdown')
+            ->first();
 
-        $modulesDropdown = Menu::firstOrCreate(
-            ['name' => 'Modules', 'type' => 'dropdown'],
-            [
-                'icon' => 'fas fa-plug',
-                'order' => 40,
-                'is_active' => true,
-            ]
-        );
+        if ($oldModulesDropdown) {
+            Menu::query()->where('parent_id', $oldModulesDropdown->id)->delete();
+            $oldModulesDropdown->delete();
+        }
 
-        $moduleChildren = [
-            ['name' => 'Classes', 'route' => 'classes.index', 'permission' => 'classes.view', 'order' => 1],
-            ['name' => 'Teachers', 'route' => 'teachers.index', 'permission' => 'teachers.view', 'order' => 2],
-            ['name' => 'Students', 'route' => 'students.index', 'permission' => 'students.view', 'order' => 3],
-            ['name' => 'Subjects', 'route' => 'subjects.index', 'permission' => 'subjects.view', 'order' => 4],
-            ['name' => 'Fields', 'route' => 'fields.index', 'permission' => 'fields.view', 'order' => 5],
-            ['name' => 'SPP Payments', 'route' => 'spp-payments.index', 'permission' => 'spp-payments.view', 'order' => 6],
-            ['name' => 'Tickets', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 7],
-            ['name' => 'Chat Box', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 8],
-        ];
-
-        // Clean up previous product items under Modules dropdown if any
-        Menu::where('parent_id', $modulesDropdown->id)
-            ->whereIn('name', ['Product Categories', 'Products'])
+        Menu::query()
+            ->forApp('spp-payment')
+            ->where('name', 'Modules')
+            ->where('type', 'header')
             ->delete();
 
-        foreach ($moduleChildren as $child) {
-            Menu::firstOrCreate(
-                ['parent_id' => $modulesDropdown->id, 'name' => $child['name']],
-                [
-                    'type' => 'item',
-                    'route' => $child['route'],
-                    'permission' => $child['permission'],
-                    'order' => $child['order'],
-                    'is_active' => true,
-                ]
-            );
-        }
+        // Academic Section
+        $this->firstOrCreateForApp('spp-payment', ['name' => 'Academic', 'type' => 'header'], [
+            'order' => 10,
+            'is_active' => true,
+        ]);
 
-        // Dedicated Products Dropdown
-        $shopDropdown = Menu::firstOrCreate(
-            ['name' => 'Shop / Products', 'type' => 'dropdown'],
-            [
-                'icon' => 'fas fa-shopping-bag',
-                'order' => 45,
-                'is_active' => true,
-            ]
-        );
-
-        $shopChildren = [
-            ['name' => 'Products', 'route' => 'products.index', 'permission' => 'products.view', 'order' => 1],
-            ['name' => 'Categories', 'route' => 'product-categories.index', 'permission' => 'product-categories.view', 'order' => 2],
-            ['name' => 'Brands', 'route' => 'product-brands.index', 'permission' => 'product-brands.view', 'order' => 3],
-            ['name' => 'Vendors', 'route' => 'product-vendors.index', 'permission' => 'product-vendors.view', 'order' => 4],
-            ['name' => 'Sizes', 'route' => 'product-sizes.index', 'permission' => 'product-sizes.view', 'order' => 5],
-            ['name' => 'Colors', 'route' => 'product-colors.index', 'permission' => 'product-colors.view', 'order' => 6],
-            ['name' => 'Banners', 'route' => 'product-banners.index', 'permission' => 'product-banners.view', 'order' => 7],
-            ['name' => 'Our Team', 'route' => 'our-teams.index', 'permission' => 'our-teams.view', 'order' => 8],
-            ['name' => 'Blogs', 'route' => 'blogs.index', 'permission' => 'blogs.view', 'order' => 9],
-            ['name' => 'Blog Comments', 'route' => 'blog-comments.index', 'permission' => 'blog-comments.view', 'order' => 10],
-            ['name' => 'Testimonials', 'route' => 'testimonials.index', 'permission' => 'testimonials.view', 'order' => 11],
-            ['name' => 'Product Reviews', 'route' => 'product-reviews.index', 'permission' => 'product-reviews.view', 'order' => 12],
-            ['name' => 'Services', 'route' => 'store-services.index', 'permission' => 'store-services.view', 'order' => 13],
-            ['name' => 'FAQs', 'route' => 'ecommerce-faqs.index', 'permission' => 'ecommerce-faqs.view', 'order' => 14],
-            ['name' => 'Orders', 'route' => 'orders.index', 'permission' => 'orders.view', 'order' => 15],
-            ['name' => 'Footer Categories', 'route' => 'footer-product-categories.index', 'permission' => 'footer-product-categories.view', 'order' => 16],
-            ['name' => 'Shipping Methods', 'route' => 'shipping-methods.index', 'permission' => 'shipping-methods.view', 'order' => 15],
-            ['name' => 'Payment Methods', 'route' => 'payment-methods.index', 'permission' => 'payment-methods.view', 'order' => 16],
-            ['name' => 'Payment Banks', 'route' => 'payment-banks.index', 'permission' => 'payment-banks.view', 'order' => 17],
+        $academicItems = [
+            ['name' => 'Classes', 'icon' => 'fas fa-school', 'route' => 'classes.index', 'permission' => 'classes.view', 'order' => 12],
+            ['name' => 'Teachers', 'icon' => 'fas fa-chalkboard-teacher', 'route' => 'teachers.index', 'permission' => 'teachers.view', 'order' => 14],
+            ['name' => 'Students', 'icon' => 'fas fa-user-graduate', 'route' => 'students.index', 'permission' => 'students.view', 'order' => 16],
+            ['name' => 'Subjects', 'icon' => 'fas fa-book', 'route' => 'subjects.index', 'permission' => 'subjects.view', 'order' => 18],
+            ['name' => 'Fields', 'icon' => 'fas fa-layer-group', 'route' => 'fields.index', 'permission' => 'fields.view', 'order' => 20],
         ];
 
-        foreach ($shopChildren as $child) {
-            Menu::firstOrCreate(
-                ['parent_id' => $shopDropdown->id, 'name' => $child['name']],
+        foreach ($academicItems as $item) {
+            Menu::updateOrCreate(
+                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
                 [
-                    'type' => 'item',
-                    'route' => $child['route'],
-                    'permission' => $child['permission'],
-                    'order' => $child['order'],
+                    'app' => ['spp-payment'],
+                    'parent_id' => null,
+                    'icon' => $item['icon'],
+                    'permission' => $item['permission'],
+                    'order' => $item['order'],
                     'is_active' => true,
                 ]
             );
         }
 
-        $allApps = ['online-shop', 'news', 'lp-compro-workers'];
+        // Finance & Communication Section
+        $this->firstOrCreateForApp('spp-payment', ['name' => 'Finance & Communication', 'type' => 'header'], [
+            'order' => 25,
+            'is_active' => true,
+        ]);
+
+        $financeCommItems = [
+            ['name' => 'SPP Payments', 'icon' => 'fas fa-money-bill-wave', 'route' => 'spp-payments.index', 'permission' => 'spp-payments.view', 'order' => 27],
+            ['name' => 'Tickets', 'icon' => 'fas fa-ticket-alt', 'route' => 'tickets.index', 'permission' => 'tickets.view', 'order' => 29],
+            ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 31],
+        ];
+
+        foreach ($financeCommItems as $item) {
+            Menu::updateOrCreate(
+                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+                [
+                    'app' => ['spp-payment'],
+                    'parent_id' => null,
+                    'icon' => $item['icon'],
+                    'permission' => $item['permission'],
+                    'order' => $item['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // Clean up previous Shop / Products dropdown if any
+        $oldShopDropdown = Menu::query()
+            ->where('name', 'Shop / Products')
+            ->where('type', 'dropdown')
+            ->first();
+
+        if ($oldShopDropdown) {
+            Menu::query()->where('parent_id', $oldShopDropdown->id)->delete();
+            $oldShopDropdown->delete();
+        }
+
+        // Catalog & Products Section
+        Menu::updateOrCreate(
+            ['name' => 'Catalog & Products', 'type' => 'header'],
+            ['order' => 41, 'is_active' => true]
+        );
+
+        $catalogItems = [
+            ['name' => 'Products', 'icon' => 'fas fa-box-open', 'route' => 'products.index', 'permission' => 'products.view', 'order' => 42],
+            ['name' => 'Categories', 'icon' => 'fas fa-tags', 'route' => 'product-categories.index', 'permission' => 'product-categories.view', 'order' => 43],
+            ['name' => 'Brands', 'icon' => 'fas fa-copyright', 'route' => 'product-brands.index', 'permission' => 'product-brands.view', 'order' => 44],
+            ['name' => 'Vendors', 'icon' => 'fas fa-store', 'route' => 'product-vendors.index', 'permission' => 'product-vendors.view', 'order' => 45],
+            ['name' => 'Sizes', 'icon' => 'fas fa-ruler', 'route' => 'product-sizes.index', 'permission' => 'product-sizes.view', 'order' => 46],
+            ['name' => 'Colors', 'icon' => 'fas fa-palette', 'route' => 'product-colors.index', 'permission' => 'product-colors.view', 'order' => 47],
+            ['name' => 'Footer Categories', 'icon' => 'fas fa-list-ul', 'route' => 'footer-product-categories.index', 'permission' => 'footer-product-categories.view', 'order' => 48],
+        ];
+
+        foreach ($catalogItems as $item) {
+            Menu::updateOrCreate(
+                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+                [
+                    'parent_id' => null,
+                    'icon' => $item['icon'],
+                    'permission' => $item['permission'],
+                    'order' => $item['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // Orders & Payments Section
+        Menu::updateOrCreate(
+            ['name' => 'Orders & Payments', 'type' => 'header'],
+            ['order' => 49, 'is_active' => true]
+        );
+
+        $orderItems = [
+            ['name' => 'Orders', 'icon' => 'fas fa-shopping-cart', 'route' => 'orders.index', 'permission' => 'orders.view', 'order' => 50],
+            ['name' => 'Shipping Methods', 'icon' => 'fas fa-truck', 'route' => 'shipping-methods.index', 'permission' => 'shipping-methods.view', 'order' => 51],
+            ['name' => 'Payment Methods', 'icon' => 'fas fa-credit-card', 'route' => 'payment-methods.index', 'permission' => 'payment-methods.view', 'order' => 52],
+            ['name' => 'Payment Banks', 'icon' => 'fas fa-university', 'route' => 'payment-banks.index', 'permission' => 'payment-banks.view', 'order' => 53],
+        ];
+
+        foreach ($orderItems as $item) {
+            Menu::updateOrCreate(
+                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+                [
+                    'parent_id' => null,
+                    'icon' => $item['icon'],
+                    'permission' => $item['permission'],
+                    'order' => $item['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // Content & Engagement Section
+        Menu::updateOrCreate(
+            ['name' => 'Content & Engagement', 'type' => 'header'],
+            ['order' => 54, 'is_active' => true]
+        );
+
+        $contentItems = [
+            ['name' => 'Banners', 'icon' => 'fas fa-images', 'route' => 'product-banners.index', 'permission' => 'product-banners.view', 'order' => 55],
+            ['name' => 'Services', 'icon' => 'fas fa-concierge-bell', 'route' => 'store-services.index', 'permission' => 'store-services.view', 'order' => 56],
+            ['name' => 'Our Team', 'icon' => 'fas fa-users', 'route' => 'our-teams.index', 'permission' => 'our-teams.view', 'order' => 57],
+            ['name' => 'Blogs', 'icon' => 'fas fa-blog', 'route' => 'blogs.index', 'permission' => 'blogs.view', 'order' => 58],
+            ['name' => 'Blog Comments', 'icon' => 'fas fa-comments', 'route' => 'blog-comments.index', 'permission' => 'blog-comments.view', 'order' => 59],
+            ['name' => 'Testimonials', 'icon' => 'fas fa-quote-right', 'route' => 'testimonials.index', 'permission' => 'testimonials.view', 'order' => 60],
+            ['name' => 'Product Reviews', 'icon' => 'fas fa-star', 'route' => 'product-reviews.index', 'permission' => 'product-reviews.view', 'order' => 61],
+            ['name' => 'FAQs', 'icon' => 'fas fa-question-circle', 'route' => 'ecommerce-faqs.index', 'permission' => 'ecommerce-faqs.view', 'order' => 62],
+        ];
+
+        foreach ($contentItems as $item) {
+            Menu::updateOrCreate(
+                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+                [
+                    'parent_id' => null,
+                    'icon' => $item['icon'],
+                    'permission' => $item['permission'],
+                    'order' => $item['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        $allApps = ['online-shop', 'news', 'lp-compro-workers', 'spp-payment'];
+
+        // Dashboard for spp-payment app
+        $this->firstOrCreateForApp('spp-payment', ['name' => 'Dashboard', 'type' => 'item'], [
+            'icon' => 'fas fa-fire',
+            'route' => 'dashboard',
+            'order' => 1,
+            'is_active' => true,
+        ]);
 
         // 3. User Management Section
         $oldAccessControlDropdown = Menu::query()
@@ -140,14 +227,14 @@ class MenuSeeder extends Seeder
 
         Menu::updateOrCreate(
             ['name' => 'User Management', 'type' => 'header'],
-            ['app' => $allApps, 'order' => 50, 'is_active' => true]
+            ['app' => $allApps, 'order' => 70, 'is_active' => true]
         );
 
         $userManagementItems = [
-            ['name' => 'Users', 'icon' => 'fas fa-users', 'route' => 'users.index', 'permission' => 'users.view', 'order' => 51],
-            ['name' => 'Roles', 'icon' => 'fas fa-user-tag', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 52],
-            ['name' => 'Permissions', 'icon' => 'fas fa-key', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 53],
-            ['name' => 'Menu Management', 'icon' => 'fas fa-bars', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 54],
+            ['name' => 'Users', 'icon' => 'fas fa-users', 'route' => 'users.index', 'permission' => 'users.view', 'order' => 71],
+            ['name' => 'Roles', 'icon' => 'fas fa-user-tag', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 72],
+            ['name' => 'Permissions', 'icon' => 'fas fa-key', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 73],
+            ['name' => 'Menu Management', 'icon' => 'fas fa-bars', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 74],
         ];
 
         foreach ($userManagementItems as $item) {
@@ -167,14 +254,14 @@ class MenuSeeder extends Seeder
         // System & Logs Section
         Menu::updateOrCreate(
             ['name' => 'System & Logs', 'type' => 'header'],
-            ['app' => $allApps, 'order' => 55, 'is_active' => true]
+            ['app' => $allApps, 'order' => 75, 'is_active' => true]
         );
 
         $systemItems = [
-            ['name' => 'Database Backup', 'icon' => 'fas fa-database', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 56],
-            ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 57],
-            ['name' => 'Log Request', 'icon' => 'fas fa-history', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 58],
-            ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 59],
+            ['name' => 'Database Backup', 'icon' => 'fas fa-database', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 76],
+            ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 77],
+            ['name' => 'Log Request', 'icon' => 'fas fa-history', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 78],
+            ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 79],
         ];
 
         foreach ($systemItems as $item) {
@@ -194,7 +281,7 @@ class MenuSeeder extends Seeder
         // 4. Settings Section
         Menu::updateOrCreate(
             ['name' => 'Settings', 'type' => 'header'],
-            ['app' => $allApps, 'order' => 70, 'is_active' => true]
+            ['app' => $allApps, 'order' => 85, 'is_active' => true]
         );
 
         Menu::updateOrCreate(
@@ -203,7 +290,7 @@ class MenuSeeder extends Seeder
                 'app' => $allApps,
                 'icon' => 'fas fa-cog',
                 'permission' => 'settings.view',
-                'order' => 80,
+                'order' => 90,
                 'is_active' => true,
             ]
         );
