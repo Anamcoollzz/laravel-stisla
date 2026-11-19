@@ -128,41 +128,64 @@ class MenuSeeder extends Seeder
         $allApps = ['online-shop', 'news', 'lp-compro-workers'];
 
         // 3. User Management Section
+        $oldAccessControlDropdown = Menu::query()
+            ->where('name', 'Access Control')
+            ->where('type', 'dropdown')
+            ->first();
+
+        if ($oldAccessControlDropdown) {
+            Menu::query()->where('parent_id', $oldAccessControlDropdown->id)->delete();
+            $oldAccessControlDropdown->delete();
+        }
+
         Menu::updateOrCreate(
             ['name' => 'User Management', 'type' => 'header'],
             ['app' => $allApps, 'order' => 50, 'is_active' => true]
         );
 
-        $accessControlDropdown = Menu::updateOrCreate(
-            ['name' => 'Access Control', 'type' => 'dropdown'],
-            [
-                'app' => $allApps,
-                'icon' => 'fas fa-users-cog',
-                'order' => 60,
-                'is_active' => true,
-            ]
-        );
-
-        $accessChildren = [
-            ['name' => 'Users', 'route' => 'users.index', 'permission' => 'users.view', 'order' => 1],
-            ['name' => 'Roles', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 2],
-            ['name' => 'Permissions', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 3],
-            ['name' => 'Menu Management', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 4],
-            ['name' => 'Database Backup', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 5],
-            ['name' => 'Log Request', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 6],
-            ['name' => 'Laravel Logs', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 7],
-            ['name' => 'Database Tables', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 8],
+        $userManagementItems = [
+            ['name' => 'Users', 'icon' => 'fas fa-users', 'route' => 'users.index', 'permission' => 'users.view', 'order' => 51],
+            ['name' => 'Roles', 'icon' => 'fas fa-user-tag', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 52],
+            ['name' => 'Permissions', 'icon' => 'fas fa-key', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 53],
+            ['name' => 'Menu Management', 'icon' => 'fas fa-bars', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 54],
         ];
 
-        foreach ($accessChildren as $child) {
+        foreach ($userManagementItems as $item) {
             Menu::updateOrCreate(
-                ['parent_id' => $accessControlDropdown->id, 'name' => $child['name']],
+                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
                 [
                     'app' => $allApps,
-                    'type' => 'item',
-                    'route' => $child['route'],
-                    'permission' => $child['permission'],
-                    'order' => $child['order'],
+                    'parent_id' => null,
+                    'icon' => $item['icon'],
+                    'permission' => $item['permission'],
+                    'order' => $item['order'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // System & Logs Section
+        Menu::updateOrCreate(
+            ['name' => 'System & Logs', 'type' => 'header'],
+            ['app' => $allApps, 'order' => 55, 'is_active' => true]
+        );
+
+        $systemItems = [
+            ['name' => 'Database Backup', 'icon' => 'fas fa-database', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 56],
+            ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 57],
+            ['name' => 'Log Request', 'icon' => 'fas fa-history', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 58],
+            ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 59],
+        ];
+
+        foreach ($systemItems as $item) {
+            Menu::updateOrCreate(
+                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+                [
+                    'app' => $allApps,
+                    'parent_id' => null,
+                    'icon' => $item['icon'],
+                    'permission' => $item['permission'],
+                    'order' => $item['order'],
                     'is_active' => true,
                 ]
             );
