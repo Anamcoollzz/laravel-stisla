@@ -125,15 +125,18 @@ class MenuSeeder extends Seeder
             );
         }
 
+        $allApps = ['online-shop', 'news', 'lp-compro-workers'];
+
         // 3. User Management Section
-        Menu::firstOrCreate(
+        Menu::updateOrCreate(
             ['name' => 'User Management', 'type' => 'header'],
-            ['order' => 50, 'is_active' => true]
+            ['app' => $allApps, 'order' => 50, 'is_active' => true]
         );
 
-        $accessControlDropdown = Menu::firstOrCreate(
+        $accessControlDropdown = Menu::updateOrCreate(
             ['name' => 'Access Control', 'type' => 'dropdown'],
             [
+                'app' => $allApps,
                 'icon' => 'fas fa-users-cog',
                 'order' => 60,
                 'is_active' => true,
@@ -152,9 +155,10 @@ class MenuSeeder extends Seeder
         ];
 
         foreach ($accessChildren as $child) {
-            Menu::firstOrCreate(
+            Menu::updateOrCreate(
                 ['parent_id' => $accessControlDropdown->id, 'name' => $child['name']],
                 [
+                    'app' => $allApps,
                     'type' => 'item',
                     'route' => $child['route'],
                     'permission' => $child['permission'],
@@ -165,14 +169,15 @@ class MenuSeeder extends Seeder
         }
 
         // 4. Settings Section
-        Menu::firstOrCreate(
+        Menu::updateOrCreate(
             ['name' => 'Settings', 'type' => 'header'],
-            ['order' => 70, 'is_active' => true]
+            ['app' => $allApps, 'order' => 70, 'is_active' => true]
         );
 
-        Menu::firstOrCreate(
+        Menu::updateOrCreate(
             ['name' => 'Settings', 'type' => 'item', 'route' => 'settings.index'],
             [
+                'app' => $allApps,
                 'icon' => 'fas fa-cog',
                 'permission' => 'settings.view',
                 'order' => 80,
