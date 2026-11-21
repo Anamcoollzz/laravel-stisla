@@ -225,29 +225,58 @@ class MenuSeeder extends Seeder
             ['app' => $allApps, 'order' => 70, 'is_active' => true]
         );
 
-        $userManagementItems = [
-            ['name' => 'Users', 'icon' => 'fas fa-users', 'route' => 'users.index', 'permission' => 'users.view', 'order' => 71],
-            ['name' => 'Roles', 'icon' => 'fas fa-user-tag', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 72],
-            ['name' => 'Permissions', 'icon' => 'fas fa-key', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 73],
-            ['name' => 'Menu Management', 'icon' => 'fas fa-bars', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 74],
-            ['name' => 'User Sessions', 'icon' => 'fas fa-user-clock', 'route' => 'user-sessions.index', 'permission' => 'user-sessions.view', 'order' => 74],
-            ['name' => 'Login History', 'icon' => 'fas fa-sign-in-alt', 'route' => 'login-histories.index', 'permission' => 'login-histories.view', 'order' => 74],
-            ['name' => 'IP Blacklist', 'icon' => 'fas fa-ban', 'route' => 'ip-blacklists.index', 'permission' => 'ip-blacklists.view', 'order' => 74],
-            ['name' => 'API Tokens', 'icon' => 'fas fa-code-branch', 'route' => 'api-tokens.index', 'permission' => 'api-tokens.view', 'order' => 74],
+        $userManagementGroups = [
+            [
+                'name' => 'Users & Access',
+                'icon' => 'fas fa-users-cog',
+                'order' => 71,
+                'children' => [
+                    ['name' => 'Users', 'icon' => 'fas fa-users', 'route' => 'users.index', 'permission' => 'users.view', 'order' => 1],
+                    ['name' => 'Roles', 'icon' => 'fas fa-user-tag', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 2],
+                    ['name' => 'Permissions', 'icon' => 'fas fa-key', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 3],
+                    ['name' => 'Menu Management', 'icon' => 'fas fa-bars', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 4],
+                ],
+            ],
+            [
+                'name' => 'Security & Sessions',
+                'icon' => 'fas fa-user-shield',
+                'order' => 72,
+                'children' => [
+                    ['name' => 'User Sessions', 'icon' => 'fas fa-user-clock', 'route' => 'user-sessions.index', 'permission' => 'user-sessions.view', 'order' => 1],
+                    ['name' => 'Login History', 'icon' => 'fas fa-sign-in-alt', 'route' => 'login-histories.index', 'permission' => 'login-histories.view', 'order' => 2],
+                    ['name' => 'IP Blacklist', 'icon' => 'fas fa-ban', 'route' => 'ip-blacklists.index', 'permission' => 'ip-blacklists.view', 'order' => 3],
+                    ['name' => 'API Tokens', 'icon' => 'fas fa-code-branch', 'route' => 'api-tokens.index', 'permission' => 'api-tokens.view', 'order' => 4],
+                ],
+            ],
         ];
 
-        foreach ($userManagementItems as $item) {
-            Menu::updateOrCreate(
-                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+        foreach ($userManagementGroups as $group) {
+            $dropdown = Menu::updateOrCreate(
+                ['name' => $group['name'], 'type' => 'dropdown'],
                 [
                     'app' => $allApps,
                     'parent_id' => null,
-                    'icon' => $item['icon'],
-                    'permission' => $item['permission'],
-                    'order' => $item['order'],
+                    'icon' => $group['icon'],
+                    'route' => null,
+                    'permission' => null,
+                    'order' => $group['order'],
                     'is_active' => true,
                 ]
             );
+
+            foreach ($group['children'] as $item) {
+                Menu::updateOrCreate(
+                    ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+                    [
+                        'app' => $allApps,
+                        'parent_id' => $dropdown->id,
+                        'icon' => $item['icon'],
+                        'permission' => $item['permission'],
+                        'order' => $item['order'],
+                        'is_active' => true,
+                    ]
+                );
+            }
         }
 
         // System & Logs Section
@@ -256,35 +285,78 @@ class MenuSeeder extends Seeder
             ['app' => $allApps, 'order' => 75, 'is_active' => true]
         );
 
-        $systemItems = [
-            ['name' => 'Database Backup', 'icon' => 'fas fa-database', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 76],
-            ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 77],
-            ['name' => 'Log Request', 'icon' => 'fas fa-history', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 78],
-            ['name' => 'Activity Log', 'icon' => 'fas fa-clipboard-list', 'route' => 'activity-logs.index', 'permission' => 'activity-logs.view', 'order' => 79],
-            ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 80],
-            ['name' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route' => 'announcements.index', 'permission' => 'announcements.view', 'order' => 81],
-            ['name' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => 'notifications.index', 'permission' => 'notifications.view', 'order' => 82],
-            ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 83],
-            ['name' => 'File Manager', 'icon' => 'fas fa-folder-open', 'route' => 'file-manager.index', 'permission' => 'file-manager.view', 'order' => 84],
-            ['name' => 'Project File Editor', 'icon' => 'fas fa-file-code', 'route' => 'project-files.index', 'permission' => 'project-files.view', 'order' => 84],
-            ['name' => 'Cache Management', 'icon' => 'fas fa-bolt', 'route' => 'cache-management.index', 'permission' => 'cache-management.view', 'order' => 84],
-            ['name' => 'Scheduled Tasks', 'icon' => 'fas fa-clock', 'route' => 'scheduled-tasks.index', 'permission' => 'scheduled-tasks.view', 'order' => 84],
-            ['name' => 'Queue Monitor', 'icon' => 'fas fa-tasks', 'route' => 'queue-monitor.index', 'permission' => 'queue-monitor.view', 'order' => 84],
-            ['name' => 'System Health', 'icon' => 'fas fa-heartbeat', 'route' => 'system-health.index', 'permission' => 'system-health.view', 'order' => 84],
+        $systemGroups = [
+            [
+                'name' => 'Database & Files',
+                'icon' => 'fas fa-database',
+                'order' => 76,
+                'children' => [
+                    ['name' => 'Database Backup', 'icon' => 'fas fa-database', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 1],
+                    ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 2],
+                    ['name' => 'File Manager', 'icon' => 'fas fa-folder-open', 'route' => 'file-manager.index', 'permission' => 'file-manager.view', 'order' => 3],
+                    ['name' => 'Project File Editor', 'icon' => 'fas fa-file-code', 'route' => 'project-files.index', 'permission' => 'project-files.view', 'order' => 4],
+                ],
+            ],
+            [
+                'name' => 'Logs & Audit',
+                'icon' => 'fas fa-clipboard-list',
+                'order' => 77,
+                'children' => [
+                    ['name' => 'Log Request', 'icon' => 'fas fa-history', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 1],
+                    ['name' => 'Activity Log', 'icon' => 'fas fa-clipboard-list', 'route' => 'activity-logs.index', 'permission' => 'activity-logs.view', 'order' => 2],
+                    ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 3],
+                ],
+            ],
+            [
+                'name' => 'System & Monitoring',
+                'icon' => 'fas fa-server',
+                'order' => 78,
+                'children' => [
+                    ['name' => 'Cache Management', 'icon' => 'fas fa-bolt', 'route' => 'cache-management.index', 'permission' => 'cache-management.view', 'order' => 1],
+                    ['name' => 'Scheduled Tasks', 'icon' => 'fas fa-clock', 'route' => 'scheduled-tasks.index', 'permission' => 'scheduled-tasks.view', 'order' => 2],
+                    ['name' => 'Queue Monitor', 'icon' => 'fas fa-tasks', 'route' => 'queue-monitor.index', 'permission' => 'queue-monitor.view', 'order' => 3],
+                    ['name' => 'System Health', 'icon' => 'fas fa-heartbeat', 'route' => 'system-health.index', 'permission' => 'system-health.view', 'order' => 4],
+                ],
+            ],
+            [
+                'name' => 'Communication',
+                'icon' => 'fas fa-comments',
+                'order' => 79,
+                'children' => [
+                    ['name' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route' => 'announcements.index', 'permission' => 'announcements.view', 'order' => 1],
+                    ['name' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => 'notifications.index', 'permission' => 'notifications.view', 'order' => 2],
+                    ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 3],
+                ],
+            ],
         ];
 
-        foreach ($systemItems as $item) {
-            Menu::updateOrCreate(
-                ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+        foreach ($systemGroups as $group) {
+            $dropdown = Menu::updateOrCreate(
+                ['name' => $group['name'], 'type' => 'dropdown'],
                 [
                     'app' => $allApps,
                     'parent_id' => null,
-                    'icon' => $item['icon'],
-                    'permission' => $item['permission'],
-                    'order' => $item['order'],
+                    'icon' => $group['icon'],
+                    'route' => null,
+                    'permission' => null,
+                    'order' => $group['order'],
                     'is_active' => true,
                 ]
             );
+
+            foreach ($group['children'] as $item) {
+                Menu::updateOrCreate(
+                    ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
+                    [
+                        'app' => $allApps,
+                        'parent_id' => $dropdown->id,
+                        'icon' => $item['icon'],
+                        'permission' => $item['permission'],
+                        'order' => $item['order'],
+                        'is_active' => true,
+                    ]
+                );
+            }
         }
 
         // 4. Settings Section
