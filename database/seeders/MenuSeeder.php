@@ -230,6 +230,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Roles', 'icon' => 'fas fa-user-tag', 'route' => 'roles.index', 'permission' => 'roles.view', 'order' => 72],
             ['name' => 'Permissions', 'icon' => 'fas fa-key', 'route' => 'permissions.index', 'permission' => 'permissions.view', 'order' => 73],
             ['name' => 'Menu Management', 'icon' => 'fas fa-bars', 'route' => 'menus.index', 'permission' => 'menus.view', 'order' => 74],
+            ['name' => 'User Sessions', 'icon' => 'fas fa-user-clock', 'route' => 'user-sessions.index', 'permission' => 'user-sessions.view', 'order' => 74],
         ];
 
         foreach ($userManagementItems as $item) {

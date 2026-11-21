@@ -107,6 +107,22 @@
                             <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
                           </form>
                         @endcan
+                        @can('user-sessions.delete')
+                          @if (auth()->id() !== $user->id && ! config('stisla.is_demo'))
+                            <form action="{{ route('user-sessions.destroy-user', $user) }}" method="POST" class="d-inline">
+                              @csrf
+                              @method('DELETE')
+                              <button type="button"
+                                      class="btn btn-sm btn-icon btn-dark mr-1 btn-delete"
+                                      data-toggle="tooltip"
+                                      data-confirm-title="{{ __('Force Logout User?') }}"
+                                      data-confirm-text="{{ __('Force logout all active sessions for :name?', ['name' => $user->name]) }}"
+                                      title="{{ __('Force Logout') }}">
+                                <i class="fas fa-sign-out-alt"></i>
+                              </button>
+                            </form>
+                          @endif
+                        @endcan
                         @can('users.delete')
                           @if (auth()->id() !== $user->id)
                             <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline">

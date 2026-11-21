@@ -25,6 +25,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserSessionController;
 use App\Http\Middleware\PreventInDemoMode;
 use Illuminate\Support\Facades\Route;
 
@@ -119,6 +120,11 @@ Route::prefix('app')->group(function () {
         Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
 
         Route::middleware(PreventInDemoMode::class)->group(function () {
+            Route::get('user-sessions', [UserSessionController::class, 'index'])->name('user-sessions.index');
+            Route::delete('user-sessions/revoke-others', [UserSessionController::class, 'destroyOthers'])->name('user-sessions.destroy-others');
+            Route::delete('user-sessions/user/{user}', [UserSessionController::class, 'destroyUserSessions'])->name('user-sessions.destroy-user');
+            Route::delete('user-sessions/{sessionId}', [UserSessionController::class, 'destroy'])->name('user-sessions.destroy');
+
             Route::get('file-manager', [FileManagerController::class, 'index'])->name('file-manager.index');
             Route::get('file-manager/preview', [FileManagerController::class, 'preview'])->name('file-manager.preview');
             Route::get('file-manager/download', [FileManagerController::class, 'download'])->name('file-manager.download');

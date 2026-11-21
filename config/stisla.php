@@ -22,6 +22,7 @@ return [
             'subjects' => ['view', 'create', 'edit', 'delete'],
             'spp-payments' => ['view', 'create', 'edit', 'delete'],
             'users' => ['view', 'create', 'edit', 'delete'],
+            'user-sessions' => ['view', 'delete'],
             'roles' => ['view', 'create', 'edit', 'delete'],
             'permissions' => ['view', 'create', 'edit', 'delete'],
             'fields' => ['view', 'create', 'edit', 'delete'],
