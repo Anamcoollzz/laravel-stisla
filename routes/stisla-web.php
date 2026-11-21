@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\GoogleAuthController;
@@ -140,6 +141,12 @@ Route::prefix('app')->group(function () {
             Route::put('ip-blacklists/{ipBlacklist}', [IpBlacklistController::class, 'update'])->name('ip-blacklists.update');
             Route::patch('ip-blacklists/{ipBlacklist}/toggle-active', [IpBlacklistController::class, 'toggleActive'])->name('ip-blacklists.toggle-active');
             Route::delete('ip-blacklists/{ipBlacklist}', [IpBlacklistController::class, 'destroy'])->name('ip-blacklists.destroy');
+
+            Route::get('api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
+            Route::post('api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');
+            Route::put('api-tokens/{apiToken}', [ApiTokenController::class, 'update'])->name('api-tokens.update');
+            Route::delete('api-tokens/user/{user}', [ApiTokenController::class, 'revokeUserTokens'])->name('api-tokens.revoke-user');
+            Route::delete('api-tokens/{apiToken}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
 
             Route::get('file-manager', [FileManagerController::class, 'index'])->name('file-manager.index');
             Route::get('file-manager/preview', [FileManagerController::class, 'preview'])->name('file-manager.preview');

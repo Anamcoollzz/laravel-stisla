@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AuthenticateApiToken;
 use App\Http\Middleware\BlockBlacklistedIp;
 use App\Http\Middleware\LogRequestMiddleware;
 use App\Http\Middleware\SetLocale;
@@ -30,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'log.request' => LogRequestMiddleware::class,
+            'api.token' => AuthenticateApiToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

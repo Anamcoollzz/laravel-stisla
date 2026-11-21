@@ -233,6 +233,7 @@ class MenuSeeder extends Seeder
             ['name' => 'User Sessions', 'icon' => 'fas fa-user-clock', 'route' => 'user-sessions.index', 'permission' => 'user-sessions.view', 'order' => 74],
             ['name' => 'Login History', 'icon' => 'fas fa-sign-in-alt', 'route' => 'login-histories.index', 'permission' => 'login-histories.view', 'order' => 74],
             ['name' => 'IP Blacklist', 'icon' => 'fas fa-ban', 'route' => 'ip-blacklists.index', 'permission' => 'ip-blacklists.view', 'order' => 74],
+            ['name' => 'API Tokens', 'icon' => 'fas fa-code-branch', 'route' => 'api-tokens.index', 'permission' => 'api-tokens.view', 'order' => 74],
         ];
 
         foreach ($userManagementItems as $item) {
