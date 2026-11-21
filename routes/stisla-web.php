@@ -30,6 +30,7 @@ use App\Http\Controllers\QueueMonitorController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduledTaskController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SystemHealthController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSessionController;
@@ -127,6 +128,7 @@ Route::prefix('app')->group(function () {
         Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
 
         Route::middleware(PreventInDemoMode::class)->group(function () {
+            Route::get('system-health', [SystemHealthController::class, 'index'])->name('system-health.index');
             Route::get('user-sessions', [UserSessionController::class, 'index'])->name('user-sessions.index');
             Route::delete('user-sessions/revoke-others', [UserSessionController::class, 'destroyOthers'])->name('user-sessions.destroy-others');
             Route::delete('user-sessions/user/{user}', [UserSessionController::class, 'destroyUserSessions'])->name('user-sessions.destroy-user');
