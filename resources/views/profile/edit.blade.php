@@ -398,8 +398,10 @@
             </div>
           </form>
         </div>
+      </div>
 
-        {{-- Card 3: Active Browser Sessions --}}
+      {{-- Full Width Column: Active Browser Sessions --}}
+      <div class="col-12">
         <div class="card">
           <div class="card-header">
             <h4><i class="fas fa-laptop mr-1"></i> {{ __('Browser Sessions') }}</h4>
@@ -443,7 +445,7 @@
                         @endif
                       </div>
                       @if (! empty($session->user_agent))
-                        <div class="text-muted" style="font-size: 11px; max-width: 460px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $session->user_agent }}">
+                        <div class="text-muted" style="font-size: 11px;" title="{{ $session->user_agent }}">
                           {{ $session->user_agent }}
                         </div>
                       @endif
@@ -468,10 +470,10 @@
               @csrf
               @method('DELETE')
               <div class="form-group row mb-0 align-items-center">
-                <label for="session_password" class="col-sm-4 col-form-label">
+                <label for="session_password" class="col-sm-3 col-form-label">
                   {{ __('Confirm Password') }} <span class="text-danger">*</span>
                 </label>
-                <div class="col-sm-8">
+                <div class="col-sm-9">
                   <div class="input-group">
                     <input type="password" name="session_password" id="session_password"
                       class="form-control @error('session_password') is-invalid @enderror"
