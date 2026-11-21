@@ -16,6 +16,7 @@ use App\Models\ProductBanner;
 use App\Models\ProductCart;
 use App\Models\ProductCategory;
 use App\Models\ProductWishlist;
+use App\Models\QueueMonitor;
 use App\Models\ScheduledTaskRun;
 use App\Models\Setting;
 use App\Models\StoreService;
@@ -26,6 +27,9 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskStarting;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -458,6 +462,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->registerScheduledTaskListeners();
+        $this->registerQueueMonitorListeners();
     }
 
     /**
@@ -535,6 +540,74 @@ class AppServiceProvider extends ServiceProvider
                     'exit_code' => 1,
                     'duration_ms' => $durationMs,
                     'output' => $event->exception->getMessage(),
+                    'finished_at' => now(),
+                ]);
+            }
+        });
+    }
+
+    /**
+     * Automatically record queue job lifecycle events into queue_monitors.
+     */
+    private function registerQueueMonitorListeners(): void
+    {
+        $activeJobs = [];
+
+        Event::listen(JobProcessing::class, function (JobProcessing $event) use (&$activeJobs): void {
+            if (! Schema::hasTable('queue_monitors')) {
+                return;
+            }
+
+            $jobId = (string) ($event->job->getJobId() ?: spl_object_id($event->job));
+
+            $monitor = QueueMonitor::query()->create([
+                'job_id' => $jobId,
+                'job_name' => $event->job->resolveName(),
+                'connection' => $event->connectionName,
+                'queue' => $event->job->getQueue() ?: 'default',
+                'status' => 'running',
+                'attempts' => $event->job->attempts(),
+                'started_at' => now(),
+            ]);
+
+            $activeJobs[$jobId] = [
+                'id' => $monitor->id,
+                'start' => microtime(true),
+            ];
+        });
+
+        Event::listen(JobProcessed::class, function (JobProcessed $event) use (&$activeJobs): void {
+            if (! Schema::hasTable('queue_monitors')) {
+                return;
+            }
+
+            $jobId = (string) ($event->job->getJobId() ?: spl_object_id($event->job));
+            $meta = $activeJobs[$jobId] ?? null;
+            unset($activeJobs[$jobId]);
+
+            if ($meta) {
+                QueueMonitor::query()->whereKey($meta['id'])->update([
+                    'status' => 'succeeded',
+                    'duration_ms' => (int) round((microtime(true) - $meta['start']) * 1000),
+                    'finished_at' => now(),
+                ]);
+            }
+        });
+
+        Event::listen(JobFailed::class, function (JobFailed $event) use (&$activeJobs): void {
+            if (! Schema::hasTable('queue_monitors')) {
+                return;
+            }
+
+            $jobId = (string) ($event->job->getJobId() ?: spl_object_id($event->job));
+            $meta = $activeJobs[$jobId] ?? null;
+            unset($activeJobs[$jobId]);
+
+            if ($meta) {
+                QueueMonitor::query()->whereKey($meta['id'])->update([
+                    'status' => 'failed',
+                    'duration_ms' => (int) round((microtime(true) - $meta['start']) * 1000),
+                    'exception' => (string) $event->exception,
                     'finished_at' => now(),
                 ]);
             }

@@ -25,6 +25,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectFileEditorController;
+use App\Http\Controllers\QueueMonitorController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduledTaskController;
 use App\Http\Controllers\SettingController;
@@ -189,6 +190,16 @@ Route::prefix('app')->group(function () {
             Route::post('scheduled-tasks/run-due', [ScheduledTaskController::class, 'runDue'])->name('scheduled-tasks.run-due');
             Route::delete('scheduled-tasks/clear', [ScheduledTaskController::class, 'clear'])->name('scheduled-tasks.clear');
             Route::delete('scheduled-tasks/{scheduledTaskRun}', [ScheduledTaskController::class, 'destroy'])->name('scheduled-tasks.destroy');
+
+            Route::get('queue-monitor', [QueueMonitorController::class, 'index'])->name('queue-monitor.index');
+            Route::post('queue-monitor/work', [QueueMonitorController::class, 'work'])->name('queue-monitor.work');
+            Route::post('queue-monitor/failed/retry-all', [QueueMonitorController::class, 'retryAllFailed'])->name('queue-monitor.failed.retry-all');
+            Route::post('queue-monitor/failed/{uuid}/retry', [QueueMonitorController::class, 'retryFailed'])->name('queue-monitor.failed.retry');
+            Route::delete('queue-monitor/failed/flush', [QueueMonitorController::class, 'flushFailed'])->name('queue-monitor.failed.flush');
+            Route::delete('queue-monitor/failed/{uuid}', [QueueMonitorController::class, 'forgetFailed'])->name('queue-monitor.failed.forget');
+            Route::delete('queue-monitor/pending/clear', [QueueMonitorController::class, 'clearPending'])->name('queue-monitor.pending.clear');
+            Route::delete('queue-monitor/pending/{id}', [QueueMonitorController::class, 'destroyPending'])->name('queue-monitor.pending.destroy');
+            Route::delete('queue-monitor/history/clear', [QueueMonitorController::class, 'clearHistory'])->name('queue-monitor.history.clear');
         });
     });
 });
