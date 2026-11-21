@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\LogRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -82,6 +83,23 @@ class LogRequestController extends Controller
     {
         Gate::authorize('log-requests.delete');
 
+        $beforeLog = [
+            'id' => $logRequest->id,
+            'method' => $logRequest->method,
+            'uri' => $logRequest->uri,
+            'ip' => $logRequest->ip,
+        ];
+
+        ActivityLog::record(
+            module: 'log-requests',
+            action: 'deleted',
+            description: "Deleted log request #{$logRequest->id} ({$logRequest->method} {$logRequest->uri})",
+            subject: $logRequest,
+            subjectLabel: "#{$logRequest->id}",
+            before: $beforeLog,
+            after: null,
+        );
+
         $logRequest->delete();
 
         return redirect()->route('log-requests.index')
@@ -96,8 +114,10 @@ class LogRequestController extends Controller
         Gate::authorize('log-requests.delete');
 
         $scope = $request->input('scope', '30_days');
+        $totalBefore = LogRequest::count();
 
         if ($scope === 'all') {
+            $deleted = $totalBefore;
             LogRequest::truncate();
             $message = __('Semua log request berhasil dibersihkan.');
         } elseif ($scope === '7_days') {
@@ -107,6 +127,17 @@ class LogRequestController extends Controller
             $deleted = LogRequest::where('created_at', '<', now()->subDays(30))->delete();
             $message = __(':count log request yang lebih lama dari 30 hari berhasil dihapus.', ['count' => $deleted]);
         }
+
+        ActivityLog::record(
+            module: 'log-requests',
+            action: 'cleared',
+            description: "Cleared {$deleted} request log(s) (scope: {$scope})",
+            subjectLabel: $scope,
+            before: ['scope' => $scope, 'total_before' => $totalBefore],
+            after: ['deleted_count' => $deleted, 'total_after' => LogRequest::count()],
+            subjectId: $scope,
+            subjectType: LogRequest::class,
+        );
 
         return redirect()->route('log-requests.index')->with('success', $message);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -191,6 +192,15 @@ class DatabaseTableController extends Controller
         $defaultValue = $validated['default_value'] ?? null;
         $comment = $validated['comment'] ?? null;
 
+        $oldColumnMeta = collect(Schema::getColumns($table))->firstWhere('name', $column);
+        $beforeColumn = $oldColumnMeta ? [
+            'name' => $oldColumnMeta['name'] ?? $column,
+            'type' => $oldColumnMeta['type_name'] ?? ($oldColumnMeta['type'] ?? null),
+            'nullable' => (bool) ($oldColumnMeta['nullable'] ?? false),
+            'default' => $oldColumnMeta['default'] ?? null,
+            'comment' => $oldColumnMeta['comment'] ?? null,
+        ] : ['name' => $column];
+
         try {
             if ($newName !== $column) {
                 Schema::table($table, function (Blueprint $blueprint) use ($column, $newName): void {
@@ -232,6 +242,23 @@ class DatabaseTableController extends Controller
                 ->with('error', __('Gagal mengubah kolom: ').$e->getMessage());
         }
 
+        ActivityLog::record(
+            module: 'database-tables',
+            action: 'updated_column',
+            description: "Updated column {$table}.{$column}".($newName !== $column ? " (renamed to {$newName})" : ''),
+            subjectLabel: "{$table}.{$newName}",
+            before: $beforeColumn,
+            after: [
+                'name' => $newName,
+                'type' => $type,
+                'length' => $length,
+                'nullable' => $isNullable,
+                'default' => $defaultValue,
+                'comment' => $comment,
+            ],
+            subjectId: "{$table}.{$newName}",
+        );
+
         return redirect()
             ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
             ->with('success', __('Kolom berhasil diperbarui.'));
@@ -260,6 +287,14 @@ class DatabaseTableController extends Controller
                 ->with('error', __('Kolom id atau satu-satunya kolom tidak dapat dihapus.'));
         }
 
+        $oldColumnMeta = collect(Schema::getColumns($table))->firstWhere('name', $column);
+        $beforeColumn = $oldColumnMeta ? [
+            'name' => $oldColumnMeta['name'] ?? $column,
+            'type' => $oldColumnMeta['type_name'] ?? ($oldColumnMeta['type'] ?? null),
+            'nullable' => (bool) ($oldColumnMeta['nullable'] ?? false),
+            'default' => $oldColumnMeta['default'] ?? null,
+        ] : ['name' => $column];
+
         try {
             Schema::table($table, function (Blueprint $blueprint) use ($column): void {
                 $blueprint->dropColumn($column);
@@ -269,6 +304,16 @@ class DatabaseTableController extends Controller
                 ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
                 ->with('error', __('Gagal menghapus kolom: ').$e->getMessage());
         }
+
+        ActivityLog::record(
+            module: 'database-tables',
+            action: 'deleted_column',
+            description: "Dropped column {$table}.{$column}",
+            subjectLabel: "{$table}.{$column}",
+            before: $beforeColumn,
+            after: null,
+            subjectId: "{$table}.{$column}",
+        );
 
         return redirect()
             ->route('database-tables.show', ['table' => $table, 'tab' => 'columns'])
@@ -319,12 +364,37 @@ class DatabaseTableController extends Controller
             }
         }
 
+        $existingRow = DB::table($table)->where($primaryKey, $rowId)->first();
+        $beforeRow = $existingRow ? (array) $existingRow : [];
+
         try {
             DB::table($table)->where($primaryKey, $rowId)->update($updateData);
         } catch (\Throwable $e) {
             return redirect()
                 ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
                 ->with('error', __('Gagal mengubah data: ').$e->getMessage());
+        }
+
+        $changedBefore = [];
+        $changedAfter = [];
+        foreach ($updateData as $colKey => $newVal) {
+            $oldVal = $beforeRow[$colKey] ?? null;
+            if ((string) $oldVal !== (string) $newVal || ($oldVal === null) !== ($newVal === null)) {
+                $changedBefore[$colKey] = $oldVal;
+                $changedAfter[$colKey] = $newVal;
+            }
+        }
+
+        if (! empty($changedBefore) || ! empty($changedAfter)) {
+            ActivityLog::record(
+                module: 'database-tables',
+                action: 'updated_row',
+                description: "Updated row {$table}#{$rowId}",
+                subjectLabel: "{$table}#{$rowId}",
+                before: $changedBefore,
+                after: $changedAfter,
+                subjectId: "{$table}:{$rowId}",
+            );
         }
 
         return redirect()
@@ -355,6 +425,9 @@ class DatabaseTableController extends Controller
                 ->with('error', __('Tabel tidak memiliki primary key tunggal untuk dihapus.'));
         }
 
+        $existingRow = DB::table($table)->where($primaryKey, $rowId)->first();
+        $beforeRow = $existingRow ? (array) $existingRow : ['id' => $rowId];
+
         try {
             DB::table($table)->where($primaryKey, $rowId)->delete();
         } catch (\Throwable $e) {
@@ -362,6 +435,16 @@ class DatabaseTableController extends Controller
                 ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])
                 ->with('error', __('Gagal menghapus data: ').$e->getMessage());
         }
+
+        ActivityLog::record(
+            module: 'database-tables',
+            action: 'deleted_row',
+            description: "Deleted row {$table}#{$rowId}",
+            subjectLabel: "{$table}#{$rowId}",
+            before: $beforeRow,
+            after: null,
+            subjectId: "{$table}:{$rowId}",
+        );
 
         return redirect()
             ->route('database-tables.show', ['table' => $table, 'tab' => 'data'])

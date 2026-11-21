@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Services\BackupService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -50,6 +51,19 @@ class BackupController extends Controller
         try {
             $filename = $this->backupService->createBackup();
 
+            ActivityLog::record(
+                module: 'backups',
+                action: 'created',
+                description: "Created database backup {$filename}",
+                subjectLabel: $filename,
+                before: null,
+                after: [
+                    'filename' => $filename,
+                    'driver' => config('database.default'),
+                ],
+                subjectId: $filename,
+            );
+
             return redirect()
                 ->route('backups.index')
                 ->with('success', __('Database backup created successfully: :filename', ['filename' => $filename]));
@@ -80,6 +94,16 @@ class BackupController extends Controller
         $deleted = $this->backupService->deleteBackup($filename);
 
         if ($deleted) {
+            ActivityLog::record(
+                module: 'backups',
+                action: 'deleted',
+                description: "Deleted database backup {$filename}",
+                subjectLabel: $filename,
+                before: ['filename' => $filename],
+                after: null,
+                subjectId: $filename,
+            );
+
             return redirect()
                 ->route('backups.index')
                 ->with('success', __('Backup file deleted successfully.'));

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -99,7 +100,18 @@ class LaravelLogController extends Controller
                 ->with('error', __('File log tidak ditemukan.'));
         }
 
+        $sizeBytes = File::size($path);
         File::put($path, '');
+
+        ActivityLog::record(
+            module: 'laravel-logs',
+            action: 'cleared',
+            description: "Cleared Laravel log file {$file}",
+            subjectLabel: $file,
+            before: ['file' => $file, 'size_bytes' => $sizeBytes],
+            after: ['file' => $file, 'size_bytes' => 0],
+            subjectId: $file,
+        );
 
         return redirect()->route('laravel-logs.index', ['file' => $file])
             ->with('success', __('Isi file log :file berhasil dikosongkan.', ['file' => $file]));
@@ -120,7 +132,18 @@ class LaravelLogController extends Controller
                 ->with('error', __('File log tidak ditemukan.'));
         }
 
+        $sizeBytes = File::size($path);
         File::delete($path);
+
+        ActivityLog::record(
+            module: 'laravel-logs',
+            action: 'deleted',
+            description: "Deleted Laravel log file {$file}",
+            subjectLabel: $file,
+            before: ['file' => $file, 'size_bytes' => $sizeBytes],
+            after: null,
+            subjectId: $file,
+        );
 
         return redirect()->route('laravel-logs.index')
             ->with('success', __('File log :file berhasil dihapus.', ['file' => $file]));
