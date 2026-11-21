@@ -24,6 +24,7 @@ use App\Http\Controllers\OurTeamController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectFileEditorController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TicketController;
@@ -173,6 +174,14 @@ Route::prefix('app')->group(function () {
             Route::get('cache-management', [CacheManagementController::class, 'index'])->name('cache-management.index');
             Route::post('cache-management/execute', [CacheManagementController::class, 'execute'])->name('cache-management.execute');
             Route::post('cache-management/forget-key', [CacheManagementController::class, 'forgetKey'])->name('cache-management.forget-key');
+
+            Route::get('project-files', [ProjectFileEditorController::class, 'index'])->name('project-files.index');
+            Route::get('project-files/edit', [ProjectFileEditorController::class, 'edit'])->name('project-files.edit');
+            Route::put('project-files/update', [ProjectFileEditorController::class, 'update'])->name('project-files.update');
+            Route::post('project-files/file', [ProjectFileEditorController::class, 'storeFile'])->name('project-files.file.store');
+            Route::post('project-files/folder', [ProjectFileEditorController::class, 'storeFolder'])->name('project-files.folder.store');
+            Route::patch('project-files/rename', [ProjectFileEditorController::class, 'rename'])->name('project-files.rename');
+            Route::delete('project-files', [ProjectFileEditorController::class, 'destroy'])->name('project-files.destroy');
         });
     });
 });

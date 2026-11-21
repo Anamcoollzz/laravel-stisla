@@ -58,6 +58,7 @@ return [
             'laravel-logs' => ['view', 'delete'],
             'database-tables' => ['view'],
             'file-manager' => ['view', 'create', 'edit', 'delete'],
+            'project-files' => ['view', 'create', 'edit', 'delete'],
             'cache-management' => ['view', 'edit', 'delete'],
             'news-categories' => ['view', 'create', 'edit', 'delete'],
             'news-tags' => ['view', 'create', 'edit', 'delete'],

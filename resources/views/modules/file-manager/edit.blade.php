@@ -19,34 +19,174 @@
 
   <div class="section-body">
     <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h4>
+      <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+        <div class="mb-2 mb-md-0">
           <span class="badge {{ $visibility === 'public' ? 'badge-success' : 'badge-dark' }} mr-2">{{ ucfirst($visibility) }}</span>
           <code>{{ $path }}</code>
-        </h4>
-        <span class="text-muted small">{{ $size_formatted }}</span>
+          <span class="text-muted small ml-2">({{ $size_formatted }})</span>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center">
+          <div class="input-group input-group-sm mr-2 mb-1 mb-md-0" style="width: 190px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-palette"></i></span>
+            </div>
+            <select id="ace-theme-select" class="form-control">
+              <optgroup label="{{ __('Dark Themes') }}">
+                <option value="ace/theme/one_dark">One Dark</option>
+                <option value="ace/theme/dracula">Dracula</option>
+                <option value="ace/theme/monokai">Monokai</option>
+                <option value="ace/theme/tomorrow_night">Tomorrow Night</option>
+                <option value="ace/theme/nord_dark">Nord Dark</option>
+                <option value="ace/theme/solarized_dark">Solarized Dark</option>
+              </optgroup>
+              <optgroup label="{{ __('Light Themes') }}">
+                <option value="ace/theme/github">GitHub Light</option>
+                <option value="ace/theme/chrome">Chrome</option>
+                <option value="ace/theme/eclipse">Eclipse</option>
+                <option value="ace/theme/solarized_light">Solarized Light</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="input-group input-group-sm mb-1 mb-md-0" style="width: 115px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-text-height"></i></span>
+            </div>
+            <select id="ace-fontsize-select" class="form-control">
+              <option value="12px">12px</option>
+              <option value="13px">13px</option>
+              <option value="14px" selected>14px</option>
+              <option value="15px">15px</option>
+              <option value="16px">16px</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <form action="{{ route('file-manager.content.update') }}" method="POST">
+
+      <form id="form-storage-file-editor" action="{{ route('file-manager.content.update') }}" method="POST">
         @csrf
         @method('PUT')
         <input type="hidden" name="disk" value="{{ $visibility }}">
         <input type="hidden" name="target_path" value="{{ $path }}">
 
-        <div class="card-body">
-          <div class="form-group mb-0">
-            <textarea name="content" rows="20" class="form-control" style="font-family: monospace; font-size: 13px; line-height: 1.5;">{{ old('content', $content) }}</textarea>
-          </div>
+        <div class="card-body p-0">
+          <textarea id="storage-code-textarea"
+                    name="content"
+                    rows="20"
+                    spellcheck="false"
+                    class="form-control border-0 rounded-0 p-3"
+                    style="height: 65vh; min-height: 460px; resize: vertical; font-family: monospace; font-size: 13px; line-height: 1.5;">{{ old('content', $content) }}</textarea>
+          <div id="storage-ace-editor" style="display: none; width: 100%; height: 65vh; min-height: 460px;"></div>
         </div>
 
-        <div class="card-footer text-right">
-          <a href="{{ route('file-manager.index', ['disk' => $visibility, 'path' => $parent_path]) }}" class="btn btn-secondary mr-1">
-            {{ __('Back') }}
-          </a>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save mr-1"></i> {{ __('Save Changes') }}
-          </button>
+        <div class="card-footer d-flex flex-wrap justify-content-between align-items-center">
+          <span class="text-muted small mb-2 mb-md-0">
+            <i class="fas fa-keyboard mr-1"></i> {{ __('Shortcuts: Ctrl+S / Cmd+S to save, Ctrl+F / Cmd+F to find.') }}
+          </span>
+          <div>
+            <a href="{{ route('file-manager.index', ['disk' => $visibility, 'path' => $parent_path]) }}" class="btn btn-secondary mr-1">
+              {{ __('Back') }}
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save mr-1"></i> {{ __('Save Changes') }}
+            </button>
+          </div>
         </div>
       </form>
     </div>
   </div>
 @endsection
+
+@push('js')
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.2/ace.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.2/ext-language_tools.min.js" crossorigin="anonymous"></script>
+@endpush
+
+@push('page-js')
+  <script>
+    "use strict";
+
+    (function () {
+      var textarea = document.getElementById('storage-code-textarea');
+      var editorEl = document.getElementById('storage-ace-editor');
+      var form = document.getElementById('form-storage-file-editor');
+      var themeSelect = document.getElementById('ace-theme-select');
+      var fontSizeSelect = document.getElementById('ace-fontsize-select');
+
+      if (!textarea || !editorEl || !form || typeof window.ace === 'undefined') {
+        return;
+      }
+
+      var ext = @json(strtolower($extension ?? ''));
+      var modeMap = {
+        json: 'ace/mode/json',
+        css: 'ace/mode/css',
+        js: 'ace/mode/javascript',
+        ts: 'ace/mode/typescript',
+        html: 'ace/mode/html',
+        htm: 'ace/mode/html',
+        xml: 'ace/mode/xml',
+        svg: 'ace/mode/svg',
+        md: 'ace/mode/markdown',
+        sql: 'ace/mode/sql',
+        yml: 'ace/mode/yaml',
+        yaml: 'ace/mode/yaml',
+        ini: 'ace/mode/ini',
+        conf: 'ace/mode/ini',
+        txt: 'ace/mode/text',
+        log: 'ace/mode/text',
+        csv: 'ace/mode/text'
+      };
+
+      ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.2/');
+
+      textarea.style.display = 'none';
+      editorEl.style.display = 'block';
+
+      var savedTheme = localStorage.getItem('stisla_editor_theme') || 'ace/theme/one_dark';
+      var savedFontSize = localStorage.getItem('stisla_editor_fontsize') || '14px';
+
+      var editor = ace.edit(editorEl);
+      editor.setValue(textarea.value, -1);
+      editor.session.setMode(modeMap[ext] || 'ace/mode/text');
+      editor.setTheme(savedTheme);
+      editor.setOptions({
+        fontSize: savedFontSize,
+        showPrintMargin: false,
+        tabSize: 4,
+        useSoftTabs: true,
+        enableBasicAutocompletion: true
+      });
+
+      if (themeSelect) {
+        themeSelect.value = savedTheme;
+        themeSelect.addEventListener('change', function () {
+          editor.setTheme(this.value);
+          localStorage.setItem('stisla_editor_theme', this.value);
+        });
+      }
+
+      if (fontSizeSelect) {
+        fontSizeSelect.value = savedFontSize;
+        fontSizeSelect.addEventListener('change', function () {
+          editor.setFontSize(this.value);
+          localStorage.setItem('stisla_editor_fontsize', this.value);
+        });
+      }
+
+      editor.commands.addCommand({
+        name: 'saveFile',
+        bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+        exec: function () {
+          textarea.value = editor.getValue();
+          form.submit();
+        }
+      });
+
+      form.addEventListener('submit', function () {
+        textarea.value = editor.getValue();
+      });
+    })();
+  </script>
+@endpush
