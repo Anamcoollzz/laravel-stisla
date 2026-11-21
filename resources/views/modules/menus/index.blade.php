@@ -21,7 +21,7 @@
     $("#table-menus").dataTable({
       "pageLength": 25,
       "columnDefs": [
-        { "sortable": false, "targets": [2, 8] }
+        { "sortable": false, "targets": [2, 9] }
       ]
     });
 
@@ -72,7 +72,15 @@
         <div class="card">
           <div class="card-header">
             <h4>{{ __('Menu List') }}</h4>
-            <div class="card-header-action">
+            <div class="card-header-action d-flex align-items-center">
+              <form method="GET" action="{{ route('menus.index') }}" class="form-inline mr-2">
+                <select name="app" class="form-control form-control-sm" onchange="this.form.submit()">
+                  <option value="">{{ __('Semua App') }}</option>
+                  @foreach ($apps as $appOption)
+                    <option value="{{ $appOption }}" @selected($selectedApp === $appOption)>{{ $appOption }}</option>
+                  @endforeach
+                </select>
+              </form>
               @can('menus.view')
                 <a href="{{ route('menus.exportPdf') }}" class="btn btn-outline-danger btn-sm mr-1">
                   <i class="fas fa-file-pdf mr-1"></i> {{ __('Export PDF') }}
@@ -93,6 +101,7 @@
                     <th class="text-center" style="width: 40px;">#</th>
                     <th style="width: 60px;">{{ __('Order') }}</th>
                     <th class="text-center" style="width: 50px;">{{ __('Icon') }}</th>
+                    <th>{{ __('App') }}</th>
                     <th>{{ __('Menu Name') }}</th>
                     <th>{{ __('Type') }}</th>
                     <th>{{ __('Route / URL') }}</th>
@@ -114,6 +123,11 @@
                         @else
                           <span class="text-muted">-</span>
                         @endif
+                      </td>
+                      <td>
+                        @foreach ((array) ($menu->app ?? ['online-shop']) as $appBadge)
+                          <span class="badge badge-info mb-1">{{ $appBadge }}</span>
+                        @endforeach
                       </td>
                       <td>
                         @if ($menu->parent_id)

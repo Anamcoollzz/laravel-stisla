@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="pkaNavy" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#153B63"/>
+      <stop offset="100%" stop-color="#102B49"/>
+    </linearGradient>
+    <linearGradient id="pkaGold" x1="16" y1="12" x2="48" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EED08E"/>
+      <stop offset="100%" stop-color="#D5A64A"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#pkaNavy)"/>
+  <path d="M32 10L49 17.2V31.4C49 42.6 41.6 50.8 32 54C22.4 50.8 15 42.6 15 31.4V17.2L32 10Z" fill="#153B63" stroke="url(#pkaGold)" stroke-width="2.2"/>
+  <path d="M32 19L35.4 26.8L43.2 30.2L35.4 33.6L32 41.4L28.6 33.6L20.8 30.2L28.6 26.8L32 19Z" fill="#159A91"/>
+  <circle cx="32" cy="30.2" r="3.4" fill="url(#pkaGold)"/>
+</svg>

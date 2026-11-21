@@ -145,6 +145,8 @@
   </div>
 
   <div class="section-body">
+    @include('partials.dashboard-announcements')
+
     {{-- Welcome Hero Widget --}}
     <div class="row">
       <div class="col-12 mb-4">

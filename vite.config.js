@@ -7,6 +7,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
+            buildDirectory: 'lp-build',
             refresh: true,
             fonts: [
                 bunny('Instrument Sans', {

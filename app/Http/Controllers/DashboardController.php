@@ -2,6 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppNotification;
+use App\Models\ChatMessage;
+use App\Models\LP\CompanyMilestone;
+use App\Models\LP\CompanyStat;
+use App\Models\LP\CompanyValue;
+use App\Models\LP\ContactInquiry;
+use App\Models\LP\LpFaq;
+use App\Models\LP\LpGallery;
+use App\Models\LP\RecruitmentService;
+use App\Models\LP\RecruitmentStep;
+use App\Models\LP\RecruitmentTestimonial;
+use App\Models\LP\WhyChooseUs;
+use App\Models\LP\Worker;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductCategory;
@@ -24,6 +37,20 @@ class DashboardController extends Controller
     public function index(): View
     {
         Gate::authorize('dashboard.view');
+
+        $authUser = auth()->user();
+
+        if ($authUser instanceof User && $authUser->hasRole('user') && ! $authUser->hasAnyRole(['admin', 'staff'])) {
+            return $this->userDashboard($authUser);
+        }
+
+        if (config('stisla.menu_app') === 'lp-compro-workers') {
+            return $this->comproWorkers();
+        }
+
+        if (config('stisla.menu_app') === 'online-shop') {
+            return $this->ecommerce();
+        }
 
         $currentYear = (int) now()->format('Y');
         $currentMonth = (int) now()->format('n');
@@ -92,6 +119,65 @@ class DashboardController extends Controller
             'recentStudents' => $recentStudents,
             'currentYear' => $currentYear,
         ]);
+    }
+
+    /**
+     * Display the LP Compro Workers dashboard.
+     */
+    public function comproWorkers(): View
+    {
+        Gate::authorize('dashboard.view');
+
+        $counts = [
+            'workers' => Worker::query()->count(),
+            'workers_available' => Worker::query()->where('status', 'Available')->count(),
+            'workers_featured' => Worker::query()->where('is_featured', true)->count(),
+            'services' => RecruitmentService::query()->active()->count(),
+            'inquiries' => ContactInquiry::query()->count(),
+            'inquiries_unread' => ContactInquiry::query()->unread()->count(),
+            'galleries' => LpGallery::query()->active()->count(),
+            'testimonials' => RecruitmentTestimonial::query()->active()->count(),
+            'stats' => CompanyStat::query()->active()->count(),
+            'why_choose_us' => WhyChooseUs::query()->active()->count(),
+            'steps' => RecruitmentStep::query()->active()->count(),
+            'faqs' => LpFaq::query()->active()->count(),
+            'milestones' => CompanyMilestone::query()->active()->count(),
+            'values' => CompanyValue::query()->active()->count(),
+        ];
+
+        $workersByCategoryRaw = Worker::query()
+            ->selectRaw('category, COUNT(*) as total')
+            ->groupBy('category')
+            ->pluck('total', 'category')
+            ->all();
+
+        $categoryLabels = array_keys($workersByCategoryRaw);
+        $categoryTotals = array_values(array_map('intval', $workersByCategoryRaw));
+
+        $workersByStatus = [
+            'Available' => Worker::query()->where('status', 'Available')->count(),
+            'In Training' => Worker::query()->where('status', 'In Training')->count(),
+            'Placed' => Worker::query()->where('status', 'Placed')->count(),
+        ];
+
+        $recentInquiries = ContactInquiry::query()
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        $recentWorkers = Worker::query()
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        return view('dashboards.compro-workers', compact(
+            'counts',
+            'categoryLabels',
+            'categoryTotals',
+            'workersByStatus',
+            'recentInquiries',
+            'recentWorkers'
+        ));
     }
 
     /**
@@ -168,6 +254,57 @@ class DashboardController extends Controller
             'topProducts' => $topProducts,
             'lowStockProducts' => $lowStockProducts,
             'currentYear' => $currentYear,
+        ]);
+    }
+
+    /**
+     * Display the dedicated dashboard for standard users.
+     */
+    public function userDashboard(User $user): View
+    {
+        Gate::authorize('dashboard.view');
+
+        $unreadNotifications = AppNotification::query()
+            ->forUser($user->id)
+            ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $user->id))
+            ->count();
+
+        $unreadMessages = ChatMessage::query()
+            ->where('receiver_id', $user->id)
+            ->where('is_read', false)
+            ->count();
+
+        $myTicketsCount = Ticket::query()
+            ->where('user_id', $user->id)
+            ->count();
+
+        $myOrdersCount = Order::query()
+            ->where('user_id', $user->id)
+            ->count();
+
+        $recentNotifications = AppNotification::query()
+            ->forUser($user->id)
+            ->with(['readers' => fn ($query) => $query->where('users.id', $user->id)])
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        $recentTickets = Ticket::query()
+            ->where('user_id', $user->id)
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        return view('dashboards.user', [
+            'user' => $user,
+            'stats' => [
+                'unread_notifications' => $unreadNotifications,
+                'unread_messages' => $unreadMessages,
+                'tickets' => $myTicketsCount,
+                'orders' => $myOrdersCount,
+            ],
+            'recentNotifications' => $recentNotifications,
+            'recentTickets' => $recentTickets,
         ]);
     }
 }

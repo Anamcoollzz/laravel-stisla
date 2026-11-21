@@ -2,15 +2,19 @@
 
 @section('title', __('Database Backup'))
 
-@push('css')
-  <link rel="stylesheet" href="{{ asset('node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('node_modules/datatables.net-select-bs4/css/select.bootstrap4.min.css') }}">
-@endpush
+@if ($backups->isNotEmpty())
+  @push('css')
+    <link rel="stylesheet" href="{{ asset('node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('node_modules/datatables.net-select-bs4/css/select.bootstrap4.min.css') }}">
+  @endpush
+@endif
 
 @push('js')
-  <script src="{{ asset('node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
-  <script src="{{ asset('node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-  <script src="{{ asset('node_modules/datatables.net-select-bs4/js/select.bootstrap4.min.js') }}"></script>
+  @if ($backups->isNotEmpty())
+    <script src="{{ asset('node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('node_modules/datatables.net-select-bs4/js/select.bootstrap4.min.js') }}"></script>
+  @endif
   <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
@@ -18,29 +22,31 @@
   <script>
     "use strict";
 
-    $("#table-backups").dataTable({
-      "columnDefs": [{
-        "sortable": false,
-        "targets": [4]
-      }],
-      "order": [[3, "desc"]]
-    });
-
-    $(document).on('click', '.btn-delete-backup', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Are you sure?')),
-        text: @json(__('Once deleted, you will not be able to recover this backup file!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
+    @if ($backups->isNotEmpty())
+      $("#table-backups").dataTable({
+        "columnDefs": [{
+          "sortable": false,
+          "targets": [4]
+        }],
+        "order": [[3, "desc"]]
       });
-    });
+
+      $(document).on('click', '.btn-delete-backup', function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        swal({
+          title: @json(__('Are you sure?')),
+          text: @json(__('Once deleted, you will not be able to recover this backup file!')),
+          icon: 'warning',
+          buttons: true,
+          dangerMode: true,
+        }).then((willDelete) => {
+          if (willDelete) {
+            form.submit();
+          }
+        });
+      });
+    @endif
 
     $(document).on('click', '#btn-create-backup', function(e) {
       e.preventDefault();
@@ -155,9 +161,21 @@
             <h4>{{ __('Backup History') }}</h4>
             <div class="card-header-action">
               @can('backup.create')
+                @php
+                  $isDemo = (bool) config('stisla.is_demo', false);
+                @endphp
                 <form id="form-create-backup" action="{{ route('backups.create') }}" method="POST" class="d-inline">
                   @csrf
-                  <button type="button" id="btn-create-backup" class="btn btn-primary btn-icon icon-left">
+                  <button
+                    type="button"
+                    id="btn-create-backup"
+                    class="btn btn-primary btn-icon icon-left @if ($isDemo) btn-disabled @endif"
+                    @if ($isDemo)
+                      disabled
+                      data-toggle="tooltip"
+                      title="{{ __('Dinonaktifkan dalam mode demo.') }}"
+                    @endif
+                  >
                     <i class="fas fa-plus"></i> {{ __('Create Backup') }}
                   </button>
                 </form>

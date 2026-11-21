@@ -3,6 +3,10 @@
 @section('title', __('Register'))
 
 @push('css')
+  <link rel="stylesheet" href="{{ asset('node_modules/bootstrap-social/bootstrap-social.css') }}">
+@endpush
+
+@push('css')
 @endpush
 
 @push('js')
@@ -19,6 +23,12 @@
     @endif
 
     $(".pwstrength").pwstrength();
+
+    $(document).on('click', '.btn-refresh-captcha', function() {
+      var img = $(this).closest('.form-group').find('.captcha-img img');
+      var src = img.attr('src').split('?')[0];
+      img.attr('src', src + '?' + Date.now());
+    });
   </script>
 @endpush
 
@@ -72,6 +82,20 @@
                 </div>
 
                 <div class="form-group">
+                  <label for="captcha">{{ __('Captcha') }} <span class="text-danger">*</span></label>
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="captcha-img mr-2">{!! captcha_img('flat') !!}</span>
+                    <button type="button" class="btn btn-outline-secondary btn-sm btn-refresh-captcha" title="{{ __('Refresh Captcha') }}">
+                      <i class="fas fa-sync-alt"></i>
+                    </button>
+                  </div>
+                  <input id="captcha" type="text" class="form-control @error('captcha') is-invalid @enderror" name="captcha" placeholder="{{ __('Masukkan kode captcha') }}" required>
+                  @error('captcha')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+
+                <div class="form-group">
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" name="agree" class="custom-control-input @error('agree') is-invalid @enderror" id="agree" @checked(old('agree')) required>
                     <label class="custom-control-label" for="agree">{{ __('I agree with the terms and conditions') }}</label>
@@ -82,6 +106,16 @@
                   <button type="submit" class="btn btn-primary btn-lg btn-block">
                     {{ __('Register') }}
                   </button>
+                </div>
+
+                <div class="text-center mt-3 mb-3">
+                  <div class="text-job text-muted">{{ __('Or Continue With') }}</div>
+                </div>
+
+                <div class="form-group mb-0">
+                  <a href="{{ route('auth.google') }}" class="btn btn-block btn-social btn-google">
+                    <span class="fab fa-google"></span> {{ __('Register with Google') }}
+                  </a>
                 </div>
               </form>
             </div>

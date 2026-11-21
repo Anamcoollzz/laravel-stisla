@@ -109,6 +109,8 @@
     </div>
   </div>
 
+  @include('partials.dashboard-announcements')
+
   <!-- Top KPI Cards -->
   <div class="row">
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">

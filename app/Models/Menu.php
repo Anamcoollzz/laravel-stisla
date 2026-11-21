@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Database\Factories\MenuFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 
-#[Fillable(['parent_id', 'name', 'type', 'icon', 'route', 'url', 'permission', 'order', 'is_active'])]
+#[Fillable(['app', 'parent_id', 'name', 'type', 'icon', 'route', 'url', 'permission', 'order', 'is_active'])]
 class Menu extends Model
 {
     /** @use HasFactory<MenuFactory> */
@@ -24,9 +26,45 @@ class Menu extends Model
     protected function casts(): array
     {
         return [
+            'app' => 'array',
             'is_active' => 'boolean',
             'order' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $menu): void {
+            if (blank($menu->app)) {
+                $menu->app = ['online-shop'];
+            }
+        });
+    }
+
+    /**
+     * Scope menus assigned to the given app identifier.
+     */
+    public function scopeForApp(Builder $query, string $app): Builder
+    {
+        return $query->whereJsonContains('app', $app);
+    }
+
+    /**
+     * Collect all distinct app identifiers across menus.
+     *
+     * @return Collection<int, string>
+     */
+    public static function distinctApps(): Collection
+    {
+        return static::query()
+            ->pluck('app')
+            ->flatten()
+            ->merge(['online-shop', 'news', 'lp-compro-workers'])
+            ->map(fn (mixed $item): string => trim((string) $item))
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
     }
 
     /**

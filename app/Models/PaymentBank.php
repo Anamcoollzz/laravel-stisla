@@ -2,27 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+#[Fillable(['bank_name', 'bank_code', 'account_name', 'account_number', 'branch', 'logo', 'qr_code_image', 'order', 'is_active'])]
 class PaymentBank extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'bank_name',
-        'bank_code',
-        'account_name',
-        'account_number',
-        'branch',
-        'logo',
-        'qr_code_image',
-        'order',
-        'is_active',
-    ];
 
     /**
      * @return array<string, string>

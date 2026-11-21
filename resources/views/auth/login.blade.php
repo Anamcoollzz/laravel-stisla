@@ -25,6 +25,19 @@
     @if ($errors->any())
       swal(@json(__('Error')), @json($errors->first()), 'error');
     @endif
+
+    $(document).on('click', '.btn-refresh-captcha', function() {
+      var img = $(this).closest('.form-group').find('.captcha-img img');
+      var src = img.attr('src').split('?')[0];
+      img.attr('src', src + '?' + Date.now());
+    });
+
+    @if (config('stisla.is_demo'))
+      $(document).on('click', '.btn-use-demo', function() {
+        $('#email').val($(this).data('email')).trigger('change');
+        $('#password').val($(this).data('password')).trigger('change');
+      });
+    @endif
   </script>
 @endpush
 
@@ -67,6 +80,28 @@
             </div>
 
             <div class="card-body">
+              @if (config('stisla.is_demo'))
+                <div class="alert alert-info mb-3 d-flex justify-content-between align-items-center" role="alert">
+                  <div>
+                    <div class="font-weight-bold mb-1">
+                      <i class="fas fa-info-circle mr-1"></i> {{ __('Demo Account') }}
+                    </div>
+                    <div class="small">
+                      <div>{{ __('Email') }}: <code>admin@example.com</code></div>
+                      <div>{{ __('Password') }}: <code>password</code></div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-light text-primary font-weight-bold btn-use-demo"
+                    data-email="admin@example.com"
+                    data-password="password"
+                  >
+                    <i class="fas fa-magic mr-1"></i> {{ __('Use') }}
+                  </button>
+                </div>
+              @endif
+
               <form method="POST" action="{{ route('login.attempt') }}" class="needs-validation" novalidate="">
                 @csrf
                 <div class="form-group">
@@ -117,6 +152,27 @@
                 </div>
 
                 <div class="form-group">
+                  <label for="captcha">{{ __('Captcha') }} <span class="text-danger">*</span></label>
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="captcha-img mr-2">{!! captcha_img('flat') !!}</span>
+                    <button type="button" class="btn btn-outline-secondary btn-sm btn-refresh-captcha" title="{{ __('Refresh Captcha') }}">
+                      <i class="fas fa-sync-alt"></i>
+                    </button>
+                  </div>
+                  <input
+                    id="captcha"
+                    type="text"
+                    class="form-control @error('captcha') is-invalid @enderror"
+                    name="captcha"
+                    placeholder="{{ __('Masukkan kode captcha') }}"
+                    required
+                  >
+                  @error('captcha')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+
+                <div class="form-group">
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me" @checked(old('remember'))>
                     <label class="custom-control-label" for="remember-me">{{ __('Remember Me') }}</label>
@@ -128,12 +184,24 @@
                     {{ __('Login') }}
                   </button>
                 </div>
+
+                <div class="text-center mt-3 mb-3">
+                  <div class="text-job text-muted">{{ __('Or Continue With') }}</div>
+                </div>
+
+                <div class="form-group mb-0">
+                  <a href="{{ route('auth.google') }}" class="btn btn-block btn-social btn-google">
+                    <span class="fab fa-google"></span> {{ __('Login with Google') }}
+                  </a>
+                </div>
               </form>
             </div>
           </div>
-          <div class="mt-5 text-muted text-center">
-            {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
-          </div>
+          @if (\App\Models\Setting::getValue('is_active_register_page', '1') === '1')
+            <div class="mt-5 text-muted text-center">
+              {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}">{{ __('Create One') }}</a>
+            </div>
+          @endif
           <div class="simple-footer">
             Copyright &copy; {{ $siteTitle }} {{ \App\Models\Setting::getValue('year', date('Y')) }}
             <div class="mt-1">

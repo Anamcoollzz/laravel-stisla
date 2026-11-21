@@ -237,14 +237,14 @@
                 @php
                   $isActive = $activeUser && $activeUser->id === $user->id;
                 @endphp
-                <li class="media chat-contact-item {{ $isActive ? 'active-chat' : '' }}" onclick="window.location.href='{{ route('chat.index', ['user' => $user->id]) }}'">
+                <li class="media chat-contact-item {{ $isActive ? 'active-chat' : '' }}" onclick="window.location.href='{{ route('chat.index', ['user' => $user->uuid]) }}'">
                   <img alt="{{ $user->name }}" class="mr-3 rounded-circle" src="{{ $user->avatar_url }}">
                   <div class="media-body">
                     @if ($user->unread_count > 0)
                       <div class="float-right"><span class="badge badge-primary">{{ $user->unread_count }}</span></div>
                     @endif
                     <div class="mt-0 mb-1 font-weight-bold">
-                      <a href="{{ route('chat.index', ['user' => $user->id]) }}" class="{{ $isActive ? 'text-primary' : 'text-dark' }} contact-name">{{ $user->name }}</a>
+                      <a href="{{ route('chat.index', ['user' => $user->uuid]) }}" class="{{ $isActive ? 'text-primary' : 'text-dark' }} contact-name">{{ $user->name }}</a>
                     </div>
                     @if ($user->isOnline())
                       <div class="text-success text-small font-600-bold"><i class="fas fa-circle"></i> {{ __('Online') }}</div>

@@ -33,9 +33,9 @@ class ChatController extends Controller
             ->orderBy('name')
             ->get();
 
-        $selectedUserId = $request->query('user');
-        $activeUser = $selectedUserId
-            ? $users->firstWhere('id', (int) $selectedUserId) ?? $users->first()
+        $selectedUserUuid = $request->query('user');
+        $activeUser = $selectedUserUuid
+            ? $users->firstWhere('uuid', $selectedUserUuid) ?? $users->first()
             : $users->first();
 
         $messages = collect();
@@ -92,7 +92,7 @@ class ChatController extends Controller
             ]);
         }
 
-        return redirect()->route('chat.index', ['user' => $user->id]);
+        return redirect()->route('chat.index', ['user' => $user->uuid]);
     }
 
     /**
@@ -170,7 +170,7 @@ class ChatController extends Controller
             ->delete();
 
         return redirect()
-            ->route('chat.index', ['user' => $user->id])
+            ->route('chat.index', ['user' => $user->uuid])
             ->with('success', __('Conversation cleared successfully.'));
     }
 }

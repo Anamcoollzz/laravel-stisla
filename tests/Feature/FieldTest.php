@@ -8,7 +8,7 @@ uses(RefreshDatabase::class);
 beforeEach(fn () => $this->actingAsAdmin());
 
 test('fields index page lists fields and marks sidebar active', function () {
-    config()->set('app.is_stisla_demo', false);
+    config()->set('stisla.is_demo', false);
 
     $field = Field::factory()->create([
         'code' => 'FLD-001',

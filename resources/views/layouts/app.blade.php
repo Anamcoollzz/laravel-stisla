@@ -29,65 +29,76 @@
             <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
             <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a></li>
           </ul>
+          @php
+            $searchableMenus = collect();
+            foreach ($sidebarMenus ?? collect() as $menu) {
+                if ($menu->type === 'header') {
+                    continue;
+                }
+                if ($menu->permission && ! auth()->user()?->can($menu->permission)) {
+                    continue;
+                }
+                if ($menu->type === 'item') {
+                    $href = $menu->route && \Illuminate\Support\Facades\Route::has($menu->route)
+                        ? route($menu->route)
+                        : ($menu->url ?: '#');
+                    if ($href !== '#') {
+                        $searchableMenus->push([
+                            'label' => __($menu->name),
+                            'parent' => null,
+                            'icon' => $menu->icon ?: 'fas fa-circle',
+                            'url' => $href,
+                        ]);
+                    }
+                } elseif ($menu->type === 'dropdown') {
+                    foreach ($menu->children ?? collect() as $child) {
+                        if ($child->permission && ! auth()->user()?->can($child->permission)) {
+                            continue;
+                        }
+                        $href = $child->route && \Illuminate\Support\Facades\Route::has($child->route)
+                            ? route($child->route)
+                            : ($child->url ?: '#');
+                        if ($href !== '#') {
+                            $searchableMenus->push([
+                                'label' => __($child->name),
+                                'parent' => __($menu->name),
+                                'icon' => $child->icon ?: ($menu->icon ?: 'fas fa-circle'),
+                                'url' => $href,
+                            ]);
+                        }
+                    }
+                }
+            }
+          @endphp
           <div class="search-element">
-            <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="250">
+            <input id="navbar-menu-search" class="form-control" type="search" placeholder="{{ __('Search menu...') }}" aria-label="{{ __('Search menu...') }}" data-width="250" autocomplete="off">
             <button class="btn" type="submit"><i class="fas fa-search"></i></button>
             <div class="search-backdrop"></div>
             <div class="search-result">
               <div class="search-header">
-                Histories
+                {{ __('Menus') }}
               </div>
-              <div class="search-item">
-                <a href="#">How to hack NASA using CSS</a>
-                <a href="#" class="search-close"><i class="fas fa-times"></i></a>
-              </div>
-              <div class="search-item">
-                <a href="#">Kodinger.com</a>
-                <a href="#" class="search-close"><i class="fas fa-times"></i></a>
-              </div>
-              <div class="search-item">
-                <a href="#">#Stisla</a>
-                <a href="#" class="search-close"><i class="fas fa-times"></i></a>
-              </div>
-              <div class="search-header">
-                Result
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <img class="mr-3 rounded" width="30" src="{{ asset('assets/img/products/product-3-50.png') }}" alt="product">
-                  oPhone S9 Limited Edition
-                </a>
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <img class="mr-3 rounded" width="30" src="{{ asset('assets/img/products/product-2-50.png') }}" alt="product">
-                  Drone X2 New Gen-7
-                </a>
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <img class="mr-3 rounded" width="30" src="{{ asset('assets/img/products/product-1-50.png') }}" alt="product">
-                  Headphone Blitz
-                </a>
-              </div>
-              <div class="search-header">
-                Projects
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <div class="search-icon bg-danger text-white mr-3">
-                    <i class="fas fa-code"></i>
-                  </div>
-                  Stisla Admin Template
-                </a>
-              </div>
-              <div class="search-item">
-                <a href="#">
-                  <div class="search-icon bg-primary text-white mr-3">
-                    <i class="fas fa-laptop"></i>
-                  </div>
-                  Create a new Homepage Design
-                </a>
+              @forelse ($searchableMenus as $item)
+                <div class="search-item navbar-menu-search-item" data-search="{{ strtolower($item['label'].' '.($item['parent'] ?? '')) }}">
+                  <a href="{{ $item['url'] }}">
+                    <div class="search-icon bg-primary text-white mr-3">
+                      <i class="{{ $item['icon'] }}"></i>
+                    </div>
+                    <div>
+                      <div>{{ $item['label'] }}</div>
+                      @if ($item['parent'])
+                        <div class="text-muted small">{{ $item['parent'] }}</div>
+                      @endif
+                    </div>
+                  </a>
+                </div>
+              @empty
+                <div class="search-item text-muted small px-3 py-2">
+                  {{ __('No matching menu found.') }}
+                </div>
+              @endforelse
+              <div id="navbar-menu-search-empty" class="search-item text-muted small px-3 py-2 d-none">
+                {{ __('No matching menu found.') }}
               </div>
             </div>
           </div>
@@ -105,7 +116,7 @@
                 </div>
                 <div class="dropdown-list-content dropdown-list-message">
                   @forelse ($navMessages as $navMessage)
-                    <a href="{{ route('chat.index', ['user' => $navMessage->sender_id]) }}" @class(['dropdown-item', 'dropdown-item-unread' => ! $navMessage->is_read])>
+                    <a href="{{ route('chat.index', ['user' => $navMessage->sender?->uuid]) }}" @class(['dropdown-item', 'dropdown-item-unread' => ! $navMessage->is_read])>
                       <div class="dropdown-item-avatar">
                         <img alt="image" src="{{ $navMessage->sender?->avatar_url ?? asset('assets/img/avatar/avatar-1.png') }}" class="rounded-circle">
                         @if ($navMessage->sender?->isOnline())
@@ -129,63 +140,59 @@
               <form id="mark-all-read-form" action="{{ route('chat.readAll') }}" method="POST" class="d-none">@csrf</form>
             </li>
           @endcan
-          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
+          <li class="dropdown dropdown-list-toggle">
+            <a href="#" data-toggle="dropdown" @class(['nav-link notification-toggle nav-link-lg', 'beep' => ($navNotificationUnreadCount ?? 0) > 0])>
+              <i class="far fa-bell"></i>
+            </a>
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
-              <div class="dropdown-header">Notifications
-                <div class="float-right">
-                  <a href="#">Mark All As Read</a>
-                </div>
+              <div class="dropdown-header">{{ __('Notifications') }}
+                @if (($navNotificationUnreadCount ?? 0) > 0)
+                  <div class="float-right">
+                    <form action="{{ route('notifications.markAllRead') }}" method="POST" class="d-inline">
+                      @csrf
+                      <button type="submit" class="btn btn-link btn-sm p-0 text-primary">{{ __('Mark All As Read') }}</button>
+                    </form>
+                  </div>
+                @endif
               </div>
               <div class="dropdown-list-content dropdown-list-icons">
-                <a href="#" class="dropdown-item dropdown-item-unread">
-                  <div class="dropdown-item-icon bg-primary text-white">
-                    <i class="fas fa-code"></i>
+                @forelse ($navNotifications ?? collect() as $notif)
+                  @php
+                    $isRead = auth()->check() && $notif->isReadBy((int) auth()->id());
+                    $bgClass = match ($notif->type) {
+                        'primary' => 'bg-primary',
+                        'success' => 'bg-success',
+                        'warning' => 'bg-warning',
+                        'danger' => 'bg-danger',
+                        default => 'bg-info',
+                    };
+                  @endphp
+                  <a href="{{ route('notifications.read', $notif) }}" @class(['dropdown-item', 'dropdown-item-unread' => ! $isRead])>
+                    <div class="dropdown-item-icon {{ $bgClass }} text-white">
+                      <i class="{{ $notif->icon ?: 'fas fa-bell' }}"></i>
+                    </div>
+                    <div class="dropdown-item-desc">
+                      <div class="font-weight-600">{{ $notif->title }}</div>
+                      <div class="small text-muted">{{ \Illuminate\Support\Str::limit($notif->message, 70) }}</div>
+                      <div class="time {{ ! $isRead ? 'text-primary' : '' }}">
+                        {{ $notif->created_at?->diffForHumans() }}
+                        @if ($notif->is_broadcast)
+                          &middot; {{ __('Broadcast') }}
+                        @endif
+                      </div>
+                    </div>
+                  </a>
+                @empty
+                  <div class="dropdown-item text-center text-muted py-4">
+                    {{ __('No notifications yet.') }}
                   </div>
-                  <div class="dropdown-item-desc">
-                    Template update is available now!
-                    <div class="time text-primary">2 Min Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-info text-white">
-                    <i class="far fa-user"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>You</b> and <b>Dedik Sugiharto</b> are now friends
-                    <div class="time">10 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-success text-white">
-                    <i class="fas fa-check"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    <b>Kusnaedi</b> has moved task <b>Fix bug header</b> to <b>Done</b>
-                    <div class="time">12 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-danger text-white">
-                    <i class="fas fa-exclamation-triangle"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    Low disk space. Let's clean it!
-                    <div class="time">17 Hours Ago</div>
-                  </div>
-                </a>
-                <a href="#" class="dropdown-item">
-                  <div class="dropdown-item-icon bg-info text-white">
-                    <i class="fas fa-bell"></i>
-                  </div>
-                  <div class="dropdown-item-desc">
-                    Welcome to Stisla template!
-                    <div class="time">Yesterday</div>
-                  </div>
-                </a>
+                @endforelse
               </div>
-              <div class="dropdown-footer text-center">
-                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-              </div>
+              @can('notifications.view')
+                <div class="dropdown-footer text-center">
+                  <a href="{{ route('notifications.index') }}">{{ __('View All') }} <i class="fas fa-chevron-right"></i></a>
+                </div>
+              @endcan
             </div>
           </li>
           <li class="dropdown">
@@ -224,12 +231,16 @@
               <a href="{{ route('profile.edit') }}" class="dropdown-item has-icon">
                 <i class="far fa-user"></i> {{ __('Profile') }}
               </a>
-              <a href="{{ route('features-activities.html') }}" class="dropdown-item has-icon">
-                <i class="fas fa-bolt"></i> Activities
-              </a>
-              <a href="{{ route('settings.index') }}" class="dropdown-item has-icon">
-                <i class="fas fa-cog"></i> Settings
-              </a>
+              @if (config('stisla.is_demo'))
+                <a href="{{ route('features-activities.html') }}" class="dropdown-item has-icon">
+                  <i class="fas fa-bolt"></i> {{ __('Activities') }}
+                </a>
+              @endif
+              @can('settings.view')
+                <a href="{{ route('settings.index') }}" class="dropdown-item has-icon">
+                  <i class="fas fa-cog"></i> {{ __('Settings') }}
+                </a>
+              @endcan
               <div class="dropdown-divider"></div>
               <form action="{{ route('logout') }}" method="POST" id="logout-form" class="d-none">
                 @csrf
@@ -242,7 +253,7 @@
         </ul>
       </nav>
       <div class="main-sidebar">
-        @if (config('app.is_stisla_demo'))
+        @if (config('stisla.is_demo_menu'))
           @include('partials.sidebar-pages')
         @else
           <aside id="sidebar-wrapper">
@@ -254,12 +265,31 @@
             </div>
             <ul class="sidebar-menu">
               @if (isset($sidebarMenus) && $sidebarMenus->isNotEmpty())
-                @foreach ($sidebarMenus as $menu)
+                @php
+                  $menuList = $sidebarMenus->values();
+                @endphp
+                @foreach ($menuList as $index => $menu)
                   @if (! $menu->canAccess())
                     @continue
                   @endif
 
                   @if ($menu->type === 'header')
+                    @php
+                      $hasVisibleItemBelow = false;
+                      for ($i = $index + 1; $i < $menuList->count(); $i++) {
+                          $nextMenu = $menuList[$i];
+                          if ($nextMenu->type === 'header') {
+                              break;
+                          }
+                          if ($nextMenu->canAccess()) {
+                              $hasVisibleItemBelow = true;
+                              break;
+                          }
+                      }
+                    @endphp
+                    @if (! $hasVisibleItemBelow)
+                      @continue
+                    @endif
                     <li class="menu-header">{{ __($menu->name) }}</li>
                   @elseif ($menu->type === 'dropdown')
                     <li @class(['nav-item dropdown', 'active' => $menu->isActiveRoute()])>
@@ -424,6 +454,41 @@
   <!-- Template JS File -->
   <script src="{{ asset('assets/js/scripts.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+
+  <script>
+    (function() {
+      var $input = $('#navbar-menu-search');
+      if (! $input.length) {
+        return;
+      }
+
+      function filterNavbarMenus() {
+        var keyword = ($input.val() || '').toLowerCase().trim();
+        var visibleCount = 0;
+
+        $('.navbar-menu-search-item').each(function() {
+          var text = ($(this).data('search') || '').toString();
+          var matched = keyword === '' || text.indexOf(keyword) !== -1;
+          $(this).toggleClass('d-none', ! matched);
+          if (matched) {
+            visibleCount++;
+          }
+        });
+
+        $('#navbar-menu-search-empty').toggleClass('d-none', visibleCount > 0);
+      }
+
+      $input.on('input keyup focus', filterNavbarMenus);
+
+      $input.closest('form').on('submit', function(e) {
+        e.preventDefault();
+        var $firstLink = $('.navbar-menu-search-item:not(.d-none) a').first();
+        if ($firstLink.length && $firstLink.attr('href')) {
+          window.location.href = $firstLink.attr('href');
+        }
+      });
+    })();
+  </script>
 
   <!-- Page Specific JS File -->
   @stack('page-js')

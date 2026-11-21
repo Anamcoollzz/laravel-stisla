@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,45 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
+#[Fillable(['order_number', 'user_id', 'user_address_id', 'shipping_method_id', 'payment_method_id', 'payment_bank_id', 'recipient_name', 'phone_number', 'address_line', 'city', 'state', 'postal_code', 'shipping_name', 'shipping_code', 'shipping_cost', 'shipping_estimated_delivery', 'tracking_number', 'tracking_proof', 'payment_name', 'payment_type', 'payment_fee', 'bank_name', 'bank_account_number', 'bank_account_name', 'subtotal', 'discount_amount', 'coupon_code', 'grand_total', 'status', 'payment_status', 'payment_proof', 'payment_proof_uploaded_at', 'notes'])]
 class Order extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'order_number',
-        'user_id',
-        'user_address_id',
-        'shipping_method_id',
-        'payment_method_id',
-        'payment_bank_id',
-        'recipient_name',
-        'phone_number',
-        'address_line',
-        'city',
-        'state',
-        'postal_code',
-        'shipping_name',
-        'shipping_code',
-        'shipping_cost',
-        'shipping_estimated_delivery',
-        'tracking_number',
-        'tracking_proof',
-        'payment_name',
-        'payment_type',
-        'payment_fee',
-        'bank_name',
-        'bank_account_number',
-        'bank_account_name',
-        'subtotal',
-        'discount_amount',
-        'coupon_code',
-        'grand_total',
-        'status',
-        'payment_status',
-        'payment_proof',
-        'payment_proof_uploaded_at',
-        'notes',
-    ];
 
     /**
      * @return array<string, string>

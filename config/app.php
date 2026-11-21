@@ -41,8 +41,6 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
-    'is_stisla_demo' => (bool) env('IS_STISLA_DEMO', false),
-
     /*
     |--------------------------------------------------------------------------
     | Application URL

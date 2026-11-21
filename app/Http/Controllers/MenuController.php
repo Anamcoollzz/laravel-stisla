@@ -8,6 +8,7 @@ use App\Models\Menu;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
@@ -18,17 +19,24 @@ class MenuController extends Controller
     /**
      * Display a listing of the menus.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
         Gate::authorize('menus.view');
 
+        $selectedApp = trim((string) $request->query('app', ''));
+
         $menus = Menu::query()
             ->with(['parent', 'children'])
+            ->when($selectedApp !== '', fn ($q) => $q->forApp($selectedApp))
             ->orderByRaw('CASE WHEN parent_id IS NULL THEN id ELSE parent_id END, parent_id IS NOT NULL, `order` ASC')
             ->get();
 
+        $apps = Menu::distinctApps();
+
         return view('modules.menus.index', [
             'menus' => $menus,
+            'apps' => $apps,
+            'selectedApp' => $selectedApp,
         ]);
     }
 
@@ -55,10 +63,13 @@ class MenuController extends Controller
             ->sort()
             ->values();
 
+        $apps = Menu::distinctApps();
+
         return view('modules.menus.create', [
             'parentMenus' => $parentMenus,
             'permissions' => $permissions,
             'availableRoutes' => $availableRoutes,
+            'apps' => $apps,
         ]);
     }
 
@@ -84,6 +95,7 @@ class MenuController extends Controller
         Gate::authorize('menus.create');
 
         Menu::query()->create([
+            'app' => $menu->app ?? ['online-shop'],
             'parent_id' => $menu->parent_id,
             'name' => $menu->name.' (Copy)',
             'type' => $menu->type,
@@ -138,11 +150,14 @@ class MenuController extends Controller
             ->sort()
             ->values();
 
+        $apps = Menu::distinctApps();
+
         return view('modules.menus.edit', [
             'menu' => $menu,
             'parentMenus' => $parentMenus,
             'permissions' => $permissions,
             'availableRoutes' => $availableRoutes,
+            'apps' => $apps,
         ]);
     }
 

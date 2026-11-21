@@ -33,7 +33,14 @@ class ProfileController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $data = $request->safe()->only(['name', 'email']);
+        $data = $request->safe()->only([
+            'name',
+            'email',
+            'facebook_url',
+            'twitter_url',
+            'github_url',
+            'instagram_url',
+        ]);
 
         if ($request->boolean('remove_avatar') && $user->avatar) {
             if (Storage::disk('public')->exists($user->avatar)) {
