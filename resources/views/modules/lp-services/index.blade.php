@@ -11,7 +11,6 @@
   <script src="{{ asset('node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
   <script src="{{ asset('node_modules/datatables.net-select-bs4/js/select.bootstrap4.min.js') }}"></script>
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -27,29 +26,6 @@
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    $(document).on('click', '.btn-delete', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Apakah Anda yakin?')),
-        text: @json(__('Layanan rekrutmen ini akan dihapus permanen!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
-      });
-    });
-
-    @if (session('success'))
-      swal(@json(__('Berhasil')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
   </script>
 @endpush
 

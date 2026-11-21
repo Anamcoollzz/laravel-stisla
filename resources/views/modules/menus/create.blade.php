@@ -8,7 +8,6 @@
 
 @push('js')
   <script src="{{ asset('node_modules/select2/dist/js/select2.full.min.js') }}"></script>
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -41,14 +40,6 @@
       var iconClass = $(this).val();
       $('#icon-preview').attr('class', iconClass || 'fas fa-question');
     });
-
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
 
     @if ($errors->any())
       swal(@json(__('Error')), @json($errors->first()), 'error');

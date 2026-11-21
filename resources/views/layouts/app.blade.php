@@ -449,11 +449,25 @@
   <script src="{{ asset('assets/js/stisla.js') }}"></script>
 
   <!-- JS Libraies -->
+  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
   @stack('js')
 
   <!-- Template JS File -->
   <script src="{{ asset('assets/js/scripts.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+  <script>
+    window.StislaCrud = {
+      title: @json(__('Are you sure?')),
+      text: @json(__('Once deleted, you will not be able to recover this data!')),
+      confirmButtonText: @json(__('Delete')),
+      cancelButtonText: @json(__('Cancel')),
+      successTitle: @json(__('Success')),
+      errorTitle: @json(__('Error')),
+      flashSuccess: @json(session('success')),
+      flashError: @json(session('error'))
+    };
+  </script>
+  <script src="{{ asset('assets/js/stisla-crud.js') }}"></script>
 
   <script>
     (function() {

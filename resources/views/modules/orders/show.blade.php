@@ -2,17 +2,10 @@
 
 @section('title', __('Shop › Order #') . $order->order_number)
 
-@push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
-@endpush
-
 @push('page-js')
   <script>
     "use strict";
 
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
   </script>
 @endpush
 

@@ -34,7 +34,6 @@
 @push('js')
   <script src="{{ asset('node_modules/summernote/dist/summernote-bs4.js') }}"></script>
   <script src="{{ asset('node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js') }}"></script>
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -166,14 +165,6 @@
     $(document).on('click', '.btn-remove-spec', function() {
       $(this).closest('.spec-row').remove();
     });
-
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
 
     @if ($errors->any())
       swal(@json(__('Error')), @json($errors->first()), 'error');

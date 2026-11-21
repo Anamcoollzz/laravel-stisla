@@ -2,10 +2,6 @@
 
 @section('title', __('Create Announcement'))
 
-@push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
-@endpush
-
 @push('page-js')
   <script>
     "use strict";

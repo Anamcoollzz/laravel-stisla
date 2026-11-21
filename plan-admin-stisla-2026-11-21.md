@@ -147,7 +147,7 @@ Fitur wajib agar package ini disukai developer Laravel:
 
 - [ ] **Self-Hosted & Bundled Core Assets (`public/vendor/stisla`)**:
   - Pindahkan Bootstrap, FontAwesome, jQuery, NiceScroll, SweetAlert, Chart.js, dan Summernote dari CDN / `public/node_modules/` ke satu direktori terstruktur `public/vendor/stisla/` agar template tetap berjalan 100% di jaringan lokal/intranet (offline-ready) dan mudah di-publish oleh package.
-- [ ] **Global Toast & SweetAlert Handler Terpusat di `layouts/app.blade.php`**:
+- [x] **Global Toast & SweetAlert Handler Terpusat di `layouts/app.blade.php`**:
   - Pindahkan script flash message `session('success')`, `session('error')`, dan handler `.btn-delete` ke file JS utama (`stisla-crud.js`) yang dimuat di `layouts/app.blade.php`, sehingga setiap view modul tidak perlu menduplikasi script SweetAlert.
 - [ ] **Dark Mode Admin Stisla**:
   - Tambahkan toggle *Light / Dark Mode* di navbar admin (disimpan di `localStorage` / profil user) menggunakan CSS variables di `public/assets/css/custom.css`.

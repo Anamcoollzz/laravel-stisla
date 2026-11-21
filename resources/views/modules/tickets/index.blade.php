@@ -10,36 +10,12 @@
 @push('js')
   <script src="{{ asset('node_modules/summernote/dist/summernote-bs4.js') }}"></script>
   <script src="{{ asset('node_modules/chocolat/dist/js/jquery.chocolat.min.js') }}"></script>
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('page-js')
   <script>
     "use strict";
 
-    $(document).on('click', '.btn-delete', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Are you sure?')),
-        text: @json(__('Once deleted, you will not be able to recover this ticket!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
-      });
-    });
-
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
   </script>
 @endpush
 

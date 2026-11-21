@@ -2,33 +2,10 @@
 
 @section('title', __('Shop › Blog Comment Details'))
 
-@push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
-@endpush
-
 @push('page-js')
   <script>
     "use strict";
 
-    $(document).on('click', '.btn-delete', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Are you sure?')),
-        text: @json(__('This comment will be permanently deleted!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
-      });
-    });
-
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
   </script>
 @endpush
 

@@ -15,7 +15,6 @@
     <script src="{{ asset('node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('node_modules/datatables.net-select-bs4/js/select.bootstrap4.min.js') }}"></script>
   @endif
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -64,13 +63,6 @@
       });
     });
 
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
   </script>
 @endpush
 

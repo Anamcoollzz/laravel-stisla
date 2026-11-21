@@ -2,21 +2,9 @@
 
 @section('title', __('Modules › Edit Field'))
 
-@push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
-@endpush
-
 @push('page-js')
   <script>
     "use strict";
-
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
 
     @if ($errors->any())
       swal(@json(__('Error')), @json($errors->first()), 'error');

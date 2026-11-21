@@ -2,29 +2,10 @@
 
 @section('title', __('Modules › Product Category Details'))
 
-@push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
-@endpush
-
 @push('page-js')
   <script>
     "use strict";
 
-    $(document).on('click', '.btn-delete', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Are you sure?')),
-        text: @json(__('Deleting this category will also delete all sub-categories under it!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
-      });
-    });
   </script>
 @endpush
 

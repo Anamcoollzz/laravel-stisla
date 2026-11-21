@@ -22,7 +22,6 @@
   <script src="{{ asset('node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
   <script src="{{ asset('node_modules/datatables.net-select-bs4/js/select.bootstrap4.min.js') }}"></script>
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -37,29 +36,6 @@
       "ordering": false // Keep hierarchical pre-sorted order
     });
 
-    $(document).on('click', '.btn-delete', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Are you sure?')),
-        text: @json(__('Deleting this category will also delete all sub-categories under it!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
-      });
-    });
-
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
   </script>
 @endpush
 

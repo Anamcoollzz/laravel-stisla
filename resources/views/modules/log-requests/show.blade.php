@@ -2,29 +2,9 @@
 
 @section('title', __('Detail Log Request #') . $logRequest->id)
 
-@push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
-@endpush
-
 @push('page-js')
   <script>
     "use strict";
-
-    $(document).on('click', '.btn-delete', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Apakah Anda yakin?')),
-        text: @json(__('Log request ini akan dihapus permanen!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
-      });
-    });
 
     $(document).on('click', '#btnCopyJson', function() {
       var jsonText = $('#codePayload').text();

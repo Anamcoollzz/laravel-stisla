@@ -19,7 +19,6 @@
 @endpush
 
 @push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
   @if ($hasCode)
     <script src="{{ asset('node_modules/codemirror/lib/codemirror.js') }}"></script>
     <script src="{{ asset('node_modules/codemirror/mode/javascript/javascript.js') }}"></script>
@@ -32,14 +31,6 @@
 @push('page-js')
   <script>
     "use strict";
-
-    @if (session('success'))
-      swal(@json(__('Success')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Error')), @json(session('error')), 'error');
-    @endif
 
     @if ($errors->any())
       swal(@json(__('Error')), @json($errors->first()), 'error');

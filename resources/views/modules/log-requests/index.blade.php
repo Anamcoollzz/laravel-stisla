@@ -2,29 +2,9 @@
 
 @section('title', __('Log Requests'))
 
-@push('js')
-  <script src="{{ asset('node_modules/sweetalert/dist/sweetalert.min.js') }}"></script>
-@endpush
-
 @push('page-js')
   <script>
     "use strict";
-
-    $(document).on('click', '.btn-delete', function(e) {
-      e.preventDefault();
-      var form = $(this).closest('form');
-      swal({
-        title: @json(__('Apakah Anda yakin?')),
-        text: @json(__('Data log request ini akan dihapus secara permanen!')),
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          form.submit();
-        }
-      });
-    });
 
     $(document).on('click', '#btnSubmitClear', function(e) {
       e.preventDefault();
@@ -43,13 +23,6 @@
       });
     });
 
-    @if (session('success'))
-      swal(@json(__('Berhasil')), @json(session('success')), 'success');
-    @endif
-
-    @if (session('error'))
-      swal(@json(__('Gagal')), @json(session('error')), 'error');
-    @endif
   </script>
 @endpush
 
