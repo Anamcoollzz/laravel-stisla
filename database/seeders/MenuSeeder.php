@@ -265,6 +265,7 @@ class MenuSeeder extends Seeder
             ['name' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => 'notifications.index', 'permission' => 'notifications.view', 'order' => 82],
             ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 83],
             ['name' => 'File Manager', 'icon' => 'fas fa-folder-open', 'route' => 'file-manager.index', 'permission' => 'file-manager.view', 'order' => 84],
+            ['name' => 'Cache Management', 'icon' => 'fas fa-bolt', 'route' => 'cache-management.index', 'permission' => 'cache-management.view', 'order' => 84],
         ];
 
         foreach ($systemItems as $item) {

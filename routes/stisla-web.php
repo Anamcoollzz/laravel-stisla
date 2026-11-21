@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\CacheManagementController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatabaseTableController;
@@ -168,6 +169,10 @@ Route::prefix('app')->group(function () {
             Route::delete('database-tables/{table}/columns/{column}', [DatabaseTableController::class, 'destroyColumn'])->name('database-tables.columns.destroy');
             Route::put('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'updateRow'])->name('database-tables.rows.update');
             Route::delete('database-tables/{table}/rows/{rowId}', [DatabaseTableController::class, 'destroyRow'])->name('database-tables.rows.destroy');
+
+            Route::get('cache-management', [CacheManagementController::class, 'index'])->name('cache-management.index');
+            Route::post('cache-management/execute', [CacheManagementController::class, 'execute'])->name('cache-management.execute');
+            Route::post('cache-management/forget-key', [CacheManagementController::class, 'forgetKey'])->name('cache-management.forget-key');
         });
     });
 });
