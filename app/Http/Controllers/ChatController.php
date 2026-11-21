@@ -41,7 +41,7 @@ class ChatController extends Controller
         $messages = collect();
 
         if ($activeUser) {
-            ChatMessage::query()
+            $updated = ChatMessage::query()
                 ->where('sender_id', $activeUser->id)
                 ->where('receiver_id', $authId)
                 ->where('is_read', false)
@@ -49,6 +49,10 @@ class ChatController extends Controller
                     'is_read' => true,
                     'read_at' => now(),
                 ]);
+
+            if ($updated > 0) {
+                ChatMessage::flushNavbarCache($authId);
+            }
 
             $messages = ChatMessage::query()
                 ->betweenUsers($authId, $activeUser->id)
@@ -113,7 +117,7 @@ class ChatController extends Controller
 
         $newMessages = $query->with('sender')->orderBy('created_at', 'asc')->get();
 
-        ChatMessage::query()
+        $updated = ChatMessage::query()
             ->where('sender_id', $user->id)
             ->where('receiver_id', $authId)
             ->where('is_read', false)
@@ -121,6 +125,10 @@ class ChatController extends Controller
                 'is_read' => true,
                 'read_at' => now(),
             ]);
+
+        if ($updated > 0) {
+            ChatMessage::flushNavbarCache($authId);
+        }
 
         $mapped = $newMessages->map(function ($msg) use ($authId) {
             return [
@@ -145,13 +153,17 @@ class ChatController extends Controller
     {
         Gate::authorize('chat.view');
 
+        $authId = (int) $request->user()->id;
+
         ChatMessage::query()
-            ->where('receiver_id', $request->user()->id)
+            ->where('receiver_id', $authId)
             ->where('is_read', false)
             ->update([
                 'is_read' => true,
                 'read_at' => now(),
             ]);
+
+        ChatMessage::flushNavbarCache($authId);
 
         return back();
     }
@@ -168,6 +180,8 @@ class ChatController extends Controller
         ChatMessage::query()
             ->betweenUsers($authId, $user->id)
             ->delete();
+
+        ChatMessage::flushNavbarCache($authId, (int) $user->id);
 
         return redirect()
             ->route('chat.index', ['user' => $user->uuid])

@@ -7,11 +7,82 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 #[Fillable(['sender_id', 'receiver_id', 'message', 'is_read', 'read_at'])]
 class ChatMessage extends Model
 {
     use HasFactory;
+
+    /**
+     * In-memory request-level cache keyed by user ID.
+     *
+     * @var array<int, array{messages: Collection<int, self>, unread_count: int}>
+     */
+    protected static array $memoizedNavbarSummaries = [];
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $message): void {
+            static::flushNavbarCache((int) $message->receiver_id, (int) $message->sender_id);
+        });
+
+        static::deleted(function (self $message): void {
+            static::flushNavbarCache((int) $message->receiver_id, (int) $message->sender_id);
+        });
+    }
+
+    /**
+     * Retrieve cached navbar chat messages and unread count for a user (TTL 30 seconds).
+     *
+     * @return array{messages: Collection<int, self>, unread_count: int}
+     */
+    public static function navbarSummaryForUser(int $userId, int $ttlSeconds = 30): array
+    {
+        if (isset(static::$memoizedNavbarSummaries[$userId])) {
+            return static::$memoizedNavbarSummaries[$userId];
+        }
+
+        return static::$memoizedNavbarSummaries[$userId] = Cache::remember(
+            "stisla.nav.chat.{$userId}",
+            now()->addSeconds($ttlSeconds),
+            function () use ($userId): array {
+                $messages = static::query()
+                    ->where('receiver_id', $userId)
+                    ->with('sender')
+                    ->latest('id')
+                    ->limit(30)
+                    ->get()
+                    ->unique('sender_id')
+                    ->take(5)
+                    ->values();
+
+                $unreadCount = static::query()
+                    ->where('receiver_id', $userId)
+                    ->where('is_read', false)
+                    ->count();
+
+                return [
+                    'messages' => $messages,
+                    'unread_count' => $unreadCount,
+                ];
+            }
+        );
+    }
+
+    /**
+     * Flush the cached navbar chat summary for the given user ID(s).
+     */
+    public static function flushNavbarCache(?int ...$userIds): void
+    {
+        foreach ($userIds as $userId) {
+            if ($userId) {
+                unset(static::$memoizedNavbarSummaries[$userId]);
+                Cache::forget("stisla.nav.chat.{$userId}");
+            }
+        }
+    }
 
     /**
      * @return array<string, string>

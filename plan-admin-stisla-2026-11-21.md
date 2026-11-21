@@ -107,7 +107,7 @@ Mengurangi kode duplikat di controller dan model Core Admin:
   - Simpan hasil query tree `Menu` ke cache (`Cache::rememberForever("stisla.menus.{$menuApp}", ...)`) dan otomatis hapus cache melalui Model Observer `MenuObserver` saat menu ditambah, diubah, atau dihapus.
 - [x] **Cache Konfigurasi `Setting`**:
   - Simpan seluruh key-value `Setting` ke dalam 1 cache key (`stisla.settings.all`) sehingga pemanggilan `Setting::getValue()` dan `Setting::valuesForGroup()` tidak melakukan query SQL berulang di setiap request, dan di-flush otomatis saat `SettingController@update` / `reset`.
-- [ ] **Optimasi Query Navbar (`ChatMessage` & `AppNotification`)**:
+- [x] **Optimasi Query Navbar (`ChatMessage` & `AppNotification`)**:
   - Gabungkan atau cache ringan (TTL 15–30 detik per user) perhitungan unread count di `layouts.app` View Composer, serta bersihkan kode duplikat di `AppServiceProvider`.
 
 ---
@@ -125,7 +125,7 @@ Fitur wajib agar package ini disukai developer Laravel:
     3. Controller lengkap (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy`, `duplicate`, `export`, `exportPdf`, `template`, `import`).
     4. Blade Views (`index`, `create`, `edit`, `show`) berbasis komponen `<x-stisla::*>`.
     5. Pendaftaran route resource, permission (`{module}.view/create/edit/delete`), item menu di tabel `menus`, dan key terjemahan di `lang/id.json` & `lang/en.json`.
-- [ ] **`php artisan stisla:sync-permissions`**:
+- [x] **`php artisan stisla:sync-permissions`**:
   - Memindai daftar module di config dan menyinkronkan permission baru ke database tanpa merusak role yang sudah ada.
 
 ---

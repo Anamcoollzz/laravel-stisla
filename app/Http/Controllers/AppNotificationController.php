@@ -182,6 +182,8 @@ class AppNotificationController extends Controller
             );
         }
 
+        AppNotification::flushNavbarCache($userId);
+
         return back();
     }
 }

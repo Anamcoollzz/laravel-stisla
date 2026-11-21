@@ -87,18 +87,8 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        Event::listen(Login::class, function (Login $event): void {
-            if ($event->user instanceof User) {
-                $event->user->forceFill(['last_logged_in' => now()])->saveQuietly();
-            }
-        });
-
         View::composer('layouts.app', function ($view) {
             $authUser = auth()->user();
-
-            if ($authUser instanceof User && $authUser->last_logged_in === null) {
-                $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
-            }
 
             if ($authUser instanceof User && $authUser->last_logged_in === null) {
                 $authUser->forceFill(['last_logged_in' => now()])->saveQuietly();
@@ -107,39 +97,17 @@ class AppServiceProvider extends ServiceProvider
             if ($authUser === null || ! Schema::hasTable('chat_messages')) {
                 $view->with('navMessages', collect())->with('navUnreadCount', 0);
             } else {
-                $navMessages = ChatMessage::query()
-                    ->where('receiver_id', $authUser->id)
-                    ->with('sender')
-                    ->latest('id')
-                    ->limit(30)
-                    ->get()
-                    ->unique('sender_id')
-                    ->take(5)
-                    ->values();
-
-                $view->with('navMessages', $navMessages)->with(
-                    'navUnreadCount',
-                    ChatMessage::query()->where('receiver_id', $authUser->id)->where('is_read', false)->count()
-                );
+                $chatSummary = ChatMessage::navbarSummaryForUser((int) $authUser->id);
+                $view->with('navMessages', $chatSummary['messages'])
+                    ->with('navUnreadCount', $chatSummary['unread_count']);
             }
 
             if ($authUser === null || ! Schema::hasTable('app_notifications')) {
                 $view->with('navNotifications', collect())->with('navNotificationUnreadCount', 0);
             } else {
-                $navNotifications = AppNotification::query()
-                    ->forUser($authUser->id)
-                    ->with(['readers' => fn ($query) => $query->where('users.id', $authUser->id)])
-                    ->latest('id')
-                    ->limit(10)
-                    ->get();
-
-                $navNotificationUnreadCount = AppNotification::query()
-                    ->forUser($authUser->id)
-                    ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $authUser->id))
-                    ->count();
-
-                $view->with('navNotifications', $navNotifications)
-                    ->with('navNotificationUnreadCount', $navNotificationUnreadCount);
+                $notificationSummary = AppNotification::navbarSummaryForUser((int) $authUser->id);
+                $view->with('navNotifications', $notificationSummary['notifications'])
+                    ->with('navNotificationUnreadCount', $notificationSummary['unread_count']);
             }
         });
 

@@ -7,11 +7,79 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 #[Fillable(['title', 'message', 'type', 'icon', 'action_url', 'user_id', 'is_broadcast', 'created_by'])]
 class AppNotification extends Model
 {
+    /**
+     * In-memory request-level cache keyed by user ID.
+     *
+     * @var array<int, array{notifications: Collection<int, self>, unread_count: int}>
+     */
+    protected static array $memoizedNavbarSummaries = [];
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $notification): void {
+            static::flushNavbarCache($notification->user_id ? (int) $notification->user_id : null, (int) auth()->id());
+        });
+
+        static::deleted(function (self $notification): void {
+            static::flushNavbarCache($notification->user_id ? (int) $notification->user_id : null, (int) auth()->id());
+        });
+    }
+
+    /**
+     * Retrieve cached navbar notifications and unread count for a user (TTL 30 seconds).
+     *
+     * @return array{notifications: Collection<int, self>, unread_count: int}
+     */
+    public static function navbarSummaryForUser(int $userId, int $ttlSeconds = 30): array
+    {
+        if (isset(static::$memoizedNavbarSummaries[$userId])) {
+            return static::$memoizedNavbarSummaries[$userId];
+        }
+
+        return static::$memoizedNavbarSummaries[$userId] = Cache::remember(
+            "stisla.nav.notifications.{$userId}",
+            now()->addSeconds($ttlSeconds),
+            function () use ($userId): array {
+                $notifications = static::query()
+                    ->forUser($userId)
+                    ->with(['readers' => fn ($query) => $query->where('users.id', $userId)])
+                    ->latest('id')
+                    ->limit(10)
+                    ->get();
+
+                $unreadCount = static::query()
+                    ->forUser($userId)
+                    ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $userId))
+                    ->count();
+
+                return [
+                    'notifications' => $notifications,
+                    'unread_count' => $unreadCount,
+                ];
+            }
+        );
+    }
+
+    /**
+     * Flush the cached navbar notification summary for the given user ID(s).
+     */
+    public static function flushNavbarCache(?int ...$userIds): void
+    {
+        foreach ($userIds as $userId) {
+            if ($userId) {
+                unset(static::$memoizedNavbarSummaries[$userId]);
+                Cache::forget("stisla.nav.notifications.{$userId}");
+            }
+        }
+    }
+
     /**
      * Available notification types.
      *
@@ -105,5 +173,7 @@ class AppNotification extends Model
                 'read_at' => now(),
             ]
         );
+
+        static::flushNavbarCache($userId);
     }
 }
