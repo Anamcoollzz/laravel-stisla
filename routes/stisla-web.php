@@ -67,6 +67,7 @@ Route::prefix('app')->group(function () {
 
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+        Route::delete('/profile/sessions', [ProfileController::class, 'logoutOtherBrowserSessions'])->name('profile.sessions.destroy');
 
         Route::post('users/{user}/duplicate', [UserController::class, 'duplicate'])->name('users.duplicate');
         Route::get('users/export', [UserController::class, 'export'])->name('users.export');

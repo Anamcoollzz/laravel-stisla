@@ -398,6 +398,98 @@
             </div>
           </form>
         </div>
+
+        {{-- Card 3: Active Browser Sessions --}}
+        <div class="card">
+          <div class="card-header">
+            <h4><i class="fas fa-laptop mr-1"></i> {{ __('Browser Sessions') }}</h4>
+            <div class="card-header-action">
+              <span class="badge badge-primary">{{ ($sessions ?? collect())->count() }} {{ __('Active') }}</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="text-muted">
+              {{ __('If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.') }}
+            </p>
+
+            <div class="list-group mb-4">
+              @forelse ($sessions ?? collect() as $session)
+                @php
+                  $deviceIcon = match ($session->device ?? 'Desktop') {
+                      'Mobile' => 'fas fa-mobile-alt',
+                      'Tablet' => 'fas fa-tablet-alt',
+                      default => 'fas fa-desktop',
+                  };
+                @endphp
+                <div class="list-group-item d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <div class="mr-3 text-center" style="width: 40px;">
+                      <i class="{{ $deviceIcon }} fa-2x {{ $session->is_current_device ? 'text-primary' : 'text-muted' }}"></i>
+                    </div>
+                    <div>
+                      <div class="font-weight-bold">
+                        {{ $session->platform }} &mdash; {{ $session->browser }}
+                        <span class="badge badge-light border ml-1">{{ __($session->device) }}</span>
+                      </div>
+                      <div class="small text-muted">
+                        <span class="font-weight-600">{{ $session->ip_address }}</span>
+                        &bull;
+                        @if ($session->is_current_device)
+                          <span class="text-success font-weight-bold">
+                            <i class="fas fa-circle" style="font-size: 8px;"></i> {{ __('This device') }}
+                          </span>
+                        @else
+                          <span>{{ __('Last active') }} {{ $session->last_active_human }} ({{ $session->last_active_at }})</span>
+                        @endif
+                      </div>
+                      @if (! empty($session->user_agent))
+                        <div class="text-muted" style="font-size: 11px; max-width: 460px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $session->user_agent }}">
+                          {{ $session->user_agent }}
+                        </div>
+                      @endif
+                    </div>
+                  </div>
+                  <div>
+                    @if ($session->is_current_device)
+                      <span class="badge badge-success">{{ __('Current Session') }}</span>
+                    @else
+                      <span class="badge badge-secondary">{{ __('Other Device') }}</span>
+                    @endif
+                  </div>
+                </div>
+              @empty
+                <div class="text-muted text-center py-3">
+                  {{ __('No active browser sessions found.') }}
+                </div>
+              @endforelse
+            </div>
+
+            <form action="{{ route('profile.sessions.destroy') }}" method="POST">
+              @csrf
+              @method('DELETE')
+              <div class="form-group row mb-0 align-items-center">
+                <label for="session_password" class="col-sm-4 col-form-label">
+                  {{ __('Confirm Password') }} <span class="text-danger">*</span>
+                </label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                    <input type="password" name="session_password" id="session_password"
+                      class="form-control @error('session_password') is-invalid @enderror"
+                      placeholder="{{ __('Enter your password to log out other sessions') }}" required>
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt mr-1"></i> {{ __('Logout Other Browser Sessions') }}
+                      </button>
+                    </div>
+                  </div>
+                  @error('session_password')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
