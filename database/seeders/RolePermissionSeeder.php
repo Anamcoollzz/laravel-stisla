@@ -54,6 +54,7 @@ class RolePermissionSeeder extends Seeder
             'chat' => ['view', 'create', 'delete'],
             'backup' => ['view', 'create', 'download', 'delete'],
             'log-requests' => ['view', 'delete'],
+            'activity-logs' => ['view', 'delete'],
             'laravel-logs' => ['view', 'delete'],
             'database-tables' => ['view'],
             'news-categories' => ['view', 'create', 'edit', 'delete'],

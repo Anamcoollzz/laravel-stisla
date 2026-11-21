@@ -256,10 +256,11 @@ class MenuSeeder extends Seeder
             ['name' => 'Database Backup', 'icon' => 'fas fa-database', 'route' => 'backups.index', 'permission' => 'backup.view', 'order' => 76],
             ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 77],
             ['name' => 'Log Request', 'icon' => 'fas fa-history', 'route' => 'log-requests.index', 'permission' => 'log-requests.view', 'order' => 78],
-            ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 79],
-            ['name' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route' => 'announcements.index', 'permission' => 'announcements.view', 'order' => 80],
-            ['name' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => 'notifications.index', 'permission' => 'notifications.view', 'order' => 81],
-            ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 82],
+            ['name' => 'Activity Log', 'icon' => 'fas fa-clipboard-list', 'route' => 'activity-logs.index', 'permission' => 'activity-logs.view', 'order' => 79],
+            ['name' => 'Laravel Logs', 'icon' => 'fas fa-file-alt', 'route' => 'laravel-logs.index', 'permission' => 'laravel-logs.view', 'order' => 80],
+            ['name' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route' => 'announcements.index', 'permission' => 'announcements.view', 'order' => 81],
+            ['name' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => 'notifications.index', 'permission' => 'notifications.view', 'order' => 82],
+            ['name' => 'Chat Box', 'icon' => 'fas fa-comments', 'route' => 'chat.index', 'permission' => 'chat.view', 'order' => 83],
         ];
 
         foreach ($systemItems as $item) {

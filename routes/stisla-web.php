@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -116,6 +117,11 @@ Route::prefix('app')->group(function () {
         Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
 
         Route::middleware(PreventInDemoMode::class)->group(function () {
+            Route::delete('activity-logs/clear', [ActivityLogController::class, 'clear'])->name('activity-logs.clear');
+            Route::resource('activity-logs', ActivityLogController::class)->only(['index', 'show', 'destroy'])->parameters([
+                'activity-logs' => 'activityLog',
+            ]);
+
             Route::delete('log-requests/clear', [LogRequestController::class, 'clear'])->name('log-requests.clear');
             Route::resource('log-requests', LogRequestController::class)->only(['index', 'show', 'destroy'])->parameters([
                 'log-requests' => 'logRequest',

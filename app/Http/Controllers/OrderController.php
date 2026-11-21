@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OrderStatusUpdatedMail;
+use App\Models\ActivityLog;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -91,7 +92,20 @@ class OrderController extends Controller
             'send_email' => ['nullable', 'boolean'],
         ]);
 
+        $oldStatus = $order->status;
         $order->update(['status' => $validated['status']]);
+
+        if ($oldStatus !== $validated['status']) {
+            ActivityLog::record(
+                module: 'orders',
+                action: 'updated_status',
+                description: "Updated order #{$order->order_number} status from {$oldStatus} to {$validated['status']}",
+                subject: $order,
+                subjectLabel: '#'.$order->order_number,
+                before: ['status' => $oldStatus],
+                after: ['status' => $validated['status']],
+            );
+        }
 
         if ($request->boolean('send_email')) {
             $this->notifyCustomer($order, 'order');
@@ -112,7 +126,20 @@ class OrderController extends Controller
             'send_email' => ['nullable', 'boolean'],
         ]);
 
+        $oldPaymentStatus = $order->payment_status;
         $order->update(['payment_status' => $validated['payment_status']]);
+
+        if ($oldPaymentStatus !== $validated['payment_status']) {
+            ActivityLog::record(
+                module: 'orders',
+                action: 'updated_payment_status',
+                description: "Updated order #{$order->order_number} payment status from {$oldPaymentStatus} to {$validated['payment_status']}",
+                subject: $order,
+                subjectLabel: '#'.$order->order_number,
+                before: ['payment_status' => $oldPaymentStatus],
+                after: ['payment_status' => $validated['payment_status']],
+            );
+        }
 
         if ($request->boolean('send_email')) {
             $this->notifyCustomer($order, 'payment');
@@ -174,7 +201,29 @@ class OrderController extends Controller
             $data['tracking_proof'] = null;
         }
 
+        $beforeTracking = [
+            'tracking_number' => $order->tracking_number,
+            'tracking_proof' => $order->tracking_proof,
+        ];
+
         $order->update($data);
+
+        $afterTracking = [
+            'tracking_number' => $order->tracking_number,
+            'tracking_proof' => $order->tracking_proof,
+        ];
+
+        if ($beforeTracking !== $afterTracking) {
+            ActivityLog::record(
+                module: 'orders',
+                action: 'updated_tracking',
+                description: "Updated tracking info for order #{$order->order_number}",
+                subject: $order,
+                subjectLabel: '#'.$order->order_number,
+                before: $beforeTracking,
+                after: $afterTracking,
+            );
+        }
 
         if ($request->boolean('send_email')) {
             $this->notifyCustomer($order, 'tracking');
@@ -190,6 +239,13 @@ class OrderController extends Controller
     {
         Gate::authorize('orders.delete');
 
+        $beforeOrder = [
+            'order_number' => $order->order_number,
+            'status' => $order->status,
+            'payment_status' => $order->payment_status,
+            'grand_total' => $order->grand_total,
+        ];
+
         if ($order->payment_proof && Storage::disk('public')->exists($order->payment_proof)) {
             Storage::disk('public')->delete($order->payment_proof);
         }
@@ -197,6 +253,16 @@ class OrderController extends Controller
         if ($order->tracking_proof && Storage::disk('public')->exists($order->tracking_proof)) {
             Storage::disk('public')->delete($order->tracking_proof);
         }
+
+        ActivityLog::record(
+            module: 'orders',
+            action: 'deleted',
+            description: "Deleted order #{$order->order_number}",
+            subject: $order,
+            subjectLabel: '#'.$order->order_number,
+            before: $beforeOrder,
+            after: null,
+        );
 
         $order->delete();
 

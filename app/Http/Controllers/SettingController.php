@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateSettingRequest;
+use App\Models\ActivityLog;
 use App\Models\Setting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -47,10 +48,18 @@ class SettingController extends Controller
     {
         $definition = $this->findGroup($group);
         $stored = Setting::valuesForGroup($group);
+        $beforeChanges = [];
+        $afterChanges = [];
 
         foreach ($definition['fields'] as $key => $field) {
             if ($field['type'] === 'image') {
-                $this->storeImage($request, $group, $key, $stored[$key] ?? null);
+                $oldImage = $stored[$key] ?? null;
+                $this->storeImage($request, $group, $key, $oldImage);
+                $newImage = Setting::valuesForGroup($group)[$key] ?? null;
+                if ($oldImage !== $newImage) {
+                    $beforeChanges[$key] = $oldImage;
+                    $afterChanges[$key] = $newImage;
+                }
 
                 continue;
             }
@@ -63,7 +72,28 @@ class SettingController extends Controller
                 ? ($request->boolean($key) ? '1' : '0')
                 : $request->validated($key);
 
-            Setting::setValue($group, $key, $value === null ? null : (string) $value);
+            $newVal = $value === null ? null : (string) $value;
+            $oldVal = $stored[$key] ?? null;
+
+            Setting::setValue($group, $key, $newVal);
+
+            if ($oldVal !== $newVal) {
+                $beforeChanges[$key] = $oldVal;
+                $afterChanges[$key] = $newVal;
+            }
+        }
+
+        if (! empty($beforeChanges) || ! empty($afterChanges)) {
+            ActivityLog::record(
+                module: 'settings',
+                action: 'updated',
+                description: "Updated {$group} settings",
+                subjectLabel: $group,
+                before: $beforeChanges,
+                after: $afterChanges,
+                subjectId: $group,
+                subjectType: Setting::class,
+            );
         }
 
         return redirect()
@@ -81,6 +111,7 @@ class SettingController extends Controller
         $this->findGroup($group);
 
         $paths = Setting::query()->where('group', $group)->pluck('value', 'key');
+        $beforeValues = $paths->toArray();
 
         foreach ($this->findGroup($group)['fields'] as $key => $field) {
             if ($field['type'] === 'image' && $paths->get($key)) {
@@ -89,6 +120,19 @@ class SettingController extends Controller
         }
 
         Setting::query()->where('group', $group)->delete();
+
+        if (! empty($beforeValues)) {
+            ActivityLog::record(
+                module: 'settings',
+                action: 'reset',
+                description: "Reset {$group} settings to default",
+                subjectLabel: $group,
+                before: $beforeValues,
+                after: null,
+                subjectId: $group,
+                subjectType: Setting::class,
+            );
+        }
 
         return redirect()
             ->route('settings.show', $group)

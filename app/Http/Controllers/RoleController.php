@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Models\ActivityLog;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -55,9 +56,23 @@ class RoleController extends Controller
             'guard_name' => 'web',
         ]);
 
-        if ($request->filled('permissions')) {
-            $role->syncPermissions($request->validated('permissions'));
+        $permissions = $request->filled('permissions') ? $request->validated('permissions') : [];
+        if (! empty($permissions)) {
+            $role->syncPermissions($permissions);
         }
+
+        ActivityLog::record(
+            module: 'roles',
+            action: 'created',
+            description: "Created role {$role->name}",
+            subject: $role,
+            subjectLabel: $role->name,
+            before: null,
+            after: [
+                'name' => $role->name,
+                'permissions' => array_values($permissions),
+            ],
+        );
 
         return redirect()
             ->route('roles.index')
@@ -88,6 +103,19 @@ class RoleController extends Controller
         if (! empty($permissions)) {
             $newRole->syncPermissions($permissions);
         }
+
+        ActivityLog::record(
+            module: 'roles',
+            action: 'duplicated',
+            description: "Duplicated role {$role->name} to {$newRole->name}",
+            subject: $newRole,
+            subjectLabel: $newRole->name,
+            before: ['source_role' => $role->name],
+            after: [
+                'name' => $newRole->name,
+                'permissions' => array_values($permissions),
+            ],
+        );
 
         return redirect()
             ->route('roles.index')
@@ -132,11 +160,33 @@ class RoleController extends Controller
     {
         Gate::authorize('roles.edit');
 
+        $oldName = $role->name;
+        $oldPermissions = $role->permissions()->pluck('name')->sort()->values()->all();
+
         $role->update([
             'name' => $request->validated('name'),
         ]);
 
-        $role->syncPermissions($request->input('permissions', []));
+        $newPermissions = collect($request->input('permissions', []))->sort()->values()->all();
+        $role->syncPermissions($newPermissions);
+
+        if ($oldName !== $role->name || $oldPermissions !== $newPermissions) {
+            ActivityLog::record(
+                module: 'roles',
+                action: 'updated',
+                description: "Updated role {$role->name}",
+                subject: $role,
+                subjectLabel: $role->name,
+                before: [
+                    'name' => $oldName,
+                    'permissions' => $oldPermissions,
+                ],
+                after: [
+                    'name' => $role->name,
+                    'permissions' => $newPermissions,
+                ],
+            );
+        }
 
         return redirect()
             ->route('roles.index')
@@ -155,6 +205,21 @@ class RoleController extends Controller
                 ->route('roles.index')
                 ->with('error', __('The admin role cannot be deleted.'));
         }
+
+        $beforeRole = [
+            'name' => $role->name,
+            'permissions' => $role->permissions()->pluck('name')->sort()->values()->all(),
+        ];
+
+        ActivityLog::record(
+            module: 'roles',
+            action: 'deleted',
+            description: "Deleted role {$role->name}",
+            subject: $role,
+            subjectLabel: $role->name,
+            before: $beforeRole,
+            after: null,
+        );
 
         $role->delete();
 

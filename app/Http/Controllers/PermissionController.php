@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
+use App\Models\ActivityLog;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -45,12 +46,25 @@ class PermissionController extends Controller
     {
         Gate::authorize('permissions.create');
 
-        Permission::query()->create([
+        $permission = Permission::query()->create([
             'name' => $request->validated('name'),
             'guard_name' => 'web',
         ]);
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        ActivityLog::record(
+            module: 'permissions',
+            action: 'created',
+            description: "Created permission {$permission->name}",
+            subject: $permission,
+            subjectLabel: $permission->name,
+            before: null,
+            after: [
+                'name' => $permission->name,
+                'guard_name' => $permission->guard_name,
+            ],
+        );
 
         return redirect()
             ->route('permissions.index')
@@ -72,12 +86,22 @@ class PermissionController extends Controller
             $newName = $baseName.'-copy-'.$counter;
         }
 
-        Permission::query()->create([
+        $newPermission = Permission::query()->create([
             'name' => $newName,
             'guard_name' => 'web',
         ]);
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        ActivityLog::record(
+            module: 'permissions',
+            action: 'duplicated',
+            description: "Duplicated permission {$permission->name} to {$newPermission->name}",
+            subject: $newPermission,
+            subjectLabel: $newPermission->name,
+            before: ['source_permission' => $permission->name],
+            after: ['name' => $newPermission->name],
+        );
 
         return redirect()
             ->route('permissions.index')
@@ -103,11 +127,25 @@ class PermissionController extends Controller
     {
         Gate::authorize('permissions.edit');
 
+        $oldName = $permission->name;
+
         $permission->update([
             'name' => $request->validated('name'),
         ]);
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        if ($oldName !== $permission->name) {
+            ActivityLog::record(
+                module: 'permissions',
+                action: 'updated',
+                description: "Updated permission {$oldName} to {$permission->name}",
+                subject: $permission,
+                subjectLabel: $permission->name,
+                before: ['name' => $oldName],
+                after: ['name' => $permission->name],
+            );
+        }
 
         return redirect()
             ->route('permissions.index')
@@ -120,6 +158,19 @@ class PermissionController extends Controller
     public function destroy(Permission $permission): RedirectResponse
     {
         Gate::authorize('permissions.delete');
+
+        ActivityLog::record(
+            module: 'permissions',
+            action: 'deleted',
+            description: "Deleted permission {$permission->name}",
+            subject: $permission,
+            subjectLabel: $permission->name,
+            before: [
+                'name' => $permission->name,
+                'guard_name' => $permission->guard_name,
+            ],
+            after: null,
+        );
 
         $permission->delete();
 
