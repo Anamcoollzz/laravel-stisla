@@ -186,6 +186,24 @@
                     @endif
                   </td>
                   <td class="text-right">
+                    @can('ip-blacklists.create')
+                      @if (! $session->is_current && $session->ip_address && $session->ip_address !== '-' && $session->ip_address !== request()->ip())
+                        <form action="{{ route('ip-blacklists.store') }}" method="POST" class="d-inline">
+                          @csrf
+                          <input type="hidden" name="ip_address" value="{{ $session->ip_address }}">
+                          <input type="hidden" name="reason" value="{{ __('Blocked from Active User Sessions') }}">
+                          <input type="hidden" name="is_active" value="1">
+                          <button type="button"
+                                  class="btn btn-sm btn-dark btn-delete"
+                                  data-confirm-title="{{ __('Blacklist IP Address?') }}"
+                                  data-confirm-text="{{ __('Block :ip from accessing the application?', ['ip' => $session->ip_address]) }}"
+                                  data-confirm-button-text="{{ __('Block IP') }}"
+                                  title="{{ __('Block IP') }}">
+                            <i class="fas fa-ban"></i>
+                          </button>
+                        </form>
+                      @endif
+                    @endcan
                     @can('user-sessions.delete')
                       @if (! $session->is_current)
                         <form action="{{ route('user-sessions.destroy', $session->id) }}" method="POST" class="d-inline">

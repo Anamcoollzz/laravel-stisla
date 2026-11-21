@@ -13,6 +13,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatabaseTableController;
 use App\Http\Controllers\FileManagerController;
+use App\Http\Controllers\IpBlacklistController;
 use App\Http\Controllers\LaravelLogController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\LoginHistoryController;
@@ -129,6 +130,12 @@ Route::prefix('app')->group(function () {
             Route::get('login-histories', [LoginHistoryController::class, 'index'])->name('login-histories.index');
             Route::delete('login-histories/clear', [LoginHistoryController::class, 'clear'])->name('login-histories.clear');
             Route::delete('login-histories/{loginHistory}', [LoginHistoryController::class, 'destroy'])->name('login-histories.destroy');
+
+            Route::get('ip-blacklists', [IpBlacklistController::class, 'index'])->name('ip-blacklists.index');
+            Route::post('ip-blacklists', [IpBlacklistController::class, 'store'])->name('ip-blacklists.store');
+            Route::put('ip-blacklists/{ipBlacklist}', [IpBlacklistController::class, 'update'])->name('ip-blacklists.update');
+            Route::patch('ip-blacklists/{ipBlacklist}/toggle-active', [IpBlacklistController::class, 'toggleActive'])->name('ip-blacklists.toggle-active');
+            Route::delete('ip-blacklists/{ipBlacklist}', [IpBlacklistController::class, 'destroy'])->name('ip-blacklists.destroy');
 
             Route::get('file-manager', [FileManagerController::class, 'index'])->name('file-manager.index');
             Route::get('file-manager/preview', [FileManagerController::class, 'preview'])->name('file-manager.preview');

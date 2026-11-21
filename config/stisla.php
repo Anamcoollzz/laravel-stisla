@@ -24,6 +24,7 @@ return [
             'users' => ['view', 'create', 'edit', 'delete'],
             'user-sessions' => ['view', 'delete'],
             'login-histories' => ['view', 'delete'],
+            'ip-blacklists' => ['view', 'create', 'edit', 'delete'],
             'roles' => ['view', 'create', 'edit', 'delete'],
             'permissions' => ['view', 'create', 'edit', 'delete'],
             'fields' => ['view', 'create', 'edit', 'delete'],

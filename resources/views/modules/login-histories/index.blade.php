@@ -205,6 +205,24 @@
                     <div class="text-muted small">{{ $history->logged_at?->format('d M Y, H:i:s') }}</div>
                   </td>
                   <td class="text-right">
+                    @can('ip-blacklists.create')
+                      @if ($history->ip_address && $history->ip_address !== request()->ip())
+                        <form action="{{ route('ip-blacklists.store') }}" method="POST" class="d-inline">
+                          @csrf
+                          <input type="hidden" name="ip_address" value="{{ $history->ip_address }}">
+                          <input type="hidden" name="reason" value="{{ __('Blocked from Login History (:event)', ['event' => $history->event]) }}">
+                          <input type="hidden" name="is_active" value="1">
+                          <button type="button"
+                                  class="btn btn-sm btn-dark btn-delete"
+                                  data-confirm-title="{{ __('Blacklist IP Address?') }}"
+                                  data-confirm-text="{{ __('Block :ip from accessing the application?', ['ip' => $history->ip_address]) }}"
+                                  data-confirm-button-text="{{ __('Block IP') }}"
+                                  title="{{ __('Block IP') }}">
+                            <i class="fas fa-ban"></i>
+                          </button>
+                        </form>
+                      @endif
+                    @endcan
                     @can('login-histories.delete')
                       <form action="{{ route('login-histories.destroy', $history) }}" method="POST" class="d-inline">
                         @csrf
