@@ -44,31 +44,61 @@ class ChatMessage extends Model
             return static::$memoizedNavbarSummaries[$userId];
         }
 
-        return static::$memoizedNavbarSummaries[$userId] = Cache::remember(
-            "stisla.nav.chat.{$userId}",
-            now()->addSeconds($ttlSeconds),
-            function () use ($userId): array {
-                $messages = static::query()
-                    ->where('receiver_id', $userId)
-                    ->with('sender')
-                    ->latest('id')
-                    ->limit(30)
-                    ->get()
-                    ->unique('sender_id')
-                    ->take(5)
-                    ->values();
+        $cacheKey = "stisla.nav.chat.{$userId}";
+        $cached = Cache::get($cacheKey);
 
-                $unreadCount = static::query()
-                    ->where('receiver_id', $userId)
-                    ->where('is_read', false)
-                    ->count();
+        if (! is_array($cached) || ! is_array($cached['messages'] ?? null)) {
+            Cache::forget($cacheKey);
 
-                return [
-                    'messages' => $messages,
-                    'unread_count' => $unreadCount,
-                ];
-            }
-        );
+            $cached = Cache::remember(
+                $cacheKey,
+                now()->addSeconds($ttlSeconds),
+                function () use ($userId): array {
+                    $messages = static::query()
+                        ->where('receiver_id', $userId)
+                        ->with('sender')
+                        ->latest('id')
+                        ->limit(30)
+                        ->get()
+                        ->unique('sender_id')
+                        ->take(5)
+                        ->values()
+                        ->map(function (self $msg): array {
+                            $attrs = $msg->getAttributes();
+                            $attrs['sender'] = $msg->sender ? $msg->sender->getAttributes() : null;
+
+                            return $attrs;
+                        })
+                        ->all();
+
+                    $unreadCount = static::query()
+                        ->where('receiver_id', $userId)
+                        ->where('is_read', false)
+                        ->count();
+
+                    return [
+                        'messages' => $messages,
+                        'unread_count' => $unreadCount,
+                    ];
+                }
+            );
+        }
+
+        $messages = collect($cached['messages'])->map(function (array $row): self {
+            $senderRow = is_array($row['sender'] ?? null) ? $row['sender'] : null;
+            unset($row['sender']);
+
+            /** @var self $msg */
+            $msg = (new static)->newFromBuilder($row);
+            $msg->setRelation('sender', $senderRow ? (new User)->newFromBuilder($senderRow) : null);
+
+            return $msg;
+        });
+
+        return static::$memoizedNavbarSummaries[$userId] = [
+            'messages' => $messages,
+            'unread_count' => (int) ($cached['unread_count'] ?? 0),
+        ];
     }
 
     /**

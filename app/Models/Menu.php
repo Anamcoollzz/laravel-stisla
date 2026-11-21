@@ -90,15 +90,46 @@ class Menu extends Model
             return static::$memoizedSidebars[$menuApp];
         }
 
-        return static::$memoizedSidebars[$menuApp] = Cache::rememberForever("stisla.menus.{$menuApp}", function () use ($menuApp): Collection {
-            return static::query()
-                ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
-                ->forApp($menuApp)
-                ->whereNull('parent_id')
-                ->where('is_active', true)
-                ->orderBy('order')
-                ->get();
+        $cached = Cache::get("stisla.menus.{$menuApp}");
+
+        if (! is_array($cached)) {
+            Cache::forget("stisla.menus.{$menuApp}");
+
+            $cached = Cache::rememberForever("stisla.menus.{$menuApp}", function () use ($menuApp): array {
+                return static::query()
+                    ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
+                    ->forApp($menuApp)
+                    ->whereNull('parent_id')
+                    ->where('is_active', true)
+                    ->orderBy('order')
+                    ->get()
+                    ->map(function (self $menu): array {
+                        $attributes = $menu->getAttributes();
+                        $attributes['children'] = $menu->children
+                            ->map(fn (self $child): array => $child->getAttributes())
+                            ->values()
+                            ->all();
+
+                        return $attributes;
+                    })
+                    ->values()
+                    ->all();
+            });
+        }
+
+        $menus = collect($cached)->map(function (array $row): self {
+            $childrenRows = is_array($row['children'] ?? null) ? $row['children'] : [];
+            unset($row['children']);
+
+            /** @var self $menu */
+            $menu = (new static)->newFromBuilder($row);
+            $children = collect($childrenRows)->map(fn (array $childRow): self => (new static)->newFromBuilder($childRow));
+            $menu->setRelation('children', $children);
+
+            return $menu;
         });
+
+        return static::$memoizedSidebars[$menuApp] = $menus;
     }
 
     /**

@@ -43,28 +43,61 @@ class AppNotification extends Model
             return static::$memoizedNavbarSummaries[$userId];
         }
 
-        return static::$memoizedNavbarSummaries[$userId] = Cache::remember(
-            "stisla.nav.notifications.{$userId}",
-            now()->addSeconds($ttlSeconds),
-            function () use ($userId): array {
-                $notifications = static::query()
-                    ->forUser($userId)
-                    ->with(['readers' => fn ($query) => $query->where('users.id', $userId)])
-                    ->latest('id')
-                    ->limit(10)
-                    ->get();
+        $cacheKey = "stisla.nav.notifications.{$userId}";
+        $cached = Cache::get($cacheKey);
 
-                $unreadCount = static::query()
-                    ->forUser($userId)
-                    ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $userId))
-                    ->count();
+        if (! is_array($cached) || ! is_array($cached['notifications'] ?? null)) {
+            Cache::forget($cacheKey);
 
-                return [
-                    'notifications' => $notifications,
-                    'unread_count' => $unreadCount,
-                ];
-            }
-        );
+            $cached = Cache::remember(
+                $cacheKey,
+                now()->addSeconds($ttlSeconds),
+                function () use ($userId): array {
+                    $notifications = static::query()
+                        ->forUser($userId)
+                        ->with(['readers' => fn ($query) => $query->where('users.id', $userId)])
+                        ->latest('id')
+                        ->limit(10)
+                        ->get()
+                        ->map(function (self $notif) use ($userId): array {
+                            $attrs = $notif->getAttributes();
+                            $attrs['is_read_by_user'] = $notif->readers->contains('id', $userId);
+
+                            return $attrs;
+                        })
+                        ->all();
+
+                    $unreadCount = static::query()
+                        ->forUser($userId)
+                        ->whereDoesntHave('readers', fn ($query) => $query->where('users.id', $userId))
+                        ->count();
+
+                    return [
+                        'notifications' => $notifications,
+                        'unread_count' => $unreadCount,
+                    ];
+                }
+            );
+        }
+
+        $notifications = collect($cached['notifications'])->map(function (array $row) use ($userId): self {
+            $isRead = (bool) ($row['is_read_by_user'] ?? false);
+            unset($row['is_read_by_user']);
+
+            /** @var self $notif */
+            $notif = (new static)->newFromBuilder($row);
+            $readers = $isRead
+                ? collect([(new User)->newFromBuilder(['id' => $userId])])
+                : collect();
+            $notif->setRelation('readers', $readers);
+
+            return $notif;
+        });
+
+        return static::$memoizedNavbarSummaries[$userId] = [
+            'notifications' => $notifications,
+            'unread_count' => (int) ($cached['unread_count'] ?? 0),
+        ];
     }
 
     /**
