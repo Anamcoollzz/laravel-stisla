@@ -4,11 +4,63 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 #[Fillable(['group', 'key', 'value'])]
 class Setting extends Model
 {
+    public const CACHE_KEY = 'stisla.settings.all';
+
+    /**
+     * In-memory request-level cache to avoid repeated cache store lookups within the same request.
+     *
+     * @var array{by_key: array<string, string|null>, by_group: array<string, array<string, string|null>>}|null
+     */
+    protected static ?array $memoizedSettings = null;
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => static::flushCache());
+        static::deleted(fn () => static::flushCache());
+    }
+
+    /**
+     * Retrieve all settings from cache keyed by both flat key and group.
+     *
+     * @return array{by_key: array<string, string|null>, by_group: array<string, array<string, string|null>>}
+     */
+    public static function allCached(): array
+    {
+        if (static::$memoizedSettings !== null) {
+            return static::$memoizedSettings;
+        }
+
+        return static::$memoizedSettings = Cache::rememberForever(self::CACHE_KEY, function (): array {
+            $byKey = [];
+            $byGroup = [];
+
+            foreach (static::query()->get(['group', 'key', 'value']) as $row) {
+                $byKey[$row->key] = $row->value;
+                $byGroup[(string) $row->group][$row->key] = $row->value;
+            }
+
+            return [
+                'by_key' => $byKey,
+                'by_group' => $byGroup,
+            ];
+        });
+    }
+
+    /**
+     * Flush the cached settings map.
+     */
+    public static function flushCache(): void
+    {
+        static::$memoizedSettings = null;
+        Cache::forget(self::CACHE_KEY);
+    }
+
     /**
      * Get the stored value of a setting, falling back to the config default.
      */
@@ -30,7 +82,15 @@ class Setting extends Model
             $keys[] = $aliases[$key];
         }
 
-        $value = static::query()->whereIn('key', $keys)->value('value');
+        $cachedByKey = static::allCached()['by_key'] ?? [];
+        $value = null;
+        foreach ($keys as $candidateKey) {
+            if (array_key_exists($candidateKey, $cachedByKey)) {
+                $value = $cachedByKey[$candidateKey];
+
+                break;
+            }
+        }
 
         if ($value !== null && $value !== '') {
             return $value;
@@ -228,7 +288,7 @@ class Setting extends Model
      */
     public static function valuesForGroup(string $group): array
     {
-        return static::query()->where('group', $group)->pluck('value', 'key')->all();
+        return static::allCached()['by_group'][$group] ?? [];
     }
 
     /**
@@ -240,5 +300,7 @@ class Setting extends Model
             ['key' => $key],
             ['group' => $group, 'value' => $value]
         );
+
+        static::flushCache();
     }
 }

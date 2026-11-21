@@ -105,7 +105,7 @@ Mengurangi kode duplikat di controller dan model Core Admin:
 
 - [x] **Cache Sidebar Menu (`Menu`)**:
   - Simpan hasil query tree `Menu` ke cache (`Cache::rememberForever("stisla.menus.{$menuApp}", ...)`) dan otomatis hapus cache melalui Model Observer `MenuObserver` saat menu ditambah, diubah, atau dihapus.
-- [ ] **Cache Konfigurasi `Setting`**:
+- [x] **Cache Konfigurasi `Setting`**:
   - Simpan seluruh key-value `Setting` ke dalam 1 cache key (`stisla.settings.all`) sehingga pemanggilan `Setting::getValue()` dan `Setting::valuesForGroup()` tidak melakukan query SQL berulang di setiap request, dan di-flush otomatis saat `SettingController@update` / `reset`.
 - [ ] **Optimasi Query Navbar (`ChatMessage` & `AppNotification`)**:
   - Gabungkan atau cache ringan (TTL 15–30 detik per user) perhitungan unread count di `layouts.app` View Composer, serta bersihkan kode duplikat di `AppServiceProvider`.

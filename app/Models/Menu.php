@@ -73,13 +73,24 @@ class Menu extends Model
     }
 
     /**
+     * In-memory request-level cache keyed by app identifier.
+     *
+     * @var array<string, Collection<int, self>>
+     */
+    protected static array $memoizedSidebars = [];
+
+    /**
      * Retrieve the cached sidebar menu tree for the given app identifier.
      *
      * @return Collection<int, self>
      */
     public static function sidebarForApp(string $menuApp): Collection
     {
-        return Cache::rememberForever("stisla.menus.{$menuApp}", function () use ($menuApp): Collection {
+        if (isset(static::$memoizedSidebars[$menuApp])) {
+            return static::$memoizedSidebars[$menuApp];
+        }
+
+        return static::$memoizedSidebars[$menuApp] = Cache::rememberForever("stisla.menus.{$menuApp}", function () use ($menuApp): Collection {
             return static::query()
                 ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
                 ->forApp($menuApp)
@@ -97,6 +108,8 @@ class Menu extends Model
      */
     public static function flushSidebarCache(?array $extraApps = null): void
     {
+        static::$memoizedSidebars = [];
+
         $apps = collect(['online-shop', 'spp-payment', 'news', 'lp-compro-workers', (string) config('stisla.menu_app', 'online-shop')])
             ->merge($extraApps ?? []);
 

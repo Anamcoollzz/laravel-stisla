@@ -83,6 +83,8 @@ class SettingController extends Controller
             }
         }
 
+        Setting::flushCache();
+
         if (! empty($beforeChanges) || ! empty($afterChanges)) {
             ActivityLog::record(
                 module: 'settings',
@@ -120,6 +122,7 @@ class SettingController extends Controller
         }
 
         Setting::query()->where('group', $group)->delete();
+        Setting::flushCache();
 
         if (! empty($beforeValues)) {
             ActivityLog::record(
