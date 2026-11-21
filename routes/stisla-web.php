@@ -71,6 +71,9 @@ Route::prefix('app')->group(function () {
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings/email/test', [SettingController::class, 'sendTestEmail'])
+            ->middleware(PreventInDemoMode::class)
+            ->name('settings.email.test');
         Route::get('/settings/{group}', [SettingController::class, 'show'])->name('settings.show');
         Route::put('/settings/{group}', [SettingController::class, 'update'])->name('settings.update');
         Route::delete('/settings/{group}', [SettingController::class, 'reset'])->name('settings.reset');

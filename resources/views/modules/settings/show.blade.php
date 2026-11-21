@@ -256,6 +256,40 @@
             @csrf
             @method('DELETE')
           </form>
+
+          @if ($currentGroup === 'email' && ! config('stisla.is_demo'))
+            <div class="card mt-4">
+              <div class="card-header">
+                <h4><i class="fas fa-paper-plane mr-1"></i> {{ __('Test Email Delivery') }}</h4>
+              </div>
+              <form action="{{ route('settings.email.test') }}" method="POST">
+                @csrf
+                <div class="card-body">
+                  <p class="text-muted">
+                    {{ __('Save your SMTP or Email API settings above first, then send a test email to verify delivery.') }}
+                  </p>
+                  <div class="form-group row align-items-center mb-0">
+                    <label for="test_email" class="col-md-3 col-form-label text-md-right font-weight-600">
+                      {{ __('Recipient Email') }}
+                    </label>
+                    <div class="col-md-6">
+                      <input type="email"
+                             id="test_email"
+                             name="test_email"
+                             class="form-control"
+                             value="{{ old('test_email', auth()->user()->email) }}"
+                             required>
+                    </div>
+                    <div class="col-md-3 mt-2 mt-md-0">
+                      <button type="submit" class="btn btn-info btn-block">
+                        <i class="fas fa-paper-plane mr-1"></i> {{ __('Send Test Email') }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          @endif
         @endcan
       </div>
     </div>

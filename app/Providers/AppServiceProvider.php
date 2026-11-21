@@ -463,6 +463,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->registerScheduledTaskListeners();
         $this->registerQueueMonitorListeners();
+        $this->applyMailConfiguration();
     }
 
     /**
@@ -612,5 +613,65 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             }
         });
+    }
+
+    /**
+     * Apply stored SMTP and Email API settings to runtime mail configuration.
+     */
+    private function applyMailConfiguration(): void
+    {
+        if (! Schema::hasTable('settings')) {
+            return;
+        }
+
+        $email = Setting::valuesForGroup('email');
+        if ($email === []) {
+            return;
+        }
+
+        if (! empty($email['mail_mailer'])) {
+            config(['mail.default' => $email['mail_mailer']]);
+        }
+        if (! empty($email['mail_from_address'])) {
+            config(['mail.from.address' => $email['mail_from_address']]);
+        }
+        if (! empty($email['mail_from_name'])) {
+            config(['mail.from.name' => $email['mail_from_name']]);
+        }
+        if (! empty($email['mail_host'])) {
+            config(['mail.mailers.smtp.host' => $email['mail_host']]);
+        }
+        if (! empty($email['mail_port'])) {
+            config(['mail.mailers.smtp.port' => (int) $email['mail_port']]);
+        }
+        if (array_key_exists('mail_username', $email) && $email['mail_username'] !== null && $email['mail_username'] !== '') {
+            config(['mail.mailers.smtp.username' => $email['mail_username']]);
+        }
+        if (array_key_exists('mail_password', $email) && $email['mail_password'] !== null && $email['mail_password'] !== '') {
+            config(['mail.mailers.smtp.password' => $email['mail_password']]);
+        }
+        if (array_key_exists('mail_encryption', $email)) {
+            $scheme = match ($email['mail_encryption']) {
+                'ssl' => 'smtps',
+                'tls' => 'smtp',
+                default => null,
+            };
+            config(['mail.mailers.smtp.scheme' => $scheme]);
+        }
+        if (! empty($email['resend_api_key'])) {
+            config(['services.resend.key' => $email['resend_api_key']]);
+        }
+        if (! empty($email['postmark_token'])) {
+            config(['services.postmark.key' => $email['postmark_token']]);
+        }
+        if (! empty($email['ses_key'])) {
+            config(['services.ses.key' => $email['ses_key']]);
+        }
+        if (! empty($email['ses_secret'])) {
+            config(['services.ses.secret' => $email['ses_secret']]);
+        }
+        if (! empty($email['ses_region'])) {
+            config(['services.ses.region' => $email['ses_region']]);
+        }
     }
 }

@@ -7,7 +7,9 @@ use App\Models\ActivityLog;
 use App\Models\Setting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
@@ -140,6 +142,57 @@ class SettingController extends Controller
         return redirect()
             ->route('settings.show', $group)
             ->with('success', __('Settings reset to default.'));
+    }
+
+    /**
+     * Send a test email using the active SMTP or Email API configuration.
+     */
+    public function sendTestEmail(Request $request): RedirectResponse
+    {
+        Gate::authorize('settings.edit');
+
+        $validated = $request->validate([
+            'test_email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $recipient = $validated['test_email'];
+        $mailer = (string) config('mail.default', 'log');
+
+        try {
+            Mail::purge($mailer);
+            Mail::raw(
+                __('This is a test email sent from :app using the :mailer mail driver at :time.', [
+                    'app' => config('app.name', 'Laravel Stisla'),
+                    'mailer' => strtoupper($mailer),
+                    'time' => now()->format('d M Y, H:i:s'),
+                ]),
+                static function ($message) use ($recipient): void {
+                    $message->to($recipient)
+                        ->subject(__('Test Email Configuration - :app', ['app' => config('app.name', 'Laravel Stisla')]));
+                }
+            );
+
+            ActivityLog::record(
+                module: 'settings',
+                action: 'test_email',
+                description: "Sent test email to {$recipient} via {$mailer}",
+                subjectLabel: $recipient,
+                before: null,
+                after: ['recipient' => $recipient, 'mailer' => $mailer],
+                subjectId: 'email',
+            );
+
+            return redirect()
+                ->route('settings.show', 'email')
+                ->with('success', __('Test email sent to :email via :mailer!', [
+                    'email' => $recipient,
+                    'mailer' => strtoupper($mailer),
+                ]));
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('settings.show', 'email')
+                ->with('error', __('Failed to send test email: ').$e->getMessage());
+        }
     }
 
     /**
