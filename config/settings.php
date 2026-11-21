@@ -369,10 +369,16 @@ return [
         'security' => [
             'label' => 'Security',
             'icon' => 'fas fa-lock',
-            'description' => 'Security settings such as registration, password rules and session.',
+            'description' => 'Security settings such as registration, login rate limiting, password rules and session.',
             'fields' => [
                 'allow_registration' => ['label' => 'Allow Registration', 'type' => 'switch', 'default' => '1', 'help' => 'Allow visitors to create an account'],
+                'login_max_attempts' => ['label' => 'Max Login Attempts', 'type' => 'number', 'default' => '5', 'rules' => ['integer', 'between:1,20'], 'help' => 'Maximum failed login attempts before temporary lockout'],
+                'login_decay_minutes' => ['label' => 'Login Lockout Duration (minutes)', 'type' => 'number', 'default' => '1', 'rules' => ['integer', 'between:1,60'], 'help' => 'Lockout duration in minutes after exceeding max login attempts'],
                 'password_min_length' => ['label' => 'Minimum Password Length', 'type' => 'number', 'default' => '8', 'rules' => ['integer', 'between:6,64']],
+                'password_require_mixed_case' => ['label' => 'Require Uppercase & Lowercase', 'type' => 'switch', 'default' => '0', 'help' => 'Require both uppercase and lowercase letters in passwords'],
+                'password_require_numbers' => ['label' => 'Require Numbers', 'type' => 'switch', 'default' => '0', 'help' => 'Require at least one numeric digit in passwords'],
+                'password_require_symbols' => ['label' => 'Require Symbols', 'type' => 'switch', 'default' => '0', 'help' => 'Require at least one special character in passwords'],
+                'password_uncompromised' => ['label' => 'Check Compromised Passwords', 'type' => 'switch', 'default' => '0', 'help' => 'Reject passwords known to have appeared in data breaches'],
                 'session_lifetime' => ['label' => 'Session Lifetime (minutes)', 'type' => 'number', 'default' => '120', 'rules' => ['integer', 'between:5,10080']],
             ],
         ],

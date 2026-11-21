@@ -138,7 +138,7 @@ Fitur wajib agar package ini disukai developer Laravel:
 - [ ] **Hardening `DatabaseTableController` & `BackupController`**:
   - Tambahkan opsi config `'allow_database_mutation_in_production' => env('STISLA_DB_MUTATION_IN_PROD', false)` agar di environment `production`, fitur *Database Tables* otomatis berjalan dalam mode **Read-Only** (tidak bisa drop kolom/hapus row langsung dari UI kecuali diizinkan eksplisit).
   - Tambahkan pencatatan `ActivityLog` setiap kali seseorang membuat/menghapus backup database, membersihkan log, atau mengubah struktur/isi tabel lewat `DatabaseTableController`.
-- [ ] **Kebijakan Password & Lockout**:
+- [x] **Kebijakan Password & Lockout**:
   - Tambahkan rate-limiting jelas pada login admin, riwayat login gagal di `ActivityLog`, serta aturan kompleksitas password yang bisa diatur dari menu `Settings -> Security`.
 
 ---

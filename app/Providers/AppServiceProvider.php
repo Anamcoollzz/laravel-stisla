@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,6 +45,42 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Password::defaults(function () {
+            $minLength = 8;
+            $requireMixedCase = false;
+            $requireNumbers = false;
+            $requireSymbols = false;
+            $uncompromised = false;
+
+            if (Schema::hasTable('settings')) {
+                $minLength = max(6, (int) (Setting::getValue('password_min_length', '8') ?: 8));
+                $requireMixedCase = Setting::getValue('password_require_mixed_case', '0') === '1';
+                $requireNumbers = Setting::getValue('password_require_numbers', '0') === '1';
+                $requireSymbols = Setting::getValue('password_require_symbols', '0') === '1';
+                $uncompromised = Setting::getValue('password_uncompromised', '0') === '1';
+            }
+
+            $rule = Password::min($minLength);
+
+            if ($requireMixedCase) {
+                $rule->mixedCase();
+            }
+
+            if ($requireNumbers) {
+                $rule->numbers();
+            }
+
+            if ($requireSymbols) {
+                $rule->symbols();
+            }
+
+            if ($uncompromised) {
+                $rule->uncompromised();
+            }
+
+            return $rule;
+        });
+
         Vite::useBuildDirectory('lp-build');
         Blade::anonymousComponentPath(resource_path('views/lp/components'));
 
