@@ -19,14 +19,14 @@ class BlockBlacklistedIp
         $match = IpBlacklist::findActiveMatch($request->ip());
 
         if ($match) {
-            IpBlacklist::recordHit((int) $match->id);
+            IpBlacklist::recordHit((int) $match['id']);
 
             $message = __('Your IP address (:ip) has been blocked.', ['ip' => $request->ip()]);
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => $message,
-                    'reason' => $match->reason,
+                    'reason' => $match['reason'],
                 ], 403);
             }
 

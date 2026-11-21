@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -65,21 +64,23 @@ class IpBlacklist extends Model
 
     /**
      * Find a currently active blacklist entry for the given IP address.
+     *
+     * @return array{id: int, ip_address: string, reason: ?string, expires_at: ?int}|null
      */
-    public static function findActiveMatch(?string $ip): ?object
+    public static function findActiveMatch(?string $ip): ?array
     {
         if ($ip === null || $ip === '' || ! Schema::hasTable('ip_blacklists')) {
             return null;
         }
 
         $entries = self::cachedActiveEntries();
-        $match = $entries->get($ip);
+        $match = $entries[$ip] ?? null;
 
-        if (! $match) {
+        if (! is_array($match)) {
             return null;
         }
 
-        if ($match->expires_at !== null && now()->greaterThanOrEqualTo($match->expires_at)) {
+        if ($match['expires_at'] !== null && now()->getTimestamp() >= $match['expires_at']) {
             return null;
         }
 
@@ -102,15 +103,31 @@ class IpBlacklist extends Model
     }
 
     /**
-     * @return Collection<string, object>
+     * @return array<string, array{id: int, ip_address: string, reason: ?string, expires_at: ?int}>
      */
-    private static function cachedActiveEntries(): Collection
+    private static function cachedActiveEntries(): array
     {
-        return Cache::rememberForever(self::CACHE_KEY, static function (): Collection {
+        $cached = Cache::rememberForever(self::CACHE_KEY, static function (): array {
             return self::query()
                 ->where('is_active', true)
                 ->get(['id', 'ip_address', 'reason', 'expires_at'])
-                ->keyBy('ip_address');
+                ->mapWithKeys(static fn (self $entry): array => [
+                    $entry->ip_address => [
+                        'id' => (int) $entry->id,
+                        'ip_address' => (string) $entry->ip_address,
+                        'reason' => $entry->reason,
+                        'expires_at' => $entry->expires_at?->getTimestamp(),
+                    ],
+                ])
+                ->all();
         });
+
+        if (! is_array($cached)) {
+            self::flushCache();
+
+            return self::cachedActiveEntries();
+        }
+
+        return $cached;
     }
 }
