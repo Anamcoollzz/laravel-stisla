@@ -12,6 +12,7 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatabaseTableController;
+use App\Http\Controllers\FileManagerController;
 use App\Http\Controllers\LaravelLogController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\LogRequestController;
@@ -118,6 +119,16 @@ Route::prefix('app')->group(function () {
         Route::delete('backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
 
         Route::middleware(PreventInDemoMode::class)->group(function () {
+            Route::get('file-manager', [FileManagerController::class, 'index'])->name('file-manager.index');
+            Route::get('file-manager/preview', [FileManagerController::class, 'preview'])->name('file-manager.preview');
+            Route::get('file-manager/download', [FileManagerController::class, 'download'])->name('file-manager.download');
+            Route::get('file-manager/edit', [FileManagerController::class, 'edit'])->name('file-manager.edit');
+            Route::post('file-manager/upload', [FileManagerController::class, 'upload'])->name('file-manager.upload');
+            Route::post('file-manager/folder', [FileManagerController::class, 'storeFolder'])->name('file-manager.folder.store');
+            Route::post('file-manager/file', [FileManagerController::class, 'storeFile'])->name('file-manager.file.store');
+            Route::patch('file-manager/rename', [FileManagerController::class, 'rename'])->name('file-manager.rename');
+            Route::put('file-manager/content', [FileManagerController::class, 'updateContent'])->name('file-manager.content.update');
+            Route::delete('file-manager', [FileManagerController::class, 'destroy'])->name('file-manager.destroy');
             Route::delete('activity-logs/clear', [ActivityLogController::class, 'clear'])->name('activity-logs.clear');
             Route::resource('activity-logs', ActivityLogController::class)->only(['index', 'show', 'destroy'])->parameters([
                 'activity-logs' => 'activityLog',

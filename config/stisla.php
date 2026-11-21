@@ -54,6 +54,7 @@ return [
             'activity-logs' => ['view', 'delete'],
             'laravel-logs' => ['view', 'delete'],
             'database-tables' => ['view'],
+            'file-manager' => ['view', 'create', 'edit', 'delete'],
             'news-categories' => ['view', 'create', 'edit', 'delete'],
             'news-tags' => ['view', 'create', 'edit', 'delete'],
             'news-comments' => ['view', 'create', 'edit', 'delete'],
