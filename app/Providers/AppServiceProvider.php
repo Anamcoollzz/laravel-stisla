@@ -154,13 +154,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer(['layouts.app', 'partials.sidebar-pages'], function ($view) {
             if (Schema::hasTable('menus')) {
                 $menuApp = (string) config('stisla.menu_app', 'online-shop');
-                $sidebarMenus = Menu::query()
-                    ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
-                    ->forApp($menuApp)
-                    ->whereNull('parent_id')
-                    ->where('is_active', true)
-                    ->orderBy('order')
-                    ->get();
+                $sidebarMenus = Menu::sidebarForApp($menuApp);
 
                 $view->with('sidebarMenus', $sidebarMenus);
             }

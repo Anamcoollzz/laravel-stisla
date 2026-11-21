@@ -2,17 +2,22 @@
 
 namespace App\Models;
 
+use App\Observers\MenuObserver;
 use Database\Factories\MenuFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 #[Fillable(['app', 'parent_id', 'name', 'type', 'icon', 'route', 'url', 'permission', 'order', 'is_active'])]
+#[ObservedBy([MenuObserver::class])]
 class Menu extends Model
 {
     /** @use HasFactory<MenuFactory> */
@@ -59,12 +64,50 @@ class Menu extends Model
         return static::query()
             ->pluck('app')
             ->flatten()
-            ->merge(['online-shop', 'news', 'lp-compro-workers'])
+            ->merge(['online-shop', 'spp-payment', 'news', 'lp-compro-workers'])
             ->map(fn (mixed $item): string => trim((string) $item))
             ->filter()
             ->unique()
             ->sort()
             ->values();
+    }
+
+    /**
+     * Retrieve the cached sidebar menu tree for the given app identifier.
+     *
+     * @return Collection<int, self>
+     */
+    public static function sidebarForApp(string $menuApp): Collection
+    {
+        return Cache::rememberForever("stisla.menus.{$menuApp}", function () use ($menuApp): Collection {
+            return static::query()
+                ->with(['children' => fn ($query) => $query->where('is_active', true)->forApp($menuApp)->orderBy('order')])
+                ->forApp($menuApp)
+                ->whereNull('parent_id')
+                ->where('is_active', true)
+                ->orderBy('order')
+                ->get();
+        });
+    }
+
+    /**
+     * Flush cached sidebar menus for all known and affected app identifiers.
+     *
+     * @param  array<int, mixed>|null  $extraApps
+     */
+    public static function flushSidebarCache(?array $extraApps = null): void
+    {
+        $apps = collect(['online-shop', 'spp-payment', 'news', 'lp-compro-workers', (string) config('stisla.menu_app', 'online-shop')])
+            ->merge($extraApps ?? []);
+
+        if (Schema::hasTable('menus')) {
+            $apps = $apps->merge(static::distinctApps());
+        }
+
+        $apps->map(fn (mixed $app): string => trim((string) $app))
+            ->filter()
+            ->unique()
+            ->each(fn (string $app) => Cache::forget("stisla.menus.{$app}"));
     }
 
     /**
