@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\ActivityLog;
+use App\Models\LoginHistory;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
@@ -98,6 +99,14 @@ class LoginController extends Controller
             $request->session()->regenerate();
             $user->update(['last_logged_in' => now()]);
 
+            LoginHistory::record(
+                event: 'login_success',
+                status: 'success',
+                user: $user,
+                email: $user->email,
+                notes: $request->boolean('remember') ? __('Remember Me enabled') : null,
+            );
+
             return redirect()
                 ->intended(route('dashboard'))
                 ->with('success', __('Login successful.'));
@@ -135,6 +144,17 @@ class LoginController extends Controller
      */
     public function logout(Request $request): RedirectResponse
     {
+        /** @var User|null $user */
+        $user = Auth::user();
+        if ($user) {
+            LoginHistory::record(
+                event: 'logout',
+                status: 'success',
+                user: $user,
+                email: $user->email,
+            );
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
@@ -170,6 +190,14 @@ class LoginController extends Controller
         }
 
         $matchedUser ??= User::query()->where('email', $email)->first(['id', 'email']);
+
+        LoginHistory::record(
+            event: $action,
+            status: $action === 'login_failed' ? 'failed' : 'blocked',
+            user: $matchedUser,
+            email: $email,
+            notes: $description,
+        );
 
         ActivityLog::record(
             module: 'auth',

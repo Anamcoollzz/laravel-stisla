@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\LoginHistory;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -97,6 +98,14 @@ class GoogleAuthController extends Controller
         }
 
         Auth::login($user, true);
+
+        LoginHistory::record(
+            event: 'google_login',
+            status: 'success',
+            user: $user,
+            email: $user->email,
+            notes: __('Google OAuth login'),
+        );
         $request->session()->regenerate();
 
         return redirect()

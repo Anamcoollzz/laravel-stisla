@@ -15,6 +15,7 @@ use App\Http\Controllers\DatabaseTableController;
 use App\Http\Controllers\FileManagerController;
 use App\Http\Controllers\LaravelLogController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\LoginHistoryController;
 use App\Http\Controllers\LogRequestController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OurTeamController;
@@ -124,6 +125,10 @@ Route::prefix('app')->group(function () {
             Route::delete('user-sessions/revoke-others', [UserSessionController::class, 'destroyOthers'])->name('user-sessions.destroy-others');
             Route::delete('user-sessions/user/{user}', [UserSessionController::class, 'destroyUserSessions'])->name('user-sessions.destroy-user');
             Route::delete('user-sessions/{sessionId}', [UserSessionController::class, 'destroy'])->name('user-sessions.destroy');
+
+            Route::get('login-histories', [LoginHistoryController::class, 'index'])->name('login-histories.index');
+            Route::delete('login-histories/clear', [LoginHistoryController::class, 'clear'])->name('login-histories.clear');
+            Route::delete('login-histories/{loginHistory}', [LoginHistoryController::class, 'destroy'])->name('login-histories.destroy');
 
             Route::get('file-manager', [FileManagerController::class, 'index'])->name('file-manager.index');
             Route::get('file-manager/preview', [FileManagerController::class, 'preview'])->name('file-manager.preview');
