@@ -16,11 +16,16 @@ use App\Models\ProductBanner;
 use App\Models\ProductCart;
 use App\Models\ProductCategory;
 use App\Models\ProductWishlist;
+use App\Models\ScheduledTaskRun;
 use App\Models\Setting;
 use App\Models\StoreService;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Services\ScheduledTaskService;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Console\Events\ScheduledTaskFailed;
+use Illuminate\Console\Events\ScheduledTaskFinished;
+use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -449,6 +454,89 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('popularNewsPosts', $popularNewsPosts);
             } else {
                 $view->with('popularNewsPosts', collect());
+            }
+        });
+
+        $this->registerScheduledTaskListeners();
+    }
+
+    /**
+     * Automatically record Laravel scheduler runs into scheduled_task_runs.
+     */
+    private function registerScheduledTaskListeners(): void
+    {
+        $activeRuns = [];
+
+        Event::listen(ScheduledTaskStarting::class, function (ScheduledTaskStarting $event) use (&$activeRuns): void {
+            if (! Schema::hasTable('scheduled_task_runs')) {
+                return;
+            }
+
+            $service = app(ScheduledTaskService::class);
+            $taskKey = $service->taskKey($event->task);
+
+            $run = ScheduledTaskRun::query()->create([
+                'task_key' => $taskKey,
+                'command' => $service->formatCommand($event->task),
+                'description' => $event->task->description ?: null,
+                'expression' => (string) $event->task->expression,
+                'status' => 'running',
+                'triggered_by' => 'scheduler',
+                'started_at' => now(),
+            ]);
+
+            $activeRuns[$taskKey] = [
+                'id' => $run->id,
+                'start' => microtime(true),
+            ];
+        });
+
+        Event::listen(ScheduledTaskFinished::class, function (ScheduledTaskFinished $event) use (&$activeRuns): void {
+            if (! Schema::hasTable('scheduled_task_runs')) {
+                return;
+            }
+
+            $service = app(ScheduledTaskService::class);
+            $taskKey = $service->taskKey($event->task);
+            $meta = $activeRuns[$taskKey] ?? null;
+            unset($activeRuns[$taskKey]);
+
+            $durationMs = $meta
+                ? (int) round((microtime(true) - $meta['start']) * 1000)
+                : (int) round($event->runtime * 1000);
+
+            $exitCode = (int) ($event->task->exitCode ?? 0);
+
+            if ($meta) {
+                ScheduledTaskRun::query()->whereKey($meta['id'])->update([
+                    'status' => $exitCode === 0 ? 'success' : 'failed',
+                    'exit_code' => $exitCode,
+                    'duration_ms' => $durationMs,
+                    'finished_at' => now(),
+                ]);
+            }
+        });
+
+        Event::listen(ScheduledTaskFailed::class, function (ScheduledTaskFailed $event) use (&$activeRuns): void {
+            if (! Schema::hasTable('scheduled_task_runs')) {
+                return;
+            }
+
+            $service = app(ScheduledTaskService::class);
+            $taskKey = $service->taskKey($event->task);
+            $meta = $activeRuns[$taskKey] ?? null;
+            unset($activeRuns[$taskKey]);
+
+            $durationMs = $meta ? (int) round((microtime(true) - $meta['start']) * 1000) : null;
+
+            if ($meta) {
+                ScheduledTaskRun::query()->whereKey($meta['id'])->update([
+                    'status' => 'failed',
+                    'exit_code' => 1,
+                    'duration_ms' => $durationMs,
+                    'output' => $event->exception->getMessage(),
+                    'finished_at' => now(),
+                ]);
             }
         });
     }

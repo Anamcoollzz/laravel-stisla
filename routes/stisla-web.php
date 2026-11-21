@@ -26,6 +26,7 @@ use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectFileEditorController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ScheduledTaskController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
@@ -182,6 +183,12 @@ Route::prefix('app')->group(function () {
             Route::post('project-files/folder', [ProjectFileEditorController::class, 'storeFolder'])->name('project-files.folder.store');
             Route::patch('project-files/rename', [ProjectFileEditorController::class, 'rename'])->name('project-files.rename');
             Route::delete('project-files', [ProjectFileEditorController::class, 'destroy'])->name('project-files.destroy');
+
+            Route::get('scheduled-tasks', [ScheduledTaskController::class, 'index'])->name('scheduled-tasks.index');
+            Route::post('scheduled-tasks/run-now', [ScheduledTaskController::class, 'runNow'])->name('scheduled-tasks.run-now');
+            Route::post('scheduled-tasks/run-due', [ScheduledTaskController::class, 'runDue'])->name('scheduled-tasks.run-due');
+            Route::delete('scheduled-tasks/clear', [ScheduledTaskController::class, 'clear'])->name('scheduled-tasks.clear');
+            Route::delete('scheduled-tasks/{scheduledTaskRun}', [ScheduledTaskController::class, 'destroy'])->name('scheduled-tasks.destroy');
         });
     });
 });

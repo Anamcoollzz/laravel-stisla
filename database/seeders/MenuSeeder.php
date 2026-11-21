@@ -267,6 +267,7 @@ class MenuSeeder extends Seeder
             ['name' => 'File Manager', 'icon' => 'fas fa-folder-open', 'route' => 'file-manager.index', 'permission' => 'file-manager.view', 'order' => 84],
             ['name' => 'Project File Editor', 'icon' => 'fas fa-file-code', 'route' => 'project-files.index', 'permission' => 'project-files.view', 'order' => 84],
             ['name' => 'Cache Management', 'icon' => 'fas fa-bolt', 'route' => 'cache-management.index', 'permission' => 'cache-management.view', 'order' => 84],
+            ['name' => 'Scheduled Tasks', 'icon' => 'fas fa-clock', 'route' => 'scheduled-tasks.index', 'permission' => 'scheduled-tasks.view', 'order' => 84],
         ];
 
         foreach ($systemItems as $item) {

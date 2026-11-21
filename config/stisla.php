@@ -60,6 +60,7 @@ return [
             'file-manager' => ['view', 'create', 'edit', 'delete'],
             'project-files' => ['view', 'create', 'edit', 'delete'],
             'cache-management' => ['view', 'edit', 'delete'],
+            'scheduled-tasks' => ['view', 'create', 'delete'],
             'news-categories' => ['view', 'create', 'edit', 'delete'],
             'news-tags' => ['view', 'create', 'edit', 'delete'],
             'news-comments' => ['view', 'create', 'edit', 'delete'],
