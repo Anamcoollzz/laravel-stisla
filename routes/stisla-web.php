@@ -101,6 +101,8 @@ Route::prefix('app')->group(function () {
         Route::get('permissions/export-pdf', [PermissionController::class, 'exportPdf'])->name('permissions.exportPdf');
         Route::resource('permissions', PermissionController::class)->except('show');
 
+        Route::post('menus/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');
+        Route::patch('menus/{menu}/toggle-active', [MenuController::class, 'toggleActive'])->name('menus.toggleActive');
         Route::post('menus/{menu}/duplicate', [MenuController::class, 'duplicate'])->name('menus.duplicate');
         Route::get('menus/export-pdf', [MenuController::class, 'exportPdf'])->name('menus.exportPdf');
         Route::resource('menus', MenuController::class);

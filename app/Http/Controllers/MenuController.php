@@ -7,9 +7,11 @@ use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Menu;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
@@ -25,18 +27,39 @@ class MenuController extends Controller
 
         $selectedApp = trim((string) $request->query('app', ''));
 
-        $menus = Menu::query()
-            ->with(['parent', 'children'])
+        $rootMenus = Menu::query()
+            ->whereNull('parent_id')
             ->when($selectedApp !== '', fn ($q) => $q->forApp($selectedApp))
-            ->orderByRaw('CASE WHEN parent_id IS NULL THEN id ELSE parent_id END, parent_id IS NOT NULL, `order` ASC')
+            ->with([
+                'children' => function ($query) use ($selectedApp): void {
+                    $query->when($selectedApp !== '', fn ($q) => $q->forApp($selectedApp))
+                        ->orderBy('order')
+                        ->orderBy('id');
+                },
+            ])
+            ->orderBy('order')
+            ->orderBy('id')
             ->get();
 
         $apps = Menu::distinctApps();
 
+        $permissions = Permission::query()
+            ->orderBy('name')
+            ->pluck('name');
+
+        $availableRoutes = collect(Route::getRoutes()->getRoutes())
+            ->map(fn ($route) => $route->getName())
+            ->filter(fn ($name) => $name && ! str_starts_with($name, 'ignition.') && ! str_ends_with($name, '.html'))
+            ->unique()
+            ->sort()
+            ->values();
+
         return view('modules.menus.index', [
-            'menus' => $menus,
+            'menus' => $rootMenus,
             'apps' => $apps,
             'selectedApp' => $selectedApp,
+            'permissions' => $permissions,
+            'availableRoutes' => $availableRoutes,
         ]);
     }
 
@@ -76,11 +99,27 @@ class MenuController extends Controller
     /**
      * Store a newly created menu in storage.
      */
-    public function store(StoreMenuRequest $request): RedirectResponse
+    public function store(StoreMenuRequest $request): RedirectResponse|JsonResponse
     {
         Gate::authorize('menus.create');
 
-        Menu::query()->create($request->validated());
+        $data = $request->validated();
+        if (($data['order'] ?? 0) === 0) {
+            $maxOrder = Menu::query()
+                ->where('parent_id', $data['parent_id'] ?? null)
+                ->max('order');
+            $data['order'] = is_numeric($maxOrder) ? ((int) $maxOrder + 1) : 1;
+        }
+
+        $menu = Menu::query()->create($data);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Menu created successfully.'),
+                'menu' => $menu->fresh('children'),
+            ], 201);
+        }
 
         return redirect()
             ->route('menus.index')
@@ -90,11 +129,11 @@ class MenuController extends Controller
     /**
      * Duplicate the specified menu.
      */
-    public function duplicate(Menu $menu): RedirectResponse
+    public function duplicate(Request $request, Menu $menu): RedirectResponse|JsonResponse
     {
         Gate::authorize('menus.create');
 
-        Menu::query()->create([
+        $copy = Menu::query()->create([
             'app' => $menu->app ?? ['online-shop'],
             'parent_id' => $menu->parent_id,
             'name' => $menu->name.' (Copy)',
@@ -106,6 +145,14 @@ class MenuController extends Controller
             'order' => $menu->order + 1,
             'is_active' => $menu->is_active,
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Menu duplicated successfully.'),
+                'menu' => $copy,
+            ]);
+        }
 
         return redirect()
             ->route('menus.index')
@@ -164,11 +211,19 @@ class MenuController extends Controller
     /**
      * Update the specified menu in storage.
      */
-    public function update(UpdateMenuRequest $request, Menu $menu): RedirectResponse
+    public function update(UpdateMenuRequest $request, Menu $menu): RedirectResponse|JsonResponse
     {
         Gate::authorize('menus.edit');
 
         $menu->update($request->validated());
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Menu updated successfully.'),
+                'menu' => $menu->fresh('children'),
+            ]);
+        }
 
         return redirect()
             ->route('menus.index')
@@ -176,13 +231,81 @@ class MenuController extends Controller
     }
 
     /**
+     * Reorder menus and update parent relationships via AJAX drag-and-drop.
+     */
+    public function reorder(Request $request): JsonResponse
+    {
+        Gate::authorize('menus.edit');
+
+        $validated = $request->validate([
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.id' => ['required', 'integer', 'exists:menus,id'],
+            'items.*.parent_id' => ['nullable', 'integer', 'exists:menus,id'],
+            'items.*.order' => ['required', 'integer', 'min:0'],
+        ]);
+
+        DB::transaction(function () use ($validated): void {
+            foreach ($validated['items'] as $item) {
+                $parentId = $item['parent_id'] ?? null;
+                if ($parentId === (int) $item['id']) {
+                    $parentId = null;
+                }
+
+                $menu = Menu::query()->find($item['id']);
+                if ($menu) {
+                    $menu->update([
+                        'parent_id' => $parentId,
+                        'order' => (int) $item['order'],
+                    ]);
+                }
+            }
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => __('Menu order updated successfully.'),
+        ]);
+    }
+
+    /**
+     * Toggle active status of the specified menu.
+     */
+    public function toggleActive(Request $request, Menu $menu): RedirectResponse|JsonResponse
+    {
+        Gate::authorize('menus.edit');
+
+        $menu->update([
+            'is_active' => ! $menu->is_active,
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $menu->is_active,
+                'message' => __('Menu status updated successfully.'),
+            ]);
+        }
+
+        return redirect()
+            ->route('menus.index')
+            ->with('success', __('Menu status updated successfully.'));
+    }
+
+    /**
      * Remove the specified menu from storage.
      */
-    public function destroy(Menu $menu): RedirectResponse
+    public function destroy(Request $request, Menu $menu): RedirectResponse|JsonResponse
     {
         Gate::authorize('menus.delete');
 
         $menu->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Menu deleted successfully.'),
+            ]);
+        }
 
         return redirect()
             ->route('menus.index')
