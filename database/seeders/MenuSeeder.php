@@ -295,6 +295,7 @@ class MenuSeeder extends Seeder
                     ['name' => 'Database Tables', 'icon' => 'fas fa-table', 'route' => 'database-tables.index', 'permission' => 'database-tables.view', 'order' => 2],
                     ['name' => 'File Manager', 'icon' => 'fas fa-folder-open', 'route' => 'file-manager.index', 'permission' => 'file-manager.view', 'order' => 3],
                     ['name' => 'Project File Editor', 'icon' => 'fas fa-file-code', 'route' => 'project-files.index', 'permission' => 'project-files.view', 'order' => 4],
+                    ['name' => 'Media Management', 'icon' => 'fas fa-photo-video', 'route' => 'media.index', 'permission' => 'media.view', 'order' => 5],
                 ],
             ],
             [

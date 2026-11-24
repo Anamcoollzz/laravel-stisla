@@ -20,6 +20,8 @@ use App\Http\Controllers\LaravelLogController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\LoginHistoryController;
 use App\Http\Controllers\LogRequestController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\MediaFolderController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OurTeamController;
 use App\Http\Controllers\PermissionController;
@@ -39,6 +41,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/lang/{locale}', [LocaleController::class, 'switch']);
 Route::get('/privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
+Route::get('/media/share/{token}', [MediaController::class, 'shared'])->name('media.shared');
 
 Route::prefix('app')->group(function () {
     Route::redirect('/', '/app/dashboard');
@@ -130,6 +133,21 @@ Route::prefix('app')->group(function () {
         Route::post('chat/{user:uuid}', [ChatController::class, 'send'])->name('chat.send');
         Route::get('chat/{user:uuid}/messages', [ChatController::class, 'fetchMessages'])->name('chat.messages');
         Route::delete('chat/{user:uuid}/clear', [ChatController::class, 'clear'])->name('chat.clear');
+
+        Route::get('media', [MediaController::class, 'index'])->name('media.index');
+        Route::post('media/upload', [MediaController::class, 'upload'])->name('media.upload');
+        Route::put('media/{mediaFile}/metadata', [MediaController::class, 'updateMetadata'])->name('media.metadata.update');
+        Route::post('media/{mediaFile}/versions', [MediaController::class, 'uploadVersion'])->name('media.versions.store');
+        Route::post('media/{mediaFile}/versions/{version}/restore', [MediaController::class, 'restoreVersion'])->name('media.versions.restore');
+        Route::post('media/{mediaFile}/crop', [MediaController::class, 'crop'])->name('media.crop');
+        Route::post('media/{mediaFile}/compress', [MediaController::class, 'compress'])->name('media.compress');
+        Route::post('media/{mediaFile}/share', [MediaController::class, 'share'])->name('media.share');
+        Route::get('media/{mediaFile}/download', [MediaController::class, 'download'])->name('media.download');
+        Route::delete('media/{mediaFile}', [MediaController::class, 'destroy'])->name('media.destroy');
+
+        Route::post('media-folders', [MediaFolderController::class, 'store'])->name('media-folders.store');
+        Route::put('media-folders/{folder}', [MediaFolderController::class, 'update'])->name('media-folders.update');
+        Route::delete('media-folders/{folder}', [MediaFolderController::class, 'destroy'])->name('media-folders.destroy');
 
         Route::get('backups', [BackupController::class, 'index'])->name('backups.index');
         Route::post('backups', [BackupController::class, 'create'])->name('backups.create');
