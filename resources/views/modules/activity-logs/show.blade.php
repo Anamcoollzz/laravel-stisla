@@ -17,7 +17,7 @@
 
   <div class="section-body">
     <div class="row">
-      <div class="col-md-5">
+      <div class="col-12">
         <div class="card">
           <div class="card-header">
             <h4>{{ __('Activity Metadata') }}</h4>
@@ -79,7 +79,7 @@
         </div>
       </div>
 
-      <div class="col-md-7">
+      <div class="col-12">
         <div class="card">
           <div class="card-header">
             <h4><i class="fas fa-exchange-alt mr-1"></i> {{ __('Changes (Before vs After)') }}</h4>
