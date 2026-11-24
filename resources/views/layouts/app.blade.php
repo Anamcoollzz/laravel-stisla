@@ -231,6 +231,14 @@
               <a href="{{ route('profile.edit') }}" class="dropdown-item has-icon">
                 <i class="far fa-user"></i> {{ __('Profile') }}
               </a>
+              @if (session()->has('impersonator_id'))
+                <form action="{{ route('users.stop-impersonate') }}" method="POST" id="stop-impersonate-form" class="d-none">
+                  @csrf
+                </form>
+                <a href="{{ route('users.stop-impersonate') }}" class="dropdown-item has-icon text-warning" onclick="event.preventDefault(); document.getElementById('stop-impersonate-form').submit();">
+                  <i class="fas fa-user-shield"></i> {{ __('Return to Admin') }}
+                </a>
+              @endif
               @if (config('stisla.is_demo'))
                 <a href="{{ route('features-activities.html') }}" class="dropdown-item has-icon">
                   <i class="fas fa-bolt"></i> {{ __('Activities') }}

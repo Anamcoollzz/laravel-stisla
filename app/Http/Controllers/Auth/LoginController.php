@@ -72,6 +72,27 @@ class LoginController extends Controller
             /** @var User $user */
             $user = Auth::user();
 
+            if ($user->isBlocked()) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                RateLimiter::hit($throttleKey, $decayMinutes * 60);
+
+                $this->recordFailedLogin(
+                    action: 'login_blocked',
+                    email: $email,
+                    description: "Blocked user login attempt for {$email}",
+                    before: ['is_blocked' => true],
+                    after: ['attempts' => RateLimiter::attempts($throttleKey)],
+                    matchedUser: $user,
+                );
+
+                return back()
+                    ->with('error', __('Your account has been blocked.'))
+                    ->onlyInput('email');
+            }
+
             if (Setting::getValue('send_activation_email_on_register', '0') === '1'
                 && $user->email_verified_at === null
                 && ! $user->hasRole('admin')) {

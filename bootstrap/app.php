@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AuthenticateApiToken;
 use App\Http\Middleware\BlockBlacklistedIp;
+use App\Http\Middleware\EnsureUserNotBlocked;
 use App\Http\Middleware\LogRequestMiddleware;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             SetLocale::class,
+            EnsureUserNotBlocked::class,
             LogRequestMiddleware::class,
         ]);
 

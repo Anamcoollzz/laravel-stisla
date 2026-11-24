@@ -83,6 +83,10 @@ Route::prefix('app')->group(function () {
         Route::delete('/profile/sessions', [ProfileController::class, 'logoutOtherBrowserSessions'])->name('profile.sessions.destroy');
 
         Route::post('users/{user}/duplicate', [UserController::class, 'duplicate'])->name('users.duplicate');
+        Route::post('users/{user}/force-login', [UserController::class, 'forceLogin'])->name('users.force-login');
+        Route::post('users/stop-impersonate', [UserController::class, 'stopImpersonate'])->name('users.stop-impersonate');
+        Route::patch('users/{user}/block', [UserController::class, 'block'])->name('users.block');
+        Route::patch('users/{user}/unblock', [UserController::class, 'unblock'])->name('users.unblock');
         Route::get('users/export', [UserController::class, 'export'])->name('users.export');
         Route::get('users/export-pdf', [UserController::class, 'exportPdf'])->name('users.exportPdf');
         Route::get('users/template', [UserController::class, 'template'])->name('users.template');

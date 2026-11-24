@@ -70,6 +70,20 @@ class GoogleAuthController extends Controller
             ->first();
 
         if ($user) {
+            if ($user->isBlocked()) {
+                LoginHistory::record(
+                    event: 'google_login_blocked',
+                    status: 'failed',
+                    user: $user,
+                    email: $user->email,
+                    notes: __('Account is blocked.'),
+                );
+
+                return redirect()
+                    ->route('login')
+                    ->with('error', __('Your account has been blocked.'));
+            }
+
             $user->update([
                 'google_id' => $user->google_id ?: $googleUser->getId(),
                 'email_verified_at' => $user->email_verified_at ?: now(),

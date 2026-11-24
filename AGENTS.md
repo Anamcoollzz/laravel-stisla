@@ -156,4 +156,11 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Rerun a test after each change to it.
 - Run `vendor/bin/pest` to call the test runner directly. It accepts the same file path and `--filter=testName` arguments.
 
+=== git/workflow rules ===
+
+# Git & Task Completion
+
+- After completing any task that modifies, creates, or deletes files, you MUST stage all changes (`git add -A`) before giving your final response.
+- Always include a concise, clear suggested commit message (e.g., Conventional Commits format) in your final response so the user can review and commit immediately.
+
 </laravel-boost-guidelines>

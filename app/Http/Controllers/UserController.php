@@ -7,14 +7,18 @@ use App\Exports\UsersTemplateExport;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Imports\UsersImport;
+use App\Models\LoginHistory;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -234,5 +238,142 @@ class UserController extends Controller
                 ->route('users.index')
                 ->with('error', __('Import failed: ').$e->getMessage());
         }
+    }
+
+    /**
+     * Force login (impersonate) as the specified user.
+     */
+    public function forceLogin(Request $request, User $user): RedirectResponse
+    {
+        Gate::authorize('users.edit');
+
+        if (config('stisla.is_demo')) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', __('Action is disabled in demo mode.'));
+        }
+
+        /** @var User $admin */
+        $admin = $request->user();
+
+        if ($admin->id === $user->id) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', __('You are already logged in as this user.'));
+        }
+
+        if ($user->isBlocked()) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', __('Cannot force login to a blocked user.'));
+        }
+
+        $impersonatorId = $request->session()->get('impersonator_id', $admin->id);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+        $request->session()->put('impersonator_id', $impersonatorId);
+
+        LoginHistory::record(
+            event: 'force_login',
+            status: 'success',
+            user: $user,
+            email: $user->email,
+            notes: __('Force logged in by :admin', ['admin' => $admin->email]),
+        );
+
+        return redirect()
+            ->route('dashboard')
+            ->with('success', __('Now logged in as :name.', ['name' => $user->name]));
+    }
+
+    /**
+     * Stop impersonating and return to the original admin account.
+     */
+    public function stopImpersonate(Request $request): RedirectResponse
+    {
+        $impersonatorId = $request->session()->pull('impersonator_id');
+
+        if (! $impersonatorId) {
+            return redirect()->route('dashboard');
+        }
+
+        $admin = User::query()->find($impersonatorId);
+        if (! $admin) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login');
+        }
+
+        Auth::login($admin);
+        $request->session()->regenerate();
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', __('Returned to admin account.'));
+    }
+
+    /**
+     * Block the specified user and revoke active sessions.
+     */
+    public function block(Request $request, User $user): RedirectResponse
+    {
+        Gate::authorize('users.edit');
+
+        if (config('stisla.is_demo')) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', __('Action is disabled in demo mode.'));
+        }
+
+        if (auth()->id() === $user->id) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', __('You cannot block your own account.'));
+        }
+
+        $validated = $request->validate([
+            'blocked_reason' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $user->update([
+            'is_blocked' => true,
+            'blocked_at' => now(),
+            'blocked_reason' => $validated['blocked_reason'] ?? null,
+        ]);
+
+        if (Schema::hasTable('sessions')) {
+            DB::table('sessions')->where('user_id', $user->id)->delete();
+        }
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', __('User blocked successfully.'));
+    }
+
+    /**
+     * Unblock the specified user.
+     */
+    public function unblock(User $user): RedirectResponse
+    {
+        Gate::authorize('users.edit');
+
+        if (config('stisla.is_demo')) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', __('Action is disabled in demo mode.'));
+        }
+
+        $user->update([
+            'is_blocked' => false,
+            'blocked_at' => null,
+            'blocked_reason' => null,
+        ]);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', __('User unblocked successfully.'));
     }
 }

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['uuid', 'name', 'first_name', 'last_name', 'email', 'google_id', 'avatar', 'facebook_url', 'twitter_url', 'github_url', 'instagram_url', 'role', 'phone', 'address', 'city', 'state', 'postal_code', 'password', 'last_logged_in'])]
+#[Fillable(['uuid', 'name', 'first_name', 'last_name', 'email', 'google_id', 'avatar', 'facebook_url', 'twitter_url', 'github_url', 'instagram_url', 'role', 'phone', 'address', 'city', 'state', 'postal_code', 'password', 'last_logged_in', 'is_blocked', 'blocked_at', 'blocked_reason'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -44,8 +44,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'last_logged_in' => 'datetime',
+            'is_blocked' => 'boolean',
+            'blocked_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Determine whether the user account is blocked.
+     */
+    public function isBlocked(): bool
+    {
+        return (bool) $this->is_blocked;
     }
 
     /**

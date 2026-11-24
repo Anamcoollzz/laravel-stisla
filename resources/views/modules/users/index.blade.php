@@ -20,7 +20,7 @@
     $("#table-users").dataTable({
       "columnDefs": [{
         "sortable": false,
-        "targets": [5]
+        "targets": [6]
       }]
     });
 
@@ -76,6 +76,7 @@
                     <th>{{ __('Name') }}</th>
                     <th>{{ __('Email') }}</th>
                     <th>{{ __('Roles') }}</th>
+                    <th>{{ __('Status') }}</th>
                     <th>{{ __('Created At') }}</th>
                     <th>{{ __('Action') }}</th>
                   </tr>
@@ -93,6 +94,13 @@
                           <span class="badge badge-light">{{ __('No Role') }}</span>
                         @endforelse
                       </td>
+                      <td>
+                        @if ($user->isBlocked())
+                          <span class="badge badge-danger" @if ($user->blocked_reason) data-toggle="tooltip" title="{{ $user->blocked_reason }}" @endif>{{ __('Blocked') }}</span>
+                        @else
+                          <span class="badge badge-success">{{ __('Active') }}</span>
+                        @endif
+                      </td>
                       <td>{{ $user->created_at?->format('Y-m-d H:i:s') }}</td>
                       <td>
                         @can('users.view')
@@ -107,6 +115,51 @@
                             <button type="submit" class="btn btn-sm btn-icon btn-warning mr-1" data-toggle="tooltip" title="{{ __('Duplicate') }}"><i class="fas fa-copy"></i></button>
                           </form>
                         @endcan
+                        @can('users.edit')
+                          @if (auth()->id() !== $user->id && ! config('stisla.is_demo'))
+                            @if (! $user->isBlocked())
+                              <form action="{{ route('users.force-login', $user) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="button"
+                                        class="btn btn-sm btn-icon btn-secondary mr-1 btn-delete"
+                                        data-toggle="tooltip"
+                                        data-confirm-title="{{ __('Force Login as User?') }}"
+                                        data-confirm-text="{{ __('You will be logged in as :name.', ['name' => $user->name]) }}"
+                                        data-confirm-button-text="{{ __('Force Login') }}"
+                                        title="{{ __('Force Login') }}">
+                                  <i class="fas fa-user-secret"></i>
+                                </button>
+                              </form>
+                              <form action="{{ route('users.block', $user) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="button"
+                                        class="btn btn-sm btn-icon btn-outline-danger mr-1 btn-delete"
+                                        data-toggle="tooltip"
+                                        data-confirm-title="{{ __('Block User?') }}"
+                                        data-confirm-text="{{ __('Block :name and revoke all active sessions?', ['name' => $user->name]) }}"
+                                        data-confirm-button-text="{{ __('Block') }}"
+                                        title="{{ __('Block User') }}">
+                                  <i class="fas fa-ban"></i>
+                                </button>
+                              </form>
+                            @else
+                              <form action="{{ route('users.unblock', $user) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="button"
+                                        class="btn btn-sm btn-icon btn-success mr-1 btn-delete"
+                                        data-toggle="tooltip"
+                                        data-confirm-title="{{ __('Unblock User?') }}"
+                                        data-confirm-text="{{ __('Restore login access for :name?', ['name' => $user->name]) }}"
+                                        data-confirm-button-text="{{ __('Unblock') }}"
+                                        title="{{ __('Unblock User') }}">
+                                  <i class="fas fa-unlock"></i>
+                                </button>
+                              </form>
+                            @endif
+                          @endif
+                        @endcan
                         @can('user-sessions.delete')
                           @if (auth()->id() !== $user->id && ! config('stisla.is_demo'))
                             <form action="{{ route('user-sessions.destroy-user', $user) }}" method="POST" class="d-inline">
@@ -117,6 +170,7 @@
                                       data-toggle="tooltip"
                                       data-confirm-title="{{ __('Force Logout User?') }}"
                                       data-confirm-text="{{ __('Force logout all active sessions for :name?', ['name' => $user->name]) }}"
+                                      data-confirm-button-text="{{ __('Force Logout') }}"
                                       title="{{ __('Force Logout') }}">
                                 <i class="fas fa-sign-out-alt"></i>
                               </button>
