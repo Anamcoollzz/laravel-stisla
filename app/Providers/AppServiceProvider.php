@@ -22,11 +22,13 @@ use App\Models\Setting;
 use App\Models\StoreService;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Services\ModelActivityTracker;
 use App\Services\ScheduledTaskService;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskStarting;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
@@ -132,6 +134,15 @@ class AppServiceProvider extends ServiceProvider
                 $event->user->forceFill(['last_logged_in' => now()])->saveQuietly();
             }
         });
+
+        foreach (['created', 'updated', 'deleted'] as $eloquentEvent) {
+            Event::listen("eloquent.{$eloquentEvent}: *", function (string $eventName, array $data) use ($eloquentEvent): void {
+                $model = $data[0] ?? null;
+                if ($model instanceof Model) {
+                    ModelActivityTracker::track($eloquentEvent, $model);
+                }
+            });
+        }
 
         View::composer('layouts.app', function ($view) {
             $authUser = auth()->user();
