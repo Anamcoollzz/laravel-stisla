@@ -161,7 +161,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 # Git & Task Completion
 
 - After completing any task that modifies, creates, or deletes files, you MUST stage all changes (`git add -A`) before giving your final response.
-- When running `sync-stisla-stubs.bat` or staging changes, ignore/restore files that only differ by CRLF/LF line endings (e.g., verify with `git diff --ignore-cr-at-eol --quiet` and `git checkout -- <file>`) so CRLF-only changes are never staged.
+- When running `sync-stisla-stubs.bat` or staging changes (including inside `stisla-package`), ignore and discard files that only differ by CRLF/LF line endings (e.g., check `git diff --ignore-cr-at-eol --quiet -- <file>` / `git -C stisla-package diff --ignore-cr-at-eol --quiet -- <file>` and restore them with `git checkout -- <file>`) so CRLF-only changes are never staged.
 - Always include a concise, clear suggested commit message (e.g., Conventional Commits format) in your final response so the user can review and commit immediately.
 
 </laravel-boost-guidelines>
