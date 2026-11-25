@@ -117,7 +117,7 @@ class MenuSeeder extends Seeder
         // Catalog & Products Section
         Menu::updateOrCreate(
             ['name' => 'Catalog & Products', 'type' => 'header'],
-            ['order' => 41, 'is_active' => true]
+            ['app' => ['online-shop'], 'order' => 41, 'is_active' => true]
         );
 
         $catalogItems = [
@@ -134,6 +134,7 @@ class MenuSeeder extends Seeder
             Menu::updateOrCreate(
                 ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
                 [
+                    'app' => ['online-shop'],
                     'parent_id' => null,
                     'icon' => $item['icon'],
                     'permission' => $item['permission'],
@@ -146,7 +147,7 @@ class MenuSeeder extends Seeder
         // Orders & Payments Section
         Menu::updateOrCreate(
             ['name' => 'Orders & Payments', 'type' => 'header'],
-            ['order' => 49, 'is_active' => true]
+            ['app' => ['online-shop'], 'order' => 49, 'is_active' => true]
         );
 
         $orderItems = [
@@ -160,6 +161,7 @@ class MenuSeeder extends Seeder
             Menu::updateOrCreate(
                 ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
                 [
+                    'app' => ['online-shop'],
                     'parent_id' => null,
                     'icon' => $item['icon'],
                     'permission' => $item['permission'],
@@ -172,7 +174,7 @@ class MenuSeeder extends Seeder
         // Content & Engagement Section
         Menu::updateOrCreate(
             ['name' => 'Content & Engagement', 'type' => 'header'],
-            ['order' => 54, 'is_active' => true]
+            ['app' => ['online-shop'], 'order' => 54, 'is_active' => true]
         );
 
         $contentItems = [
@@ -190,6 +192,7 @@ class MenuSeeder extends Seeder
             Menu::updateOrCreate(
                 ['name' => $item['name'], 'type' => 'item', 'route' => $item['route']],
                 [
+                    'app' => ['online-shop'],
                     'parent_id' => null,
                     'icon' => $item['icon'],
                     'permission' => $item['permission'],
@@ -199,7 +202,7 @@ class MenuSeeder extends Seeder
             );
         }
 
-        $allApps = ['online-shop', 'news', 'lp-compro-workers', 'spp-payment'];
+        $allApps = ['online-shop', 'news', 'lp-compro-workers', 'spp-payment', 'nikahku'];
 
         // Dashboard for spp-payment app
         $this->firstOrCreateForApp('spp-payment', ['name' => 'Dashboard', 'type' => 'item'], [

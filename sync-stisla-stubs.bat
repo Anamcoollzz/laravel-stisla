@@ -16,6 +16,7 @@ for %%D in (
     "app\Http\Middleware"
     "app\Http\Requests"
     "app\Mail"
+    "app\Observers"
     "app\Providers"
     "app\Services"
     "resources\views"

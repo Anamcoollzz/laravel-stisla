@@ -51,7 +51,10 @@ class Menu extends Model
      */
     public function scopeForApp(Builder $query, string $app): Builder
     {
-        return $query->whereJsonContains('app', $app);
+        return $query->where(function (Builder $q) use ($app): void {
+            $q->whereJsonContains('app', $app)
+                ->orWhereNull('app');
+        });
     }
 
     /**
@@ -64,7 +67,7 @@ class Menu extends Model
         return static::query()
             ->pluck('app')
             ->flatten()
-            ->merge(['online-shop', 'spp-payment', 'news', 'lp-compro-workers'])
+            ->merge(['online-shop', 'spp-payment', 'news', 'lp-compro-workers', 'nikahku'])
             ->map(fn (mixed $item): string => trim((string) $item))
             ->filter()
             ->unique()
@@ -188,7 +191,11 @@ class Menu extends Model
     public function isActiveRoute(): bool
     {
         if ($this->route) {
-            $baseRoute = explode('.', $this->route)[0];
+            $segments = explode('.', $this->route);
+            $baseRoute = count($segments) > 2
+                ? implode('.', array_slice($segments, 0, -1))
+                : $segments[0];
+
             if (request()->routeIs($this->route) || request()->routeIs("{$baseRoute}.*")) {
                 return true;
             }

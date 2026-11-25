@@ -56,6 +56,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('database.default') === 'sqlite') {
+            $sqlitePath = (string) config('database.connections.sqlite.database');
+
+            if ($sqlitePath !== '' && $sqlitePath !== ':memory:' && ! file_exists($sqlitePath)) {
+                $dir = dirname($sqlitePath);
+                if (! is_dir($dir)) {
+                    @mkdir($dir, 0755, true);
+                }
+                @touch($sqlitePath);
+            }
+        }
+
         Password::defaults(function () {
             $minLength = 8;
             $requireMixedCase = false;

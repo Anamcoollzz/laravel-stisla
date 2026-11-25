@@ -335,30 +335,46 @@
                   <li @class(['nav-item dropdown', 'active' => request()->routeIs('classes.*', 'teachers.*', 'students.*', 'subjects.*', 'fields.*', 'spp-payments.*', 'tickets.*', 'chat.*')])>
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-plug"></i> <span>{{ __('Modules') }}</span></a>
                     <ul class="dropdown-menu">
-                      @can('classes.view')
-                        <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
-                      @endcan
-                      @can('teachers.view')
-                        <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
-                      @endcan
-                      @can('students.view')
-                        <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
-                      @endcan
-                      @can('subjects.view')
-                        <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
-                      @endcan
-                      @can('fields.view')
-                        <li @class(['active' => request()->routeIs('fields.*')])><a class="nav-link" href="{{ route('fields.index') }}">{{ __('Fields') }}</a></li>
-                      @endcan
-                      @can('spp-payments.view')
-                        <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
-                      @endcan
-                      @can('tickets.view')
-                        <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
-                      @endcan
-                      @can('chat.view')
-                        <li @class(['active' => request()->routeIs('chat.*')])><a class="nav-link" href="{{ route('chat.index') }}">{{ __('Chat Box') }}</a></li>
-                      @endcan
+                      @if (\Illuminate\Support\Facades\Route::has('classes.index'))
+                        @can('classes.view')
+                          <li @class(['active' => request()->routeIs('classes.*')])><a class="nav-link" href="{{ route('classes.index') }}">{{ __('Classes') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('teachers.index'))
+                        @can('teachers.view')
+                          <li @class(['active' => request()->routeIs('teachers.*')])><a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teachers') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('students.index'))
+                        @can('students.view')
+                          <li @class(['active' => request()->routeIs('students.*')])><a class="nav-link" href="{{ route('students.index') }}">{{ __('Students') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('subjects.index'))
+                        @can('subjects.view')
+                          <li @class(['active' => request()->routeIs('subjects.*')])><a class="nav-link" href="{{ route('subjects.index') }}">{{ __('Subjects') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('fields.index'))
+                        @can('fields.view')
+                          <li @class(['active' => request()->routeIs('fields.*')])><a class="nav-link" href="{{ route('fields.index') }}">{{ __('Fields') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('spp-payments.index'))
+                        @can('spp-payments.view')
+                          <li @class(['active' => request()->routeIs('spp-payments.*')])><a class="nav-link" href="{{ route('spp-payments.index') }}">{{ __('SPP Payments') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('tickets.index'))
+                        @can('tickets.view')
+                          <li @class(['active' => request()->routeIs('tickets.*')])><a class="nav-link" href="{{ route('tickets.index') }}">{{ __('Tickets') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('chat.index'))
+                        @can('chat.view')
+                          <li @class(['active' => request()->routeIs('chat.*')])><a class="nav-link" href="{{ route('chat.index') }}">{{ __('Chat Box') }}</a></li>
+                        @endcan
+                      @endif
                     </ul>
                   </li>
                 @endcanany
@@ -367,30 +383,46 @@
                   <li @class(['nav-item dropdown', 'active' => request()->routeIs('products.*', 'product-categories.*', 'product-brands.*', 'product-vendors.*', 'product-sizes.*', 'product-colors.*', 'product-banners.*', 'our-teams.*')])>
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-shopping-bag"></i> <span>{{ __('Shop / Products') }}</span></a>
                     <ul class="dropdown-menu">
-                      @can('products.view')
-                        <li @class(['active' => request()->routeIs('products.*')])><a class="nav-link" href="{{ route('products.index') }}">{{ __('Products') }}</a></li>
-                      @endcan
-                      @can('product-categories.view')
-                        <li @class(['active' => request()->routeIs('product-categories.*')])><a class="nav-link" href="{{ route('product-categories.index') }}">{{ __('Categories') }}</a></li>
-                      @endcan
-                      @can('product-brands.view')
-                        <li @class(['active' => request()->routeIs('product-brands.*')])><a class="nav-link" href="{{ route('product-brands.index') }}">{{ __('Brands') }}</a></li>
-                      @endcan
-                      @can('product-vendors.view')
-                        <li @class(['active' => request()->routeIs('product-vendors.*')])><a class="nav-link" href="{{ route('product-vendors.index') }}">{{ __('Vendors') }}</a></li>
-                      @endcan
-                      @can('product-sizes.view')
-                        <li @class(['active' => request()->routeIs('product-sizes.*')])><a class="nav-link" href="{{ route('product-sizes.index') }}">{{ __('Sizes') }}</a></li>
-                      @endcan
-                      @can('product-colors.view')
-                        <li @class(['active' => request()->routeIs('product-colors.*')])><a class="nav-link" href="{{ route('product-colors.index') }}">{{ __('Colors') }}</a></li>
-                      @endcan
-                      @can('product-banners.view')
-                        <li @class(['active' => request()->routeIs('product-banners.*')])><a class="nav-link" href="{{ route('product-banners.index') }}">{{ __('Banners') }}</a></li>
-                      @endcan
-                      @can('our-teams.view')
-                        <li @class(['active' => request()->routeIs('our-teams.*')])><a class="nav-link" href="{{ route('our-teams.index') }}">{{ __('Our Team') }}</a></li>
-                      @endcan
+                      @if (\Illuminate\Support\Facades\Route::has('products.index'))
+                        @can('products.view')
+                          <li @class(['active' => request()->routeIs('products.*')])><a class="nav-link" href="{{ route('products.index') }}">{{ __('Products') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('product-categories.index'))
+                        @can('product-categories.view')
+                          <li @class(['active' => request()->routeIs('product-categories.*')])><a class="nav-link" href="{{ route('product-categories.index') }}">{{ __('Categories') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('product-brands.index'))
+                        @can('product-brands.view')
+                          <li @class(['active' => request()->routeIs('product-brands.*')])><a class="nav-link" href="{{ route('product-brands.index') }}">{{ __('Brands') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('product-vendors.index'))
+                        @can('product-vendors.view')
+                          <li @class(['active' => request()->routeIs('product-vendors.*')])><a class="nav-link" href="{{ route('product-vendors.index') }}">{{ __('Vendors') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('product-sizes.index'))
+                        @can('product-sizes.view')
+                          <li @class(['active' => request()->routeIs('product-sizes.*')])><a class="nav-link" href="{{ route('product-sizes.index') }}">{{ __('Sizes') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('product-colors.index'))
+                        @can('product-colors.view')
+                          <li @class(['active' => request()->routeIs('product-colors.*')])><a class="nav-link" href="{{ route('product-colors.index') }}">{{ __('Colors') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('product-banners.index'))
+                        @can('product-banners.view')
+                          <li @class(['active' => request()->routeIs('product-banners.*')])><a class="nav-link" href="{{ route('product-banners.index') }}">{{ __('Banners') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('our-teams.index'))
+                        @can('our-teams.view')
+                          <li @class(['active' => request()->routeIs('our-teams.*')])><a class="nav-link" href="{{ route('our-teams.index') }}">{{ __('Our Team') }}</a></li>
+                        @endcan
+                      @endif
                     </ul>
                   </li>
                 @endcanany
@@ -399,30 +431,42 @@
                   <li @class(['nav-item dropdown', 'active' => request()->routeIs('users.*', 'roles.*', 'permissions.*', 'menus.*', 'backups.*')])>
                     <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>{{ __('Access Control') }}</span></a>
                     <ul class="dropdown-menu">
-                      @can('users.view')
-                        <li @class(['active' => request()->routeIs('users.*')])><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
-                      @endcan
-                      @can('roles.view')
-                        <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
-                      @endcan
-                      @can('permissions.view')
-                        <li @class(['active' => request()->routeIs('permissions.*')])><a class="nav-link" href="{{ route('permissions.index') }}">{{ __('Permissions') }}</a></li>
-                      @endcan
-                      @can('menus.view')
-                        <li @class(['active' => request()->routeIs('menus.*')])><a class="nav-link" href="{{ route('menus.index') }}">{{ __('Menu Management') }}</a></li>
-                      @endcan
-                      @can('backup.view')
-                        <li @class(['active' => request()->routeIs('backups.*')])><a class="nav-link" href="{{ route('backups.index') }}">{{ __('Database Backup') }}</a></li>
-                      @endcan
+                      @if (\Illuminate\Support\Facades\Route::has('users.index'))
+                        @can('users.view')
+                          <li @class(['active' => request()->routeIs('users.*')])><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('roles.index'))
+                        @can('roles.view')
+                          <li @class(['active' => request()->routeIs('roles.*')])><a class="nav-link" href="{{ route('roles.index') }}">{{ __('Roles') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('permissions.index'))
+                        @can('permissions.view')
+                          <li @class(['active' => request()->routeIs('permissions.*')])><a class="nav-link" href="{{ route('permissions.index') }}">{{ __('Permissions') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('menus.index'))
+                        @can('menus.view')
+                          <li @class(['active' => request()->routeIs('menus.*')])><a class="nav-link" href="{{ route('menus.index') }}">{{ __('Menu Management') }}</a></li>
+                        @endcan
+                      @endif
+                      @if (\Illuminate\Support\Facades\Route::has('backups.index'))
+                        @can('backup.view')
+                          <li @class(['active' => request()->routeIs('backups.*')])><a class="nav-link" href="{{ route('backups.index') }}">{{ __('Database Backup') }}</a></li>
+                        @endcan
+                      @endif
                     </ul>
                   </li>
                 @endcanany
-                @can('settings.view')
-                  <li class="menu-header">{{ __('Settings') }}</li>
-                  <li @class(['active' => request()->routeIs('settings.*')])>
-                    <a class="nav-link" href="{{ route('settings.index') }}"><i class="fas fa-cog"></i> <span>{{ __('Settings') }}</span></a>
-                  </li>
-                @endcan
+                @if (\Illuminate\Support\Facades\Route::has('settings.index'))
+                  @can('settings.view')
+                    <li class="menu-header">{{ __('Settings') }}</li>
+                    <li @class(['active' => request()->routeIs('settings.*')])>
+                      <a class="nav-link" href="{{ route('settings.index') }}"><i class="fas fa-cog"></i> <span>{{ __('Settings') }}</span></a>
+                    </li>
+                  @endcan
+                @endif
               @endif
             </ul>
           </aside>
